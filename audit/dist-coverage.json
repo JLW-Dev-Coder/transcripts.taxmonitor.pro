@@ -1,0 +1,12 @@
+{
+  "build": {
+    "command": "node build.mjs",
+    "outputDir": "dist"
+  },
+  "totals": {
+    "expected": 475,
+    "dist": 475
+  },
+  "missingInDist": [],
+  "extraInDist": []
+}

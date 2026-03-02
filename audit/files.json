@@ -1,0 +1,2442 @@
+[
+  {
+    "path": ".gitignore",
+    "type": "unknown",
+    "size": 16
+  },
+  {
+    "path": "MARKET.md",
+    "type": "md",
+    "size": 6524
+  },
+  {
+    "path": "README.md",
+    "type": "md",
+    "size": 31772
+  },
+  {
+    "path": "_redirects",
+    "type": "unknown",
+    "size": 1
+  },
+  {
+    "path": "_sdk/element_sdk.js",
+    "type": "script",
+    "size": 5591
+  },
+  {
+    "path": "assets/confirmation.html",
+    "type": "html",
+    "size": 11116
+  },
+  {
+    "path": "assets/favicon.ico",
+    "type": "asset",
+    "size": 370070
+  },
+  {
+    "path": "assets/logo.svg",
+    "type": "asset",
+    "size": 806
+  },
+  {
+    "path": "assets/product.html",
+    "type": "html",
+    "size": 20148
+  },
+  {
+    "path": "assets/report-preview.html",
+    "type": "html",
+    "size": 29417
+  },
+  {
+    "path": "assets/report.html",
+    "type": "html",
+    "size": 30782
+  },
+  {
+    "path": "audit/common.mjs",
+    "type": "script",
+    "size": 1726
+  },
+  {
+    "path": "audit/generate-contracts.mjs",
+    "type": "script",
+    "size": 1221
+  },
+  {
+    "path": "audit/generate-coverage.mjs",
+    "type": "script",
+    "size": 7133
+  },
+  {
+    "path": "audit/generate-files.mjs",
+    "type": "script",
+    "size": 496
+  },
+  {
+    "path": "audit/generate-pages.mjs",
+    "type": "script",
+    "size": 759
+  },
+  {
+    "path": "audit/generate-references.mjs",
+    "type": "script",
+    "size": 1649
+  },
+  {
+    "path": "build.mjs",
+    "type": "script",
+    "size": 4835
+  },
+  {
+    "path": "contact.html",
+    "type": "html",
+    "size": 48825
+  },
+  {
+    "path": "index.html",
+    "type": "html",
+    "size": 50354
+  },
+  {
+    "path": "legal/privacy.html",
+    "type": "html",
+    "size": 10873
+  },
+  {
+    "path": "legal/terms.html",
+    "type": "html",
+    "size": 26440
+  },
+  {
+    "path": "magnets/guide.html",
+    "type": "html",
+    "size": 58315
+  },
+  {
+    "path": "magnets/lead-magnet.html",
+    "type": "html",
+    "size": 10032
+  },
+  {
+    "path": "partials/footer.html",
+    "type": "html",
+    "size": 4492
+  },
+  {
+    "path": "partials/header.html",
+    "type": "html",
+    "size": 15156
+  },
+  {
+    "path": "partials/parse-lab.html",
+    "type": "html",
+    "size": 41503
+  },
+  {
+    "path": "resources/account-transcript-explained.html",
+    "type": "html",
+    "size": 11977
+  },
+  {
+    "path": "resources/architecture-map.html",
+    "type": "html",
+    "size": 19998
+  },
+  {
+    "path": "resources/canopy-vs-manual-transcript-interpretation.html",
+    "type": "html",
+    "size": 13760
+  },
+  {
+    "path": "resources/cloud-transcript-tools-vs-local-parsing.html",
+    "type": "html",
+    "size": 13739
+  },
+  {
+    "path": "resources/how-cpa-firms-use-irs-transcript-reports.html",
+    "type": "html",
+    "size": 13984
+  },
+  {
+    "path": "resources/how-to-add-a-paid-transcript-analysis-to-your-firm.html",
+    "type": "html",
+    "size": 14054
+  },
+  {
+    "path": "resources/how-to-explain-an-irs-transcript-to-a-client.html",
+    "type": "html",
+    "size": 13738
+  },
+  {
+    "path": "resources/how-to-interpret-irs-transcripts-faster.html",
+    "type": "html",
+    "size": 13977
+  },
+  {
+    "path": "resources/how-to-prepare-for-a-tax-resolution-consult-using-transcripts.html",
+    "type": "html",
+    "size": 14131
+  },
+  {
+    "path": "resources/how-to-read-irs-transcripts.html",
+    "type": "html",
+    "size": 31812
+  },
+  {
+    "path": "resources/how-to-sell-a-transcript-analysis-as-a-standalone-service.html",
+    "type": "html",
+    "size": 14103
+  },
+  {
+    "path": "resources/how-to-standardize-transcript-interpretation-across-staff.html",
+    "type": "html",
+    "size": 14103
+  },
+  {
+    "path": "resources/how-to-understand-irs-transaction-codes.html",
+    "type": "html",
+    "size": 13703
+  },
+  {
+    "path": "resources/index.html",
+    "type": "html",
+    "size": 24990
+  },
+  {
+    "path": "resources/intuit-transcript-feature-vs-dedicated-parser.html",
+    "type": "html",
+    "size": 13781
+  },
+  {
+    "path": "resources/irs-code-000-meaning.html",
+    "type": "html",
+    "size": 19708
+  },
+  {
+    "path": "resources/irs-code-001-meaning.html",
+    "type": "html",
+    "size": 20046
+  },
+  {
+    "path": "resources/irs-code-002-meaning.html",
+    "type": "html",
+    "size": 19824
+  },
+  {
+    "path": "resources/irs-code-003-meaning.html",
+    "type": "html",
+    "size": 19868
+  },
+  {
+    "path": "resources/irs-code-004-meaning.html",
+    "type": "html",
+    "size": 19664
+  },
+  {
+    "path": "resources/irs-code-005-meaning.html",
+    "type": "html",
+    "size": 19792
+  },
+  {
+    "path": "resources/irs-code-006-meaning.html",
+    "type": "html",
+    "size": 20054
+  },
+  {
+    "path": "resources/irs-code-007-meaning.html",
+    "type": "html",
+    "size": 19668
+  },
+  {
+    "path": "resources/irs-code-008-meaning.html",
+    "type": "html",
+    "size": 19722
+  },
+  {
+    "path": "resources/irs-code-011-meaning.html",
+    "type": "html",
+    "size": 19748
+  },
+  {
+    "path": "resources/irs-code-012-meaning.html",
+    "type": "html",
+    "size": 19828
+  },
+  {
+    "path": "resources/irs-code-013-meaning.html",
+    "type": "html",
+    "size": 19728
+  },
+  {
+    "path": "resources/irs-code-014-meaning.html",
+    "type": "html",
+    "size": 19758
+  },
+  {
+    "path": "resources/irs-code-015-meaning.html",
+    "type": "html",
+    "size": 20516
+  },
+  {
+    "path": "resources/irs-code-016-meaning.html",
+    "type": "html",
+    "size": 19888
+  },
+  {
+    "path": "resources/irs-code-017-meaning.html",
+    "type": "html",
+    "size": 20238
+  },
+  {
+    "path": "resources/irs-code-018-meaning.html",
+    "type": "html",
+    "size": 19708
+  },
+  {
+    "path": "resources/irs-code-019-meaning.html",
+    "type": "html",
+    "size": 19758
+  },
+  {
+    "path": "resources/irs-code-020-meaning.html",
+    "type": "html",
+    "size": 19808
+  },
+  {
+    "path": "resources/irs-code-022-meaning.html",
+    "type": "html",
+    "size": 19668
+  },
+  {
+    "path": "resources/irs-code-023-meaning.html",
+    "type": "html",
+    "size": 19808
+  },
+  {
+    "path": "resources/irs-code-024-meaning.html",
+    "type": "html",
+    "size": 19688
+  },
+  {
+    "path": "resources/irs-code-025-meaning.html",
+    "type": "html",
+    "size": 19668
+  },
+  {
+    "path": "resources/irs-code-026-meaning.html",
+    "type": "html",
+    "size": 19798
+  },
+  {
+    "path": "resources/irs-code-030-meaning.html",
+    "type": "html",
+    "size": 19732
+  },
+  {
+    "path": "resources/irs-code-040-meaning.html",
+    "type": "html",
+    "size": 19668
+  },
+  {
+    "path": "resources/irs-code-041-meaning.html",
+    "type": "html",
+    "size": 19768
+  },
+  {
+    "path": "resources/irs-code-052-meaning.html",
+    "type": "html",
+    "size": 19688
+  },
+  {
+    "path": "resources/irs-code-053-meaning.html",
+    "type": "html",
+    "size": 20148
+  },
+  {
+    "path": "resources/irs-code-054-meaning.html",
+    "type": "html",
+    "size": 20188
+  },
+  {
+    "path": "resources/irs-code-055-meaning.html",
+    "type": "html",
+    "size": 19768
+  },
+  {
+    "path": "resources/irs-code-057-meaning.html",
+    "type": "html",
+    "size": 19688
+  },
+  {
+    "path": "resources/irs-code-058-meaning.html",
+    "type": "html",
+    "size": 20218
+  },
+  {
+    "path": "resources/irs-code-059-meaning.html",
+    "type": "html",
+    "size": 20198
+  },
+  {
+    "path": "resources/irs-code-060-meaning.html",
+    "type": "html",
+    "size": 19888
+  },
+  {
+    "path": "resources/irs-code-061-meaning.html",
+    "type": "html",
+    "size": 19898
+  },
+  {
+    "path": "resources/irs-code-062-meaning.html",
+    "type": "html",
+    "size": 20148
+  },
+  {
+    "path": "resources/irs-code-063-meaning.html",
+    "type": "html",
+    "size": 19698
+  },
+  {
+    "path": "resources/irs-code-064-meaning.html",
+    "type": "html",
+    "size": 19698
+  },
+  {
+    "path": "resources/irs-code-065-meaning.html",
+    "type": "html",
+    "size": 19608
+  },
+  {
+    "path": "resources/irs-code-066-meaning.html",
+    "type": "html",
+    "size": 19708
+  },
+  {
+    "path": "resources/irs-code-070-meaning.html",
+    "type": "html",
+    "size": 19858
+  },
+  {
+    "path": "resources/irs-code-071-meaning.html",
+    "type": "html",
+    "size": 19998
+  },
+  {
+    "path": "resources/irs-code-072-meaning.html",
+    "type": "html",
+    "size": 19718
+  },
+  {
+    "path": "resources/irs-code-073-meaning.html",
+    "type": "html",
+    "size": 19938
+  },
+  {
+    "path": "resources/irs-code-076-meaning.html",
+    "type": "html",
+    "size": 19658
+  },
+  {
+    "path": "resources/irs-code-077-meaning.html",
+    "type": "html",
+    "size": 19718
+  },
+  {
+    "path": "resources/irs-code-078-meaning.html",
+    "type": "html",
+    "size": 20028
+  },
+  {
+    "path": "resources/irs-code-079-meaning.html",
+    "type": "html",
+    "size": 19888
+  },
+  {
+    "path": "resources/irs-code-080-meaning.html",
+    "type": "html",
+    "size": 19668
+  },
+  {
+    "path": "resources/irs-code-082-meaning.html",
+    "type": "html",
+    "size": 19630
+  },
+  {
+    "path": "resources/irs-code-083-meaning.html",
+    "type": "html",
+    "size": 19718
+  },
+  {
+    "path": "resources/irs-code-084-meaning.html",
+    "type": "html",
+    "size": 19698
+  },
+  {
+    "path": "resources/irs-code-085-meaning.html",
+    "type": "html",
+    "size": 19718
+  },
+  {
+    "path": "resources/irs-code-086-meaning.html",
+    "type": "html",
+    "size": 19798
+  },
+  {
+    "path": "resources/irs-code-087-meaning.html",
+    "type": "html",
+    "size": 19718
+  },
+  {
+    "path": "resources/irs-code-090-meaning.html",
+    "type": "html",
+    "size": 19878
+  },
+  {
+    "path": "resources/irs-code-091-meaning.html",
+    "type": "html",
+    "size": 19858
+  },
+  {
+    "path": "resources/irs-code-092-meaning.html",
+    "type": "html",
+    "size": 19698
+  },
+  {
+    "path": "resources/irs-code-093-meaning.html",
+    "type": "html",
+    "size": 20178
+  },
+  {
+    "path": "resources/irs-code-094-meaning.html",
+    "type": "html",
+    "size": 20068
+  },
+  {
+    "path": "resources/irs-code-095-meaning.html",
+    "type": "html",
+    "size": 20048
+  },
+  {
+    "path": "resources/irs-code-096-meaning.html",
+    "type": "html",
+    "size": 19818
+  },
+  {
+    "path": "resources/irs-code-097-meaning.html",
+    "type": "html",
+    "size": 19958
+  },
+  {
+    "path": "resources/irs-code-098-meaning.html",
+    "type": "html",
+    "size": 19810
+  },
+  {
+    "path": "resources/irs-code-099-meaning.html",
+    "type": "html",
+    "size": 19854
+  },
+  {
+    "path": "resources/irs-code-100-meaning.html",
+    "type": "html",
+    "size": 19938
+  },
+  {
+    "path": "resources/irs-code-101-meaning.html",
+    "type": "html",
+    "size": 19938
+  },
+  {
+    "path": "resources/irs-code-102-meaning.html",
+    "type": "html",
+    "size": 20008
+  },
+  {
+    "path": "resources/irs-code-103-meaning.html",
+    "type": "html",
+    "size": 20008
+  },
+  {
+    "path": "resources/irs-code-110-meaning.html",
+    "type": "html",
+    "size": 19608
+  },
+  {
+    "path": "resources/irs-code-120-meaning.html",
+    "type": "html",
+    "size": 19888
+  },
+  {
+    "path": "resources/irs-code-121-meaning.html",
+    "type": "html",
+    "size": 20108
+  },
+  {
+    "path": "resources/irs-code-122-meaning.html",
+    "type": "html",
+    "size": 19828
+  },
+  {
+    "path": "resources/irs-code-123-meaning.html",
+    "type": "html",
+    "size": 20078
+  },
+  {
+    "path": "resources/irs-code-125-meaning.html",
+    "type": "html",
+    "size": 19856
+  },
+  {
+    "path": "resources/irs-code-126-meaning.html",
+    "type": "html",
+    "size": 19688
+  },
+  {
+    "path": "resources/irs-code-127-meaning.html",
+    "type": "html",
+    "size": 19708
+  },
+  {
+    "path": "resources/irs-code-128-meaning.html",
+    "type": "html",
+    "size": 19708
+  },
+  {
+    "path": "resources/irs-code-129-meaning.html",
+    "type": "html",
+    "size": 20228
+  },
+  {
+    "path": "resources/irs-code-130-meaning.html",
+    "type": "html",
+    "size": 19672
+  },
+  {
+    "path": "resources/irs-code-131-meaning.html",
+    "type": "html",
+    "size": 19738
+  },
+  {
+    "path": "resources/irs-code-132-meaning.html",
+    "type": "html",
+    "size": 19688
+  },
+  {
+    "path": "resources/irs-code-136-meaning.html",
+    "type": "html",
+    "size": 19698
+  },
+  {
+    "path": "resources/irs-code-137-meaning.html",
+    "type": "html",
+    "size": 19648
+  },
+  {
+    "path": "resources/irs-code-140-meaning.html",
+    "type": "html",
+    "size": 19728
+  },
+  {
+    "path": "resources/irs-code-141-meaning.html",
+    "type": "html",
+    "size": 19708
+  },
+  {
+    "path": "resources/irs-code-142-meaning.html",
+    "type": "html",
+    "size": 19738
+  },
+  {
+    "path": "resources/irs-code-148-meaning.html",
+    "type": "html",
+    "size": 19938
+  },
+  {
+    "path": "resources/irs-code-149-meaning.html",
+    "type": "html",
+    "size": 19738
+  },
+  {
+    "path": "resources/irs-code-150-meaning.html",
+    "type": "html",
+    "size": 20535
+  },
+  {
+    "path": "resources/irs-code-151-meaning.html",
+    "type": "html",
+    "size": 19718
+  },
+  {
+    "path": "resources/irs-code-152-meaning.html",
+    "type": "html",
+    "size": 19738
+  },
+  {
+    "path": "resources/irs-code-154-meaning.html",
+    "type": "html",
+    "size": 19708
+  },
+  {
+    "path": "resources/irs-code-155-meaning.html",
+    "type": "html",
+    "size": 19738
+  },
+  {
+    "path": "resources/irs-code-156-meaning.html",
+    "type": "html",
+    "size": 19828
+  },
+  {
+    "path": "resources/irs-code-157-meaning.html",
+    "type": "html",
+    "size": 20278
+  },
+  {
+    "path": "resources/irs-code-159-meaning.html",
+    "type": "html",
+    "size": 19678
+  },
+  {
+    "path": "resources/irs-code-160-meaning.html",
+    "type": "html",
+    "size": 19704
+  },
+  {
+    "path": "resources/irs-code-161-meaning.html",
+    "type": "html",
+    "size": 19738
+  },
+  {
+    "path": "resources/irs-code-162-meaning.html",
+    "type": "html",
+    "size": 19828
+  },
+  {
+    "path": "resources/irs-code-166-meaning.html",
+    "type": "html",
+    "size": 19666
+  },
+  {
+    "path": "resources/irs-code-167-meaning.html",
+    "type": "html",
+    "size": 19706
+  },
+  {
+    "path": "resources/irs-code-170-meaning.html",
+    "type": "html",
+    "size": 19624
+  },
+  {
+    "path": "resources/irs-code-171-meaning.html",
+    "type": "html",
+    "size": 19742
+  },
+  {
+    "path": "resources/irs-code-176-meaning.html",
+    "type": "html",
+    "size": 19722
+  },
+  {
+    "path": "resources/irs-code-177-meaning.html",
+    "type": "html",
+    "size": 19742
+  },
+  {
+    "path": "resources/irs-code-180-meaning.html",
+    "type": "html",
+    "size": 19594
+  },
+  {
+    "path": "resources/irs-code-181-meaning.html",
+    "type": "html",
+    "size": 19690
+  },
+  {
+    "path": "resources/irs-code-186-meaning.html",
+    "type": "html",
+    "size": 19714
+  },
+  {
+    "path": "resources/irs-code-187-meaning.html",
+    "type": "html",
+    "size": 19726
+  },
+  {
+    "path": "resources/irs-code-190-meaning.html",
+    "type": "html",
+    "size": 19764
+  },
+  {
+    "path": "resources/irs-code-191-meaning.html",
+    "type": "html",
+    "size": 19700
+  },
+  {
+    "path": "resources/irs-code-196-meaning.html",
+    "type": "html",
+    "size": 19604
+  },
+  {
+    "path": "resources/irs-code-197-meaning.html",
+    "type": "html",
+    "size": 19722
+  },
+  {
+    "path": "resources/irs-code-200-meaning.html",
+    "type": "html",
+    "size": 19754
+  },
+  {
+    "path": "resources/irs-code-201-meaning.html",
+    "type": "html",
+    "size": 19722
+  },
+  {
+    "path": "resources/irs-code-203-meaning.html",
+    "type": "html",
+    "size": 19745
+  },
+  {
+    "path": "resources/irs-code-234-meaning.html",
+    "type": "html",
+    "size": 19742
+  },
+  {
+    "path": "resources/irs-code-235-meaning.html",
+    "type": "html",
+    "size": 19730
+  },
+  {
+    "path": "resources/irs-code-238-meaning.html",
+    "type": "html",
+    "size": 19706
+  },
+  {
+    "path": "resources/irs-code-239-meaning.html",
+    "type": "html",
+    "size": 19750
+  },
+  {
+    "path": "resources/irs-code-240-meaning.html",
+    "type": "html",
+    "size": 19624
+  },
+  {
+    "path": "resources/irs-code-241-meaning.html",
+    "type": "html",
+    "size": 19742
+  },
+  {
+    "path": "resources/irs-code-246-meaning.html",
+    "type": "html",
+    "size": 19746
+  },
+  {
+    "path": "resources/irs-code-247-meaning.html",
+    "type": "html",
+    "size": 19654
+  },
+  {
+    "path": "resources/irs-code-270-meaning.html",
+    "type": "html",
+    "size": 19739
+  },
+  {
+    "path": "resources/irs-code-271-meaning.html",
+    "type": "html",
+    "size": 19790
+  },
+  {
+    "path": "resources/irs-code-272-meaning.html",
+    "type": "html",
+    "size": 19958
+  },
+  {
+    "path": "resources/irs-code-276-meaning.html",
+    "type": "html",
+    "size": 19649
+  },
+  {
+    "path": "resources/irs-code-277-meaning.html",
+    "type": "html",
+    "size": 19746
+  },
+  {
+    "path": "resources/irs-code-280-meaning.html",
+    "type": "html",
+    "size": 19604
+  },
+  {
+    "path": "resources/irs-code-281-meaning.html",
+    "type": "html",
+    "size": 19726
+  },
+  {
+    "path": "resources/irs-code-286-meaning.html",
+    "type": "html",
+    "size": 19604
+  },
+  {
+    "path": "resources/irs-code-287-meaning.html",
+    "type": "html",
+    "size": 19774
+  },
+  {
+    "path": "resources/irs-code-290-meaning.html",
+    "type": "html",
+    "size": 22517
+  },
+  {
+    "path": "resources/irs-code-291-meaning.html",
+    "type": "html",
+    "size": 19696
+  },
+  {
+    "path": "resources/irs-code-294-meaning.html",
+    "type": "html",
+    "size": 19750
+  },
+  {
+    "path": "resources/irs-code-295-meaning.html",
+    "type": "html",
+    "size": 19774
+  },
+  {
+    "path": "resources/irs-code-298-meaning.html",
+    "type": "html",
+    "size": 19722
+  },
+  {
+    "path": "resources/irs-code-299-meaning.html",
+    "type": "html",
+    "size": 19968
+  },
+  {
+    "path": "resources/irs-code-300-meaning.html",
+    "type": "html",
+    "size": 21912
+  },
+  {
+    "path": "resources/irs-code-301-meaning.html",
+    "type": "html",
+    "size": 19769
+  },
+  {
+    "path": "resources/irs-code-304-meaning.html",
+    "type": "html",
+    "size": 19750
+  },
+  {
+    "path": "resources/irs-code-305-meaning.html",
+    "type": "html",
+    "size": 19766
+  },
+  {
+    "path": "resources/irs-code-308-meaning.html",
+    "type": "html",
+    "size": 19794
+  },
+  {
+    "path": "resources/irs-code-309-meaning.html",
+    "type": "html",
+    "size": 19830
+  },
+  {
+    "path": "resources/irs-code-310-meaning.html",
+    "type": "html",
+    "size": 19626
+  },
+  {
+    "path": "resources/irs-code-311-meaning.html",
+    "type": "html",
+    "size": 19998
+  },
+  {
+    "path": "resources/irs-code-320-meaning.html",
+    "type": "html",
+    "size": 19584
+  },
+  {
+    "path": "resources/irs-code-321-meaning.html",
+    "type": "html",
+    "size": 19594
+  },
+  {
+    "path": "resources/irs-code-336-meaning.html",
+    "type": "html",
+    "size": 19758
+  },
+  {
+    "path": "resources/irs-code-337-meaning.html",
+    "type": "html",
+    "size": 19594
+  },
+  {
+    "path": "resources/irs-code-340-meaning.html",
+    "type": "html",
+    "size": 19669
+  },
+  {
+    "path": "resources/irs-code-341-meaning.html",
+    "type": "html",
+    "size": 19714
+  },
+  {
+    "path": "resources/irs-code-342-meaning.html",
+    "type": "html",
+    "size": 19654
+  },
+  {
+    "path": "resources/irs-code-350-meaning.html",
+    "type": "html",
+    "size": 19609
+  },
+  {
+    "path": "resources/irs-code-351-meaning.html",
+    "type": "html",
+    "size": 19710
+  },
+  {
+    "path": "resources/irs-code-360-meaning.html",
+    "type": "html",
+    "size": 19650
+  },
+  {
+    "path": "resources/irs-code-361-meaning.html",
+    "type": "html",
+    "size": 19766
+  },
+  {
+    "path": "resources/irs-code-370-meaning.html",
+    "type": "html",
+    "size": 19614
+  },
+  {
+    "path": "resources/irs-code-380-meaning.html",
+    "type": "html",
+    "size": 19659
+  },
+  {
+    "path": "resources/irs-code-386-meaning.html",
+    "type": "html",
+    "size": 19682
+  },
+  {
+    "path": "resources/irs-code-387-meaning.html",
+    "type": "html",
+    "size": 19682
+  },
+  {
+    "path": "resources/irs-code-388-meaning.html",
+    "type": "html",
+    "size": 19810
+  },
+  {
+    "path": "resources/irs-code-389-meaning.html",
+    "type": "html",
+    "size": 19810
+  },
+  {
+    "path": "resources/irs-code-390-meaning.html",
+    "type": "html",
+    "size": 19745
+  },
+  {
+    "path": "resources/irs-code-400-meaning.html",
+    "type": "html",
+    "size": 19619
+  },
+  {
+    "path": "resources/irs-code-402-meaning.html",
+    "type": "html",
+    "size": 19704
+  },
+  {
+    "path": "resources/irs-code-410-meaning.html",
+    "type": "html",
+    "size": 19745
+  },
+  {
+    "path": "resources/irs-code-420-meaning.html",
+    "type": "html",
+    "size": 20046
+  },
+  {
+    "path": "resources/irs-code-421-meaning.html",
+    "type": "html",
+    "size": 19834
+  },
+  {
+    "path": "resources/irs-code-424-meaning.html",
+    "type": "html",
+    "size": 21195
+  },
+  {
+    "path": "resources/irs-code-425-meaning.html",
+    "type": "html",
+    "size": 19688
+  },
+  {
+    "path": "resources/irs-code-427-meaning.html",
+    "type": "html",
+    "size": 19788
+  },
+  {
+    "path": "resources/irs-code-428-meaning.html",
+    "type": "html",
+    "size": 19736
+  },
+  {
+    "path": "resources/irs-code-429-meaning.html",
+    "type": "html",
+    "size": 19676
+  },
+  {
+    "path": "resources/irs-code-430-meaning.html",
+    "type": "html",
+    "size": 19644
+  },
+  {
+    "path": "resources/irs-code-431-meaning.html",
+    "type": "html",
+    "size": 19638
+  },
+  {
+    "path": "resources/irs-code-432-meaning.html",
+    "type": "html",
+    "size": 19718
+  },
+  {
+    "path": "resources/irs-code-440-meaning.html",
+    "type": "html",
+    "size": 19745
+  },
+  {
+    "path": "resources/irs-code-446-meaning.html",
+    "type": "html",
+    "size": 19678
+  },
+  {
+    "path": "resources/irs-code-450-meaning.html",
+    "type": "html",
+    "size": 19674
+  },
+  {
+    "path": "resources/irs-code-451-meaning.html",
+    "type": "html",
+    "size": 19690
+  },
+  {
+    "path": "resources/irs-code-459-meaning.html",
+    "type": "html",
+    "size": 19878
+  },
+  {
+    "path": "resources/irs-code-460-meaning.html",
+    "type": "html",
+    "size": 19551
+  },
+  {
+    "path": "resources/irs-code-462-meaning.html",
+    "type": "html",
+    "size": 19848
+  },
+  {
+    "path": "resources/irs-code-463-meaning.html",
+    "type": "html",
+    "size": 20298
+  },
+  {
+    "path": "resources/irs-code-464-meaning.html",
+    "type": "html",
+    "size": 19718
+  },
+  {
+    "path": "resources/irs-code-468-meaning.html",
+    "type": "html",
+    "size": 19662
+  },
+  {
+    "path": "resources/irs-code-469-meaning.html",
+    "type": "html",
+    "size": 21298
+  },
+  {
+    "path": "resources/irs-code-470-meaning.html",
+    "type": "html",
+    "size": 19629
+  },
+  {
+    "path": "resources/irs-code-471-meaning.html",
+    "type": "html",
+    "size": 19798
+  },
+  {
+    "path": "resources/irs-code-472-meaning.html",
+    "type": "html",
+    "size": 19689
+  },
+  {
+    "path": "resources/irs-code-474-meaning.html",
+    "type": "html",
+    "size": 19724
+  },
+  {
+    "path": "resources/irs-code-475-meaning.html",
+    "type": "html",
+    "size": 19598
+  },
+  {
+    "path": "resources/irs-code-480-meaning.html",
+    "type": "html",
+    "size": 20295
+  },
+  {
+    "path": "resources/irs-code-481-meaning.html",
+    "type": "html",
+    "size": 19898
+  },
+  {
+    "path": "resources/irs-code-482-meaning.html",
+    "type": "html",
+    "size": 19688
+  },
+  {
+    "path": "resources/irs-code-483-meaning.html",
+    "type": "html",
+    "size": 19978
+  },
+  {
+    "path": "resources/irs-code-488-meaning.html",
+    "type": "html",
+    "size": 19942
+  },
+  {
+    "path": "resources/irs-code-489-meaning.html",
+    "type": "html",
+    "size": 19688
+  },
+  {
+    "path": "resources/irs-code-490-meaning.html",
+    "type": "html",
+    "size": 20110
+  },
+  {
+    "path": "resources/irs-code-494-meaning.html",
+    "type": "html",
+    "size": 19802
+  },
+  {
+    "path": "resources/irs-code-495-meaning.html",
+    "type": "html",
+    "size": 19728
+  },
+  {
+    "path": "resources/irs-code-500-meaning.html",
+    "type": "html",
+    "size": 19609
+  },
+  {
+    "path": "resources/irs-code-502-meaning.html",
+    "type": "html",
+    "size": 19652
+  },
+  {
+    "path": "resources/irs-code-503-meaning.html",
+    "type": "html",
+    "size": 19998
+  },
+  {
+    "path": "resources/irs-code-510-meaning.html",
+    "type": "html",
+    "size": 19709
+  },
+  {
+    "path": "resources/irs-code-519-meaning.html",
+    "type": "html",
+    "size": 19888
+  },
+  {
+    "path": "resources/irs-code-520-meaning.html",
+    "type": "html",
+    "size": 21200
+  },
+  {
+    "path": "resources/irs-code-521-meaning.html",
+    "type": "html",
+    "size": 19708
+  },
+  {
+    "path": "resources/irs-code-522-meaning.html",
+    "type": "html",
+    "size": 19728
+  },
+  {
+    "path": "resources/irs-code-524-meaning.html",
+    "type": "html",
+    "size": 19758
+  },
+  {
+    "path": "resources/irs-code-525-meaning.html",
+    "type": "html",
+    "size": 19858
+  },
+  {
+    "path": "resources/irs-code-528-meaning.html",
+    "type": "html",
+    "size": 19888
+  },
+  {
+    "path": "resources/irs-code-530-meaning.html",
+    "type": "html",
+    "size": 20160
+  },
+  {
+    "path": "resources/irs-code-531-meaning.html",
+    "type": "html",
+    "size": 20853
+  },
+  {
+    "path": "resources/irs-code-532-meaning.html",
+    "type": "html",
+    "size": 22509
+  },
+  {
+    "path": "resources/irs-code-534-meaning.html",
+    "type": "html",
+    "size": 18796
+  },
+  {
+    "path": "resources/irs-code-535-meaning.html",
+    "type": "html",
+    "size": 19022
+  },
+  {
+    "path": "resources/irs-code-537-meaning.html",
+    "type": "html",
+    "size": 19848
+  },
+  {
+    "path": "resources/irs-code-538-meaning.html",
+    "type": "html",
+    "size": 19768
+  },
+  {
+    "path": "resources/irs-code-539-meaning.html",
+    "type": "html",
+    "size": 19678
+  },
+  {
+    "path": "resources/irs-code-540-meaning.html",
+    "type": "html",
+    "size": 19658
+  },
+  {
+    "path": "resources/irs-code-542-meaning.html",
+    "type": "html",
+    "size": 19708
+  },
+  {
+    "path": "resources/irs-code-550-meaning.html",
+    "type": "html",
+    "size": 19774
+  },
+  {
+    "path": "resources/irs-code-552-meaning.html",
+    "type": "html",
+    "size": 19698
+  },
+  {
+    "path": "resources/irs-code-560-meaning.html",
+    "type": "html",
+    "size": 14887
+  },
+  {
+    "path": "resources/irs-code-570-meaning.html",
+    "type": "html",
+    "size": 20036
+  },
+  {
+    "path": "resources/irs-code-571-meaning.html",
+    "type": "html",
+    "size": 19609
+  },
+  {
+    "path": "resources/irs-code-572-meaning.html",
+    "type": "html",
+    "size": 19714
+  },
+  {
+    "path": "resources/irs-code-576-meaning.html",
+    "type": "html",
+    "size": 14865
+  },
+  {
+    "path": "resources/irs-code-577-meaning.html",
+    "type": "html",
+    "size": 19800
+  },
+  {
+    "path": "resources/irs-code-582-meaning.html",
+    "type": "html",
+    "size": 16629
+  },
+  {
+    "path": "resources/irs-code-583-meaning.html",
+    "type": "html",
+    "size": 19732
+  },
+  {
+    "path": "resources/irs-code-586-meaning.html",
+    "type": "html",
+    "size": 19708
+  },
+  {
+    "path": "resources/irs-code-590-meaning.html",
+    "type": "html",
+    "size": 21953
+  },
+  {
+    "path": "resources/irs-code-591-meaning.html",
+    "type": "html",
+    "size": 19718
+  },
+  {
+    "path": "resources/irs-code-592-meaning.html",
+    "type": "html",
+    "size": 19728
+  },
+  {
+    "path": "resources/irs-code-593-meaning.html",
+    "type": "html",
+    "size": 19718
+  },
+  {
+    "path": "resources/irs-code-594-meaning.html",
+    "type": "html",
+    "size": 42966
+  },
+  {
+    "path": "resources/irs-code-595-meaning.html",
+    "type": "html",
+    "size": 19718
+  },
+  {
+    "path": "resources/irs-code-596-meaning.html",
+    "type": "html",
+    "size": 19718
+  },
+  {
+    "path": "resources/irs-code-597-meaning.html",
+    "type": "html",
+    "size": 19615
+  },
+  {
+    "path": "resources/irs-code-598-meaning.html",
+    "type": "html",
+    "size": 19718
+  },
+  {
+    "path": "resources/irs-code-599-meaning.html",
+    "type": "html",
+    "size": 19945
+  },
+  {
+    "path": "resources/irs-code-600-meaning.html",
+    "type": "html",
+    "size": 19664
+  },
+  {
+    "path": "resources/irs-code-604-meaning.html",
+    "type": "html",
+    "size": 19678
+  },
+  {
+    "path": "resources/irs-code-605-meaning.html",
+    "type": "html",
+    "size": 19738
+  },
+  {
+    "path": "resources/irs-code-606-meaning.html",
+    "type": "html",
+    "size": 19718
+  },
+  {
+    "path": "resources/irs-code-607-meaning.html",
+    "type": "html",
+    "size": 19922
+  },
+  {
+    "path": "resources/irs-code-608-meaning.html",
+    "type": "html",
+    "size": 19710
+  },
+  {
+    "path": "resources/irs-code-609-meaning.html",
+    "type": "html",
+    "size": 19792
+  },
+  {
+    "path": "resources/irs-code-610-meaning.html",
+    "type": "html",
+    "size": 19629
+  },
+  {
+    "path": "resources/irs-code-611-meaning.html",
+    "type": "html",
+    "size": 19714
+  },
+  {
+    "path": "resources/irs-code-612-meaning.html",
+    "type": "html",
+    "size": 19808
+  },
+  {
+    "path": "resources/irs-code-620-meaning.html",
+    "type": "html",
+    "size": 19734
+  },
+  {
+    "path": "resources/irs-code-621-meaning.html",
+    "type": "html",
+    "size": 19786
+  },
+  {
+    "path": "resources/irs-code-622-meaning.html",
+    "type": "html",
+    "size": 19788
+  },
+  {
+    "path": "resources/irs-code-630-meaning.html",
+    "type": "html",
+    "size": 19774
+  },
+  {
+    "path": "resources/irs-code-632-meaning.html",
+    "type": "html",
+    "size": 19698
+  },
+  {
+    "path": "resources/irs-code-636-meaning.html",
+    "type": "html",
+    "size": 19774
+  },
+  {
+    "path": "resources/irs-code-637-meaning.html",
+    "type": "html",
+    "size": 19774
+  },
+  {
+    "path": "resources/irs-code-640-meaning.html",
+    "type": "html",
+    "size": 22160
+  },
+  {
+    "path": "resources/irs-code-641-meaning.html",
+    "type": "html",
+    "size": 19688
+  },
+  {
+    "path": "resources/irs-code-642-meaning.html",
+    "type": "html",
+    "size": 19808
+  },
+  {
+    "path": "resources/irs-code-649-meaning.html",
+    "type": "html",
+    "size": 19756
+  },
+  {
+    "path": "resources/irs-code-650-meaning.html",
+    "type": "html",
+    "size": 19746
+  },
+  {
+    "path": "resources/irs-code-651-meaning.html",
+    "type": "html",
+    "size": 20092
+  },
+  {
+    "path": "resources/irs-code-652-meaning.html",
+    "type": "html",
+    "size": 19928
+  },
+  {
+    "path": "resources/irs-code-660-meaning.html",
+    "type": "html",
+    "size": 19709
+  },
+  {
+    "path": "resources/irs-code-661-meaning.html",
+    "type": "html",
+    "size": 19618
+  },
+  {
+    "path": "resources/irs-code-662-meaning.html",
+    "type": "html",
+    "size": 19808
+  },
+  {
+    "path": "resources/irs-code-666-meaning.html",
+    "type": "html",
+    "size": 19908
+  },
+  {
+    "path": "resources/irs-code-667-meaning.html",
+    "type": "html",
+    "size": 19762
+  },
+  {
+    "path": "resources/irs-code-670-meaning.html",
+    "type": "html",
+    "size": 20884
+  },
+  {
+    "path": "resources/irs-code-671-meaning.html",
+    "type": "html",
+    "size": 19888
+  },
+  {
+    "path": "resources/irs-code-672-meaning.html",
+    "type": "html",
+    "size": 19808
+  },
+  {
+    "path": "resources/irs-code-673-meaning.html",
+    "type": "html",
+    "size": 20058
+  },
+  {
+    "path": "resources/irs-code-678-meaning.html",
+    "type": "html",
+    "size": 19706
+  },
+  {
+    "path": "resources/irs-code-679-meaning.html",
+    "type": "html",
+    "size": 19978
+  },
+  {
+    "path": "resources/irs-code-680-meaning.html",
+    "type": "html",
+    "size": 19669
+  },
+  {
+    "path": "resources/irs-code-681-meaning.html",
+    "type": "html",
+    "size": 19780
+  },
+  {
+    "path": "resources/irs-code-682-meaning.html",
+    "type": "html",
+    "size": 19938
+  },
+  {
+    "path": "resources/irs-code-690-meaning.html",
+    "type": "html",
+    "size": 19718
+  },
+  {
+    "path": "resources/irs-code-691-meaning.html",
+    "type": "html",
+    "size": 20078
+  },
+  {
+    "path": "resources/irs-code-692-meaning.html",
+    "type": "html",
+    "size": 19808
+  },
+  {
+    "path": "resources/irs-code-694-meaning.html",
+    "type": "html",
+    "size": 19798
+  },
+  {
+    "path": "resources/irs-code-695-meaning.html",
+    "type": "html",
+    "size": 20058
+  },
+  {
+    "path": "resources/irs-code-700-meaning.html",
+    "type": "html",
+    "size": 20543
+  },
+  {
+    "path": "resources/irs-code-701-meaning.html",
+    "type": "html",
+    "size": 19658
+  },
+  {
+    "path": "resources/irs-code-702-meaning.html",
+    "type": "html",
+    "size": 19734
+  },
+  {
+    "path": "resources/irs-code-706-meaning.html",
+    "type": "html",
+    "size": 21121
+  },
+  {
+    "path": "resources/irs-code-710-meaning.html",
+    "type": "html",
+    "size": 19804
+  },
+  {
+    "path": "resources/irs-code-712-meaning.html",
+    "type": "html",
+    "size": 19808
+  },
+  {
+    "path": "resources/irs-code-716-meaning.html",
+    "type": "html",
+    "size": 19594
+  },
+  {
+    "path": "resources/irs-code-720-meaning.html",
+    "type": "html",
+    "size": 19599
+  },
+  {
+    "path": "resources/irs-code-721-meaning.html",
+    "type": "html",
+    "size": 19848
+  },
+  {
+    "path": "resources/irs-code-722-meaning.html",
+    "type": "html",
+    "size": 19808
+  },
+  {
+    "path": "resources/irs-code-730-meaning.html",
+    "type": "html",
+    "size": 19659
+  },
+  {
+    "path": "resources/irs-code-731-meaning.html",
+    "type": "html",
+    "size": 19658
+  },
+  {
+    "path": "resources/irs-code-732-meaning.html",
+    "type": "html",
+    "size": 19838
+  },
+  {
+    "path": "resources/irs-code-736-meaning.html",
+    "type": "html",
+    "size": 19660
+  },
+  {
+    "path": "resources/irs-code-740-meaning.html",
+    "type": "html",
+    "size": 20185
+  },
+  {
+    "path": "resources/irs-code-742-meaning.html",
+    "type": "html",
+    "size": 19808
+  },
+  {
+    "path": "resources/irs-code-756-meaning.html",
+    "type": "html",
+    "size": 19836
+  },
+  {
+    "path": "resources/irs-code-760-meaning.html",
+    "type": "html",
+    "size": 21079
+  },
+  {
+    "path": "resources/irs-code-762-meaning.html",
+    "type": "html",
+    "size": 19878
+  },
+  {
+    "path": "resources/irs-code-764-meaning.html",
+    "type": "html",
+    "size": 19682
+  },
+  {
+    "path": "resources/irs-code-765-meaning.html",
+    "type": "html",
+    "size": 19706
+  },
+  {
+    "path": "resources/irs-code-766-meaning.html",
+    "type": "html",
+    "size": 21103
+  },
+  {
+    "path": "resources/irs-code-767-meaning.html",
+    "type": "html",
+    "size": 19590
+  },
+  {
+    "path": "resources/irs-code-768-meaning.html",
+    "type": "html",
+    "size": 18794
+  },
+  {
+    "path": "resources/irs-code-770-meaning.html",
+    "type": "html",
+    "size": 19794
+  },
+  {
+    "path": "resources/irs-code-771-meaning.html",
+    "type": "html",
+    "size": 19824
+  },
+  {
+    "path": "resources/irs-code-772-meaning.html",
+    "type": "html",
+    "size": 19812
+  },
+  {
+    "path": "resources/irs-code-776-meaning.html",
+    "type": "html",
+    "size": 19758
+  },
+  {
+    "path": "resources/irs-code-777-meaning.html",
+    "type": "html",
+    "size": 19662
+  },
+  {
+    "path": "resources/irs-code-780-meaning.html",
+    "type": "html",
+    "size": 19644
+  },
+  {
+    "path": "resources/irs-code-781-meaning.html",
+    "type": "html",
+    "size": 19658
+  },
+  {
+    "path": "resources/irs-code-782-meaning.html",
+    "type": "html",
+    "size": 19728
+  },
+  {
+    "path": "resources/irs-code-788-meaning.html",
+    "type": "html",
+    "size": 19688
+  },
+  {
+    "path": "resources/irs-code-790-meaning.html",
+    "type": "html",
+    "size": 19928
+  },
+  {
+    "path": "resources/irs-code-792-meaning.html",
+    "type": "html",
+    "size": 19808
+  },
+  {
+    "path": "resources/irs-code-796-meaning.html",
+    "type": "html",
+    "size": 19730
+  },
+  {
+    "path": "resources/irs-code-800-meaning.html",
+    "type": "html",
+    "size": 19710
+  },
+  {
+    "path": "resources/irs-code-802-meaning.html",
+    "type": "html",
+    "size": 19878
+  },
+  {
+    "path": "resources/irs-code-806-meaning.html",
+    "type": "html",
+    "size": 18760
+  },
+  {
+    "path": "resources/irs-code-807-meaning.html",
+    "type": "html",
+    "size": 19710
+  },
+  {
+    "path": "resources/irs-code-810-meaning.html",
+    "type": "html",
+    "size": 20481
+  },
+  {
+    "path": "resources/irs-code-811-meaning.html",
+    "type": "html",
+    "size": 19359
+  },
+  {
+    "path": "resources/irs-code-820-meaning.html",
+    "type": "html",
+    "size": 19609
+  },
+  {
+    "path": "resources/irs-code-821-meaning.html",
+    "type": "html",
+    "size": 19728
+  },
+  {
+    "path": "resources/irs-code-822-meaning.html",
+    "type": "html",
+    "size": 19760
+  },
+  {
+    "path": "resources/irs-code-824-meaning.html",
+    "type": "html",
+    "size": 19756
+  },
+  {
+    "path": "resources/irs-code-826-meaning.html",
+    "type": "html",
+    "size": 19130
+  },
+  {
+    "path": "resources/irs-code-830-meaning.html",
+    "type": "html",
+    "size": 19792
+  },
+  {
+    "path": "resources/irs-code-832-meaning.html",
+    "type": "html",
+    "size": 19768
+  },
+  {
+    "path": "resources/irs-code-836-meaning.html",
+    "type": "html",
+    "size": 19856
+  },
+  {
+    "path": "resources/irs-code-840-meaning.html",
+    "type": "html",
+    "size": 19720
+  },
+  {
+    "path": "resources/irs-code-841-meaning.html",
+    "type": "html",
+    "size": 19932
+  },
+  {
+    "path": "resources/irs-code-842-meaning.html",
+    "type": "html",
+    "size": 19650
+  },
+  {
+    "path": "resources/irs-code-843-meaning.html",
+    "type": "html",
+    "size": 20568
+  },
+  {
+    "path": "resources/irs-code-844-meaning.html",
+    "type": "html",
+    "size": 19604
+  },
+  {
+    "path": "resources/irs-code-845-meaning.html",
+    "type": "html",
+    "size": 19768
+  },
+  {
+    "path": "resources/irs-code-846-meaning.html",
+    "type": "html",
+    "size": 20235
+  },
+  {
+    "path": "resources/irs-code-848-meaning.html",
+    "type": "html",
+    "size": 20368
+  },
+  {
+    "path": "resources/irs-code-849-meaning.html",
+    "type": "html",
+    "size": 20356
+  },
+  {
+    "path": "resources/irs-code-850-meaning.html",
+    "type": "html",
+    "size": 20276
+  },
+  {
+    "path": "resources/irs-code-851-meaning.html",
+    "type": "html",
+    "size": 19812
+  },
+  {
+    "path": "resources/irs-code-852-meaning.html",
+    "type": "html",
+    "size": 19746
+  },
+  {
+    "path": "resources/irs-code-856-meaning.html",
+    "type": "html",
+    "size": 19828
+  },
+  {
+    "path": "resources/irs-code-860-meaning.html",
+    "type": "html",
+    "size": 19778
+  },
+  {
+    "path": "resources/irs-code-876-meaning.html",
+    "type": "html",
+    "size": 19844
+  },
+  {
+    "path": "resources/irs-code-890-meaning.html",
+    "type": "html",
+    "size": 19808
+  },
+  {
+    "path": "resources/irs-code-892-meaning.html",
+    "type": "html",
+    "size": 19758
+  },
+  {
+    "path": "resources/irs-code-896-meaning.html",
+    "type": "html",
+    "size": 19982
+  },
+  {
+    "path": "resources/irs-code-897-meaning.html",
+    "type": "html",
+    "size": 20354
+  },
+  {
+    "path": "resources/irs-code-898-meaning.html",
+    "type": "html",
+    "size": 20186
+  },
+  {
+    "path": "resources/irs-code-899-meaning.html",
+    "type": "html",
+    "size": 19928
+  },
+  {
+    "path": "resources/irs-code-900-meaning.html",
+    "type": "html",
+    "size": 20665
+  },
+  {
+    "path": "resources/irs-code-901-meaning.html",
+    "type": "html",
+    "size": 19698
+  },
+  {
+    "path": "resources/irs-code-902-meaning.html",
+    "type": "html",
+    "size": 19698
+  },
+  {
+    "path": "resources/irs-code-903-meaning.html",
+    "type": "html",
+    "size": 19798
+  },
+  {
+    "path": "resources/irs-code-904-meaning.html",
+    "type": "html",
+    "size": 19798
+  },
+  {
+    "path": "resources/irs-code-910-meaning.html",
+    "type": "html",
+    "size": 19745
+  },
+  {
+    "path": "resources/irs-code-911-meaning.html",
+    "type": "html",
+    "size": 19658
+  },
+  {
+    "path": "resources/irs-code-912-meaning.html",
+    "type": "html",
+    "size": 19745
+  },
+  {
+    "path": "resources/irs-code-914-meaning.html",
+    "type": "html",
+    "size": 19745
+  },
+  {
+    "path": "resources/irs-code-915-meaning.html",
+    "type": "html",
+    "size": 19638
+  },
+  {
+    "path": "resources/irs-code-916-meaning.html",
+    "type": "html",
+    "size": 19745
+  },
+  {
+    "path": "resources/irs-code-917-meaning.html",
+    "type": "html",
+    "size": 19648
+  },
+  {
+    "path": "resources/irs-code-918-meaning.html",
+    "type": "html",
+    "size": 19745
+  },
+  {
+    "path": "resources/irs-code-919-meaning.html",
+    "type": "html",
+    "size": 19658
+  },
+  {
+    "path": "resources/irs-code-920-meaning.html",
+    "type": "html",
+    "size": 19609
+  },
+  {
+    "path": "resources/irs-code-922-meaning.html",
+    "type": "html",
+    "size": 19604
+  },
+  {
+    "path": "resources/irs-code-924-meaning.html",
+    "type": "html",
+    "size": 19604
+  },
+  {
+    "path": "resources/irs-code-925-meaning.html",
+    "type": "html",
+    "size": 19936
+  },
+  {
+    "path": "resources/irs-code-926-meaning.html",
+    "type": "html",
+    "size": 19745
+  },
+  {
+    "path": "resources/irs-code-928-meaning.html",
+    "type": "html",
+    "size": 19745
+  },
+  {
+    "path": "resources/irs-code-930-meaning.html",
+    "type": "html",
+    "size": 19854
+  },
+  {
+    "path": "resources/irs-code-932-meaning.html",
+    "type": "html",
+    "size": 19828
+  },
+  {
+    "path": "resources/irs-code-940-meaning.html",
+    "type": "html",
+    "size": 19718
+  },
+  {
+    "path": "resources/irs-code-941-meaning.html",
+    "type": "html",
+    "size": 19634
+  },
+  {
+    "path": "resources/irs-code-942-meaning.html",
+    "type": "html",
+    "size": 19708
+  },
+  {
+    "path": "resources/irs-code-944-meaning.html",
+    "type": "html",
+    "size": 19688
+  },
+  {
+    "path": "resources/irs-code-945-meaning.html",
+    "type": "html",
+    "size": 19638
+  },
+  {
+    "path": "resources/irs-code-960-meaning.html",
+    "type": "html",
+    "size": 19774
+  },
+  {
+    "path": "resources/irs-code-961-meaning.html",
+    "type": "html",
+    "size": 19958
+  },
+  {
+    "path": "resources/irs-code-962-meaning.html",
+    "type": "html",
+    "size": 19745
+  },
+  {
+    "path": "resources/irs-code-964-meaning.html",
+    "type": "html",
+    "size": 19745
+  },
+  {
+    "path": "resources/irs-code-966-meaning.html",
+    "type": "html",
+    "size": 19745
+  },
+  {
+    "path": "resources/irs-code-970-meaning.html",
+    "type": "html",
+    "size": 19748
+  },
+  {
+    "path": "resources/irs-code-971-ac-065-meaning.html",
+    "type": "html",
+    "size": 19632
+  },
+  {
+    "path": "resources/irs-code-971-meaning.html",
+    "type": "html",
+    "size": 19827
+  },
+  {
+    "path": "resources/irs-code-972-meaning.html",
+    "type": "html",
+    "size": 19809
+  },
+  {
+    "path": "resources/irs-code-973-meaning.html",
+    "type": "html",
+    "size": 20058
+  },
+  {
+    "path": "resources/irs-code-976-meaning.html",
+    "type": "html",
+    "size": 19634
+  },
+  {
+    "path": "resources/irs-code-977-meaning.html",
+    "type": "html",
+    "size": 20854
+  },
+  {
+    "path": "resources/irs-code-980-meaning.html",
+    "type": "html",
+    "size": 19658
+  },
+  {
+    "path": "resources/irs-code-982-meaning.html",
+    "type": "html",
+    "size": 19738
+  },
+  {
+    "path": "resources/irs-code-984-meaning.html",
+    "type": "html",
+    "size": 20964
+  },
+  {
+    "path": "resources/irs-code-986-meaning.html",
+    "type": "html",
+    "size": 20848
+  },
+  {
+    "path": "resources/irs-code-989-meaning.html",
+    "type": "html",
+    "size": 19758
+  },
+  {
+    "path": "resources/irs-code-990-meaning.html",
+    "type": "html",
+    "size": 20542
+  },
+  {
+    "path": "resources/irs-code-991-meaning.html",
+    "type": "html",
+    "size": 19630
+  },
+  {
+    "path": "resources/irs-code-992-meaning.html",
+    "type": "html",
+    "size": 20022
+  },
+  {
+    "path": "resources/irs-code-993-meaning.html",
+    "type": "html",
+    "size": 19848
+  },
+  {
+    "path": "resources/irs-code-994-meaning.html",
+    "type": "html",
+    "size": 19608
+  },
+  {
+    "path": "resources/irs-code-995-meaning.html",
+    "type": "html",
+    "size": 19628
+  },
+  {
+    "path": "resources/irs-code-996-meaning.html",
+    "type": "html",
+    "size": 19728
+  },
+  {
+    "path": "resources/irs-code-998-meaning.html",
+    "type": "html",
+    "size": 19708
+  },
+  {
+    "path": "resources/irs-transcript-automation-software-comparison.html",
+    "type": "html",
+    "size": 13781
+  },
+  {
+    "path": "resources/irs-transcript-codes-explained-in-plain-english.html",
+    "type": "html",
+    "size": 13759
+  },
+  {
+    "path": "resources/irs-transcript-review-checklist-for-tax-professionals.html",
+    "type": "html",
+    "size": 14075
+  },
+  {
+    "path": "resources/irs-transcript-shows-570-what-next.html",
+    "type": "html",
+    "size": 13693
+  },
+  {
+    "path": "resources/irs-transcript-shows-971-what-it-means.html",
+    "type": "html",
+    "size": 13716
+  },
+  {
+    "path": "resources/local-irs-transcript-parsing-vs-upload-based-tools.html",
+    "type": "html",
+    "size": 13816
+  },
+  {
+    "path": "resources/manual-transcript-reading-vs-automated-reports.html",
+    "type": "html",
+    "size": 13788
+  },
+  {
+    "path": "resources/pitbulltax-transcript-reports-vs-local-parsing.html",
+    "type": "html",
+    "size": 13788
+  },
+  {
+    "path": "resources/record-of-account-transcript-explained.html",
+    "type": "html",
+    "size": 14265
+  },
+  {
+    "path": "resources/return-transcript-explained.html",
+    "type": "html",
+    "size": 14177
+  },
+  {
+    "path": "resources/selling-a-199-transcript-review-product.html",
+    "type": "html",
+    "size": 13982
+  },
+  {
+    "path": "resources/structuring-a-transcript-based-consultation.html",
+    "type": "html",
+    "size": 14005
+  },
+  {
+    "path": "resources/tax-compliance-transcript-explained.html",
+    "type": "html",
+    "size": 14241
+  },
+  {
+    "path": "resources/tax-return-transcript-vs-account-transcript.html",
+    "type": "html",
+    "size": 14343
+  },
+  {
+    "path": "resources/transcript-analysis-as-a-lead-qualification-tool.html",
+    "type": "html",
+    "size": 14040
+  },
+  {
+    "path": "resources/transcript-codes.html",
+    "type": "html",
+    "size": 74594
+  },
+  {
+    "path": "resources/transcript-orders.html",
+    "type": "html",
+    "size": 36704
+  },
+  {
+    "path": "resources/transcript-types.html",
+    "type": "html",
+    "size": 42574
+  },
+  {
+    "path": "resources/turning-irs-transcripts-into-billable-deliverables.html",
+    "type": "html",
+    "size": 14054
+  },
+  {
+    "path": "resources/using-transcript-reports-to-increase-close-rates.html",
+    "type": "html",
+    "size": 14040
+  },
+  {
+    "path": "resources/wage-and-income-transcript-explained.html",
+    "type": "html",
+    "size": 14249
+  },
+  {
+    "path": "resources/what-does-irs-code-150-mean.html",
+    "type": "html",
+    "size": 13694
+  },
+  {
+    "path": "resources/what-does-irs-code-806-mean.html",
+    "type": "html",
+    "size": 13694
+  },
+  {
+    "path": "resources/what-does-irs-code-971-mean.html",
+    "type": "html",
+    "size": 13694
+  },
+  {
+    "path": "resources/why-is-my-refund-delayed-code-846.html",
+    "type": "html",
+    "size": 13666
+  },
+  {
+    "path": "resources/why-local-transcript-parsing-matters-for-data-privacy.html",
+    "type": "html",
+    "size": 13837
+  },
+  {
+    "path": "scripts/pdf.min.mjs",
+    "type": "script",
+    "size": 352645
+  },
+  {
+    "path": "scripts/pdf.worker.min.mjs",
+    "type": "script",
+    "size": 1375838
+  },
+  {
+    "path": "scripts/report-renderer.js",
+    "type": "script",
+    "size": 1966
+  },
+  {
+    "path": "scripts/update-sitemap.mjs",
+    "type": "script",
+    "size": 2386
+  },
+  {
+    "path": "scripts/update-transcript-codes.mjs",
+    "type": "script",
+    "size": 6538
+  },
+  {
+    "path": "sitemap.xml",
+    "type": "xml",
+    "size": 48021
+  },
+  {
+    "path": "styles/site.css",
+    "type": "style",
+    "size": 6955
+  }
+]

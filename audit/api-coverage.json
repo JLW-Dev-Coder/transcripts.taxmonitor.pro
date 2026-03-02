@@ -1,0 +1,5319 @@
+{
+  "totals": {
+    "requestTargets": 4,
+    "workerRoutes": 0
+  },
+  "requestTargets": [
+    {
+      "file": "audit/generate-coverage.mjs",
+      "via": "form",
+      "method": "GET",
+      "target": ""
+    },
+    {
+      "file": "contact.html",
+      "via": "form",
+      "method": "GET",
+      "target": ""
+    },
+    {
+      "file": "magnets/lead-magnet.html",
+      "via": "form",
+      "method": "GET",
+      "target": ""
+    },
+    {
+      "file": "scripts/report-renderer.js",
+      "via": "fetch",
+      "method": "GET",
+      "target": "/magnets/guide.html"
+    }
+  ],
+  "worker": {
+    "file": null,
+    "routes": []
+  },
+  "mismatches": {
+    "pageCallsMissingRoute": [],
+    "routeUnused": [],
+    "nonAbsoluteFormActions": [],
+    "referencedButMissingFiles": [
+      {
+        "target": "/assets/favicon.svg",
+        "file": "assets/confirmation.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "assets/product.html"
+      },
+      {
+        "target": "/index/#how-it-works",
+        "file": "assets/product.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "assets/product.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "assets/report-preview.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "assets/report-preview.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "assets/report.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "assets/report.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "contact.html"
+      },
+      {
+        "target": "%23noiseFilter",
+        "file": "contact.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "index.html"
+      },
+      {
+        "target": "/report-preview.html",
+        "file": "index.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "legal/privacy.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "legal/privacy.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "legal/terms.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "legal/terms.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "magnets/guide.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "magnets/guide.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "magnets/lead-magnet.html"
+      },
+      {
+        "target": "bytes",
+        "file": "partials/parse-lab.html"
+      },
+      {
+        "target": "rawKey",
+        "file": "partials/parse-lab.html"
+      },
+      {
+        "target": "iv",
+        "file": "partials/parse-lab.html"
+      },
+      {
+        "target": "ciphertext",
+        "file": "partials/parse-lab.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/account-transcript-explained.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/architecture-map.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/canopy-vs-manual-transcript-interpretation.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/cloud-transcript-tools-vs-local-parsing.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/how-cpa-firms-use-irs-transcript-reports.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/how-to-add-a-paid-transcript-analysis-to-your-firm.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/how-to-explain-an-irs-transcript-to-a-client.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/how-to-interpret-irs-transcripts-faster.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/how-to-prepare-for-a-tax-resolution-consult-using-transcripts.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/how-to-read-irs-transcripts.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/how-to-sell-a-transcript-analysis-as-a-standalone-service.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/how-to-standardize-transcript-interpretation-across-staff.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/how-to-understand-irs-transaction-codes.html"
+      },
+      {
+        "target": "/resources/how-to-read-an-irs-account-transcript.html",
+        "file": "resources/index.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/intuit-transcript-feature-vs-dedicated-parser.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-000-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-000-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-000-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-001-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-001-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-001-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-002-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-002-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-002-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-003-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-003-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-003-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-004-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-004-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-004-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-005-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-005-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-005-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-006-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-006-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-006-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-007-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-007-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-007-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-008-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-008-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-008-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-011-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-011-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-011-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-012-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-012-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-012-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-013-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-013-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-013-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-014-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-014-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-014-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-015-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-015-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-015-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-016-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-016-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-016-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-017-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-017-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-017-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-018-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-018-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-018-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-019-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-019-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-019-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-020-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-020-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-020-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-022-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-022-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-022-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-023-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-023-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-023-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-024-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-024-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-024-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-025-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-025-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-025-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-026-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-026-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-026-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-030-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-030-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-030-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-040-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-040-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-040-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-041-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-041-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-041-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-052-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-052-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-052-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-053-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-053-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-053-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-054-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-054-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-054-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-055-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-055-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-055-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-057-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-057-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-057-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-058-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-058-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-058-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-059-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-059-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-059-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-060-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-060-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-060-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-061-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-061-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-061-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-062-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-062-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-062-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-063-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-063-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-063-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-064-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-064-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-064-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-065-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-065-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-065-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-066-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-066-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-066-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-070-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-070-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-070-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-071-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-071-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-071-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-072-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-072-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-072-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-073-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-073-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-073-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-076-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-076-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-076-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-077-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-077-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-077-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-078-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-078-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-078-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-079-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-079-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-079-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-080-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-080-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-080-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-082-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-082-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-082-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-083-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-083-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-083-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-084-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-084-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-084-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-085-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-085-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-085-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-086-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-086-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-086-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-087-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-087-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-087-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-090-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-090-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-090-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-091-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-091-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-091-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-092-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-092-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-092-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-093-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-093-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-093-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-094-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-094-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-094-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-095-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-095-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-095-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-096-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-096-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-096-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-097-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-097-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-097-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-098-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-098-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-098-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-099-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-099-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-099-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-100-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-100-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-100-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-101-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-101-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-101-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-102-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-102-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-102-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-103-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-103-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-103-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-110-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-110-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-110-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-120-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-120-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-120-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-121-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-121-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-121-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-122-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-122-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-122-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-123-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-123-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-123-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-125-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-125-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-125-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-126-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-126-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-126-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-127-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-127-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-127-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-128-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-128-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-128-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-129-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-129-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-129-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-130-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-130-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-130-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-131-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-131-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-131-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-132-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-132-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-132-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-136-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-136-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-136-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-137-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-137-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-137-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-140-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-140-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-140-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-141-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-141-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-141-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-142-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-142-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-142-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-148-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-148-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-148-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-149-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-149-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-149-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-150-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-150-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-150-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-151-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-151-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-151-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-152-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-152-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-152-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-154-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-154-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-154-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-155-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-155-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-155-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-156-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-156-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-156-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-157-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-157-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-157-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-159-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-159-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-159-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-160-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-160-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-160-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-161-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-161-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-161-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-162-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-162-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-162-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-166-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-166-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-166-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-167-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-167-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-167-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-170-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-170-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-170-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-171-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-171-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-171-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-176-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-176-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-176-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-177-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-177-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-177-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-180-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-180-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-180-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-181-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-181-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-181-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-186-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-186-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-186-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-187-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-187-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-187-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-190-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-190-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-190-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-191-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-191-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-191-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-196-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-196-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-196-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-197-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-197-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-197-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-200-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-200-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-200-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-201-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-201-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-201-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-203-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-203-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-203-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-234-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-234-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-234-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-235-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-235-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-235-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-238-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-238-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-238-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-239-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-239-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-239-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-240-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-240-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-240-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-241-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-241-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-241-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-246-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-246-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-246-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-247-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-247-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-247-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-270-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-270-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-270-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-271-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-271-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-271-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-272-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-272-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-272-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-276-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-276-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-276-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-277-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-277-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-277-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-280-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-280-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-280-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-281-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-281-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-281-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-286-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-286-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-286-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-287-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-287-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-287-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-290-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-290-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-291-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-291-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-291-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-294-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-294-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-294-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-295-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-295-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-295-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-298-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-298-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-298-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-299-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-299-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-299-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-300-meaning.html"
+      },
+      {
+        "target": "/app/intake",
+        "file": "resources/irs-code-300-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-300-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-301-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-301-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-301-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-304-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-304-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-304-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-305-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-305-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-305-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-308-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-308-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-308-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-309-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-309-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-309-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-310-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-310-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-310-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-311-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-311-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-311-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-320-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-320-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-320-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-321-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-321-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-321-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-336-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-336-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-336-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-337-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-337-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-337-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-340-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-340-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-340-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-341-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-341-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-341-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-342-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-342-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-342-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-350-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-350-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-350-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-351-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-351-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-351-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-360-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-360-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-360-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-361-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-361-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-361-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-370-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-370-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-370-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-380-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-380-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-380-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-386-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-386-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-386-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-387-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-387-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-387-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-388-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-388-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-388-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-389-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-389-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-389-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-390-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-390-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-390-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-400-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-400-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-400-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-402-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-402-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-402-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-410-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-410-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-410-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-420-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-420-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-421-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-421-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-421-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-424-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-424-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-425-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-425-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-425-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-427-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-427-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-427-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-428-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-428-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-428-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-429-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-429-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-429-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-430-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-430-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-430-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-431-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-431-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-431-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-432-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-432-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-432-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-440-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-440-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-440-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-446-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-446-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-446-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-450-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-450-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-450-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-451-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-451-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-451-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-459-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-459-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-459-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-460-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-460-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-462-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-462-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-462-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-463-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-463-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-463-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-464-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-464-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-464-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-468-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-468-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-468-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-469-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-469-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-469-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-470-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-470-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-470-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-471-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-471-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-471-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-472-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-472-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-472-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-474-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-474-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-474-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-475-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-475-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-475-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-480-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-480-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-480-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-481-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-481-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-481-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-482-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-482-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-482-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-483-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-483-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-483-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-488-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-488-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-488-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-489-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-489-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-489-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-490-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-490-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-490-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-494-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-494-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-494-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-495-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-495-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-495-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-500-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-500-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-500-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-502-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-502-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-502-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-503-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-503-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-503-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-510-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-510-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-510-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-519-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-519-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-519-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-520-meaning.html"
+      },
+      {
+        "target": "/app/intake",
+        "file": "resources/irs-code-520-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-520-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-521-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-521-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-521-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-522-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-522-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-522-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-524-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-524-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-524-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-525-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-525-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-525-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-528-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-528-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-528-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-530-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-530-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-530-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-531-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-531-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-531-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-532-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-532-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-532-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-534-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-534-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-534-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-535-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-535-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-535-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-537-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-537-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-537-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-538-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-538-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-538-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-539-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-539-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-539-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-540-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-540-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-540-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-542-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-542-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-542-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-550-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-550-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-550-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-552-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-552-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-552-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-560-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-560-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-560-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-570-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-570-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-571-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-571-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-571-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-572-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-572-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-572-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-576-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-576-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-576-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-577-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-577-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-577-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-582-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-582-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-582-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-583-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-583-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-583-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-586-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-586-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-586-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-590-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-590-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-590-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-591-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-591-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-591-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-592-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-592-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-592-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-593-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-593-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-593-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-594-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-594-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-594-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-595-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-595-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-595-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-596-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-596-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-596-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-597-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-597-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-597-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-598-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-598-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-598-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-599-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-599-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-599-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-600-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-600-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-600-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-604-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-604-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-604-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-605-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-605-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-605-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-606-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-606-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-606-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-607-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-607-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-607-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-608-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-608-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-608-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-609-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-609-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-609-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-610-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-610-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-610-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-611-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-611-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-611-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-612-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-612-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-612-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-620-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-620-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-620-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-621-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-621-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-621-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-622-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-622-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-622-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-630-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-630-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-630-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-632-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-632-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-632-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-636-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-636-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-636-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-637-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-637-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-637-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-640-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-640-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-640-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-641-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-641-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-641-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-642-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-642-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-642-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-649-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-649-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-649-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-650-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-650-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-650-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-651-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-651-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-651-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-652-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-652-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-652-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-660-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-660-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-660-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-661-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-661-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-661-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-662-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-662-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-662-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-666-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-666-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-666-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-667-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-667-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-667-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-670-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-670-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-670-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-671-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-671-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-671-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-672-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-672-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-672-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-673-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-673-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-673-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-678-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-678-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-678-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-679-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-679-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-679-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-680-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-680-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-680-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-681-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-681-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-681-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-682-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-682-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-682-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-690-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-690-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-690-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-691-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-691-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-691-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-692-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-692-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-692-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-694-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-694-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-694-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-695-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-695-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-695-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-700-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-700-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-700-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-701-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-701-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-701-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-702-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-702-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-702-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-706-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-706-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-706-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-710-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-710-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-710-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-712-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-712-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-712-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-716-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-716-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-716-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-720-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-720-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-720-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-721-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-721-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-721-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-722-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-722-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-722-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-730-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-730-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-730-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-731-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-731-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-731-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-732-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-732-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-732-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-736-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-736-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-736-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-740-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-740-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-740-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-742-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-742-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-742-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-756-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-756-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-756-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-760-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-760-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-760-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-762-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-762-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-762-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-764-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-764-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-764-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-765-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-765-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-765-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-766-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-766-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-766-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-767-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-767-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-767-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-768-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-768-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-770-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-770-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-770-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-771-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-771-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-771-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-772-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-772-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-772-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-776-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-776-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-776-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-777-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-777-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-777-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-780-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-780-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-780-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-781-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-781-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-781-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-782-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-782-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-782-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-788-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-788-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-788-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-790-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-790-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-790-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-792-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-792-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-792-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-796-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-796-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-796-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-800-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-800-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-800-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-802-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-802-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-802-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-806-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-806-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-807-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-807-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-807-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-810-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-810-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-810-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-811-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-811-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-820-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-820-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-820-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-821-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-821-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-821-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-822-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-822-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-822-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-824-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-824-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-824-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-826-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-826-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-830-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-830-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-830-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-832-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-832-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-832-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-836-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-836-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-836-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-840-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-840-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-840-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-841-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-841-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-842-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-842-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-842-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-843-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-843-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-843-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-844-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-844-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-844-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-845-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-845-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-845-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-846-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-846-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-846-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-848-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-848-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-848-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-849-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-849-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-849-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-850-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-850-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-850-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-851-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-851-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-851-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-852-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-852-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-852-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-856-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-856-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-856-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-860-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-860-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-860-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-876-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-876-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-876-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-890-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-890-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-890-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-892-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-892-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-892-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-896-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-896-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-896-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-897-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-897-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-897-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-898-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-898-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-898-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-899-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-899-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-899-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-900-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-900-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-900-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-901-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-901-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-901-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-902-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-902-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-902-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-903-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-903-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-903-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-904-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-904-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-904-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-910-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-910-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-910-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-911-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-911-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-911-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-912-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-912-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-912-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-914-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-914-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-914-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-915-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-915-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-915-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-916-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-916-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-916-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-917-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-917-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-917-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-918-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-918-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-918-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-919-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-919-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-919-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-920-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-920-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-920-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-922-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-922-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-922-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-924-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-924-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-924-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-925-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-925-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-925-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-926-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-926-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-926-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-928-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-928-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-928-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-930-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-930-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-930-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-932-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-932-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-932-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-940-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-940-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-940-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-941-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-941-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-941-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-942-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-942-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-942-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-944-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-944-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-944-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-945-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-945-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-945-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-960-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-960-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-960-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-961-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-961-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-961-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-962-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-962-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-962-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-964-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-964-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-964-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-966-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-966-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-966-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-970-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-970-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-970-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-971-ac-065-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-971-ac-065-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-971-ac-065-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-971-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-971-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-972-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-972-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-972-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-973-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-973-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-973-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-976-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-976-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-976-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-977-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-977-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-977-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-980-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-980-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-980-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-982-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-982-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-982-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-984-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-984-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-984-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-986-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-986-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-986-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-989-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-989-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-989-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-990-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-990-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-990-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-991-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-991-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-991-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-992-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-992-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-992-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-993-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-993-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-993-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-994-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-994-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-994-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-995-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-995-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-995-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-996-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-996-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-996-meaning.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/irs-code-998-meaning.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/irs-code-998-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-code-998-meaning.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-transcript-automation-software-comparison.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-transcript-codes-explained-in-plain-english.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-transcript-review-checklist-for-tax-professionals.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-transcript-shows-570-what-next.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/irs-transcript-shows-971-what-it-means.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/local-irs-transcript-parsing-vs-upload-based-tools.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/manual-transcript-reading-vs-automated-reports.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/pitbulltax-transcript-reports-vs-local-parsing.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/record-of-account-transcript-explained.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/return-transcript-explained.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/selling-a-199-transcript-review-product.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/structuring-a-transcript-based-consultation.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/tax-compliance-transcript-explained.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/tax-return-transcript-vs-account-transcript.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/transcript-analysis-as-a-lead-qualification-tool.html"
+      },
+      {
+        "target": "/magnets/lead-magnet",
+        "file": "resources/transcript-codes.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/transcript-codes.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/transcript-orders.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/transcript-orders.html"
+      },
+      {
+        "target": "/assets/favicon.svg",
+        "file": "resources/transcript-types.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/turning-irs-transcripts-into-billable-deliverables.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/using-transcript-reports-to-increase-close-rates.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/wage-and-income-transcript-explained.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/what-does-irs-code-150-mean.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/what-does-irs-code-806-mean.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/what-does-irs-code-971-mean.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/why-is-my-refund-delayed-code-846.html"
+      },
+      {
+        "target": "/_sdk/data_sdk.js",
+        "file": "resources/why-local-transcript-parsing-matters-for-data-privacy.html"
+      },
+      {
+        "target": "t,e=null,i=null",
+        "file": "scripts/pdf.min.mjs"
+      },
+      {
+        "target": "t,e",
+        "file": "scripts/pdf.min.mjs"
+      },
+      {
+        "target": "t",
+        "file": "scripts/pdf.min.mjs"
+      },
+      {
+        "target": "t,document.baseURI",
+        "file": "scripts/pdf.min.mjs"
+      },
+      {
+        "target": "e.url",
+        "file": "scripts/pdf.min.mjs"
+      },
+      {
+        "target": "e.pathToFileURL(t",
+        "file": "scripts/pdf.min.mjs"
+      },
+      {
+        "target": "t,window.location",
+        "file": "scripts/pdf.min.mjs"
+      },
+      {
+        "target": "g,document.baseURI",
+        "file": "scripts/pdf.min.mjs"
+      },
+      {
+        "target": "b,document.baseURI",
+        "file": "scripts/pdf.min.mjs"
+      },
+      {
+        "target": "n",
+        "file": "scripts/pdf.min.mjs"
+      },
+      {
+        "target": "e,i",
+        "file": "scripts/pdf.min.mjs"
+      },
+      {
+        "target": "this.#Gr",
+        "file": "scripts/pdf.min.mjs"
+      },
+      {
+        "target": "e,t=null,i=null",
+        "file": "scripts/pdf.worker.min.mjs"
+      },
+      {
+        "target": "e,t",
+        "file": "scripts/pdf.worker.min.mjs"
+      },
+      {
+        "target": "e",
+        "file": "scripts/pdf.worker.min.mjs"
+      },
+      {
+        "target": "t,null,{tryConvertEncoding:!0}",
+        "file": "scripts/pdf.worker.min.mjs"
+      },
+      {
+        "target": "stringToPDFString(y",
+        "file": "scripts/pdf.worker.min.mjs"
+      },
+      {
+        "target": "s,i,{addDefaultProtocol:!0,tryConvertEncoding:!0}",
+        "file": "scripts/pdf.worker.min.mjs"
+      },
+      {
+        "target": "e,null,{addDefaultProtocol:!0,tryConvertEncoding:!0}",
+        "file": "scripts/pdf.worker.min.mjs"
+      },
+      {
+        "target": "e.script[Os]",
+        "file": "scripts/pdf.worker.min.mjs"
+      },
+      {
+        "target": "t.url",
+        "file": "scripts/pdf.worker.min.mjs"
+      },
+      {
+        "target": "t",
+        "file": "scripts/pdf.worker.min.mjs"
+      },
+      {
+        "target": "e.href",
+        "file": "scripts/pdf.worker.min.mjs"
+      },
+      {
+        "target": "relPath",
+        "file": "scripts/update-sitemap.mjs"
+      },
+      {
+        "target": "%23n",
+        "file": "styles/site.css"
+      }
+    ]
+  }
+}
