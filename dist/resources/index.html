@@ -1,0 +1,685 @@
+<!-- resoucres/index.html -->
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IRS Transcript Resources for Tax Professionals</title>
+  <meta name="description" content="Explore IRS transcript resources for taxpayers and tax professionals: guides, transcript types, workflows, comparisons, and problem-based explanations." />
+  <link rel="canonical" href="https://transcript.taxmonitor.pro/resources/" />
+
+  <meta property="og:title" content="IRS Transcript Resources for Tax Professionals" />
+  <meta property="og:description" content="Guides, transcript types, workflows, comparisons, and problem-based pages for understanding IRS transcripts." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://transcript.taxmonitor.pro/resources/" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+
+  <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['DM Sans', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial']
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    :root {
+      --charcoal: #1a1a1a;
+      --charcoal-light: #2d2d2d;
+      --charcoal-lighter: #3a3a3a;
+      --purple-accent: #8b5cf6;
+      --purple-dark: #7c3aed;
+      --purple-light: #a78bfa;
+      --text-primary: #f5f5f5;
+      --text-secondary: #d1d5db;
+      --border-color: #404040;
+    }
+
+    * { color-scheme: dark; }
+
+    html, body {
+      height: 100%;
+      background-color: var(--charcoal);
+      color: var(--text-primary);
+    }
+
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+      line-height: 1.6;
+      box-sizing: border-box;
+    }
+
+    .app-wrapper {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--charcoal);
+      /* Single scroll: let the document scroll, not an inner container */
+      overflow: visible;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, var(--charcoal) 0%, var(--charcoal-light) 100%);
+      border-bottom: 1px solid var(--border-color);
+      padding: 80px 0;
+    }
+
+    .hero-content {
+      max-width: 80rem; /* ~max-w-7xl */
+      margin: 0 auto;
+      padding: 0 24px; /* aligns with px-6 */
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--purple-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero .subheadline {
+      font-size: 1.5rem;
+      color: var(--purple-light);
+      margin-bottom: 32px;
+      font-weight: 500;
+    }
+
+    .hero .intro {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+      max-width: 700px;
+      line-height: 1.8;
+    }
+
+    .intro-list {
+      margin: 16px 0;
+      padding-left: 24px;
+    }
+
+    .intro-list li {
+      margin: 8px 0;
+      color: var(--text-secondary);
+    }
+
+    .intro-list strong {
+      color: var(--purple-light);
+    }
+
+    .cta-group {
+      display: flex;
+      gap: 16px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary, .btn-secondary {
+      padding: 14px 32px;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background-color: var(--purple-accent);
+      color: var(--text-primary);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--purple-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(139, 92, 246, 0.3);
+    }
+
+    .btn-secondary {
+      background-color: var(--charcoal-lighter);
+      color: var(--purple-light);
+      border: 1px solid var(--purple-accent);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--charcoal-light);
+      border-color: var(--purple-light);
+      transform: translateY(-2px);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 0 24px;
+    }
+
+    /* Section */
+    .section {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .section:last-child {
+      border-bottom: none;
+    }
+
+    .section-header {
+      margin-bottom: 48px;
+    }
+
+    .section h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+
+    .section h2::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 32px;
+      background-color: var(--purple-accent);
+      margin-right: 16px;
+      vertical-align: middle;
+    }
+
+    .section-intro {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 800px;
+      line-height: 1.8;
+    }
+
+    /* Card Grid */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-top: 32px;
+    }
+
+    .card {
+      background-color: var(--charcoal-light);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 28px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: block;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .card:hover {
+      background-color: var(--charcoal-lighter);
+      border-color: var(--purple-accent);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(139, 92, 246, 0.15);
+    }
+
+    .card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      transition: color 0.3s ease;
+    }
+
+    .card:hover h3 {
+      color: var(--purple-light);
+    }
+
+    .card-arrow {
+      display: inline-block;
+      margin-left: 8px;
+      opacity: 0;
+      transition: all 0.3s ease;
+      color: var(--purple-accent);
+    }
+
+    .card:hover .card-arrow {
+      opacity: 1;
+      margin-left: 12px;
+    }
+
+    /* Diagram Section */
+    .diagram-block {
+      background-color: var(--charcoal-light);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 40px;
+      margin: 32px 0;
+      text-align: center;
+    }
+
+    .diagram-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .diagram-item {
+      background-color: var(--charcoal);
+      border: 2px solid var(--purple-accent);
+      border-radius: 6px;
+      padding: 16px 24px;
+      color: var(--purple-light);
+      min-width: 120px;
+    }
+
+    .diagram-arrow {
+      color: var(--purple-accent);
+      font-size: 1.5rem;
+    }
+
+    /* Final CTA Section */
+    .final-cta-section {
+      border-top: 1px solid var(--border-color);
+      border-bottom: none !important;
+      padding: 56px 24px;
+      background: transparent;
+    }
+
+    /* VLP-style “panel” CTA: simple, centered, calm */
+    .final-cta-content {
+      max-width: 72rem;
+      margin: 0 auto;
+      text-align: center;
+      border-radius: 16px;
+      padding: 48px 24px;
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      position: relative;
+      overflow: hidden;
+
+      /* Purple accent panel */
+      background:
+        radial-gradient(1200px 220px at 50% 0%, rgba(167,139,250,0.28), transparent 60%),
+        linear-gradient(180deg, rgba(139,92,246,0.34) 0%, rgba(139,92,246,0.18) 45%, rgba(26,26,26,0.12) 100%);
+    }
+
+    /* soft “wave” like VLP hero card */
+    .final-cta-content::after {
+      content: '';
+      position: absolute;
+      left: -10%;
+      right: -10%;
+      bottom: -70px;
+      height: 180px;
+      border-radius: 999px;
+      background: rgba(139, 92, 246, 0.25);
+      filter: blur(26px);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .final-cta-content h2 {
+      display: block;
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+    }
+
+    .final-cta-content h2::before {
+      display: none;
+    }
+
+    .final-cta-text {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.82);
+      margin: 0 auto 28px;
+      line-height: 1.8;
+      max-width: 52rem;
+    }
+
+    .final-cta-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Match VLP button vibe inside panel */
+    .final-cta-section .btn-primary {
+      background: #ffffff;
+      color: #0b1220;
+      border-radius: 12px;
+      padding: 14px 28px;
+      font-weight: 800;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    }
+
+    .final-cta-section .btn-primary:hover {
+      background: rgba(255,255,255,0.92);
+      transform: translateY(-2px);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+    }
+
+    .final-cta-section .btn-secondary {
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.92);
+      border: 1px solid rgba(255,255,255,0.20);
+      border-radius: 12px;
+      padding: 14px 28px;
+      font-weight: 800;
+    }
+
+    .final-cta-section .btn-secondary:hover {
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.28);
+      transform: translateY(-2px);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero {
+        padding: 50px 20px;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .hero .subheadline {
+        font-size: 1.25rem;
+      }
+
+      .section {
+        padding: 60px 0;
+      }
+
+      .section h2 {
+        font-size: 2rem;
+      }
+
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-group {
+        flex-direction: column;
+      }
+
+      .btn-primary, .btn-secondary {
+        width: 100%;
+        text-align: center;
+      }
+
+      .diagram-flow {
+        gap: 16px;
+        font-size: 0.95rem;
+      }
+
+      .diagram-item {
+        min-width: 100px;
+        padding: 12px 16px;
+      }
+    }
+  </style>
+</head>
+ <body class="h-full w-full bg-slate-950 text-slate-100 font-sans">
+  <!-- PARTIAL:header -->
+  <div class="app-wrapper"><!-- Hero Section -->
+   <section class="hero">
+    <div class="hero-content">
+     <h1>IRS Transcript Resources for Tax Professionals</h1>
+     <p class="subheadline">Practical guides, transcript types, and code explanations for faster review and clearer client communication.</p>
+     <p class="intro"><strong>Use this hub to find what you need fast.</strong></p>
+     <p class="intro">If you review transcripts for refunds, compliance, audits, collections, or resolution work, the fastest path is always the same:</p>
+     <ul class="intro-list">
+      <li><a href="#core-guide" class="hover:underline"><strong>Start with the guide</strong></a> to understand layout and sequencing</li>
+      <li><a href="#transcript-types" class="hover:underline"><strong>Confirm transcript type</strong></a> so you are reading the right document</li>
+      <li><a href="#problem-learning" class="hover:underline"><strong>Look up transaction codes</strong></a> to interpret dates, amounts, and next steps</li>
+      <li><a href="#workflow-playbooks" class="hover:underline"><strong>Standardize your workflow</strong></a> so staff and clients get consistent answers</li>
+     </ul>
+     <p class="intro">This page organizes our non-code resources (guides, transcript types, workflows, comparisons, and common problems) alongside the code database so you can move from “What is this?” to “What do we do next?” without hunting around.</p>
+     <div class="cta-group"><a href="/resources/transcript-codes.html" class="btn-primary">Explore Transcript Code Database</a> <a href="/index.html#how-it-works" class="btn-secondary">Generate Transcript Report</a>
+     </div>
+    </div>
+   </section><!-- Main Content -->
+   <main class="main-content"><!-- The Real Move Section -->
+    <section class="section">
+     <div class="section-header">
+      <h2>Resources hub</h2>
+     </div>
+     <p class="section-intro">This page is the directory for our non-code resources. Use it to navigate by intent: learn the basics, confirm transcript types, improve your review workflow, compare approaches, or solve a specific transcript problem.</p>
+     <p class="section-intro" style="margin-top: 16px;">For tax professionals, this hub is designed to support:</p>
+     <ul class="intro-list" style="margin-top: 16px;">
+      <li>Faster transcript review and issue spotting</li>
+      <li>Clear, consistent client explanations</li>
+      <li>Repeatable internal processes for staff</li>
+     </ul>
+     <div class="diagram-block">
+      <div class="diagram-flow">
+       <div class="diagram-item">Resource</div>
+       <div class="diagram-arrow">→</div>
+       <div class="diagram-item">Interpret</div>
+       <div class="diagram-arrow">→</div>
+       <div class="diagram-item">Explain</div>
+       <div class="diagram-arrow">→</div>
+       <div class="diagram-item">Next steps</div>
+      </div>
+     </div>
+    </section><!-- Core Guide Section -->
+    <section class="section">
+     <div class="section-header">
+      <h2 id="core-guide">Core Authority Guide</h2>
+     </div>
+     <p class="section-intro">Start with the guide if you want a reliable baseline for reading transcripts: what the sections mean, how transaction codes sequence over time, and how to summarize findings in plain English for a client.</p>
+     <div class="card-grid" style="margin-top: 32px;"><a href="/resources/how-to-read-irs-transcripts.html" class="card"> <h3>The Complete Guide to Reading IRS Transcripts<span class="card-arrow">→</span></h3></a>
+     </div>
+    </section><!-- Transcript Types Section -->
+    <section class="section">
+     <div class="section-header">
+      <h2 id="transcript-types">Transcript Type Library</h2>
+     </div>
+     <p class="section-intro">Transcript types are not interchangeable. This section helps you quickly choose the right transcript for the job, understand what it includes, and avoid common misreads that lead to bad conclusions.</p>
+     <div class="card-grid">
+      <a href="/resources/account-transcript-explained.html" class="card">
+       <h3>Account Transcript Explained<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/record-of-account-transcript-explained.html" class="card">
+       <h3>Record of Account Transcript Explained<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/return-transcript-explained.html" class="card">
+       <h3>Return Transcript Explained<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/tax-compliance-transcript-explained.html" class="card">
+       <h3>Tax Compliance Transcript Explained<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/tax-return-transcript-vs-account-transcript.html" class="card">
+       <h3>Tax Return Transcript vs Account Transcript<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/wage-and-income-transcript-explained.html" class="card">
+       <h3>Wage and Income Transcript Explained<span class="card-arrow">→</span></h3>
+      </a>
+     </div>
+    </section><!-- Workflow & Revenue Section -->
+    <section class="section">
+     <div class="section-header">
+      <h2 id="workflow-playbooks">Workflow &amp; Revenue Playbooks</h2>
+     </div>
+     <p class="section-intro">Professional workflow pages focus on consistency: what to check, how to document findings, and how to communicate next steps. These are written for firms that want repeatable transcript review across staff and engagements.</p>
+     <div class="card-grid">
+      <a href="/resources/how-cpa-firms-use-irs-transcript-reports.html" class="card">
+       <h3>How CPA Firms Use IRS Transcript Reports<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/how-to-add-a-paid-transcript-analysis-to-your-firm.html" class="card">
+       <h3>How to Add a Paid Transcript Analysis to Your Firm<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/how-to-interpret-irs-transcripts-faster.html" class="card">
+       <h3>How to Interpret IRS Transcripts Faster<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/how-to-prepare-for-a-tax-resolution-consult-using-transcripts.html" class="card">
+       <h3>How to Prepare for a Tax Resolution Consult Using Transcripts<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/how-to-sell-a-transcript-analysis-as-a-standalone-service.html" class="card">
+       <h3>How to Sell a Transcript Analysis as a Standalone Service<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/how-to-standardize-transcript-interpretation-across-staff.html" class="card">
+       <h3>How to Standardize Transcript Interpretation Across Staff<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/irs-transcript-review-checklist-for-tax-professionals.html" class="card">
+       <h3>IRS Transcript Review Checklist for Tax Professionals<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/selling-a-199-transcript-review-product.html" class="card">
+       <h3>Selling a $199 Transcript Review Product<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/structuring-a-transcript-based-consultation.html" class="card">
+       <h3>Structuring a Transcript-Based Consultation<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/transcript-analysis-as-a-lead-qualification-tool.html" class="card">
+       <h3>Transcript Analysis as a Lead Qualification Tool<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/turning-irs-transcripts-into-billable-deliverables.html" class="card">
+       <h3>Turning IRS Transcripts Into Billable Deliverables<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/using-transcript-reports-to-increase-close-rates.html" class="card">
+       <h3>Using Transcript Reports to Increase Close Rates<span class="card-arrow">→</span></h3>
+      </a>
+     </div>
+    </section><!-- Comparison & Positioning Section -->
+    <section class="section">
+     <div class="section-header">
+      <h2>Software &amp; Workflow Comparisons</h2>
+     </div>
+     <p class="section-intro">Comparison pages explain trade-offs without hype. If you are choosing between manual review and automated reporting, or local parsing versus cloud tools, this section makes the differences clear.</p>
+     <div class="card-grid">
+      <a href="/resources/canopy-vs-manual-transcript-interpretation.html" class="card">
+       <h3>Canopy vs Manual Transcript Interpretation<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/cloud-transcript-tools-vs-local-parsing.html" class="card">
+       <h3>Cloud Transcript Tools vs Local Parsing<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/intuit-transcript-feature-vs-dedicated-parser.html" class="card">
+       <h3>Intuit Transcript Feature vs Dedicated Parser<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/irs-transcript-automation-software-comparison.html" class="card">
+       <h3>IRS Transcript Automation Software Comparison<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/local-irs-transcript-parsing-vs-upload-based-tools.html" class="card">
+       <h3>Local IRS Transcript Parsing vs Upload-Based Tools<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/manual-transcript-reading-vs-automated-reports.html" class="card">
+       <h3>Manual Transcript Reading vs Automated Reports<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/pitbulltax-transcript-reports-vs-local-parsing.html" class="card">
+       <h3>PitBullTax Transcript Reports vs Local Parsing<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/why-local-transcript-parsing-matters-for-data-privacy.html" class="card">
+       <h3>Why Local Transcript Parsing Matters for Data Privacy<span class="card-arrow">→</span></h3>
+      </a>
+     </div>
+    </section><!-- Problem-Intent Section -->
+    <section class="section">
+     <div class="section-header">
+      <h2 id="problem-learning">Problem-Based Learning</h2>
+     </div>
+     <p class="section-intro">Problem pages answer the questions that come up mid-review: refund timing, holds, notices, and what specific codes usually mean in sequence. These are written to help you decide what to check next and how to explain it.</p>
+     <div class="card-grid">
+      <a href="/resources/how-to-explain-an-irs-transcript-to-a-client.html" class="card">
+       <h3>How to Explain an IRS Transcript to a Client<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/how-to-read-an-irs-account-transcript.html" class="card">
+       <h3>How to Read an IRS Account Transcript<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/how-to-understand-irs-transaction-codes.html" class="card">
+       <h3>How to Understand IRS Transaction Codes<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/irs-transcript-codes-explained-in-plain-english.html" class="card">
+       <h3>IRS Transcript Codes Explained in Plain English<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/irs-transcript-shows-570-what-next.html" class="card">
+       <h3>IRS Transcript Shows 570 – What Next?<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/irs-transcript-shows-971-what-it-means.html" class="card">
+       <h3>IRS Transcript Shows 971 – What It Means<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/what-does-irs-code-150-mean.html" class="card">
+       <h3>What Does Code 150 Mean on IRS Transcript?<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/what-does-irs-code-806-mean.html" class="card">
+       <h3>What Does Code 806 Mean on IRS Transcript?<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/what-does-irs-code-971-mean.html" class="card">
+       <h3>What Does Code 971 Mean on IRS Transcript?<span class="card-arrow">→</span></h3>
+      </a>
+      <a href="/resources/why-is-my-refund-delayed-code-846.html" class="card">
+       <h3>Why Is My Refund Delayed Code 846?<span class="card-arrow">→</span></h3>
+      </a>
+     </div>
+    </section><!-- Final CTA Section -->
+    <section class="final-cta-section">
+     <div class="final-cta-content">
+      <h2>Turn transcripts into clear answers</h2>
+      <p class="final-cta-text">Use the resources above to interpret a transcript quickly, summarize findings clearly, and decide next steps. When you need a clean client-ready deliverable, generate a transcript report in minutes.</p>
+      <div class="final-cta-buttons"><a href="/index.html#how-it-works" class="btn-primary">Start Generating Transcript Reports</a> <a href="/resources/transcript-codes.html" class="btn-secondary">Browse Code Database</a>
+      </div>
+     </div>
+    </section>
+   </main>
+  </div>
+
+  <!-- PARTIAL:footer -->
+
+  <script src="/_sdk/element_sdk.js"></script>
+  <script>
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    // Initialize Element SDK (even though no editable features for now)
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig: {},
+        onConfigChange: async () => {},
+        mapToCapabilities: () => ({
+          recolorables: [],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: () => new Map()
+      });
+    }
+  </script>
+ </body>
+</html>

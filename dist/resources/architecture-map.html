@@ -1,0 +1,428 @@
+<!-- /resources/architecture-map.html -->
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <title>Architecture Map (Internal) – Transcript.Tax Monitor Pro</title>
+    <meta name="description" content="Internal-only architecture map for Transcript.Tax Monitor Pro authority pages, link structure, and code page inventory QA." />
+    <link rel="canonical" href="https://transcript.taxmonitor.pro/resources/architecture-map.html" />
+
+    <meta name="robots" content="noindex,nofollow" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['DM Sans', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial']
+            }
+          }
+        }
+      };
+    </script>
+
+    <style>
+      .tm-card { background: rgba(2, 6, 23, 0.6); border: 1px solid rgba(148, 163, 184, 0.18); }
+      .tm-soft { background: rgba(2, 6, 23, 0.35); border: 1px solid rgba(148, 163, 184, 0.14); }
+      .tm-kbd { border: 1px solid rgba(148, 163, 184, 0.25); background: rgba(15, 23, 42, 0.65); }
+      .tm-prose a { text-decoration: underline; text-underline-offset: 3px; }
+      .tm-table th, .tm-table td { border-bottom: 1px solid rgba(148, 163, 184, 0.12); }
+      .tm-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+      body { box-sizing: border-box; }
+    </style>
+
+    <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+    <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+  </head>
+
+  <body class="h-full w-full bg-slate-950 text-slate-100 font-sans">
+    <!-- Sticky Header (internal-only, not primary navigation) -->
+    <header class="sticky top-0 z-50 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur">
+      <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
+        <div class="flex items-center gap-3 text-white" aria-label="Transcript.Tax Monitor Pro">
+          <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-purple-500 text-slate-950 font-extrabold">TM</span>
+          <div class="leading-tight">
+            <div class="text-sm font-semibold">Transcript.Tax Monitor Pro</div>
+            <div class="text-[11px] text-white/60">Architecture map (internal-only)</div>
+          </div>
+        </div>
+
+        <a href="https://transcript.taxmonitor.pro/" class="inline-flex items-center justify-center rounded-2xl border border-slate-800/60 bg-slate-950/60 p-4 text-white/80 backdrop-blur hover:text-white hover:scale-105 transition" aria-label="Close">
+          <svg class="h-[32px] w-[32px]" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6L6 18" />
+            <path d="M6 6l12 12" />
+          </svg>
+        </a>
+      </div>
+    </header>
+
+    <main class="mx-auto w-full max-w-6xl px-6 py-10">
+      <div class="inline-flex items-center gap-2 rounded-full tm-kbd px-4 py-2 text-xs text-slate-300">
+        <span class="font-semibold text-white">Internal QA</span>
+        <span class="text-slate-500">•</span>
+        <span>Robots: noindex</span>
+      </div>
+
+      <h1 class="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl">Architecture Map</h1>
+      <p class="mt-3 max-w-4xl text-sm text-slate-300 tm-prose">
+        This page exists for internal QA and link-architecture reference. It is intentionally <span class="tm-mono">noindex</span> and should not be linked in primary navigation.
+        It helps you verify the authority layer is crawlable (externally) while this inventory stays internal.
+      </p>
+
+      <!-- Core URLs -->
+      <section class="mt-10 tm-card rounded-2xl p-6 sm:p-8">
+        <h2 class="text-lg font-bold text-white">Core URLs (must-link-to set)</h2>
+        <p class="mt-2 text-sm text-slate-300 tm-prose">
+          These are the “core” destinations the code pages should consistently point to, per Day 6 rules.
+        </p>
+
+        <div class="mt-5 grid gap-4 sm:grid-cols-2">
+          <div class="tm-soft rounded-2xl p-5">
+            <div class="text-sm font-semibold text-white">Authority hub</div>
+            <div class="mt-2 text-sm text-slate-300 tm-mono">/resources/transcript-codes.html</div>
+            <div class="mt-2 text-xs text-slate-400">Anchor expectation: “All IRS transcript codes”</div>
+          </div>
+
+          <div class="tm-soft rounded-2xl p-5">
+            <div class="text-sm font-semibold text-white">Pillar</div>
+            <div class="mt-2 text-sm text-slate-300 tm-mono">/resources/how-to-read-irs-transcripts.html</div>
+            <div class="mt-2 text-xs text-slate-400">Anchor expectation: “How to read IRS transcripts”</div>
+          </div>
+
+          <div class="tm-soft rounded-2xl p-5">
+            <div class="text-sm font-semibold text-white">Parser CTA target (locked)</div>
+            <div class="mt-2 text-sm text-slate-300 tm-mono">/#how-it-works</div>
+            <div class="mt-2 text-xs text-slate-400">Copy expectation: “Try the parser (requires credits)”</div>
+          </div>
+
+          <div class="tm-soft rounded-2xl p-5">
+            <div class="text-sm font-semibold text-white">Home</div>
+            <div class="mt-2 text-sm text-slate-300 tm-mono">/</div>
+            <div class="mt-2 text-xs text-slate-400">Used by sitemap + general crawl entry</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Authority layer -->
+      <section class="mt-8 grid gap-6 lg:grid-cols-3">
+        <div class="lg:col-span-2 tm-card rounded-2xl p-6 sm:p-8">
+          <h2 class="text-lg font-bold text-white">Authority layer structure</h2>
+          <p class="mt-2 text-sm text-slate-300 tm-prose">
+            The intended structure is simple: a hub that lists code pages, a pillar page that teaches reading transcripts, and the code pages that answer intent-driven queries.
+          </p>
+
+          <div class="mt-6 space-y-4">
+            <div class="tm-soft rounded-2xl p-5">
+              <div class="text-sm font-semibold text-white">Authority hub</div>
+              <p class="mt-2 text-sm text-slate-300 tm-prose">
+                <a href="/resources/transcript-codes.html" class="text-purple-300 hover:text-purple-200">/resources/transcript-codes.html</a>
+                should link to every published code meaning page, in numeric order.
+              </p>
+            </div>
+
+            <div class="tm-soft rounded-2xl p-5">
+              <div class="text-sm font-semibold text-white">Pillar</div>
+              <p class="mt-2 text-sm text-slate-300 tm-prose">
+                <a href="/resources/how-to-read-irs-transcripts.html" class="text-purple-300 hover:text-purple-200">/resources/how-to-read-irs-transcripts.html</a>
+                should link to the hub, high-value code pages, and <span class="tm-mono">/#how-it-works</span>. It also carries FAQ + FAQ JSON-LD.
+              </p>
+            </div>
+
+            <div class="tm-soft rounded-2xl p-5">
+              <div class="text-sm font-semibold text-white">Code pages</div>
+              <p class="mt-2 text-sm text-slate-300 tm-prose">
+                Each <span class="tm-mono">/resources/irs-code-XXX-meaning.html</span> page should include:
+                hub link, pillar link, parser CTA target, and exactly 3 related code links (keeping the existing sidebar item count/structure).
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <aside class="tm-card rounded-2xl p-6 sm:p-8">
+          <h2 class="text-lg font-bold text-white">QA reminders</h2>
+          <ul class="mt-4 space-y-3 text-sm text-slate-300">
+            <li><span class="text-white font-semibold">Noindex:</span> this page only.</li>
+            <li><span class="text-white font-semibold">Footer:</span> must match magnets/guide.html standalone footer.</li>
+            <li><span class="text-white font-semibold">No nav:</span> do not add this page to primary navigation.</li>
+            <li><span class="text-white font-semibold">Inventory:</span> table below should reflect what exists on the hub page.</li>
+          </ul>
+
+          <div class="mt-6 tm-soft rounded-2xl p-5">
+            <div class="text-sm font-semibold text-white">Sitemap</div>
+            <p class="mt-2 text-sm text-slate-300 tm-prose">
+              Verify <span class="tm-mono">/sitemap.xml</span> includes home, hub, pillar, and every code page URL in numeric order.
+            </p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- Code inventory table -->
+      <section class="mt-8 tm-card rounded-2xl p-6 sm:p-8">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-white">Code page inventory (auto-built from hub)</h2>
+            <p class="mt-2 text-sm text-slate-300 tm-prose">
+              This table is generated by crawling <a href="/resources/transcript-codes.html" class="text-purple-300 hover:text-purple-200">/resources/transcript-codes.html</a>
+              and then reading each code page. It prevents “inventory drift” caused by people guessing.
+            </p>
+          </div>
+          <div class="mt-2 sm:mt-0">
+            <button id="tmRefresh" type="button" class="inline-flex items-center justify-center rounded-xl bg-purple-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-purple-400 transition">
+              Refresh inventory
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-5 tm-soft rounded-2xl p-5">
+          <div class="text-sm font-semibold text-white">Must-link-to core URLs (applies to every row)</div>
+          <ul class="mt-2 list-disc pl-6 text-sm text-slate-300 tm-mono">
+            <li>/resources/transcript-codes.html</li>
+            <li>/resources/how-to-read-irs-transcripts.html</li>
+            <li>/#how-it-works</li>
+          </ul>
+        </div>
+
+        <div class="mt-6 overflow-x-auto">
+          <table class="tm-table w-full min-w-[920px] text-left text-sm">
+            <thead class="text-xs uppercase text-slate-400">
+              <tr>
+                <th class="py-3 pr-4">Code</th>
+                <th class="py-3 pr-4">Page title</th>
+                <th class="py-3 pr-4">URL</th>
+                <th class="py-3 pr-4">Must-link-to core URLs</th>
+                <th class="py-3 pr-4">Related codes (3)</th>
+              </tr>
+            </thead>
+            <tbody id="tmCodeRows">
+              <tr>
+                <td class="py-4 pr-4 text-slate-300" colspan="5">
+                  <span class="tm-mono text-slate-400">Loading…</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div id="tmError" class="hidden mt-6 rounded-2xl border border-red-500/30 bg-red-500/10 p-5 text-sm text-red-200"></div>
+        <div id="tmMeta" class="mt-6 text-xs text-slate-500 tm-mono"></div>
+      </section>
+    </main>
+
+    <!-- Footer (standalone) -->
+      <footer class="tm-no-print px-6 py-3 mt-1 border-t border-slate-800/60 bg-slate-950/80 backdrop-blur">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <p class="text-slate-500 text-sm">© <span id="footer-year"></span> Transcript.Tax Monitor Pro. All rights reserved.</p>
+          <div class="flex items-center gap-6">
+            <a href="/legal/privacy.html" class="text-slate-400 hover:text-purple-400 text-sm transition-colors">Privacy Policy</a>
+            <a href="/legal/terms.html" class="text-slate-400 hover:text-purple-400 text-sm transition-colors">Terms of Service</a>
+          </div>
+        </div>
+      </footer>
+
+    <script>
+      (function () {
+        var y = document.getElementById('footer-year');
+        if (y) y.textContent = String(new Date().getFullYear());
+      })();
+    </script>
+
+    <script>
+      (function () {
+        var HUB_URL = '/resources/transcript-codes.html';
+        var PILLAR_URL = '/resources/how-to-read-irs-transcripts.html';
+        var PARSER_URL = '/#how-it-works';
+
+        var rowsEl = document.getElementById('tmCodeRows');
+        var errorEl = document.getElementById('tmError');
+        var metaEl = document.getElementById('tmMeta');
+        var refreshBtn = document.getElementById('tmRefresh');
+
+        function setError(msg) {
+          if (!errorEl) return;
+          errorEl.textContent = msg;
+          errorEl.classList.remove('hidden');
+        }
+
+        function clearError() {
+          if (!errorEl) return;
+          errorEl.textContent = '';
+          errorEl.classList.add('hidden');
+        }
+
+        function escapeHtml(str) {
+          return String(str || '')
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
+        }
+
+        function codeFromHref(href) {
+          var m = String(href || '').match(/\/resources\/irs-code-(\d+)-meaning\.html/i);
+          return m ? Number(m[1]) : null;
+        }
+
+        function sortByCode(a, b) {
+          return (a.code || 0) - (b.code || 0);
+        }
+
+        function unique(arr) {
+          var out = [];
+          var seen = new Set();
+          for (var i = 0; i < arr.length; i++) {
+            var v = arr[i];
+            if (!v || seen.has(v)) continue;
+            seen.add(v);
+            out.push(v);
+          }
+          return out;
+        }
+
+        function renderLoading() {
+          if (!rowsEl) return;
+          rowsEl.innerHTML = '<tr><td class="py-4 pr-4 text-slate-300" colspan="5"><span class="tm-mono text-slate-400">Loading…</span></td></tr>';
+        }
+
+        function renderRows(items) {
+          if (!rowsEl) return;
+
+          if (!items || !items.length) {
+            rowsEl.innerHTML =
+              '<tr><td class="py-4 pr-4 text-slate-300" colspan="5"><span class="tm-mono text-slate-400">No code pages found on hub.</span></td></tr>';
+            return;
+          }
+
+          var coreLinksHtml =
+            '<ul class="space-y-1 tm-mono text-xs text-slate-300">' +
+              '<li><a class="text-purple-300 hover:text-purple-200" href="' + escapeHtml(HUB_URL) + '">' + escapeHtml(HUB_URL) + '</a></li>' +
+              '<li><a class="text-purple-300 hover:text-purple-200" href="' + escapeHtml(PILLAR_URL) + '">' + escapeHtml(PILLAR_URL) + '</a></li>' +
+              '<li><a class="text-purple-300 hover:text-purple-200" href="' + escapeHtml(PARSER_URL) + '">' + escapeHtml(PARSER_URL) + '</a></li>' +
+            '</ul>';
+
+          var html = '';
+          for (var i = 0; i < items.length; i++) {
+            var it = items[i];
+            var related = (it.relatedCodes || []).slice(0, 3);
+
+            while (related.length < 3) related.push('—');
+
+            var relatedHtml =
+              '<ol class="space-y-1 tm-mono text-xs text-slate-300">' +
+                related.map(function (r) {
+                  if (r === '—') return '<li>—</li>';
+                  return '<li>' + escapeHtml(r) + '</li>';
+                }).join('') +
+              '</ol>';
+
+            html +=
+              '<tr>' +
+                '<td class="py-4 pr-4 align-top tm-mono text-slate-200 font-semibold">' + escapeHtml(String(it.code)) + '</td>' +
+                '<td class="py-4 pr-4 align-top text-slate-200">' + escapeHtml(it.title || 'Untitled') + '</td>' +
+                '<td class="py-4 pr-4 align-top tm-mono text-slate-300">' +
+                  '<a class="text-purple-300 hover:text-purple-200" href="' + escapeHtml(it.url) + '">' + escapeHtml(it.url) + '</a>' +
+                '</td>' +
+                '<td class="py-4 pr-4 align-top">' + coreLinksHtml + '</td>' +
+                '<td class="py-4 pr-4 align-top">' + relatedHtml + '</td>' +
+              '</tr>';
+          }
+
+          rowsEl.innerHTML = html;
+        }
+
+        async function fetchText(url) {
+          var res = await fetch(url, { credentials: 'same-origin' });
+          if (!res.ok) throw new Error('Fetch failed: ' + url + ' (' + res.status + ')');
+          return await res.text();
+        }
+
+        function extractCodeLinksFromHub(hubHtml) {
+          var doc = new DOMParser().parseFromString(hubHtml, 'text/html');
+          var anchors = Array.from(doc.querySelectorAll('a[href]'));
+
+          var links = anchors
+            .map(function (a) { return a.getAttribute('href'); })
+            .filter(function (href) { return /\/resources\/irs-code-\d+-meaning\.html/i.test(String(href || '')); });
+
+          links = unique(links);
+
+          return links
+            .map(function (href) {
+              return { code: codeFromHref(href), url: href };
+            })
+            .filter(function (x) { return typeof x.code === 'number' && !Number.isNaN(x.code); })
+            .sort(sortByCode);
+        }
+
+        function extractRelatedCodes(pageHtml, selfCode) {
+          var doc = new DOMParser().parseFromString(pageHtml, 'text/html');
+          var anchors = Array.from(doc.querySelectorAll('a[href]'));
+
+          var codes = anchors
+            .map(function (a) { return a.getAttribute('href'); })
+            .filter(function (href) { return /\/resources\/irs-code-\d+-meaning\.html/i.test(String(href || '')); })
+            .map(function (href) { return codeFromHref(href); })
+            .filter(function (c) { return typeof c === 'number' && !Number.isNaN(c) && c !== selfCode; });
+
+          codes = unique(codes).slice(0, 3);
+          return codes.map(function (c) { return 'TC ' + String(c); });
+        }
+
+        async function buildInventory() {
+          clearError();
+          renderLoading();
+
+          var start = Date.now();
+          var hubHtml = await fetchText(HUB_URL);
+          var codeLinks = extractCodeLinksFromHub(hubHtml);
+
+          var results = [];
+          for (var i = 0; i < codeLinks.length; i++) {
+            var item = codeLinks[i];
+            try {
+              var pageHtml = await fetchText(item.url);
+              var doc = new DOMParser().parseFromString(pageHtml, 'text/html');
+              var title = (doc.querySelector('title') && doc.querySelector('title').textContent) ? doc.querySelector('title').textContent.trim() : 'Untitled';
+              var related = extractRelatedCodes(pageHtml, item.code);
+
+              results.push({
+                code: item.code,
+                title: title,
+                url: item.url,
+                relatedCodes: related
+              });
+            } catch (e) {
+              results.push({
+                code: item.code,
+                title: 'Unreadable (fetch failed)',
+                url: item.url,
+                relatedCodes: []
+              });
+            }
+          }
+
+          results.sort(sortByCode);
+          renderRows(results);
+
+          if (metaEl) {
+            var ms = Date.now() - start;
+            metaEl.textContent = 'Built at ' + new Date().toISOString() + ' • ' + results.length + ' code pages • ' + ms + 'ms';
+          }
+        }
+
+        if (refreshBtn) refreshBtn.addEventListener('click', function () { buildInventory().catch(function (e) { setError(String(e && e.message ? e.message : e)); }); });
+
+        buildInventory().catch(function (e) {
+          setError(String(e && e.message ? e.message : e));
+        });
+      })();
+    </script>
+  </body>
+</html>

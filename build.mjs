@@ -165,6 +165,28 @@ async function main() {
     await cp(src, dst, { recursive: true });
   }
 
+  /**
+   * Hard guard: ensure _sdk copies correctly
+   * Why: /_sdk/data_sdk.js is a required runtime dependency for site pages.
+   */
+  {
+    const sdkSrc = path.join(__dirname, "_sdk");
+    const sdkDst = path.join(DIST, "_sdk");
+
+    if (await exists(sdkSrc)) {
+      // Re-copy explicitly to avoid any silent skip in the directory loop.
+      await cp(sdkSrc, sdkDst, { recursive: true });
+
+      const required = path.join(sdkDst, "data_sdk.js");
+      if (!(await exists(required))) {
+        throw new Error(
+          `Build output missing required file: ${required}\n` +
+            `Ensure _sdk/data_sdk.js exists in repo and is copied into dist/_sdk/.`
+        );
+      }
+    }
+  }
+
   // Copy root files (if they exist)
   for (const file of COPY_FILES) {
     const src = path.join(__dirname, file);

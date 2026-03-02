@@ -1,0 +1,840 @@
+<!-- resources/transcript-types.html -->
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Only Transcripts We Can Accept</title>
+
+  <!-- Tailwind (CDN). Yes, we are keeping it. -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['DM Sans', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial']
+          }
+        }
+      }
+    };
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/styles/site.css?v=1" />
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+  <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+
+  <style>
+    @keyframes tmFadeUp {
+      0% { opacity: 0; transform: translateY(14px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .tm-anim { opacity: 0; transform: translateY(14px); }
+    .tm-loaded .tm-anim { animation: tmFadeUp 700ms ease forwards; }
+    .tm-loaded .tm-anim.delay-1 { animation-delay: 80ms; }
+    .tm-loaded .tm-anim.delay-2 { animation-delay: 160ms; }
+    .tm-loaded .tm-anim.delay-3 { animation-delay: 240ms; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tm-anim { opacity: 1 !important; transform: none !important; }
+      .tm-loaded .tm-anim { animation: none !important; }
+    }
+
+    /*
+      Whitepaper look (borrowed from report.html vibe):
+      - dark backdrop
+      - centered "paper" page(s)
+    */
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'DM Sans', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+
+    body {
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(168, 85, 247, 0.18), transparent 55%),
+        radial-gradient(900px 500px at 80% 10%, rgba(249, 115, 22, 0.12), transparent 55%),
+        radial-gradient(700px 500px at 50% 120%, rgba(59, 130, 246, 0.10), transparent 55%),
+        #020617;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .paper-wrap {
+      width: 100%;
+      padding: 34px 16px 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .paper {
+      width: 100%;
+      max-width: 8.5in;
+      background: #fff;
+      color: #0b0a14;
+      border-radius: 16px;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.35);
+      overflow: hidden;
+    }
+
+    .paper-inner {
+      padding: 56px;
+      background: #fff;
+    }
+
+    .paper-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      margin-bottom: 34px;
+      padding-bottom: 18px;
+      border-bottom: 2px solid #0b0a14;
+    }
+
+    .paper-header h1 {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+      line-height: 1.1;
+      margin: 0;
+    }
+
+    .paper-header p {
+      margin: 8px 0 0;
+      font-size: 12px;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 800;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      color: #0b0a14;
+      white-space: nowrap;
+    }
+
+    .badge.accepted {
+      border-color: rgba(16,185,129,0.35);
+      background: rgba(16,185,129,0.08);
+      color: #065f46;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #0b0a14;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 14px;
+      padding-left: 10px;
+      border-left: 4px solid #7c3aed;
+    }
+
+    .callout {
+      background: rgba(124, 58, 237, 0.08);
+      border-left: 4px solid #7c3aed;
+      padding: 16px;
+      border-radius: 12px;
+      color: #374151;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #ffffff 0%, #fbfbff 100%);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 16px;
+      border-bottom: 1px solid #eef2ff;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 800;
+      color: #0b0a14;
+      line-height: 1.2;
+    }
+
+    .card-sub {
+      margin: 6px 0 0;
+      font-size: 13px;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+
+    .preview {
+      padding: 14px 16px 16px;
+      background: #f9fafb;
+    }
+
+    .preview-box {
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 14px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+      font-size: 12px;
+      line-height: 1.55;
+      color: #0b0a14;
+    }
+
+    /* IRS-like transcript layout helpers (inside preview boxes) */
+    .irs-sample { white-space: normal; }
+    .irs-line { white-space: pre; }
+    .irs-center { text-align: center; }
+    .irs-title { font-weight: 800; margin: 2px 0 8px; }
+    .irs-strong { font-weight: 800; }
+    .irs-gap { height: 10px; }
+    .irs-block { white-space: pre; }
+
+    .irs-paragraph {
+      white-space: normal;
+      line-height: 1.6;
+      max-width: 100%;
+    }
+
+    .irs-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .irs-topmeta { margin-top: 6px; }
+
+    .irs-right {
+      justify-self: end;
+      width: 320px;
+    }
+
+    .irs-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      white-space: nowrap;
+    }
+
+    .irs-wide-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      white-space: nowrap;
+    }
+
+    .irs-wide-row > span:last-child {
+      text-align: right;
+      min-width: 120px;
+    }
+
+    .irs-k { font-weight: 600; }
+    .irs-v { text-align: right; }
+
+    @media (max-width: 520px) {
+      .irs-grid { grid-template-columns: 1fr; }
+      .irs-right { width: 100%; justify-self: start; }
+      .irs-row { white-space: normal; }
+      .irs-v { text-align: left; }
+    }
+
+    .preview-muted { color: #6b7280; }
+
+    .mini-rule {
+      height: 1px;
+      background: #e5e7eb;
+      margin: 10px 0;
+    }
+
+    .list {
+      margin: 0;
+      padding-left: 18px;
+      color: #374151;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .footer-note {
+      margin-top: 36px;
+      padding-top: 16px;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      font-size: 12px;
+      color: #9ca3af;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 900px) {
+      .paper-inner { padding: 34px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      body {
+        background: #fff !important;
+        color: #000 !important;
+      }
+
+      header, footer { display: none !important; }
+      .paper-wrap { padding: 0 !important; }
+      .paper { box-shadow: none !important; border-radius: 0 !important; }
+      .paper-inner { padding: 0.75in !important; }
+    }
+  </style>
+</head>
+
+<body class="h-full noise font-sans">
+  <div id="app-container" class="h-full overflow-auto">
+
+    <!-- Sticky Header (same as magnets/guide.html) -->
+    <header class="tm-no-print sticky top-0 z-50 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur">
+      <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
+        <a href="https://transcript.taxmonitor.pro/" class="flex items-center gap-3 text-white">
+          <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-purple-500 text-slate-950 font-extrabold">TM</span>
+          <div class="leading-tight">
+            <div class="text-sm font-semibold">Transcript.Tax Monitor Pro</div>
+            <div class="text-[11px] text-white/60">Accepted Transcript Types</div>
+          </div>
+        </a>
+
+        <div class="flex items-center gap-2">
+          <a
+            href="/"
+            class="inline-flex items-center gap-2 rounded-xl border border-slate-800/60 bg-slate-950/60 px-3 py-2 text-sm font-semibold text-white/80 backdrop-blur hover:text-white transition"
+          >
+            <svg class="h-5 w-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+            Back
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="py-10">
+      <div class="paper-wrap tm-anim">
+        <article class="paper">
+          <div class="paper-inner">
+
+            <header class="paper-header">
+              <div>
+                <h1>Only transcripts we can accept</h1>
+                <p>Upload exactly one of the four types below</p>
+              </div>
+              <div class="badge accepted">✓ Accepted formats</div>
+            </header>
+
+            <section class="section">
+              <div class="section-title">Why we’re picky</div>
+              <div class="callout">
+                Our transcript automation relies on consistent, machine-readable sections.
+                If the transcript doesn’t match these four formats, it either fails parsing or produces bad results.
+                Bad results are fun for nobody.
+              </div>
+            </section>
+
+            <section class="section">
+              <div class="section-title">Accepted Transcript Types</div>
+
+              <div class="callout" style="margin-bottom: 18px;">
+                Use this page as a visual checklist. Each accepted type has its own section below with a sample that matches the IRS layout.
+                Your upload should look like these, including the first-page header.
+              </div>
+
+              <nav aria-label="Transcript type navigation" style="margin-bottom: 18px;">
+                <div class="grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;">
+                  <a href="#account-transcript" class="badge accepted" style="justify-content: center; text-decoration: none;">Account Transcript</a>
+                  <a href="#record-of-account" class="badge accepted" style="justify-content: center; text-decoration: none;">Record of Account Transcript</a>
+                  <a href="#tax-return-transcript" class="badge accepted" style="justify-content: center; text-decoration: none;">Tax Return Transcript</a>
+                  <a href="#wage-income" class="badge accepted" style="justify-content: center; text-decoration: none;">Wage and Income Transcript</a>
+                </div>
+              </nav>
+
+              <!-- 1) Account Transcript -->
+              <section id="account-transcript" class="section" style="margin-bottom: 34px;">
+                <div class="section-title">Account Transcript</div>
+                <div class="callout" style="margin-bottom: 14px;">
+                  Used for balances, accruals, and transaction code activity. This transcript usually includes an “Information from the return or as adjusted” block and balance lines.
+                </div>
+
+                <div class="card">
+                  <div class="card-top">
+                    <div>
+                      <h2 class="card-title">What it should look like</h2>
+                      <p class="card-sub">First page includes the exact sensitive-data header + the “Form 1040 Account Transcript” title.</p>
+                    </div>
+                    <div class="badge accepted">Accepted</div>
+                  </div>
+                  <div class="preview">
+                    <div class="preview-box" role="region" aria-label="Account Transcript sample" style="overflow-x: auto;">
+                      <div class="irs-sample">
+
+                        <div class="irs-line irs-center">Internal Revenue Service</div>
+                        <div class="irs-line irs-center preview-muted">United States Department of the Treasury</div>
+                        <div class="mini-rule"></div>
+                        <div class="irs-line irs-center" style="border: 2px solid #0b0a14; padding: 2px 8px;">This Product Contains Sensitive Taxpayer Data</div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-title irs-center">Form 1040 Account Transcript</div>
+
+                        <div class="irs-grid irs-topmeta">
+                          <div class="irs-left"></div>
+                          <div class="irs-right">
+                            <div class="irs-row"><span class="irs-k">Request Date:</span><span class="irs-v">MM-DD-YYYY</span></div>
+                            <div class="irs-row"><span class="irs-k">Response Date:</span><span class="irs-v">MM-DD-YYYY</span></div>
+                            <div class="irs-row"><span class="irs-k">Tracking Number:</span><span class="irs-v">###########</span></div>
+                          </div>
+                        </div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-wide-row"><span class="irs-k">Form Number:</span><span class="irs-v">1040</span></div>
+                        <div class="irs-wide-row"><span class="irs-k">Report for Tax Period Ending:</span><span class="irs-v">MM-DD-YYYY</span></div>
+                        <div class="irs-wide-row"><span class="irs-k">Taxpayer Identification Number:</span><span class="irs-v">XXX-XX-XXXX</span></div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-block">TAXPAYER NAME</div>
+                        <div class="irs-block">ADDRESS LINE</div>
+                        <div class="irs-block">CITY, ST ZIP</div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-center">--- Any minus sign shown below signifies a credit amount ---</div>
+                        <div class="irs-gap"></div>
+
+                        <div class="irs-grid">
+                          <div class="irs-left">
+                            <div class="irs-row"><span class="irs-k">Account balance:</span><span class="irs-v">$0.00</span></div>
+                            <div class="irs-row"><span class="irs-k">Accrued interest:</span><span class="irs-v">$0.00</span></div>
+                            <div class="irs-row"><span class="irs-k">Accrued penalty:</span><span class="irs-v">$0.00</span></div>
+                            <div class="irs-row"><span class="irs-k">Account balance plus accruals (this is not a payoff amount):</span><span class="irs-v">$0.00</span></div>
+                          </div>
+                          <div class="irs-right">
+                            <div class="irs-row"><span class="irs-k">As of:</span><span class="irs-v">MM-DD-YYYY</span></div>
+                            <div class="irs-row"><span class="irs-k">As of:</span><span class="irs-v">MM-DD-YYYY</span></div>
+                            <div class="irs-row"><span class="irs-k">As of:</span><span class="irs-v">MM-DD-YYYY</span></div>
+                            <div class="irs-row"><span class="irs-k">As of:</span><span class="irs-v">MM-DD-YYYY</span></div>
+                          </div>
+                        </div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-center">** Information from the return or as adjusted **</div>
+                        <div class="irs-gap"></div>
+
+                        <div class="irs-grid">
+                          <div class="irs-left">
+                            <div class="irs-row"><span class="irs-k">Exemptions:</span><span class="irs-v">01</span></div>
+                            <div class="irs-row"><span class="irs-k">Filing status:</span><span class="irs-v">Single</span></div>
+                            <div class="irs-row"><span class="irs-k">Adjusted gross income:</span><span class="irs-v">$0.00</span></div>
+                            <div class="irs-row"><span class="irs-k">Taxable income:</span><span class="irs-v">$0.00</span></div>
+                            <div class="irs-row"><span class="irs-k">Tax per return:</span><span class="irs-v">$0.00</span></div>
+                            <div class="irs-row"><span class="irs-k">SE taxable income taxpayer:</span><span class="irs-v">$0.00</span></div>
+                            <div class="irs-row"><span class="irs-k">SE taxable income spouse:</span><span class="irs-v">$0.00</span></div>
+                            <div class="irs-row"><span class="irs-k">Total self employment tax:</span><span class="irs-v">$0.00</span></div>
+                            <div class="irs-row"><span class="irs-k">Return due date or return received date (whichever is later):</span><span class="irs-v">MM-DD-YYYY</span></div>
+                            <div class="irs-row"><span class="irs-k">Processing date:</span><span class="irs-v">MM-DD-YYYY</span></div>
+                          </div>
+                          <div class="irs-right"></div>
+                        </div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-center irs-strong">TRANSACTIONS</div>
+                        <div class="irs-gap"></div>
+
+                        <div class="irs-line irs-strong">CODE  EXPLANATION OF TRANSACTION                         CYCLE     DATE        AMOUNT</div>
+                        <div class="irs-line">150   Tax return filed                                   ######    MM-DD-YYYY   $0.00</div>
+                        <div class="irs-line">      29221-137-64010-5</div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-line irs-center">This Product Contains Sensitive Taxpayer Data</div>
+                        <div class="irs-line irs-center">Page 1/1</div>$1</div>
+                </div>
+              </section>
+
+              <!-- 2) Record of Account Transcript -->
+              <section id="record-of-account" class="section" style="margin-bottom: 34px;">
+                <div class="section-title">Record of Account Transcript</div>
+                <div class="callout" style="margin-bottom: 14px;">
+                  Combines return details and account activity in one document. It often looks like an Account Transcript plus return-summary fields.
+                </div>
+
+                <div class="card">
+                  <div class="card-top">
+                    <div>
+                      <h2 class="card-title">What it should look like</h2>
+                      <p class="card-sub">IRS header + boxed sensitive-data line + “Form 1040 Record of Account” title, with right-aligned request/response/tracking.</p>
+                    </div>
+                    <div class="badge accepted">Accepted</div>
+                  </div>
+                  <div class="preview">
+                    <div class="preview-box" role="region" aria-label="Record of Account Transcript sample" style="overflow-x: auto;">
+                      <div class="irs-sample">
+
+                        <div class="irs-line irs-center">Internal Revenue Service</div>
+                        <div class="irs-line irs-center preview-muted">United States Department of the Treasury</div>
+                        <div class="mini-rule"></div>
+                        <div class="irs-line irs-center" style="border: 2px solid #0b0a14; padding: 2px 8px;">This Product Contains Sensitive Taxpayer Data</div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-title irs-center">Form 1040 Record of Account</div>
+
+                        <div class="irs-grid irs-topmeta">
+                          <div class="irs-left"></div>
+                          <div class="irs-right">
+                            <div class="irs-row"><span class="irs-k">Request Date:</span><span class="irs-v">MM-DD-YYYY</span></div>
+                            <div class="irs-row"><span class="irs-k">Response Date:</span><span class="irs-v">MM-DD-YYYY</span></div>
+                            <div class="irs-row"><span class="irs-k">Tracking Number:</span><span class="irs-v">###########</span></div>
+                          </div>
+                        </div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-wide-row"><span class="irs-k">Form Number:</span><span class="irs-v">1040</span></div>
+                        <div class="irs-wide-row"><span class="irs-k">Report for Tax Period Ending:</span><span class="irs-v">MM-DD-YYYY</span></div>
+                        <div class="irs-wide-row"><span class="irs-k">Taxpayer Identification Number:</span><span class="irs-v">XXX-XX-XXXX</span></div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-block">TAXPAYER NAME</div>
+                        <div class="irs-block">ADDRESS LINE</div>
+                        <div class="irs-block">CITY, ST ZIP</div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-center">--- Any minus sign shown below signifies a credit amount ---</div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-grid">
+                          <div class="irs-left">
+                            <div class="irs-row"><span class="irs-k">Account balance:</span><span class="irs-v">$0.00</span></div>
+                            <div class="irs-row"><span class="irs-k">Accrued interest:</span><span class="irs-v">$0.00</span></div>
+                            <div class="irs-row"><span class="irs-k">Accrued penalty:</span><span class="irs-v">$0.00</span></div>
+                            <div class="irs-row"><span class="irs-k">Account balance plus accruals (this is not a payoff amount):</span><span class="irs-v">$0.00</span></div>
+                          </div>
+                          <div class="irs-right">
+                            <div class="irs-row"><span class="irs-k">As of:</span><span class="irs-v">MM-DD-YYYY</span></div>
+                            <div class="irs-row"><span class="irs-k">As of:</span><span class="irs-v">MM-DD-YYYY</span></div>
+                            <div class="irs-row"><span class="irs-k">As of:</span><span class="irs-v">MM-DD-YYYY</span></div>
+                            <div class="irs-row"><span class="irs-k">As of:</span><span class="irs-v">MM-DD-YYYY</span></div>
+                          </div>
+                        </div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-center">** Information from the return or as adjusted **</div>
+                        <div class="irs-gap"></div>
+
+                        <div class="irs-grid">
+                          <div class="irs-left">
+                            <div class="irs-row"><span class="irs-k">Exemptions:</span><span class="irs-v">01</span></div>
+                            <div class="irs-row"><span class="irs-k">Filing status:</span><span class="irs-v">Single</span></div>
+                            <div class="irs-row"><span class="irs-k">Adjusted gross income:</span><span class="irs-v">$0.00</span></div>
+                            <div class="irs-row"><span class="irs-k">Taxable income:</span><span class="irs-v">$0.00</span></div>
+                            <div class="irs-row"><span class="irs-k">Tax per return:</span><span class="irs-v">$0.00</span></div>
+                            <div class="irs-row"><span class="irs-k">Processing date:</span><span class="irs-v">MM-DD-YYYY</span></div>
+                          </div>
+                          <div class="irs-right"></div>
+                        </div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-center irs-strong">TRANSACTIONS</div>
+                        <div class="irs-gap"></div>
+
+                        <div class="irs-line irs-strong">CODE  EXPLANATION OF TRANSACTION                         CYCLE     DATE        AMOUNT</div>
+                        <div class="irs-line">150   Tax return filed                                   ######    MM-DD-YYYY   $0.00</div>
+                        <div class="irs-line">      29221-137-64010-5</div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-wide-row"><span class="irs-k">SSN provided:</span><span class="irs-v">XXX-XX-XXXX</span></div>
+                        <div class="irs-wide-row"><span class="irs-k">Report for Tax Period Ending:</span><span class="irs-v">MM-DD-YYYY</span></div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-paragraph irs-strong">The following items reflect the amount as shown on the return, and the amount as adjusted, if applicable. They do not show subsequent activity on the account.</div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-line irs-center">This Product Contains Sensitive Taxpayer Data</div>
+                        <div class="irs-line irs-center">Page 1/6</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 3) Tax Return Transcript -->
+              <section id="tax-return-transcript" class="section" style="margin-bottom: 34px;">
+                <div class="section-title">Tax Return Transcript</div>
+                <div class="callout" style="margin-bottom: 14px;">
+                  Shows line items from the filed return (income, adjustments, credits). It typically states that it does not show subsequent activity on the account.
+                </div>
+
+                <div class="card">
+                  <div class="card-top">
+                    <div>
+                      <h2 class="card-title">What it should look like</h2>
+                      <p class="card-sub">First page includes the sensitive-data header + the “Form 1040 Tax Return Transcript” title, with right-aligned request/response/tracking.</p>
+                    </div>
+                    <div class="badge accepted">Accepted</div>
+                  </div>
+                  <div class="preview">
+                    <div class="preview-box" role="region" aria-label="Tax Return Transcript sample" style="overflow-x: auto;">
+                      <div class="irs-sample">
+
+                        <div class="irs-line irs-center">Internal Revenue Service</div>
+                        <div class="irs-line irs-center preview-muted">United States Department of the Treasury</div>
+                        <div class="mini-rule"></div>
+                        <div class="irs-line irs-center">This Product Contains Sensitive Taxpayer Data</div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-title irs-center">Form 1040 Tax Return Transcript</div>
+
+                        <div class="irs-grid irs-topmeta">
+                          <div class="irs-left"></div>
+                          <div class="irs-right">
+                            <div class="irs-row"><span class="irs-k">Request Date:</span><span class="irs-v">MM-DD-YYYY</span></div>
+                            <div class="irs-row"><span class="irs-k">Response Date:</span><span class="irs-v">MM-DD-YYYY</span></div>
+                            <div class="irs-row"><span class="irs-k">Tracking Number:</span><span class="irs-v">###########</span></div>
+                          </div>
+                        </div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-wide-row"><span class="irs-k">SSN provided:</span><span class="irs-v">XXX-XX-XXXX</span></div>
+                        <div class="irs-wide-row"><span class="irs-k">Report for Tax Period Ending:</span><span class="irs-v">MM-DD-YYYY</span></div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-paragraph irs-strong">The following items reflect the amount as shown on the return, and the amount as adjusted, if applicable. They do not show subsequent activity on the account.</div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-wide-row"><span class="irs-k">SSN:</span><span class="irs-v">XXX-XX-XXXX</span></div>
+                        <div class="irs-wide-row"><span class="irs-k">Spouse SSN:</span><span class="irs-v">&nbsp;</span></div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-block">TAXPAYER NAME</div>
+                        <div class="irs-block">ADDRESS LINE</div>
+                        <div class="irs-block">CITY, ST ZIP</div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-wide-row"><span class="irs-k">Filing status:</span><span class="irs-v">Single Taxpayer</span></div>
+                        <div class="irs-wide-row"><span class="irs-k">Form number:</span><span class="irs-v">1040</span></div>
+                        <div class="irs-wide-row"><span class="irs-k">Cycle posted:</span><span class="irs-v">######</span></div>
+                        <div class="irs-wide-row"><span class="irs-k">Received date:</span><span class="irs-v">MM-DD-YYYY</span></div>
+                        <div class="irs-wide-row"><span class="irs-k">Payment:</span><span class="irs-v">$0.00</span></div>
+                        <div class="irs-wide-row"><span class="irs-k">Exemption number:</span><span class="irs-v">01</span></div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-center irs-strong">Income</div>
+                        <div class="irs-gap"></div>
+
+                        <div class="irs-wide-row"><span>Total wages:</span><span class="irs-v">$0.00</span></div>
+                        <div class="irs-wide-row"><span>Form W-2 wages:</span><span class="irs-v">$0.00</span></div>
+                        <div class="irs-wide-row"><span>Taxable interest income (Schedule B):</span><span class="irs-v">$0.00</span></div>
+                        <div class="irs-wide-row"><span>Tax-exempt interest:</span><span class="irs-v">$0.00</span></div>
+                        <div class="irs-wide-row"><span>Ordinary dividend income (Schedule B):</span><span class="irs-v">$0.00</span></div>
+                        <div class="irs-wide-row"><span>Qualified dividends:</span><span class="irs-v">$0.00</span></div>
+                        <div class="irs-wide-row"><span>Refunds of state/local taxes:</span><span class="irs-v">$0.00</span></div>
+                        <div class="irs-wide-row"><span>Alimony received:</span><span class="irs-v">$0.00</span></div>
+                        <div class="irs-wide-row"><span>Business income or loss (Schedule C):</span><span class="irs-v">$0.00</span></div>
+                        <div class="irs-wide-row"><span>Capital gain or loss (Schedule D):</span><span class="irs-v">$0.00</span></div>
+                        <div class="irs-wide-row"><span>Other gain or loss (Form 4797):</span><span class="irs-v">$0.00</span></div>
+                        <div class="irs-wide-row"><span>Total IRA distributions:</span><span class="irs-v">$0.00</span></div>
+                        <div class="irs-wide-row"><span>Taxable IRA distributions:</span><span class="irs-v">$0.00</span></div>
+                        <div class="irs-wide-row"><span>Total pensions and annuities:</span><span class="irs-v">$0.00</span></div>
+                        <div class="irs-wide-row"><span>Taxable pension/annuity amount:</span><span class="irs-v">$0.00</span></div>
+                        <div class="irs-wide-row"><span>Additional income:</span><span class="irs-v">$0.00</span></div>
+                        <div class="irs-wide-row"><span>Adjusted gross income per computer:</span><span class="irs-v">$0.00</span></div>
+                        <div class="irs-wide-row"><span>Refundable credits per computer:</span><span class="irs-v">$0.00</span></div>
+                        <div class="irs-wide-row"><span>Nonrefundable education credit per computer:</span><span class="irs-v">$0.00</span></div>
+                        <div class="irs-wide-row"><span>Qualified business income deduction:</span><span class="irs-v">$0.00</span></div>
+                        <div class="irs-wide-row"><span>Rent/royalty/partnership/estate (Schedule E) per computer:</span><span class="irs-v">$0.00</span></div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-line irs-center">This Product Contains Sensitive Taxpayer Data</div>
+                        <div class="irs-line irs-center">Page 1/1</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 4) Wage and Income Transcript -->
+              <section id="wage-income" class="section" style="margin-bottom: 10px;">
+                <div class="section-title">Wage and Income Transcript</div>
+                <div class="callout" style="margin-bottom: 14px;">
+                  Lists third-party information returns (W-2, 1099 series, brokerage, etc.). The first section commonly starts with “Form W-2 Wage and Tax Statement.”
+                </div>
+
+                <div class="card">
+                  <div class="card-top">
+                    <div>
+                      <h2 class="card-title">What it should look like</h2>
+                      <p class="card-sub">IRS header + boxed sensitive-data line + “Wage and Income Transcript” title, with right-aligned request/response/tracking.</p>
+                    </div>
+                    <div class="badge accepted">Accepted</div>
+                  </div>
+                  <div class="preview">
+                    <div class="preview-box" role="region" aria-label="Wage and Income Transcript sample" style="overflow-x: auto;">
+                      <div class="irs-sample">
+
+                        <div class="irs-line irs-center">Internal Revenue Service</div>
+                        <div class="irs-line irs-center preview-muted">United States Department of the Treasury</div>
+                        <div class="mini-rule"></div>
+                        <div class="irs-line irs-center" style="border: 2px solid #0b0a14; padding: 2px 8px;">This Product Contains Sensitive Taxpayer Data</div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-title irs-center">Wage and Income Transcript</div>
+
+                        <div class="irs-grid irs-topmeta">
+                          <div class="irs-left">
+                            <div class="irs-wide-row"><span class="irs-k">TIN Provided:</span><span class="irs-v">XXX-XX-XXXX</span></div>
+                            <div class="irs-wide-row"><span class="irs-k">Tax Period Requested:</span><span class="irs-v">MM-DD-YYYY</span></div>
+                          </div>
+                          <div class="irs-right">
+                            <div class="irs-row"><span class="irs-k">Request Date:</span><span class="irs-v">MM-DD-YYYY</span></div>
+                            <div class="irs-row"><span class="irs-k">Response Date:</span><span class="irs-v">MM-DD-YYYY</span></div>
+                            <div class="irs-row"><span class="irs-k">Tracking Number:</span><span class="irs-v">###########</span></div>
+                          </div>
+                        </div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-center irs-strong">Form W-2 Wage and Tax Statement</div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-block irs-strong">Employer:</div>
+                        <div class="irs-wide-row"><span class="irs-k">Employer Identification Number (EIN):</span><span class="irs-v">XX-XXXXXXX</span></div>
+                        <div class="irs-block">EMPLOYER NAME</div>
+                        <div class="irs-block">ADDRESS LINE</div>
+                        <div class="irs-block">CITY, ST ZIP</div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-block irs-strong">Employee:</div>
+                        <div class="irs-wide-row"><span class="irs-k">Employee's Social Security Number:</span><span class="irs-v">XXX-XX-XXXX</span></div>
+                        <div class="irs-block">TAXPAYER NAME</div>
+                        <div class="irs-block">ADDRESS LINE</div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-wide-row"><span class="irs-k">Submission Type:</span><span class="irs-v">Original document</span></div>
+                        <div class="irs-wide-row"><span class="irs-k">Wages, Tips and Other Compensation:</span><span class="irs-v">$X,XXX.00</span></div>
+                        <div class="irs-wide-row"><span class="irs-k">Federal Income Tax Withheld:</span><span class="irs-v">$XXX.00</span></div>
+                        <div class="irs-wide-row"><span class="irs-k">Social Security Wages:</span><span class="irs-v">$X,XXX.00</span></div>
+                        <div class="irs-wide-row"><span class="irs-k">Social Security Tax Withheld:</span><span class="irs-v">$XXX.00</span></div>
+                        <div class="irs-wide-row"><span class="irs-k">Medicare Wages and Tips:</span><span class="irs-v">$X,XXX.00</span></div>
+                        <div class="irs-wide-row"><span class="irs-k">Medicare Tax Withheld:</span><span class="irs-v">$XXX.00</span></div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-center irs-strong">Form 1099-B Proceeds from Broker and Barter Exchange Transactions</div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-block irs-strong">Payer:</div>
+                        <div class="irs-wide-row"><span class="irs-k">Payer's Federal Identification Number (FIN):</span><span class="irs-v">XX-XXXXXXX</span></div>
+                        <div class="irs-block">PAYER NAME</div>
+                        <div class="irs-block">ADDRESS LINE</div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-block irs-strong">Recipient:</div>
+                        <div class="irs-wide-row"><span class="irs-k">Recipient's identification number:</span><span class="irs-v">XXX-XX-XXXX</span></div>
+                        <div class="irs-block">TAXPAYER NAME</div>
+
+                        <div class="irs-gap"></div>
+                        <div class="irs-line irs-center">This Product Contains Sensitive Taxpayer Data</div>
+                        <div class="irs-line irs-center">Page 1/2</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </section>
+
+            <section class="section">
+              <div class="section-title">What we do not accept</div>
+              <ul class="list">
+                <li>Photos of a screen (low contrast, skew, missing edges)</li>
+                <li>Partial pages (missing the first page header area)</li>
+                <li>Redacted or edited transcripts (we need the full structure to parse)</li>
+                <li>"Tax Compliance Report" style summaries (not an IRS transcript)</li>
+              </ul>
+            </section>
+
+            <section class="section">
+              <div class="section-title">Quick self-check</div>
+              <ul class="list">
+                <li>First page includes the phrase “This Product Contains Sensitive Taxpayer Data”</li>
+                <li>
+                  Title clearly says one of the following:<br>
+                  Account Transcript, Record of Account, Tax Return Transcript, Wage and Income Transcript
+                </li>
+                <li>The PDF is selectable text (you can highlight text, not just an image)</li>
+                <li>You included every page from page 1 to the last page</li>
+              </ul>
+            </section>
+
+            <div class="footer-note">
+              <span>Transcripts contain sensitive taxpayer data. Upload directly through this secure portal for automated processing.</span>
+              <span>Generated <span id="doc-date"></span></span>
+            </div>
+
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <!-- Footer (same as magnets/guide.html standalone footer) -->
+    <footer class="tm-no-print px-6 py-3 mt-1 border-t border-slate-800/60 bg-slate-950/80 backdrop-blur">
+      <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <p class="text-slate-500 text-sm">© <span id="footer-year"></span> Transcript.Tax Monitor Pro. All rights reserved.</p>
+        <div class="flex items-center gap-6">
+          <a href="/legal/privacy.html" class="text-slate-400 hover:text-purple-400 text-sm transition-colors">Privacy Policy</a>
+          <a href="/legal/terms.html" class="text-slate-400 hover:text-purple-400 text-sm transition-colors">Terms of Service</a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    (function () {
+      requestAnimationFrame(() => document.documentElement.classList.add('tm-loaded'));
+
+      var y = String(new Date().getFullYear());
+      var fy = document.getElementById('footer-year');
+      if (fy) fy.textContent = y;
+
+      var d = document.getElementById('doc-date');
+      if (d) d.textContent = new Date().toLocaleDateString();
+    })();
+  </script>
+</body>
+</html>

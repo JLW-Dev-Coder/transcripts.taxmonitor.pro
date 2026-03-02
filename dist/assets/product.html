@@ -1,0 +1,411 @@
+<!-- assets/product.html -->
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Transcript.Tax Monitor Pro - Product</title>
+
+  <!-- Tailwind (CDN). Yes, we are keeping it. -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: [
+              'DM Sans',
+              'ui-sans-serif',
+              'system-ui',
+              '-apple-system',
+              'Segoe UI',
+              'Roboto',
+              'Helvetica',
+              'Arial'
+            ]
+          }
+        }
+      }
+    };
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles/site.css?v=1" />
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+  <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+
+  <script>
+    if (typeof pdfjsLib !== 'undefined') {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.js";
+    }
+  </script>
+
+  <style>
+    @keyframes tmFadeUp {
+      0% { opacity: 0; transform: translateY(14px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .tm-anim { opacity: 0; transform: translateY(14px); }
+    .tm-loaded .tm-anim { animation: tmFadeUp 700ms ease forwards; }
+    .tm-loaded .tm-anim.delay-1 { animation-delay: 80ms; }
+    .tm-loaded .tm-anim.delay-2 { animation-delay: 160ms; }
+    .tm-loaded .tm-anim.delay-3 { animation-delay: 240ms; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tm-anim { opacity: 1 !important; transform: none !important; }
+      .tm-loaded .tm-anim { animation: none !important; }
+    }
+  </style>
+</head>
+
+<body class="h-full noise font-sans">
+  <div id="app-container" class="min-h-full overflow-auto">
+
+    <!-- Product Nav (shared style) -->
+    <header class="sticky top-0 z-50 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur">
+      <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
+        <a href="https://transcript.taxmonitor.pro/" class="flex items-center gap-3 text-white">
+          <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-purple-500 text-slate-950 font-extrabold">TM</span>
+          <div class="leading-tight">
+            <div class="text-sm font-semibold">Transcript.Tax Monitor Pro</div>
+            <div class="text-[11px] text-white/60">About product</div>
+          </div>
+        </a>
+
+        <div class="flex items-center gap-2">
+          <a href="/" class="inline-flex items-center gap-2 rounded-xl border border-slate-800/60 bg-slate-950/60 px-3 py-2 text-sm font-semibold text-white/80 backdrop-blur hover:text-white transition">
+            <svg class="h-5 w-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+            Back
+          </a>
+
+          <a href="#pricing" class="inline-flex items-center gap-2 rounded-xl border border-slate-800/60 bg-purple-600/90 px-4 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-purple-600 transition">
+            <svg class="h-5 w-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="5" width="20" height="14" rx="2" />
+              <path d="M2 10h20" />
+              <path d="M6 15h3" />
+            </svg>
+            Buy Credits
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- View Product (single page) -->
+    <main id="product" class="page-section active">
+
+      <!-- Hero -->
+      <section class="gradient-hero py-20">
+        <div class="max-w-5xl mx-auto px-6 text-center text-white tm-anim">
+          <div class="counter inline-block mb-6">
+            <span class="inline-flex items-center gap-2">
+              <svg class="w-4 h-4 text-gold" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2l1.2 5.3L18 9l-4.8 1.7L12 16l-1.2-5.3L6 9l4.8-1.7L12 2z" />
+                <path d="M19 3l.6 2.6L22 6.5l-2.4.9L19 10l-.6-2.6L16 6.5l2.4-.9L19 3z" />
+                <path d="M5 14l.6 2.6L8 17.5l-2.4.9L5 21l-.6-2.6L2 17.5l2.4-.9L5 14z" />
+              </svg>
+              <span>Transcript automation for tax pros</span>
+            </span>
+          </div>
+
+          <h1 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+            Turn IRS transcript chaos into a client-ready report
+          </h1>
+
+          <p class="text-xl text-white/80 mb-8 max-w-3xl mx-auto">
+            Parse PDFs locally (no uploads), interpret common TC patterns, and generate a clean summary you can send without writing the same explanation 50 times.
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="/index/#how-it-works" class="btn-secondary">Try the parser</a>
+            <a href="#pricing" class="btn-primary text-lg">Buy credits →</a>
+          </div>
+
+          <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 text-sm text-white/70">
+            <div class="inline-flex items-center gap-2">
+              <svg class="w-5 h-5 text-gold" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              Runs locally
+            </div>
+            <div class="hidden sm:block text-white/35">•</div>
+            <div class="inline-flex items-center gap-2">
+              <svg class="w-5 h-5 text-gold" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              No subscriptions
+            </div>
+            <div class="hidden sm:block text-white/35">•</div>
+            <div class="inline-flex items-center gap-2">
+              <svg class="w-5 h-5 text-gold" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              Credits apply instantly
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- What you get -->
+      <section id="features" class="py-20 bg-cream scroll-mt-28">
+        <div class="max-w-7xl mx-auto px-6 tm-anim delay-1">
+          <div class="text-center max-w-3xl mx-auto mb-16">
+            <div class="counter inline-block mb-4">
+              <span class="inline-flex items-center gap-2">
+                <svg class="w-4 h-4 text-gold" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2l1.2 5.3L18 9l-4.8 1.7L12 16l-1.2-5.3L6 9l4.8-1.7L12 2z" />
+                  <path d="M19 3l.6 2.6L22 6.5l-2.4.9L19 10l-.6-2.6L16 6.5l2.4-.9L19 3z" />
+                  <path d="M5 14l.6 2.6L8 17.5l-2.4.9L5 21l-.6-2.6L2 17.5l2.4-.9L5 14z" />
+                </svg>
+                <span>What you get</span>
+              </span>
+            </div>
+            <h2 class="font-display text-3xl md:text-4xl font-bold text-midnight mb-6">Built for the boring, repetitive part of your job</h2>
+            <p class="text-gray-600">You still do the thinking. This handles the transcript grunt work.</p>
+          </div>
+
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="card-elevated p-8">
+              <div class="feature-icon mb-6">
+                <svg class="w-7 h-7" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1" />
+                  <path d="M12 12v6" />
+                  <path d="M9 15l3 3 3-3" />
+                  <path d="M12 3v5" />
+                </svg>
+              </div>
+              <h3 class="font-bold text-xl text-midnight mb-3">Local PDF parsing</h3>
+              <p class="text-gray-600">Parse on-device so client transcript data does not get uploaded to random servers.</p>
+            </div>
+
+            <div class="card-elevated p-8">
+              <div class="feature-icon mb-6">
+                <svg class="w-7 h-7" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 12l2 2 4-4" />
+                  <path d="M20 12a8 8 0 11-16 0 8 8 0 0116 0z" />
+                </svg>
+              </div>
+              <h3 class="font-bold text-xl text-midnight mb-3">Plain-English summary</h3>
+              <p class="text-gray-600">Turn “what does this mean?” into a clean explanation you can send as a deliverable.</p>
+            </div>
+
+            <div class="card-elevated p-8">
+              <div class="feature-icon mb-6">
+                <svg class="w-7 h-7" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  <path d="M9 7h2" />
+                  <path d="M9 11h6" />
+                  <path d="M9 15h4" />
+                </svg>
+              </div>
+              <h3 class="font-bold text-xl text-midnight mb-3">Client-ready report format</h3>
+              <p class="text-gray-600">A polished layout so the transcript never has to be shown to the client again.</p>
+            </div>
+
+            <div class="card-elevated p-8">
+              <div class="feature-icon mb-6">
+                <svg class="w-7 h-7" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 3v18" />
+                  <path d="M5 12h14" />
+                </svg>
+              </div>
+              <h3 class="font-bold text-xl text-midnight mb-3">Branded output</h3>
+              <p class="text-gray-600">Add your logo so your deliverable looks like your firm made it (because it did).</p>
+            </div>
+
+            <div class="card-elevated p-8">
+              <div class="feature-icon mb-6">
+                <svg class="w-7 h-7" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 8v4l3 3" />
+                  <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 class="font-bold text-xl text-midnight mb-3">Fast turnaround</h3>
+              <p class="text-gray-600">Generate a consistent summary in minutes, not a 30-minute copy/paste spiral.</p>
+            </div>
+
+            <div class="card-elevated p-8">
+              <div class="feature-icon mb-6">
+                <svg class="w-7 h-7" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 15v2" />
+                  <path d="M6 21h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                  <path d="M8 11V7a4 4 0 018 0v4" />
+                </svg>
+              </div>
+              <h3 class="font-bold text-xl text-midnight mb-3">Private by design</h3>
+              <p class="text-gray-600">You keep control of the PDF. The tool does not need to "phone home" to be useful.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pricing -->
+      <section id="pricing" class="py-20 bg-cream scroll-mt-28">
+        <div class="max-w-7xl mx-auto px-6 tm-anim delay-2">
+          <div class="text-center max-w-3xl mx-auto mb-12">
+            <div class="counter inline-block mb-4">
+              <span class="inline-flex items-center gap-2">
+                <svg class="w-4 h-4 text-gold" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="5" width="20" height="14" rx="2" />
+                  <path d="M2 10h20" />
+                  <path d="M6 15h3" />
+                </svg>
+                <span>Pricing</span>
+              </span>
+            </div>
+            <h2 class="font-display text-3xl md:text-4xl font-bold text-midnight mb-4">Simple pricing. Buy credits. Move on.</h2>
+            <p class="text-gray-600">No subscriptions, no weird tiers, no drama.</p>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-8" id="pricing-grid">
+            <!-- injected by JS -->
+          </div>
+
+          <div class="mt-10 text-center text-xs text-gray-500">
+            Payments are processed by Stripe. Credits apply instantly after checkout.
+          </div>
+        </div>
+
+        <script>
+          (function () {
+            const PAYMENT_LINKS = [
+              {
+                credits: 10,
+                priceText: "$19",
+                recommended: false,
+                url: "https://billing.taxmonitor.pro/b/4gM8wOaAe1oKcUEdTkaR203",
+              },
+              {
+                credits: 100,
+                priceText: "$129",
+                recommended: false,
+                url: "https://billing.taxmonitor.pro/b/dRm8wO7o27N83k47uWaR205",
+              },
+              {
+                credits: 25,
+                priceText: "$29",
+                recommended: true,
+                url: "https://billing.taxmonitor.pro/b/cNi14m5fU3wS1bW9D4aR204",
+              },
+            ].slice().sort((a, b) => Number(a.credits || 0) - Number(b.credits || 0));
+
+            function renderPricing() {
+              const grid = document.getElementById("pricing-grid");
+              if (!grid) return;
+
+              grid.innerHTML = PAYMENT_LINKS.map((p) => {
+                const featured = Boolean(p.recommended);
+
+                const badge = featured
+                  ? `<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-purple-600 text-white">Most popular</div>`
+                  : `<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-slate-900/10 text-slate-800">Credits pack</div>`;
+
+                const cardClass = featured
+                  ? "card-elevated p-8 border-2 border-purple-500/30 relative flex flex-col"
+                  : "card-elevated p-8 flex flex-col";
+
+                const ctaClass = featured ? "btn-primary" : "btn-secondary";
+
+                const perks = [
+                  "Client-ready report preview",
+                  "Credits applied instantly",
+                  "Local PDF parsing (no uploads)",
+                ].slice().sort((a, b) => String(a).localeCompare(String(b)));
+
+                return `
+                  <div class="${cardClass}">
+                    <div class="flex items-center justify-between mb-5">
+                      ${badge}
+                      <div class="text-xs text-gray-500">Transcript.Tax Monitor Pro</div>
+                    </div>
+
+                    <div class="mb-5">
+                      <div class="text-4xl font-extrabold text-midnight leading-none">${Number(p.credits || 0)}</div>
+                      <div class="text-sm text-gray-600 mt-1">credits</div>
+                    </div>
+
+                    <div class="mb-6">
+                      <div class="text-2xl font-bold text-midnight">${String(p.priceText || "")}</div>
+                      <div class="text-xs text-gray-500 mt-1">one-time purchase</div>
+                    </div>
+
+                    <ul class="space-y-2 text-sm text-gray-700 mb-8">
+                      ${perks
+                        .map((perk) => `<li class="flex items-start gap-2"><span class="text-purple-600">✓</span><span>${perk}</span></li>`)
+                        .join("")}
+                    </ul>
+
+                    <div class="mt-auto flex justify-center">
+                      <a class="${ctaClass} inline-flex items-center justify-center" href="${String(p.url)}" target="_blank" rel="noopener">Pay with Stripe</a>
+                    </div>
+                  </div>
+                `;
+              }).join("");
+            }
+
+            function init() {
+              renderPricing();
+            }
+
+            if (document.readyState === "loading") {
+              document.addEventListener("DOMContentLoaded", init);
+            } else {
+              init();
+            }
+          })();
+        </script>
+      </section>
+
+      <!-- CTA -->
+      <section class="py-20 gradient-hero">
+        <div class="max-w-4xl mx-auto px-6 text-center tm-anim delay-3">
+          <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-6">Want to see the report layout first?</h2>
+          <p class="text-xl text-white/80 mb-8">Preview the client-facing format, then buy credits when you are ready.</p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="/assets/report-preview.html" class="btn-secondary">Preview report</a>
+            <a href="#pricing" class="btn-primary text-lg">Buy credits →</a>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer (standalone, no partial injection) -->
+    <footer class="px-6 py-3 mt-1 border-t border-slate-800/60 bg-slate-950/80 backdrop-blur">
+      <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <p class="text-slate-500 text-sm">© <span id="footer-year"></span> Transcript.Tax Monitor Pro. All rights reserved.</p>
+        <div class="flex items-center gap-6">
+          <a href="/legal/privacy.html" class="text-slate-400 hover:text-purple-400 text-sm transition-colors">Privacy Policy</a>
+          <a href="/legal/terms.html" class="text-slate-400 hover:text-purple-400 text-sm transition-colors">Terms of Service</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Toast Container (kept for consistency with site styles) -->
+    <div id="toast-container"></div>
+
+  </div>
+
+  <script>
+    (function () {
+      // Prevent the page from loading "flat".
+      requestAnimationFrame(() => document.documentElement.classList.add("tm-loaded"));
+
+      // Footer year
+      (function () {
+        const y = document.getElementById("footer-year");
+        if (y) y.textContent = String(new Date().getFullYear());
+      })();
+    })();
+  </script>
+</body>
+</html>

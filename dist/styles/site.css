@@ -1,0 +1,277 @@
+/* styles\site.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-midnight: #0b0a14;
+  --color-gold: #a855f7;
+  --color-cream: #faf7ff;
+  --color-navy: #2e1065;
+  --color-sage: #7c3aed;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'DM Sans', sans-serif;
+}
+
+body {
+  background:
+    radial-gradient(900px 500px at 10% 10%, rgba(168, 85, 247, .18), transparent 60%),
+    radial-gradient(900px 500px at 90% 20%, rgba(56, 189, 248, .10), transparent 55%),
+    radial-gradient(900px 600px at 40% 110%, rgba(34, 197, 94, .08), transparent 60%),
+    linear-gradient(180deg, #0b0a14 0%, #070713 100%);
+  color: #e5e7eb;
+}
+
+.noise:before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+  opacity: .35;
+  z-index: 0;
+}
+
+/* Dark theme overrides for Tailwind utility classes used in this file */
+.bg-cream, .bg-white { background: transparent !important; }
+.border-gray-200 { border-color: rgba(148, 163, 184, 0.18) !important; }
+.text-midnight { color: #f8fafc !important; }
+.text-gray-400 { color: rgba(226, 232, 240, 0.65) !important; }
+.text-gray-500 { color: rgba(226, 232, 240, 0.70) !important; }
+.text-gray-600 { color: rgba(226, 232, 240, 0.78) !important; }
+.text-gray-700 { color: rgba(226, 232, 240, 0.86) !important; }
+
+.glass {
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, .35);
+  backdrop-filter: blur(10px);
+}
+
+.gradient-border {
+  position: relative;
+  border-radius: 20px;
+}
+
+.gradient-border:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(168, 85, 247, .65), rgba(56, 189, 248, .20), rgba(34, 197, 94, .14));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: .9;
+}
+
+.font-display {
+  /* Keep headings consistent with the primary theme font. */
+  font-family: 'DM Sans', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+}
+
+.gradient-hero {
+  background: linear-gradient(135deg, var(--color-midnight) 0%, var(--color-navy) 45%, #4c1d95 100%);
+}
+
+.gradient-gold {
+  background: linear-gradient(135deg, var(--color-gold) 0%, #7c3aed 100%);
+}
+
+.text-gold { color: var(--color-gold); }
+.bg-midnight { background-color: var(--color-midnight); }
+.bg-cream { background-color: var(--color-cream); }
+.bg-navy { background-color: var(--color-navy); }
+.bg-sage { background-color: var(--color-sage); }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-gold) 0%, #7c3aed 100%);
+  color: white;
+  font-weight: 700;
+  padding: 1rem 2.5rem;
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 30px rgba(168, 85, 247, 0.28);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 44px rgba(168, 85, 247, 0.38);
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 2px solid rgba(168, 85, 247, 0.75);
+  color: rgba(233, 213, 255, 0.95);
+  font-weight: 700;
+  padding: 0.875rem 2rem;
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: rgba(168, 85, 247, 0.18);
+  border-color: rgba(168, 85, 247, 0.95);
+  color: white;
+}
+
+.card-elevated {
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 1rem;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, .35);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.card-elevated:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 24px 65px rgba(0, 0, 0, .45);
+}
+
+.page-section {
+  display: none;
+  animation: fadeIn 0.5s ease;
+}
+
+.page-section.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+.feature-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--color-gold) 0%, #7c3aed 100%);
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.counter {
+  background: rgba(168, 85, 247, 0.14);
+  border: 1px solid rgba(168, 85, 247, 0.45);
+  border-radius: 9999px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.875rem;
+  color: rgba(233, 213, 255, 0.95);
+}
+
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  color: white;
+  font-weight: 500;
+  z-index: 1000;
+  animation: slideIn 0.3s ease;
+}
+
+.toast-success { background: #7c3aed; }
+.toast-error { background: #dc2626; }
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.input-field {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(212, 168, 83, 0.3);
+  border-radius: 0.5rem;
+  padding: 0.875rem 1rem;
+  color: white;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--color-gold);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.input-field::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.input-field-light {
+  background: rgba(2, 6, 23, .35);
+  border: 1px solid rgba(148, 163, 184, .25);
+  color: #e5e7eb;
+}
+
+.input-field-light:focus {
+  border-color: rgba(168, 85, 247, .75);
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, .18);
+}
+
+.input-field-light::placeholder {
+  color: rgba(226, 232, 240, 0.55);
+}
+
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.check-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  background: #7c3aed;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.75rem;
+
+}
+
+/* SEO content helpers (shared) */
+.tm-card {
+  background: rgba(2, 6, 23, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.tm-soft {
+  background: rgba(2, 6, 23, 0.35);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.tm-kbd {
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(15, 23, 42, 0.65);
+}
+
+.tm-prose a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

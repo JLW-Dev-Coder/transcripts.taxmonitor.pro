@@ -1,0 +1,261 @@
+<!-- assets/confirmation.html -->
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Payment Confirmation | Transcript.Tax Monitor Pro</title>
+
+    <!-- Tailwind (CDN). Yes, we are keeping it. -->
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                'DM Sans',
+                'ui-sans-serif',
+                'system-ui',
+                '-apple-system',
+                'Segoe UI',
+                'Roboto',
+                'Helvetica',
+                'Arial'
+              ]
+            }
+          }
+        }
+      };
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="/styles/site.css?v=1" />
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+
+    <style>
+      @keyframes tmFadeUp {
+        0% {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .tm-anim {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      .tm-loaded .tm-anim {
+        animation: tmFadeUp 700ms ease forwards;
+      }
+      .tm-loaded .tm-anim.delay-1 {
+        animation-delay: 80ms;
+      }
+      .tm-loaded .tm-anim.delay-2 {
+        animation-delay: 160ms;
+      }
+      .tm-loaded .tm-anim.delay-3 {
+        animation-delay: 240ms;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .tm-anim {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+        .tm-loaded .tm-anim {
+          animation: none !important;
+        }
+      }
+
+      /* Print: make it look like a receipt */
+      @media print {
+        .tm-no-print {
+          display: none !important;
+        }
+        body {
+          background: #ffffff !important;
+        }
+        #receipt-card {
+          box-shadow: none !important;
+          border: 1px solid #e5e7eb !important;
+        }
+      }
+    
+
+      /* Force the receipt itself to stay "real" white (site.css can be… opinionated). */
+      #receipt-card {
+        background: #ffffff !important;
+      }
+      #receipt-card * {
+        filter: none !important;
+        opacity: 1 !important;
+      }
+      #receipt-card .tm-receipt-onwhite {
+        color: #0f172a !important;
+      }
+      #receipt-card .tm-receipt-muted {
+        color: #64748b !important;
+      }
+    </style>
+  </head>
+
+  <body class="h-full font-sans bg-slate-950 text-slate-300 overflow-auto">
+    <div id="app-container" class="min-h-full flex flex-col">
+      <!-- Sticky Header (standalone) -->
+      <header class="tm-no-print sticky top-0 z-50 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur">
+        <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
+          <a href="https://transcript.taxmonitor.pro/" class="flex items-center gap-3 text-white">
+            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-purple-500 text-slate-950 font-extrabold">TM</span>
+            <div class="leading-tight">
+              <div class="text-sm font-semibold">Transcript.Tax Monitor Pro</div>
+              <div class="text-[11px] text-white/60">Payment Confirmation</div>
+            </div>
+          </a>
+
+          <div class="flex items-center gap-2">
+            <a
+              href="/"
+              class="inline-flex items-center gap-2 rounded-xl border border-slate-800/60 bg-slate-950/60 px-3 py-2 text-sm font-semibold text-white/80 backdrop-blur hover:text-white transition"
+            >
+              <svg class="h-5 w-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+              Back
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <main class="flex-1 px-6 py-10">
+        <div class="mx-auto max-w-7xl">
+          <div class="mx-auto max-w-md w-full">
+            <!-- Receipt Card (Stripe-ish vibe) -->
+            <div id="receipt-card" class="tm-anim overflow-hidden rounded-2xl bg-white shadow-sm border border-slate-200">
+              <!-- Orange header band -->
+              <div class="relative h-24 bg-gradient-to-r from-purple-600 to-purple-500">
+                <div class="absolute left-0 top-0 h-full w-2/3 bg-purple-600/70"></div>
+                <div class="absolute right-0 top-0 h-full w-1/3 bg-white/85" style="clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%);"></div>
+
+                <div class="absolute left-1/2 top-14 -translate-x-1/2">
+                  <div class="h-12 w-12 rounded-full bg-slate-900 flex items-center justify-center ring-4 ring-white">
+                    <span class="text-purple-500 font-extrabold">TM</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="px-8 pb-8 pt-10">
+                <div class="text-center">
+                  <div class="text-lg font-semibold text-slate-900">Receipt from Lenore, Inc</div>
+                  <div class="mt-1 text-xs text-slate-500">Receipt #1448-6665</div>
+                </div>
+
+                <div class="mt-6 grid grid-cols-3 gap-4 text-center">
+                  <div>
+                    <div class="text-[10px] font-semibold tracking-wide text-slate-400 uppercase">Amount paid</div>
+                    <div class="mt-1 text-sm font-semibold text-slate-900">$1.00</div>
+                  </div>
+                  <div>
+                    <div class="text-[10px] font-semibold tracking-wide text-slate-400 uppercase">Date paid</div>
+                    <div class="mt-1 text-sm text-slate-700">Feb 11, 2026</div>
+                  </div>
+                  <div>
+                    <div class="text-[10px] font-semibold tracking-wide text-slate-400 uppercase">Payment method</div>
+                    <div class="mt-1 text-sm text-slate-700">Visa • 9948</div>
+                  </div>
+                </div>
+
+                <div class="mt-6">
+                  <div class="text-[11px] font-semibold tracking-wide text-slate-500 uppercase">Summary</div>
+                  <div class="mt-3 rounded-xl bg-slate-50 border border-slate-200 p-4">
+                    <div class="flex items-start justify-between gap-4 text-sm">
+                      <div class="text-slate-700">TM Live Test <span class="text-slate-400">× 1</span></div>
+                      <div class="font-medium text-slate-900">$1.00</div>
+                    </div>
+                    <div class="mt-3 pt-3 border-t border-slate-200 flex items-center justify-between text-sm">
+                      <div class="text-slate-600">Subtotal</div>
+                      <div class="text-slate-900">$1.00</div>
+                    </div>
+                    <div class="mt-2 flex items-center justify-between text-sm">
+                      <div class="font-semibold text-slate-900">Amount paid</div>
+                      <div class="font-semibold text-slate-900">$1.00</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm">
+                  <div class="flex items-center justify-between">
+                    <div class="text-emerald-800 font-semibold">Payment status</div>
+                    <div class="text-emerald-700 font-semibold">Paid</div>
+                  </div>
+                  <div class="mt-1 text-emerald-700/80">Your credits have been added to your entitlement key.</div>
+                </div>
+
+                <div class="mt-7 flex flex-col gap-3 tm-no-print">
+                  <button
+                    type="button"
+                    id="downloadPdfBtn"
+                    class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-purple-600/90 px-4 py-3 text-sm font-semibold text-white hover:bg-purple-600 transition"
+                  >
+                    <svg class="h-5 w-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 3v12" />
+                      <path d="M8 11l4 4 4-4" />
+                      <path d="M5 21h14" />
+                    </svg>
+                    Download as PDF
+                  </button>
+
+                  <a
+                    href="/index.html"
+                    class="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 hover:bg-slate-50 transition"
+                  >
+                    Start Using Transcript Parser
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-6 text-center text-xs text-slate-500 tm-no-print tm-anim delay-2">
+              Receipts are generated by Stripe. This page is your copy for download.
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer (standalone) -->
+      <footer class="tm-no-print px-6 py-3 mt-1 border-t border-slate-800/60 bg-slate-950/80 backdrop-blur">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <p class="text-slate-500 text-sm">© <span id="footer-year"></span> Transcript.Tax Monitor Pro. All rights reserved.</p>
+          <div class="flex items-center gap-6">
+            <a href="/legal/privacy.html" class="text-slate-400 hover:text-purple-400 text-sm transition-colors">Privacy Policy</a>
+            <a href="/legal/terms.html" class="text-slate-400 hover:text-purple-400 text-sm transition-colors">Terms of Service</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        // Prevent the page from loading "flat".
+        requestAnimationFrame(() => document.documentElement.classList.add('tm-loaded'));
+
+        // Footer year
+        const y = document.getElementById('footer-year');
+        if (y) y.textContent = String(new Date().getFullYear());
+
+        // Download as PDF
+        const btn = document.getElementById('downloadPdfBtn');
+        btn?.addEventListener('click', () => window.print());
+      })();
+    </script>
+  </body>
+</html>
