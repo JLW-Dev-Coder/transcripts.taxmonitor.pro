@@ -30,7 +30,7 @@
 
 ---
 
-# About Transcript.Tax Monitor Pro Is
+# About Transcript.Tax Monitor Pro
 
 Transcript.Tax Monitor Pro is a **serverless CRM + delivery system for IRS transcript monitoring and structured report generation**.
 
