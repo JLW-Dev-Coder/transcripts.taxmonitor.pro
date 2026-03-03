@@ -6,7 +6,7 @@
 
 ## Table of Contents (Alphabetical)
 
-* [About Transcript.Tax Monitor Pro Is](#what-transcripttax-monitor-pro-is)
+* [About Transcript.Tax Monitor Pro](#what-transcripttax-monitor-pro-is)
 * [Authentication Model](#authentication-model)
 * [ClickUp Projection Layer](#clickup-projection-layer)
 * [Contracts (Mutation Ingress Only)](#contracts-mutation-ingress-only)
