@@ -92,6 +92,42 @@
         border: 1px solid rgba(168,85,247,0.2);
       }
 
+      .report-preview-shell {
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.18);
+      }
+
+      .report-preview-panel {
+        background: #f8fafc;
+        border: 1px solid rgba(255,255,255,0.9);
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+      }
+
+      .report-preview-label {
+        color: #64748b;
+      }
+
+      .report-preview-title {
+        color: #0f172a;
+      }
+
+      .report-preview-value {
+        color: #0f172a;
+      }
+
+      .report-preview-value-accent {
+        color: #7e22ce;
+      }
+
+      .report-preview-note {
+        color: #64748b;
+      }
+
+      .report-preview-sample {
+        background: #ffffff;
+        border: 1px solid #e9d5ff;
+      }
+
       @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
       .floaty { animation: float 6s ease-in-out infinite; }
       .floaty:nth-child(2) { animation-delay: -1s; }
@@ -151,28 +187,30 @@
                   <div class="text-white/70 text-sm">About</div>
                 </div>
 
-                <div class="rounded-3xl bg-white text-slate-900 p-6 shadow-lg border border-purple-100">
-                  <div class="flex items-center gap-3 mb-6">
-                    <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white text-xl font-bold">✓</div>
-                    <div>
-                      <p class="font-bold text-slate-900">Report Generated</p>
-                      <p class="text-sm text-slate-500">Client: Johnson Family Trust</p>
+                <div class="report-preview-shell rounded-3xl p-4 md:p-5">
+                  <div class="report-preview-panel rounded-3xl p-6">
+                    <div class="flex items-center gap-3 mb-6">
+                      <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white text-xl font-bold">✓</div>
+                      <div>
+                        <p class="report-preview-title font-bold">Report Generated</p>
+                        <p class="report-preview-note text-sm">Client: Johnson Family Trust</p>
+                      </div>
                     </div>
-                  </div>
 
-                  <div class="space-y-3">
-                    <div class="flex justify-between text-sm"><span class="text-slate-600">Interpretation Accuracy</span><span class="font-bold text-purple-700">100%</span></div>
-                    <div class="flex justify-between text-sm"><span class="text-slate-600">Processing Time</span><span class="font-bold text-slate-900">8.3 sec</span></div>
-                    <div class="flex justify-between text-sm"><span class="text-slate-600">Transcript Codes Found</span><span class="font-bold text-slate-900">24</span></div>
-                  </div>
+                    <div class="space-y-3">
+                      <div class="flex justify-between text-sm"><span class="report-preview-label">Interpretation Accuracy</span><span class="report-preview-value-accent font-bold">100%</span></div>
+                      <div class="flex justify-between text-sm"><span class="report-preview-label">Processing Time</span><span class="report-preview-value font-bold">8.3 sec</span></div>
+                      <div class="flex justify-between text-sm"><span class="report-preview-label">Transcript Codes Found</span><span class="report-preview-value font-bold">24</span></div>
+                    </div>
 
-                  <div class="mt-6 p-4 bg-purple-50 rounded-2xl border border-purple-100">
-                    <p class="text-xs text-slate-500 mb-2">Sample output preview</p>
-                    <div class="flex items-center gap-2">
-                      <div class="w-8 h-8 bg-purple-700 rounded"></div>
-                      <div class="flex-1">
-                        <div class="h-2 bg-slate-200 rounded w-3/4 mb-1"></div>
-                        <div class="h-2 bg-slate-200 rounded w-1/2"></div>
+                    <div class="report-preview-sample mt-6 p-4 rounded-2xl">
+                      <p class="report-preview-note text-xs mb-2">Sample output preview</p>
+                      <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-purple-700 rounded"></div>
+                        <div class="flex-1">
+                          <div class="h-2 bg-slate-200 rounded w-3/4 mb-1"></div>
+                          <div class="h-2 bg-slate-200 rounded w-1/2"></div>
+                        </div>
                       </div>
                     </div>
                   </div>
