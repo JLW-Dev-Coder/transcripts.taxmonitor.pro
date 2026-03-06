@@ -5,6 +5,13 @@ compatibility_date = "2026-03-06"
 [observability.logs]
 enabled = true
 
+[vars]
+CREDIT_MAP_JSON = "{\"price_1T83KXQEa4WBi79g8sD2NI7c\":10,\"price_1T84hAQEa4WBi79gCziLGXUD\":25,\"price_1T84ieQEa4WBi79gl92lyF0L\":100}"
+PRICE_10 = "price_1T83KXQEa4WBi79g8sD2NI7c"
+PRICE_100 = "price_1T84ieQEa4WBi79gl92lyF0L"
+PRICE_25 = "price_1T84hAQEa4WBi79gCziLGXUD"
+TRANSCRIPT_RETURN_ORIGINS_JSON = "[\"https://transcript.taxmonitor.pro\"]"
+
 [[durable_objects.bindings]]
 name = "TOKEN_LEDGER"
 class_name = "TokenLedger"
