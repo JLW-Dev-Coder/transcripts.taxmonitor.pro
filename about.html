@@ -1,0 +1,443 @@
+<!-- about.html -->
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>About - Transcript.Tax Monitor Pro</title>
+    <meta
+      name="description"
+      content="Why Transcript.Tax Monitor Pro exists: to help tax professionals turn confusing IRS transcripts into clear, branded, client-ready reports in minutes."
+    />
+
+    <link rel="icon" href="/assets/favicon.ico" />
+    <link rel="stylesheet" href="/styles/site.css?v=1" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      tailwind = window.tailwind || {};
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              action: '#f59e0b',
+              charcoal: '#2d3748',
+              gold: '#fbbf24',
+              midnight: '#0f172a',
+              navy: '#0f2747',
+              warm: '#f59e0b'
+            },
+            fontFamily: {
+              sans: ['DM Sans', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial']
+            }
+          }
+        }
+      };
+    </script>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+
+    <script defer src="/_sdk/element_sdk.js"></script>
+
+    <style>
+      * { font-family: 'DM Sans', sans-serif; }
+      body { box-sizing: border-box; }
+
+      .hero-grid {
+        background-color: #0f2747;
+        background-image:
+          linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+        background-size: 40px 40px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-glow::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 800px;
+        height: 800px;
+        background: radial-gradient(circle, rgba(245,158,11,0.26) 0%, rgba(251,191,36,0.16) 35%, rgba(15,39,71,0) 70%);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .hero-content { position: relative; z-index: 1; }
+
+      @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
+      .floaty { animation: float 6s ease-in-out infinite; }
+      .floaty:nth-child(2) { animation-delay: -1s; }
+      .floaty:nth-child(3) { animation-delay: -2s; }
+      .floaty:nth-child(4) { animation-delay: -3s; }
+      .floaty:nth-child(5) { animation-delay: -4s; }
+      .floaty:nth-child(6) { animation-delay: -5s; }
+
+      @keyframes pulse-gold { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+      .pulse-gold { animation: pulse-gold 2.2s ease-in-out infinite; }
+
+      @keyframes slideUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+      .animate-slide-up { animation: slideUp 0.5s ease-out forwards; }
+    </style>
+  </head>
+
+  <body class="h-full bg-slate-950 text-charcoal overflow-auto font-sans">
+    <div id="app" class="w-full min-h-full">
+      <!-- PARTIAL:header -->
+
+      <section class="hero-grid hero-glow py-16 md:py-24 text-white">
+        <div class="max-w-6xl mx-auto px-4 hero-content">
+          <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <div class="text-center lg:text-left">
+              <div class="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-full text-sm font-semibold mb-6 backdrop-blur">
+                <svg class="w-4 h-4 text-gold pulse-gold" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M13.5 2.1c.2 1.9-.4 3.4-1.4 4.7-.9 1.2-2 2.3-2.4 3.8-.5 1.9.4 3.7 2.1 4.5.7.3 1.5.4 2.2.2-.6 1.6-2.1 2.7-3.9 2.7-2.3 0-4.2-1.8-4.2-4.2 0-2.5 1.7-4.1 3.4-5.8 1.4-1.4 2.7-2.9 2.7-5.9 0-.1 1.4 1.2 1.5 2.0z" />
+                  <path d="M17.3 6.3c1.7 2.1 2.7 4.3 2.7 6.8 0 4.9-3.8 8.9-9 8.9s-9-4-9-8.9c0-2.6 1.1-4.9 3-6.9.1 2 .9 3.5 2 4.7-.1-2.4 1.5-4.3 3.2-6.1 1.5-1.6 3-3.3 3-5.7 1.9 1.3 3.3 3 4.1 5.2z" opacity=".35" />
+                </svg>
+                Transcript.Tax Monitor Pro • Built for Tax Professionals
+              </div>
+
+              <h1 id="hero-headline" class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+                Built to turn IRS transcript chaos into client-ready clarity
+              </h1>
+              <p id="hero-subheadline" class="text-lg md:text-xl text-white/80 mb-8 max-w-xl mx-auto lg:mx-0">
+                Transcript.Tax Monitor Pro helps tax professionals parse, interpret, and present IRS transcript data in a format clients can actually understand.
+              </p>
+
+              <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <a href="/index.html#pricing" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-8 py-4 rounded-xl font-semibold text-lg transition-all hover:shadow-xl hover:-translate-y-0.5">
+                  View Pricing
+                </a>
+                <a href="https://transcript.taxmonitor.pro/magnets/lead-magnet.html" class="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-xl font-semibold text-lg border border-white/20 transition-all">
+                  Get the Free Guide
+                </a>
+              </div>
+            </div>
+
+            <div class="relative">
+              <div class="bg-white/10 border border-white/15 rounded-3xl p-6 md:p-8 backdrop-blur shadow-2xl animate-slide-up">
+                <div class="flex items-center justify-between mb-6">
+                  <div class="inline-flex items-center gap-2 bg-white/10 text-white px-3 py-1.5 rounded-full text-xs font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-gold"></span>
+                    Report workflow snapshot
+                  </div>
+                  <div class="text-white/70 text-sm">About</div>
+                </div>
+
+                <div class="rounded-3xl bg-white text-slate-900 p-6 shadow-lg">
+                  <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-emerald-600 rounded-full flex items-center justify-center text-white text-xl font-bold">✓</div>
+                    <div>
+                      <p class="font-bold text-slate-900">Report Generated</p>
+                      <p class="text-sm text-slate-500">Client: Johnson Family Trust</p>
+                    </div>
+                  </div>
+
+                  <div class="space-y-3">
+                    <div class="flex justify-between text-sm"><span class="text-slate-600">Interpretation Accuracy</span><span class="font-bold text-emerald-700">100%</span></div>
+                    <div class="flex justify-between text-sm"><span class="text-slate-600">Processing Time</span><span class="font-bold text-slate-900">8.3 sec</span></div>
+                    <div class="flex justify-between text-sm"><span class="text-slate-600">Transcript Codes Found</span><span class="font-bold text-slate-900">24</span></div>
+                  </div>
+
+                  <div class="mt-6 p-4 bg-amber-50 rounded-2xl border border-amber-100">
+                    <p class="text-xs text-slate-500 mb-2">Sample output preview</p>
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 bg-navy rounded"></div>
+                      <div class="flex-1">
+                        <div class="h-2 bg-slate-200 rounded w-3/4 mb-1"></div>
+                        <div class="h-2 bg-slate-200 rounded w-1/2"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mt-6">
+                  <div class="bg-white/10 rounded-2xl p-4 border border-white/10">
+                    <p class="text-2xl font-bold">750K+</p>
+                    <p class="text-white/70 text-sm">U.S. tax professionals served by the market</p>
+                  </div>
+                  <div class="bg-white/10 rounded-2xl p-4 border border-white/10">
+                    <p class="text-2xl font-bold">Minutes</p>
+                    <p class="text-white/70 text-sm">From transcript PDF to polished report</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="py-16 md:py-24 bg-slate-800">
+        <div class="max-w-6xl mx-auto px-4">
+          <div class="grid lg:grid-cols-2 gap-10 items-center">
+            <div class="bg-slate-900 rounded-3xl shadow-xl p-8 border border-slate-700">
+              <div class="flex flex-col items-center text-center">
+                <div class="w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gradient-to-br from-slate-200 to-slate-300">
+                  <img
+                    src="https://20896460.fs1.hubspotusercontent-na1.net/hubfs/20896460/Development%20Materials/Miscellaneous/Pic_JLW_Left-removebg-preview.png"
+                    alt="Jamie L. Williams"
+                    class="w-full h-full object-cover object-top"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <p class="mt-4 text-lg font-bold text-white">Jamie L. Williams</p>
+                <p class="mt-1 text-sm text-slate-300">Founder • Systems builder</p>
+              </div>
+              <div class="mt-8 text-center">
+                <span class="inline-flex items-center gap-2 bg-slate-800 text-white px-4 py-2 rounded-full text-sm font-semibold">
+                  <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                  Built by JLW for real-world transcript work
+                </span>
+              </div>
+            </div>
+
+            <div>
+              <span class="inline-flex items-center gap-2 bg-amber-500/15 text-amber-300 px-4 py-2 rounded-full text-sm font-semibold mb-4 border border-amber-500/20">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                Our mission
+              </span>
+              <h2 class="text-3xl md:text-4xl font-bold text-white mb-5">Make transcript interpretation faster, clearer, and easier to deliver</h2>
+              <p class="text-lg text-slate-200 leading-relaxed mb-8">IRS transcripts are full of codes, dates, and sequences that make sense to systems and specialists, but not to stressed clients. We built Transcript.Tax Monitor Pro to close that gap. It parses the transcript, organizes the signal, and turns it into a clean summary you can confidently send under your own brand.</p>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="bg-slate-900 rounded-2xl p-5 shadow-md border border-slate-700">
+                  <p class="text-3xl font-bold text-white">Client-ready</p>
+                  <p class="text-sm text-slate-300">Clear branded reports</p>
+                </div>
+                <div class="bg-slate-900 rounded-2xl p-5 shadow-md border border-slate-700">
+                  <p class="text-3xl font-bold text-white">Local-first</p>
+                  <p class="text-sm text-slate-300">Private PDF processing</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="py-16 md:py-24 bg-slate-900">
+        <div class="max-w-6xl mx-auto px-4">
+          <div class="text-center mb-12">
+            <span class="inline-flex items-center gap-2 bg-amber-500/15 text-white px-4 py-2 rounded-full text-sm font-semibold mb-4 border border-amber-500/20">
+              <svg class="w-5 h-5 text-gold" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.2 4.6 5 .7-3.6 3.5.9 5-4.5-2.4L7.5 17l.9-5L4.8 8.3l5-.7L12 2z" /></svg>
+              Real pain points
+            </span>
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">We built this from the transcript questions people keep asking</h2>
+            <p class="text-lg text-slate-300 max-w-2xl mx-auto">Same confusion. Same codes. Same panic. Over and over. So naturally the reasonable response was to build software instead of rewriting the same explanation forever.</p>
+          </div>
+
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="floaty bg-slate-800/90 rounded-2xl shadow-lg p-6 border border-slate-700 hover:shadow-xl transition-shadow">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center text-slate-950 font-bold">R</div>
+                <div>
+                  <p class="font-semibold text-white">u/AuditPanic</p>
+                  <p class="text-xs text-slate-400">r/IRS</p>
+                </div>
+              </div>
+              <p class="text-slate-200 leading-relaxed mb-4">“I saw code 420 and assumed my life was over.”</p>
+              <div class="mt-4 pt-4 border-t border-slate-700">
+                <p class="text-sm font-semibold text-amber-300">Solved with: calm, contextual explanation</p>
+              </div>
+            </div>
+
+            <div class="floaty bg-slate-800/90 rounded-2xl shadow-lg p-6 border border-slate-700 hover:shadow-xl transition-shadow">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-gold rounded-full flex items-center justify-center text-slate-950 font-bold">R</div>
+                <div>
+                  <p class="font-semibold text-white">u/ClientTranslator</p>
+                  <p class="text-xs text-slate-400">r/taxpros</p>
+                </div>
+              </div>
+              <p class="text-slate-200 leading-relaxed mb-4">“I spend too much time translating transcript language into something a client can read.”</p>
+              <div class="mt-4 pt-4 border-t border-slate-700">
+                <p class="text-sm font-semibold text-amber-300">Solved with: branded report output</p>
+              </div>
+            </div>
+
+            <div class="floaty bg-slate-800/90 rounded-2xl shadow-lg p-6 border border-slate-700 hover:shadow-xl transition-shadow">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center text-slate-950 font-bold">R</div>
+                <div>
+                  <p class="font-semibold text-white">u/CodeConfused</p>
+                  <p class="text-xs text-slate-400">r/IRS</p>
+                </div>
+              </div>
+              <p class="text-slate-200 leading-relaxed mb-4">“I have a 570 code, an 806 code, and no idea if I’m in trouble.”</p>
+              <div class="mt-4 pt-4 border-t border-slate-700">
+                <p class="text-sm font-semibold text-amber-300">Solved with: plain-English interpretation</p>
+              </div>
+            </div>
+
+            <div class="floaty bg-slate-800/90 rounded-2xl shadow-lg p-6 border border-slate-700 hover:shadow-xl transition-shadow">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-gold rounded-full flex items-center justify-center text-slate-950 font-bold">R</div>
+                <div>
+                  <p class="font-semibold text-white">u/RefundTimeline</p>
+                  <p class="text-xs text-slate-400">r/IRS</p>
+                </div>
+              </div>
+              <p class="text-slate-200 leading-relaxed mb-4">“My transcript shows 846 with a date, but my refund still isn’t here. What does that actually mean?”</p>
+              <div class="mt-4 pt-4 border-t border-slate-700">
+                <p class="text-sm font-semibold text-amber-300">Solved with: clearer sequence and timing summary</p>
+              </div>
+            </div>
+
+            <div class="floaty bg-slate-800/90 rounded-2xl shadow-lg p-6 border border-slate-700 hover:shadow-xl transition-shadow">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center text-slate-950 font-bold">R</div>
+                <div>
+                  <p class="font-semibold text-white">u/TransactionLost</p>
+                  <p class="text-xs text-slate-400">r/tax</p>
+                </div>
+              </div>
+              <p class="text-slate-200 leading-relaxed mb-4">“I’m really just confused by the transactions section.”</p>
+              <div class="mt-4 pt-4 border-t border-slate-700">
+                <p class="text-sm font-semibold text-amber-300">Solved with: readable summaries instead of raw transcript rows</p>
+              </div>
+            </div>
+
+            <div class="floaty bg-slate-800/90 rounded-2xl shadow-lg p-6 border border-slate-700 hover:shadow-xl transition-shadow">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-gold rounded-full flex items-center justify-center text-slate-950 font-bold">R</div>
+                <div>
+                  <p class="font-semibold text-white">u/WorkflowTired</p>
+                  <p class="text-xs text-slate-400">r/taxpros</p>
+                </div>
+              </div>
+              <p class="text-slate-200 leading-relaxed mb-4">“I keep rewriting the same explanation for the same transcript patterns.”</p>
+              <div class="mt-4 pt-4 border-t border-slate-700">
+                <p class="text-sm font-semibold text-amber-300">Solved with: repeatable report generation</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-10 text-center">
+            <div class="inline-flex items-center gap-3 bg-slate-800 px-6 py-4 rounded-2xl border border-slate-700">
+              <div class="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center">
+                <svg class="w-5 h-5 text-slate-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+              </div>
+              <p class="text-white font-semibold">We built this to remove transcript confusion without adding more admin work.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="py-16 md:py-24 bg-gradient-to-br from-navy via-slate-800 to-navy text-white">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+          <div class="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-full text-sm font-semibold mb-6 backdrop-blur">
+            <svg class="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+            Transcript.Tax Monitor Pro • Fast, clear, client-ready
+          </div>
+          <h2 class="text-3xl md:text-5xl font-bold mb-6">Ready to clean up your transcript workflow?</h2>
+          <p class="text-lg md:text-xl text-white/80 mb-8 max-w-2xl mx-auto">Use Transcript.Tax Monitor Pro to turn raw IRS transcript data into polished explanations your clients can actually follow.</p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="/index.html#pricing" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-10 py-4 rounded-xl text-lg transition-all shadow-lg hover:shadow-xl">See Pricing</a>
+            <a href="https://transcript.taxmonitor.pro/magnets/lead-magnet.html" class="bg-white/10 hover:bg-white/20 text-white font-semibold px-10 py-4 rounded-xl text-lg border border-white/20 transition-all">Get the Free Guide</a>
+          </div>
+          <p class="text-white/60 text-sm mt-8">Local parsing • Branded output • One-time credit packs</p>
+        </div>
+      </section>
+
+      <!-- PARTIAL:footer -->
+    </div>
+
+    <script>
+      const defaultConfig = {
+        hero_headline: 'Built to turn IRS transcript chaos into client-ready clarity',
+        hero_subheadline: 'Transcript.Tax Monitor Pro helps tax professionals parse, interpret, and present IRS transcript data in a format clients can actually understand.',
+        background_color: '#020617',
+        accent_color: '#0f2747',
+        action_color: '#f59e0b',
+        text_color: '#2d3748',
+        trust_color: '#fbbf24',
+        font_family: 'DM Sans'
+      };
+
+      const applyConfig = (config) => {
+        const headline = document.getElementById('hero-headline');
+        const subheadline = document.getElementById('hero-subheadline');
+
+        if (headline) headline.textContent = config.hero_headline || defaultConfig.hero_headline;
+        if (subheadline) subheadline.textContent = config.hero_subheadline || defaultConfig.hero_subheadline;
+
+        const font = config.font_family || defaultConfig.font_family;
+        document.body.style.fontFamily = `${font}, sans-serif`;
+      };
+
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange: async (config) => applyConfig(config),
+          mapToCapabilities: (config) => ({
+            borderables: [],
+            fontEditable: {
+              get: () => config.font_family || defaultConfig.font_family,
+              set: (v) => {
+                config.font_family = v;
+                window.elementSdk.setConfig({ font_family: v });
+              }
+            },
+            fontSizeable: undefined,
+            recolorables: [
+              {
+                get: () => config.action_color || defaultConfig.action_color,
+                set: (v) => {
+                  config.action_color = v;
+                  window.elementSdk.setConfig({ action_color: v });
+                }
+              },
+              {
+                get: () => config.background_color || defaultConfig.background_color,
+                set: (v) => {
+                  config.background_color = v;
+                  window.elementSdk.setConfig({ background_color: v });
+                }
+              },
+              {
+                get: () => config.accent_color || defaultConfig.accent_color,
+                set: (v) => {
+                  config.accent_color = v;
+                  window.elementSdk.setConfig({ accent_color: v });
+                }
+              },
+              {
+                get: () => config.text_color || defaultConfig.text_color,
+                set: (v) => {
+                  config.text_color = v;
+                  window.elementSdk.setConfig({ text_color: v });
+                }
+              },
+              {
+                get: () => config.trust_color || defaultConfig.trust_color,
+                set: (v) => {
+                  config.trust_color = v;
+                  window.elementSdk.setConfig({ trust_color: v });
+                }
+              }
+            ]
+          }),
+          mapToEditPanelValues: (config) =>
+            new Map([
+              ['hero_headline', config.hero_headline || defaultConfig.hero_headline],
+              ['hero_subheadline', config.hero_subheadline || defaultConfig.hero_subheadline]
+            ])
+        });
+      } else {
+        applyConfig(defaultConfig);
+      }
+    </script>
+  </body>
+</html>
+
+<!-- contact.html -->
