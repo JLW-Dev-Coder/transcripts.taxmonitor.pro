@@ -25,13 +25,18 @@
       * { font-family: 'DM Sans', system-ui, sans-serif; }
       body { box-sizing: border-box; }
 
-      /* Canonical hero grid + glow */
       .hero-grid {
-        background-color: #0f2747;
+        background:
+          radial-gradient(circle at top left, rgba(168,85,247,0.24), transparent 34%),
+          radial-gradient(circle at bottom right, rgba(168,85,247,0.16), transparent 28%),
+          linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #312e81 72%, #0f172a 100%);
         background-image:
+          radial-gradient(circle at top left, rgba(168,85,247,0.24), transparent 34%),
+          radial-gradient(circle at bottom right, rgba(168,85,247,0.16), transparent 28%),
+          linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #312e81 72%, #0f172a 100%),
           linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
           linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-        background-size: 40px 40px;
+        background-size: auto, auto, auto, 40px 40px, 40px 40px;
         position: relative;
         overflow: hidden;
       }
@@ -42,22 +47,33 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 800px;
-        height: 800px;
-        background: radial-gradient(circle, rgba(245,158,11,0.28) 0%, rgba(251,191,36,0.16) 35%, rgba(15,39,71,0) 70%);
+        width: 920px;
+        height: 920px;
+        background: radial-gradient(circle, rgba(168,85,247,0.24) 0%, rgba(251,191,36,0.08) 32%, rgba(15,23,42,0) 72%);
         pointer-events: none;
         z-index: 0;
       }
 
       .hero-content { position: relative; z-index: 1; }
 
+      .purple-card {
+        background: linear-gradient(180deg, rgba(30,41,59,0.98) 0%, rgba(15,23,42,0.98) 100%);
+        border: 1px solid rgba(168,85,247,0.16);
+        box-shadow: 0 24px 60px rgba(2, 6, 23, 0.3);
+      }
+
+      .purple-glass {
+        background: rgba(255,255,255,0.08);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(168,85,247,0.2);
+      }
+
       @keyframes slideUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
       .animate-slide-up { animation: slideUp 0.5s ease-out forwards; }
 
-      /* Inputs */
       .input {
-        background: #ffffff;
-        border: 1px solid rgba(15, 39, 71, 0.12);
+        background: rgba(255,255,255,0.96);
+        border: 1px solid rgba(168, 85, 247, 0.14);
         color: #2d3748;
         border-radius: 14px;
         padding: 12px 14px;
@@ -69,16 +85,15 @@
       }
 
       .input:focus {
-        border-color: rgba(245, 158, 11, 0.55);
-        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12);
+        border-color: rgba(168, 85, 247, 0.58);
+        box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.12);
       }
 
-      /* Selects: keep blank until clicked (placeholder option has empty label) */
       select.input {
         appearance: none;
         -webkit-appearance: none;
         -moz-appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%238b5cf6' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
         background-repeat: no-repeat;
         background-position: right 14px center;
         background-size: 18px;
@@ -86,23 +101,22 @@
         cursor: pointer;
       }
 
-      select.input option { color: #0f2747; }
+      select.input option { color: #1e1b4b; }
       select.input option:disabled { color: #94a3b8; }
 
       .status {
         border-radius: 14px;
-        border: 1px solid rgba(2, 6, 23, 0.08);
-        background: #f8fafc;
+        border: 1px solid rgba(168, 85, 247, 0.18);
+        background: rgba(168, 85, 247, 0.08);
         padding: 12px 14px;
         font-size: 13px;
         line-height: 1.25rem;
       }
 
       .status-error { border-color: rgba(239, 68, 68, 0.25); background: rgba(239, 68, 68, 0.06); color: rgb(153, 27, 27); }
-      .status-info { border-color: rgba(245, 158, 11, 0.24); background: rgba(245, 158, 11, 0.08); color: rgb(146, 64, 14); }
-      .status-success { border-color: rgba(16, 185, 129, 0.25); background: rgba(16, 185, 129, 0.08); color: rgb(6, 95, 70); }
+      .status-info { border-color: rgba(168, 85, 247, 0.24); background: rgba(168, 85, 247, 0.08); color: rgb(88, 28, 135); }
+      .status-success { border-color: rgba(168, 85, 247, 0.24); background: rgba(168, 85, 247, 0.08); color: rgb(88, 28, 135); }
 
-      /* Dark-hero readability: lookup status sits on a dark background */
       .hero-grid .status {
         border-color: rgba(255, 255, 255, 0.18);
         background: rgba(255, 255, 255, 0.10);
@@ -128,9 +142,9 @@
             colors: {
               navy: '#0f2747',
               charcoal: '#2d3748',
-              action: '#f59e0b',
+              action: '#a855f7',
               gold: '#fbbf24',
-              warm: '#fbbf24'
+              warm: '#a855f7'
             }
           }
         }
@@ -138,7 +152,7 @@
     </script>
   </head>
 
-  <body class="h-full bg-white text-charcoal overflow-auto">
+  <body class="h-full bg-slate-950 text-white overflow-auto">
     <div id="app" class="w-full min-h-screen flex flex-col">
       <!-- PARTIAL:header -->
 
@@ -147,7 +161,7 @@
         <div class="max-w-6xl mx-auto px-4 hero-content">
           <div class="grid lg:grid-cols-2 gap-10 items-center">
             <div class="text-center lg:text-left">
-              <div class="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-full text-sm font-semibold mb-6 backdrop-blur">
+              <div class="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-full text-sm font-semibold mb-6 backdrop-blur border border-purple-400/20">
                 <span class="w-2 h-2 rounded-full bg-gold"></span>
                 Transcript support
               </div>
@@ -157,10 +171,10 @@
               </p>
 
               <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <a href="#support-form" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-8 py-4 rounded-xl transition-all shadow-lg hover:shadow-xl" data-scroll>
+                <a href="#support-form" class="bg-purple-600 hover:bg-purple-500 text-white font-bold px-8 py-4 rounded-xl transition-all shadow-lg hover:shadow-xl" data-scroll>
                   Create a ticket
                 </a>
-                <a href="/index.html#how-it-works" class="bg-white/10 hover:bg-white/20 text-white font-semibold px-8 py-4 rounded-xl border border-white/20 transition-all">
+                <a href="/index.html#how-it-works" class="bg-white/10 hover:bg-white/15 text-white font-semibold px-8 py-4 rounded-xl border border-purple-400/20 transition-all">
                   See How It Works
                 </a>
               </div>
@@ -169,10 +183,10 @@
             </div>
 
             <div class="animate-slide-up">
-              <div class="bg-white/10 border border-white/15 rounded-3xl p-6 md:p-8 backdrop-blur shadow-2xl">
+              <div class="purple-glass rounded-3xl p-6 md:p-8 shadow-2xl">
                 <div class="flex items-center justify-between mb-5">
-                  <div class="inline-flex items-center gap-2 bg-white/10 text-white px-3 py-1.5 rounded-full text-xs font-semibold">
-                    <span class="w-2 h-2 rounded-full bg-gold"></span>
+                  <div class="inline-flex items-center gap-2 bg-white/10 text-white px-3 py-1.5 rounded-full text-xs font-semibold border border-purple-400/20">
+                    <span class="w-2 h-2 rounded-full bg-purple-400"></span>
                     Support lookup
                   </div>
                   <div class="text-white/70 text-sm">Status</div>
@@ -182,7 +196,7 @@
 
                 <div class="flex flex-col sm:flex-row gap-3">
                   <input id="support-id-lookup" type="text" class="input" placeholder="Support ID" autocomplete="off" />
-                  <button id="support-id-lookup-btn" type="button" class="bg-white/10 hover:bg-white/20 text-white font-semibold px-5 py-3 rounded-xl border border-white/20 transition-all whitespace-nowrap">
+                  <button id="support-id-lookup-btn" type="button" class="bg-white/10 hover:bg-white/15 text-white font-semibold px-5 py-3 rounded-xl border border-purple-400/20 transition-all whitespace-nowrap">
                     Check status
                   </button>
                 </div>
@@ -194,18 +208,18 @@
       </section>
 
       <!-- Form -->
-      <section id="support-form" class="py-16 md:py-24 bg-slate-50 scroll-mt-[220px]">
+      <section id="support-form" class="py-16 md:py-24 bg-slate-900 scroll-mt-[220px]">
         <div class="max-w-3xl mx-auto px-4">
           <div class="text-center mb-10">
-            <span class="inline-flex items-center gap-2 bg-amber-500/10 text-amber-600 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+            <span class="inline-flex items-center gap-2 bg-purple-500/15 text-purple-200 px-4 py-2 rounded-full text-sm font-semibold mb-4 border border-purple-500/20">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
               Create a ticket
             </span>
-            <h2 class="text-3xl md:text-4xl font-bold text-navy">Tell us what’s happening with the transcript</h2>
-            <p class="text-gray-600 mt-3">We’ll reply by email and include a Support ID for tracking.</p>
+            <h2 class="text-3xl md:text-4xl font-bold text-white">Tell us what’s happening with the transcript</h2>
+            <p class="text-slate-300 mt-3">We’ll reply by email and include a Support ID for tracking.</p>
           </div>
 
-          <form id="support-form-el" class="bg-white rounded-3xl shadow-xl p-6 md:p-8 border border-gray-100" novalidate>
+          <form id="support-form-el" class="purple-card rounded-3xl p-6 md:p-8" novalidate>
             <input type="hidden" id="eventId" name="eventId" />
             <input type="hidden" id="sessionToken" name="sessionToken" />
             <input type="hidden" id="utm_source" name="utm_source" />
@@ -216,18 +230,18 @@
 
             <div class="grid md:grid-cols-2 gap-5">
               <div>
-                <label for="name" class="text-xs font-semibold text-navy uppercase tracking-wide block mb-2">Name *</label>
+                <label for="name" class="text-xs font-semibold text-purple-200 uppercase tracking-wide block mb-2">Name *</label>
                 <input id="name" name="name" class="input" placeholder="Your name" required />
               </div>
               <div>
-                <label for="email" class="text-xs font-semibold text-navy uppercase tracking-wide block mb-2">Email *</label>
+                <label for="email" class="text-xs font-semibold text-purple-200 uppercase tracking-wide block mb-2">Email *</label>
                 <input id="email" name="email" class="input" placeholder="you@email.com" type="email" required />
               </div>
             </div>
 
             <div class="mt-6 grid md:grid-cols-2 gap-5">
               <div>
-                <label for="category" class="text-xs font-semibold text-navy uppercase tracking-wide block mb-2">Category *</label>
+                <label for="category" class="text-xs font-semibold text-purple-200 uppercase tracking-wide block mb-2">Category *</label>
                 <select id="category" name="category" class="input" required>
                   <option value="" selected disabled hidden></option>
                   <option value="Access / Portal">Access / Portal</option>
@@ -240,7 +254,7 @@
                 </select>
               </div>
               <div>
-                <label for="issueType" class="text-xs font-semibold text-navy uppercase tracking-wide block mb-2">Issue Type *</label>
+                <label for="issueType" class="text-xs font-semibold text-purple-200 uppercase tracking-wide block mb-2">Issue Type *</label>
                 <select id="issueType" name="issueType" class="input" required>
                   <option value="" selected disabled hidden></option>
                   <option value="Account">Account</option>
@@ -257,7 +271,7 @@
 
             <div class="mt-6 grid md:grid-cols-2 gap-5">
               <div>
-                <label for="priority" class="text-xs font-semibold text-navy uppercase tracking-wide block mb-2">Priority *</label>
+                <label for="priority" class="text-xs font-semibold text-purple-200 uppercase tracking-wide block mb-2">Priority *</label>
                 <select id="priority" name="priority" class="input" required>
                   <option value="" selected disabled hidden></option>
                   <option value="Critical">Critical</option>
@@ -267,7 +281,7 @@
                 </select>
               </div>
               <div>
-                <label for="urgency" class="text-xs font-semibold text-navy uppercase tracking-wide block mb-2">Urgency *</label>
+                <label for="urgency" class="text-xs font-semibold text-purple-200 uppercase tracking-wide block mb-2">Urgency *</label>
                 <select id="urgency" name="urgency" class="input" required>
                   <option value="" selected disabled hidden></option>
                   <option value="Normal">Normal</option>
@@ -278,64 +292,64 @@
             </div>
 
             <div class="mt-6">
-              <label for="subject" class="text-xs font-semibold text-navy uppercase tracking-wide block mb-2">Subject *</label>
+              <label for="subject" class="text-xs font-semibold text-purple-200 uppercase tracking-wide block mb-2">Subject *</label>
               <input id="subject" name="subject" class="input" placeholder="e.g., Client transcript will not parse" required />
             </div>
 
             <div class="mt-6">
-              <label for="message" class="text-xs font-semibold text-navy uppercase tracking-wide block mb-2">Message *</label>
+              <label for="message" class="text-xs font-semibold text-purple-200 uppercase tracking-wide block mb-2">Message *</label>
               <textarea id="message" name="message" rows="5" class="input" placeholder="What happened, what you expected, the transcript year or type, and any error message" required></textarea>
-              <p class="mt-2 text-xs text-gray-500">Include steps to reproduce, exact error text, and what outcome you expected. Don’t include sensitive info.</p>
+              <p class="mt-2 text-xs text-slate-400">Include steps to reproduce, exact error text, and what outcome you expected. Don’t include sensitive info.</p>
             </div>
 
             <div class="mt-6 grid md:grid-cols-2 gap-5">
               <div>
-                <label for="tokenId" class="text-xs font-semibold text-navy uppercase tracking-wide block mb-2">Token ID</label>
+                <label for="tokenId" class="text-xs font-semibold text-purple-200 uppercase tracking-wide block mb-2">Token ID</label>
                 <input id="tokenId" name="tokenId" class="input" placeholder="Optional" />
               </div>
               <div>
-                <label for="relatedOrderId" class="text-xs font-semibold text-navy uppercase tracking-wide block mb-2">Related ID</label>
+                <label for="relatedOrderId" class="text-xs font-semibold text-purple-200 uppercase tracking-wide block mb-2">Related ID</label>
                 <input id="relatedOrderId" name="relatedOrderId" class="input" placeholder="Optional (credit purchase ID, Stripe ID, reference, etc.)" />
               </div>
             </div>
 
             <div class="mt-8">
-              <button id="submit-btn" type="submit" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-8 py-4 rounded-xl font-semibold shadow-lg transition-all w-full">
+              <button id="submit-btn" type="submit" class="bg-purple-600 hover:bg-purple-500 text-white px-8 py-4 rounded-xl font-semibold shadow-lg transition-all w-full">
                 Submit ticket
               </button>
-              <p class="text-xs text-gray-500 text-center mt-4">
+              <p class="text-xs text-slate-400 text-center mt-4">
                 By submitting, you agree to our
-                <a class="text-amber-600 hover:underline" href="/legal/terms.html">Terms</a>
+                <a class="text-purple-300 hover:underline" href="/legal/terms.html">Terms</a>
                 and
-                <a class="text-amber-600 hover:underline" href="/legal/privacy.html">Privacy Policy</a>.
+                <a class="text-purple-300 hover:underline" href="/legal/privacy.html">Privacy Policy</a>.
               </p>
             </div>
 
             <div id="form-status" class="hidden status mt-4" aria-live="polite"></div>
 
-            <div id="support-id-display" class="hidden mt-6 p-6 rounded-2xl bg-emerald-50 border border-emerald-100">
-              <p class="text-xs text-emerald-800 font-semibold uppercase tracking-wide mb-2">Your Support ID</p>
-              <div class="text-3xl font-bold text-navy font-mono mb-3" id="support-id"></div>
-              <p class="text-sm text-emerald-900/80">We’ve emailed confirmation. Keep this ID for transcript support status checks.</p>
+            <div id="support-id-display" class="hidden mt-6 p-6 rounded-2xl bg-purple-500/10 border border-purple-400/20">
+              <p class="text-xs text-purple-200 font-semibold uppercase tracking-wide mb-2">Your Support ID</p>
+              <div class="text-3xl font-bold text-white font-mono mb-3" id="support-id"></div>
+              <p class="text-sm text-slate-300">We’ve emailed confirmation. Keep this ID for transcript support status checks.</p>
             </div>
           </form>
         </div>
       </section>
 
       <!-- CTA -->
-      <section class="py-16 md:py-24 bg-gradient-to-br from-navy via-slate-800 to-navy text-white">
-        <div class="max-w-4xl mx-auto px-4 text-center">
-          <div class="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-full text-sm font-semibold mb-6 backdrop-blur">
+      <section class="py-16 md:py-24 hero-grid text-white">
+        <div class="max-w-4xl mx-auto px-4 text-center hero-content">
+          <div class="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-full text-sm font-semibold mb-6 backdrop-blur border border-purple-400/20">
             <svg class="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
             </svg>
             Transcript.Tax Monitor Pro • Fast, clear support
           </div>
           <h2 class="text-3xl md:text-5xl font-bold mb-6">Want answers before opening a ticket?</h2>
-          <p class="text-lg md:text-xl text-blue-100 mb-8 max-w-2xl mx-auto">Many transcript workflow questions are solved faster by checking the product flow first. If the issue is still blocking you, send the ticket and we’ll handle it.</p>
+          <p class="text-lg md:text-xl text-white/80 mb-8 max-w-2xl mx-auto">Many transcript workflow questions are solved faster by checking the product flow first. If the issue is still blocking you, send the ticket and we’ll handle it.</p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/index.html#how-it-works" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-10 py-4 rounded-xl text-lg transition-all shadow-lg hover:shadow-xl">See How It Works</a>
-            <a href="/index.html#pricing" class="bg-white/10 hover:bg-white/20 text-white font-semibold px-10 py-4 rounded-xl text-lg border border-white/20 transition-all">View Pricing</a>
+            <a href="/index.html#how-it-works" class="bg-purple-600 hover:bg-purple-500 text-white font-bold px-10 py-4 rounded-xl text-lg transition-all shadow-lg hover:shadow-xl">See How It Works</a>
+            <a href="/index.html#pricing" class="bg-white/10 hover:bg-white/15 text-white font-semibold px-10 py-4 rounded-xl text-lg border border-purple-400/20 transition-all">View Pricing</a>
           </div>
           <p class="text-white/60 text-sm mt-8">Credits available instantly • Support replies by email • Transcript-focused help</p>
         </div>
@@ -356,7 +370,6 @@
           window.location.href = '/index.html';
         }
 
-        // Support endpoints are PUBLIC. A 401 is likely a config bug (CORS, route) and should not bounce users.
         function handleAuth(res) {
           if (res && res.status === 401) {
             return true;
@@ -449,7 +462,6 @@
           const tokenInput = document.getElementById('tokenId');
           if (tokenInput && tokenParam) tokenInput.value = tokenParam;
 
-          // Optional: prefill lookup from URL (?ticket_id= or ?supportId=)
           const pref = getParam('ticket_id') || getParam('supportId') || getParam('support_id') || '';
           const lookup = document.getElementById('support-id-lookup');
           if (lookup && pref) lookup.value = pref;
@@ -623,7 +635,6 @@
                 if (display) display.classList.remove('hidden');
                 if (statusEl) statusEl.classList.add('hidden');
 
-                // Auto-fill lookup and update URL for easy sharing
                 const lookup = document.getElementById('support-id-lookup');
                 if (lookup) lookup.value = supportId;
                 try {
@@ -632,7 +643,6 @@
                   history.replaceState(null, '', u.toString());
                 } catch (_) {}
 
-                // Fire an immediate status check so the user sees it working
                 lookupSupportId();
               } else {
                 setStatus('status-success', 'Ticket submitted. Check your email for your Support ID.');
@@ -657,7 +667,6 @@
           initFormHandler();
           initLookupHandler();
 
-          // If URL includes a ticket id, auto-check
           const pref = getParam('ticket_id') || getParam('supportId') || getParam('support_id') || '';
           if (pref) lookupSupportId();
         }
