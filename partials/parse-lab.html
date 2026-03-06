@@ -332,7 +332,7 @@
         throw new Error("Token lookup failed (" + String(out.res.status) + "): " + msg);
       }
 
-      const remaining = out.json && typeof out.json.remaining === "number" ? out.json.remaining : null;
+      const remaining = out.json && typeof out.json.balance === "number" ? out.json.balance : null;
       if (remaining === null) throw new Error("Token lookup returned no remaining balance.");
       return remaining;
     }
