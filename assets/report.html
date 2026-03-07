@@ -1384,6 +1384,49 @@
           window.location.href = getReturnUrl();
         }
 
+        let hasReportedPrintComplete = false;
+
+        async function markPrintComplete() {
+          const reportId = readReportId();
+          if (!reportId || hasReportedPrintComplete) return;
+
+          try {
+            const response = await fetch(`/api/transcripts/report/${encodeURIComponent(reportId)}/print-complete`, {
+              method: 'POST',
+              credentials: 'include',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ reportId })
+            });
+
+            if (!response.ok) {
+              const text = await response.text().catch(() => '');
+              debugLog('print-complete request failed', {
+                reportId,
+                status: response.status,
+                text: String(text || response.statusText || 'print_complete_failed').slice(0, 500)
+              });
+              return;
+            }
+
+            hasReportedPrintComplete = true;
+            debugLog('print-complete recorded', { reportId });
+          } catch (err) {
+            debugLog('print-complete request threw', {
+              reportId,
+              message: String(err && err.message || err || 'print_complete_failed')
+            });
+          }
+        }
+
+        function triggerPrintFlow() {
+          window.print();
+          window.setTimeout(() => {
+            markPrintComplete();
+          }, 250);
+        }
+
         function renderState(type, payload) {
           const wrap = document.getElementById('stateWrap');
           if (!wrap) return;
@@ -1434,7 +1477,7 @@
           const backBtn = document.getElementById('stateBackBtn');
           const btn = document.getElementById('statePrintBtn');
           if (backBtn) backBtn.addEventListener('click', () => goBackToReturnUrl());
-          if (btn) btn.addEventListener('click', () => window.print());
+          if (btn) btn.addEventListener('click', () => triggerPrintFlow());
         }
 
         function showReport(report) {
@@ -1558,7 +1601,7 @@
             });
           }
 
-          if (printBtn) printBtn.addEventListener('click', () => window.print());
+          if (printBtn) printBtn.addEventListener('click', () => triggerPrintFlow());
 
           if (addBtn && fileInput) {
             addBtn.addEventListener('click', () => fileInput.click());
@@ -1593,6 +1636,9 @@
         }
 
         async function boot() {
+          window.addEventListener('afterprint', () => {
+            markPrintComplete();
+          });
           document.getElementById('footerYear').textContent = String(new Date().getFullYear());
 
           const result = await getPayloadResult();
