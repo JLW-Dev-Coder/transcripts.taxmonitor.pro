@@ -711,7 +711,7 @@
       return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
     }
 
-    async function buildEncryptedReportLink(structured) {
+    async function buildEncryptedReportLink(structured, transport = "hash") {
       const model = {
         codesFound: Array.isArray(structured && structured.codesFound) ? structured.codesFound : [],
         header: structured && structured.header ? structured.header : {},
@@ -730,18 +730,23 @@
       const rawKey = new Uint8Array(await crypto.subtle.exportKey("raw", key));
       const ciphertext = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, plaintext));
 
-      const base = window.location.origin + "/assets/report.html";
-      const frag = "#v=1&k=" + encodeURIComponent(toB64Url(rawKey)) +
+      const base = window.location.origin + "/assets/report";
+      const payload =
+        "v=1&k=" + encodeURIComponent(toB64Url(rawKey)) +
         "&iv=" + encodeURIComponent(toB64Url(iv)) +
         "&r=" + encodeURIComponent(toB64Url(ciphertext));
 
-      return base + frag;
+      if (transport === "query") {
+        return base + "?" + payload;
+      }
+
+      return base + "#" + payload;
     }
 
     async function openOverlayWithReport() {
       if (!miniReportOverlay || !miniReportIframe || !state.structured) return;
 
-      const reportUrl = await buildEncryptedReportLink(state.structured);
+      const reportUrl = await buildEncryptedReportLink(state.structured, "query");
       miniReportIframe.src = reportUrl;
       miniReportOverlay.classList.remove("hidden");
       miniReportOverlay.setAttribute("aria-hidden", "false");
@@ -933,7 +938,7 @@
       setReportEmailStatus("Building secure link…", "");
 
       try {
-        const reportUrl = await buildEncryptedReportLink(state.structured);
+        const reportUrl = await buildEncryptedReportLink(state.structured, "hash");
         state.lastReportLink = reportUrl;
 
         if (!state.eventId) {
