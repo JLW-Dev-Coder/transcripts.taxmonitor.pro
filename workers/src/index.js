@@ -8,7 +8,10 @@
  * - GET  /transcript/tokens?tokenId=...
  * - POST /transcript/consume
  * - POST /transcript/stripe/webhook
+ * - GET  /assets/report?r=...
  * - POST /forms/transcript/report-email
+ * - GET  /transcript/report-link?reportId=...
+ * - GET  /assets/report?r=...
  *
  * Notes:
  * - Extracted from the mixed Tax Monitor Pro Worker.
@@ -107,8 +110,149 @@ function isTokenIdFormat(v) {
 function isSafeReportUrl(v) {
   const s = String(v || "").trim();
   if (!s) return false;
-  if (s.length > 12000) return false;
-  return s.startsWith("https://transcript.taxmonitor.pro/assets/report-preview.html#");
+
+  let url;
+  try {
+    url = new URL(s);
+  } catch {
+    return false;
+  }
+
+  if (url.origin !== "https://transcript.taxmonitor.pro") return false;
+
+  const allowedPaths = new Set([
+    "/assets/report",
+    "/assets/report.html",
+    "/assets/report-preview.html",
+  ]);
+
+  if (!allowedPaths.has(url.pathname)) return false;
+
+  const hasShortId = !!url.searchParams.get("r");
+  const hasHash = !!(url.hash && url.hash.slice(1).trim());
+  const hasPayloadQuery = !!(
+    (url.searchParams.get("data") || "").trim() ||
+    (url.searchParams.get("payload") || "").trim()
+  );
+
+  return hasShortId || hasHash || hasPayloadQuery;
+}
+
+
+
+async function getShortReportLink(env, reportId) {
+  const stored = await resolveShortReportPayload(env, reportId);
+  if (!stored || !stored.payload) return null;
+
+  const target = new URL("https://transcript.taxmonitor.pro/assets/report.html");
+
+  if (String(stored.payloadTransport || "hash") === "query") {
+    target.searchParams.set("data", String(stored.payload));
+  } else {
+    target.hash = String(stored.payload);
+  }
+
+  return {
+    reportId: String(reportId || "").trim(),
+    reportUrl: target.toString(),
+  };
+}
+
+function getReportKv(env) {
+  // Canonical KV binding for permanent report links
+  return env.KV_TRANSCRIPT || null;
+}
+
+// TTL removed intentionally — report links are permanent unless manually deleted from KV
+function getReportLinkTtlSeconds(env) {
+  return null;
+}
+
+function randomShortId(bytes = 18) {
+  const arr = new Uint8Array(bytes);
+  crypto.getRandomValues(arr);
+  return b64UrlEncode(arr);
+}
+
+function getShortReportKey(reportId) {
+  return `report:${String(reportId || "").trim()}`;
+}
+
+function getReportUnlockKey(eventId) {
+  return `report-unlock:${String(eventId || "").trim()}`;
+}
+
+function extractStoredReportPayload(reportUrl) {
+  const url = new URL(String(reportUrl || "").trim());
+
+  if (url.searchParams.get("r")) {
+    return { ok: false, error: "reportUrl_already_short" };
+  }
+
+  const hash = url.hash ? url.hash.slice(1).trim() : "";
+  if (hash) {
+    return { ok: true, payload: hash, transport: "hash" };
+  }
+
+  const qp = url.searchParams.get("data") || url.searchParams.get("payload") || "";
+  if (qp.trim()) {
+    return { ok: true, payload: qp.trim(), transport: "query" };
+  }
+
+  return { ok: false, error: "missing_report_payload" };
+}
+
+async function storeShortReportPayload(env, payload, meta = {}) {
+  const kv = getReportKv(env);
+  if (!kv) throw new Error("Missing KV binding: KV_TRANSCRIPT");
+
+  const now = new Date().toISOString();
+
+  for (let i = 0; i < 5; i++) {
+    const reportId = randomShortId();
+    const key = getShortReportKey(reportId);
+
+    const existing = await kv.get(key);
+    if (existing) continue;
+
+    await kv.put(
+      key,
+      JSON.stringify(
+        {
+          createdAt: now,
+          payload: String(payload || ""),
+          payloadTransport: meta.payloadTransport || "hash",
+          sourcePath: meta.sourcePath || "/assets/report.html"
+        },
+        null,
+        2
+      )
+    );
+
+    return {
+      reportId,
+      shortUrl: buildShortReportUrl(reportId)
+    };
+  }
+
+  throw new Error("Failed to allocate a unique reportId");
+}
+
+function buildShortReportUrl(reportId) {
+  return `https://transcript.taxmonitor.pro/assets/report?r=${encodeURIComponent(reportId)}`;
+}
+
+async function resolveShortReportPayload(env, reportId) {
+  const kv = getReportKv(env);
+  if (!kv) throw new Error("Missing KV binding: KV_TRANSCRIPT");
+
+  const raw = await kv.get(getShortReportKey(reportId));
+  if (!raw) return null;
+
+  const parsed = tryParseJson(raw);
+  if (!parsed.ok || !parsed.value || typeof parsed.value !== "object") return null;
+
+  return parsed.value;
 }
 
 function pemToArrayBuffer(pem) {
@@ -595,6 +739,28 @@ async function handleConsumeTranscriptTokens(request, env, ctx) {
 
   const out = await res.json().catch(() => ({}));
 
+  if (res.ok) {
+    const kv = getReportKv(env);
+    if (kv) {
+      ctx.waitUntil(
+        kv.put(
+          getReportUnlockKey(requestId),
+          JSON.stringify(
+            {
+              amount,
+              balanceAfter: out.balance ?? null,
+              createdAt: new Date().toISOString(),
+              tokenId,
+              type: "preview_unlock",
+            },
+            null,
+            2
+          )
+        )
+      );
+    }
+  }
+
   if (env.R2_TRANSCRIPT) {
     const key = `receipts/consume/${requestId}.json`;
     ctx.waitUntil(
@@ -606,7 +772,7 @@ async function handleConsumeTranscriptTokens(request, env, ctx) {
     );
   }
 
-  return json({ ...out, tokenId }, res.status, withCors(request));
+  return json({ ...out, requestId, tokenId }, res.status, withCors(request));
 }
 
 async function handleTranscriptStripeWebhook(request, env, ctx) {
@@ -670,6 +836,37 @@ async function handleTranscriptStripeWebhook(request, env, ctx) {
  * FORMS: Transcript Report Email
  * ------------------------------------------ */
 
+async function handleShortReportLookup(request, env, url) {
+  if (!requireMethod(request, ["GET"])) {
+    return new Response("Method not allowed", { status: 405 });
+  }
+
+  const reportId = String(url.searchParams.get("r") || "").trim();
+  if (!reportId || !/^[A-Za-z0-9_-]{8,128}$/.test(reportId)) {
+    return new Response("Invalid report link.", {
+      status: 400,
+      headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" },
+    });
+  }
+
+  const stored = await resolveShortReportPayload(env, reportId);
+  if (!stored || !stored.payload) {
+    return new Response("This report link was not found.", {
+      status: 404,
+      headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" },
+    });
+  }
+
+  const target = new URL("https://transcript.taxmonitor.pro/assets/report.html");
+  if (String(stored.payloadTransport || "hash") === "query") {
+    target.searchParams.set("data", String(stored.payload));
+  } else {
+    target.hash = String(stored.payload);
+  }
+
+  return Response.redirect(target.toString(), 302);
+}
+
 async function handleFormsTranscriptReportEmail(request, env, ctx) {
   if (!requireMethod(request, ["POST"])) {
     return new Response(JSON.stringify({ ok: false, error: "Method not allowed" }), {
@@ -688,14 +885,12 @@ async function handleFormsTranscriptReportEmail(request, env, ctx) {
 
   const email = String(parsed.data?.email || "").trim();
   const eventId = String(parsed.data?.eventId || "").trim();
-  const reportId = String(parsed.data?.reportId || "").trim();
   const reportUrl = String(parsed.data?.reportUrl || "").trim();
   const tokenId = String(parsed.data?.tokenId || "").trim();
 
   const missing = [];
   if (!email) missing.push("email");
   if (!eventId) missing.push("eventId");
-  if (!reportId) missing.push("reportId");
   if (!reportUrl) missing.push("reportUrl");
   if (!tokenId) missing.push("tokenId");
 
@@ -720,6 +915,13 @@ async function handleFormsTranscriptReportEmail(request, env, ctx) {
     });
   }
 
+  if (!isUuidLike(eventId)) {
+    return new Response(JSON.stringify({ ok: false, error: "Invalid eventId format" }), {
+      status: 400,
+      headers: { ...corsHeadersForRequest(request), "Content-Type": "application/json; charset=utf-8" },
+    });
+  }
+
   if (!isSafeReportUrl(reportUrl)) {
     return new Response(JSON.stringify({ ok: false, error: "Invalid reportUrl" }), {
       status: 400,
@@ -727,20 +929,47 @@ async function handleFormsTranscriptReportEmail(request, env, ctx) {
     });
   }
 
-  const stub = getLedgerStub(env, tokenId);
-  const consumeRes = await stub.fetch("https://ledger/consume", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ amount: 1, requestId: eventId }),
-  });
-
-  const consumeOut = await consumeRes.json().catch(() => ({}));
-  if (!consumeRes.ok) {
-    return new Response(JSON.stringify({ ok: false, error: consumeOut?.error || "insufficient_balance", details: consumeOut }), {
-      status: consumeRes.status || 402,
+  const kv = getReportKv(env);
+  if (!kv) {
+    return new Response(JSON.stringify({ ok: false, error: "Missing KV binding: KV_TRANSCRIPT" }), {
+      status: 500,
       headers: { ...corsHeadersForRequest(request), "Content-Type": "application/json; charset=utf-8" },
     });
   }
+
+  const unlockRaw = await kv.get(getReportUnlockKey(eventId));
+  if (!unlockRaw) {
+    return new Response(JSON.stringify({ ok: false, error: "report_not_unlocked" }), {
+      status: 403,
+      headers: { ...corsHeadersForRequest(request), "Content-Type": "application/json; charset=utf-8" },
+    });
+  }
+
+  const unlockParsed = tryParseJson(unlockRaw);
+  const unlock = unlockParsed.ok ? unlockParsed.value : null;
+  if (!unlock || String(unlock.tokenId || "") !== tokenId) {
+    return new Response(JSON.stringify({ ok: false, error: "report_unlock_token_mismatch" }), {
+      status: 403,
+      headers: { ...corsHeadersForRequest(request), "Content-Type": "application/json; charset=utf-8" },
+    });
+  }
+
+  const stub = getLedgerStub(env, tokenId);
+  const balanceRes = await stub.fetch("https://ledger/balance", { method: "GET" });
+  const balanceOut = await balanceRes.json().catch(() => ({}));
+
+  const extracted = extractStoredReportPayload(reportUrl);
+  if (!extracted.ok) {
+    return new Response(JSON.stringify({ ok: false, error: extracted.error }), {
+      status: 400,
+      headers: { ...corsHeadersForRequest(request), "Content-Type": "application/json; charset=utf-8" },
+    });
+  }
+
+  const shortLink = await storeShortReportPayload(env, extracted.payload, {
+    payloadTransport: extracted.transport,
+    sourcePath: "/assets/report.html",
+  });
 
   const fromUser =
     env.GOOGLE_WORKSPACE_USER_SUPPORT ||
@@ -748,23 +977,70 @@ async function handleFormsTranscriptReportEmail(request, env, ctx) {
     env.GOOGLE_WORKSPACE_USER_DEFAULT;
 
   const from = "Transcript Tax Monitor Pro <" + String(fromUser || "support@taxmonitor.pro") + ">";
-  const subject = "Your Transcript Report Link";
-  const text = `Here’s your report link:
+  const subject = "Your Transcript Tax Report";
+  const text = `Your transcript report is ready.
 
-${reportUrl}
+Open report:
+${shortLink.shortUrl}
 
-Tip: Save this email. The link contains the report data (nothing is uploaded).
-`;
+Important:
+- Save this email if you may need the report again.
+- This link is intended for your use only.
+- This report link does not expire unless you remove it from KV.
+
+If you did not request this report, you can ignore this email.
+
+Transcript Tax Monitor Pro`;
 
   await gmailSendMessage(env, { from, to: email, subject, text });
 
-  return new Response(JSON.stringify({ ok: true }), {
+  if (env.R2_TRANSCRIPT) {
+    const key = `receipts/report-email/${shortLink.reportId}.json`;
+    ctx.waitUntil(
+      env.R2_TRANSCRIPT.put(
+        key,
+        JSON.stringify(
+          {
+            at: new Date().toISOString(),
+            email,
+            eventId,
+            remainingBalance: balanceOut?.balance ?? null,
+            reportId: shortLink.reportId,
+            shortUrl: shortLink.shortUrl,
+            tokenId,
+          },
+          null,
+          2
+        ),
+        { httpMetadata: { contentType: "application/json" } }
+      )
+    );
+  }
+
+  return new Response(JSON.stringify({ ok: true, reportId: shortLink.reportId, reportUrl: shortLink.shortUrl, remainingBalance: balanceOut?.balance ?? null }), {
     status: 200,
     headers: {
       ...corsHeadersForRequest(request),
       "Content-Type": "application/json; charset=utf-8",
     },
   });
+}
+
+async function handleGetTranscriptReportLink(request, url, env) {
+  const reportId = (url.searchParams.get("reportId") || url.searchParams.get("r") || "").trim();
+  if (!reportId) return json({ ok: false, error: "missing_reportId" }, 400, withCors(request));
+
+  const link = await getShortReportLink(env, reportId);
+  if (!link) return json({ ok: false, error: "report_not_found" }, 404, withCors(request));
+
+  return json({ ok: true, reportId: link.reportId, reportUrl: link.reportUrl }, 200, withCors(request));
+}
+
+async function handleAssetReportRedirect(request, url, env) {
+  const reportId = (url.searchParams.get("r") || "").trim();
+  if (!reportId) return null;
+
+  return await handleShortReportLookup(request, env, url);
 }
 
 /* ------------------------------------------
@@ -803,6 +1079,26 @@ export default {
         return jsonError(request, 404, "not_found");
       } catch (err) {
         return jsonError(request, 500, "internal_error", String(err?.message || err));
+      }
+    }
+
+    if (request.method === "GET" && isPath(url, "/transcript/report-link")) {
+      try {
+        return await handleGetTranscriptReportLink(request, url, env);
+      } catch (err) {
+        return jsonError(request, 500, "internal_error", String(err?.message || err));
+      }
+    }
+
+    if (request.method === "GET" && (isPath(url, "/assets/report") || isPath(url, "/assets/report.html"))) {
+      try {
+        const redirectRes = await handleAssetReportRedirect(request, url, env);
+        if (redirectRes) return redirectRes;
+      } catch (err) {
+        return new Response("Unable to open this report link.", {
+          status: 500,
+          headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" },
+        });
       }
     }
 
