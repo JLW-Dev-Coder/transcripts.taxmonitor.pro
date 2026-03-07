@@ -211,19 +211,18 @@
   </div>
 </div>
 
-
 <script>
   (function () {
     // DOM (alphabetical)
     const brandLogoInput = document.getElementById("brand-logo");
     const brandLogoName = document.getElementById("brand-logo-file-name");
-    const copyJsonBtn = document.getElementById("copy-json");
     const checkoutPriceInput = document.getElementById("parser-checkout-price");
     const checkoutStatus = document.getElementById("parser-checkout-status");
+    const copyJsonBtn = document.getElementById("copy-json");
     const copyRawBtn = document.getElementById("copy-raw");
     const extractRawBtn = document.getElementById("extract-raw-btn");
     const jsonOutput = document.getElementById("json-output");
-        const parseStructuredBtn = document.getElementById("parse-structured-btn");
+    const parseStructuredBtn = document.getElementById("parse-structured-btn");
     const parserBuyCreditsBtn = document.getElementById("parser-buy-credits");
     const parserTokenBtn = document.getElementById("parser-save-token");
     const parserTokenInput = document.getElementById("parser-token-id");
@@ -383,7 +382,11 @@
       const res = await fetch(url, opts);
       const txt = await res.text().catch(() => "");
       let json = null;
-      try { json = txt ? JSON.parse(txt) : null; } catch { json = null; }
+      try {
+        json = txt ? JSON.parse(txt) : null;
+      } catch {
+        json = null;
+      }
       return { json, ok: res.ok, res, text: txt };
     }
 
@@ -697,36 +700,38 @@
     }
 
     async function buildEncryptedReportLink(structured, transport = "hash", path = "/assets/report") {
-  const model = {
-    codesFound: Array.isArray(structured && structured.codesFound) ? structured.codesFound : [],
-    header: structured && structured.header ? structured.header : {},
-    meta: {
-      ...(structured && structured.meta ? structured.meta : {}),
-      logo: state.brandLogoDataUrl || null,
-      logoWidth: 140,
-    },
-    transactions: Array.isArray(structured && structured.transactions) ? structured.transactions : [],
-    version: structured && structured.version ? structured.version : "unknown",
-  };
+      const model = {
+        codesFound: Array.isArray(structured && structured.codesFound) ? structured.codesFound : [],
+        header: structured && structured.header ? structured.header : {},
+        meta: {
+          ...(structured && structured.meta ? structured.meta : {}),
+          logo: state.brandLogoDataUrl || null,
+          logoWidth: 140,
+        },
+        transactions: Array.isArray(structured && structured.transactions) ? structured.transactions : [],
+        version: structured && structured.version ? structured.version : "unknown",
+      };
 
-  const plaintext = new TextEncoder().encode(JSON.stringify(model));
-  const iv = crypto.getRandomValues(new Uint8Array(12));
-  const key = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
-  const rawKey = new Uint8Array(await crypto.subtle.exportKey("raw", key));
-  const ciphertext = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, plaintext));
+      const plaintext = new TextEncoder().encode(JSON.stringify(model));
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const key = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
+      const rawKey = new Uint8Array(await crypto.subtle.exportKey("raw", key));
+      const ciphertext = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, plaintext));
 
-  const base = window.location.origin + path;
-  const payload =
-    "v=1&k=" + encodeURIComponent(toB64Url(rawKey)) +
-    "&iv=" + encodeURIComponent(toB64Url(iv)) +
-    "&r=" + encodeURIComponent(toB64Url(ciphertext));
+      const base = window.location.origin + path;
+      const payload =
+        "v=1&k=" + encodeURIComponent(toB64Url(rawKey)) +
+        "&iv=" + encodeURIComponent(toB64Url(iv)) +
+        "&r=" + encodeURIComponent(toB64Url(ciphertext));
 
-  return transport === "query" ? (base + "?" + payload) : (base + "#" + payload);
-}
+      return transport === "query" ? (base + "?" + payload) : (base + "#" + payload);
+    }
 
     async function createNormalizedReportLink(reportUrl) {
-      const out = await fetchJson("/transcript/report-link", {
+      const out = await fetchJson(API_BASE + "/transcript/report-link", {
         method: "POST",
+        mode: "cors",
+        credentials: "omit",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ reportUrl }),
       });
@@ -908,7 +913,6 @@
     }
 
     async function emailReportLink() {
-      // Send report link via Worker and surface returned short URL
       if (!state.tokenValid || !state.tokenId) {
         setReportEmailStatus("Verify token first.", "error");
         return;
@@ -974,7 +978,6 @@
       }
     }
 
-    // Events
     if (brandLogoInput && brandLogoName) {
       brandLogoInput.addEventListener("change", () => {
         const file = brandLogoInput.files && brandLogoInput.files[0];
@@ -1016,18 +1019,46 @@
       });
     }
 
-    if (copyJsonBtn) copyJsonBtn.addEventListener("click", (e) => { e.preventDefault(); copyToClipboard(jsonOutput ? jsonOutput.textContent : ""); });
-    if (copyRawBtn) copyRawBtn.addEventListener("click", (e) => { e.preventDefault(); copyToClipboard(rawOutput ? rawOutput.textContent : ""); });
+    if (copyJsonBtn) copyJsonBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      copyToClipboard(jsonOutput ? jsonOutput.textContent : "");
+    });
 
-    if (extractRawBtn) extractRawBtn.addEventListener("click", (e) => { e.preventDefault(); extractRaw(); });
-        if (parseStructuredBtn) parseStructuredBtn.addEventListener("click", (e) => { e.preventDefault(); parseStructured(); });
-    if (parserBuyCreditsBtn) parserBuyCreditsBtn.addEventListener("click", (e) => { e.preventDefault(); beginCheckout(); });
-    if (parserTokenBtn) parserTokenBtn.addEventListener("click", (e) => { e.preventDefault(); verifyToken(); });
-    if (previewReportBtn) previewReportBtn.addEventListener("click", (e) => { e.preventDefault(); previewAndConsume(); });
-    if (reportEmailBtn) reportEmailBtn.addEventListener("click", (e) => { e.preventDefault(); emailReportLink(); });
+    if (copyRawBtn) copyRawBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      copyToClipboard(rawOutput ? rawOutput.textContent : "");
+    });
 
+    if (extractRawBtn) extractRawBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      extractRaw();
+    });
 
-    // Init
+    if (parseStructuredBtn) parseStructuredBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      parseStructured();
+    });
+
+    if (parserBuyCreditsBtn) parserBuyCreditsBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      beginCheckout();
+    });
+
+    if (parserTokenBtn) parserTokenBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      verifyToken();
+    });
+
+    if (previewReportBtn) previewReportBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      previewAndConsume();
+    });
+
+    if (reportEmailBtn) reportEmailBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      emailReportLink();
+    });
+
     (async function initParserLab() {
       try {
         const prices = await fetchTranscriptPrices();
