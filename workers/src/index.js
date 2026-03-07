@@ -14,6 +14,7 @@
  * - GET  /transcript/report-link?reportId=...
  * - GET  /transcript/report?r=...
  * - GET  /v1/help/status?ticket_id=...
+ * - POST /v1/help/tickets
  * - POST /v1/clickup/webhook
  *
  * Notes:
@@ -732,6 +733,14 @@ function getSupportTaskKey(taskId) {
   return `support-task:${String(taskId || "").trim()}`;
 }
 
+function getSupportEmailIndexKey(email, supportId) {
+  return `support-email-index:${normalizeEmail(email)}:${String(supportId || "").trim()}`;
+}
+
+function buildCanonicalSupportId() {
+  return `SUP-${randomShortId(9).replace(/[^A-Za-z0-9]/g, "").toUpperCase()}`;
+}
+
 function normalizeSupportId(value) {
   return String(value || "").trim();
 }
@@ -798,6 +807,212 @@ function getDropdownOptionIdByName(options, name) {
 
 async function setClickUpCustomField(env, taskId, fieldId, value) {
   await clickupFetchJson(env, `/task/${encodeURIComponent(taskId)}/field/${encodeURIComponent(fieldId)}`, {
+    method: "POST",
+    body: JSON.stringify({ value }),
+  });
+}
+
+async function createClickUpTask(env, listId, payload) {
+  return await clickupFetchJson(env, `/list/${encodeURIComponent(listId)}/task`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+async function linkClickUpTasks(env, taskId, linksTo) {
+  if (!taskId || !linksTo || String(taskId) === String(linksTo)) return null;
+  try {
+    return await clickupFetchJson(env, `/task/${encodeURIComponent(taskId)}/link/${encodeURIComponent(linksTo)}`, {
+      method: "POST",
+      body: JSON.stringify({}),
+    });
+  } catch (_) {
+    return null;
+  }
+}
+
+function getPriorityOptionName(priority) {
+  const normalized = String(priority || "").trim().toLowerCase();
+  if (normalized === "critical") return "🟥 Critical — Today";
+  if (normalized === "high") return "🟧 High — 48 Hours";
+  if (normalized === "low") return "🟦 Low — As Scheduled";
+  return "🟨 Normal — 3–5 Days";
+}
+
+function getSupportTypeOptionName(payload) {
+  const issueType = String(payload && payload.issueType || "").trim().toLowerCase();
+  if (issueType === "token" || issueType === "credits" || issueType === "billing") {
+    return "Ticket - Transcript Token";
+  }
+  return "Ticket - Transcript Token";
+}
+
+function buildInitialSupportLatestUpdate(payload) {
+  const subject = String(payload && payload.subject || "").trim();
+  if (subject) return `Ticket submitted: ${subject}`;
+  return "Ticket submitted.";
+}
+
+function buildSupportTaskDescription(payload, supportId) {
+  const lines = [
+    `Support ID: ${supportId}`,
+    `Name: ${String(payload && payload.name || "").trim()}`,
+    `Email: ${normalizeEmail(payload && payload.email)}`,
+    `Category: ${String(payload && payload.category || "").trim()}`,
+    `Issue Type: ${String(payload && payload.issueType || "").trim()}`,
+    `Priority: ${String(payload && payload.priority || "").trim()}`,
+    `Urgency: ${String(payload && payload.urgency || "").trim()}`,
+    `Event ID: ${String(payload && payload.eventId || "").trim()}`,
+  ];
+
+  const tokenId = String(payload && payload.tokenId || "").trim();
+  const relatedOrderId = String(payload && payload.relatedOrderId || "").trim();
+  if (tokenId) lines.push(`Token ID: ${tokenId}`);
+  if (relatedOrderId) lines.push(`Related Order ID: ${relatedOrderId}`);
+
+  lines.push("");
+  lines.push(`Subject: ${String(payload && payload.subject || "").trim()}`);
+  lines.push("");
+  lines.push("Message:");
+  lines.push(String(payload && payload.message || "").trim());
+
+  return lines.join("
+");
+}
+
+async function createCanonicalSupportTicket(env, payload) {
+  const kv = getReportKv(env);
+  if (!kv) throw new Error("Missing KV binding: KV_TRANSCRIPT");
+
+  const email = normalizeEmail(payload && payload.email);
+  const eventId = String(payload && payload.eventId || "").trim();
+  const latestUpdate = buildInitialSupportLatestUpdate(payload);
+  const priorityName = getPriorityOptionName(payload && payload.priority);
+  const supportTypeName = getSupportTypeOptionName(payload);
+  const supportStatus = "open / new";
+  const createdAt = new Date().toISOString();
+
+  let supportId = "";
+  let existing = null;
+
+  for (let i = 0; i < 5; i++) {
+    supportId = buildCanonicalSupportId();
+    existing = await kv.get(getSupportStatusKey(supportId));
+    if (!existing) break;
+    supportId = "";
+  }
+
+  if (!supportId) {
+    throw new Error("unable_to_allocate_support_id");
+  }
+
+  const canonicalRecord = {
+    accountEmail: email,
+    createdAt,
+    eventId,
+    latestUpdate,
+    relatedOrderId: String(payload && payload.relatedOrderId || "").trim(),
+    source: "worker",
+    status: supportStatus,
+    subject: String(payload && payload.subject || "").trim(),
+    supportId,
+    taskId: "",
+    taskName: "",
+    type: supportTypeName,
+    updatedAt: createdAt,
+  };
+
+  await kv.put(getSupportStatusKey(supportId), JSON.stringify(canonicalRecord, null, 2));
+  await kv.put(getSupportEmailIndexKey(email, supportId), JSON.stringify({ createdAt, supportId }, null, 2));
+
+  const supportTask = await createClickUpTask(env, CLICKUP_TRANSCRIPT.SUPPORT_LIST_ID, {
+    description: buildSupportTaskDescription(payload, supportId),
+    name: `Support ${supportId} - ${String(payload && payload.subject || "Transcript Support").trim() || "Transcript Support"}`,
+    priority: null,
+    status: "open / new",
+  });
+
+  const taskId = String(supportTask && supportTask.id || "").trim();
+  if (!taskId) {
+    throw new Error("clickup_support_task_not_created");
+  }
+
+  const supportIdField = CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.SUPPORT_ID;
+  const emailField = CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.EMAIL;
+  const eventIdField = CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.EVENT_ID;
+  const latestUpdateField = CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.LATEST_UPDATE;
+  const relatedOrderIdField = CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.RELATED_ORDER_ID;
+  const actionRequiredField = getTaskCustomField(supportTask, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.ACTION_REQUIRED);
+  const priorityField = getTaskCustomField(supportTask, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.PRIORITY);
+  const typeField = getTaskCustomField(supportTask, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.TYPE);
+
+  const actionRequiredOptionId = getDropdownOptionIdByName(
+    actionRequiredField && actionRequiredField.type_config && actionRequiredField.type_config.options,
+    "Acknowledge"
+  );
+  const priorityOptionId = getDropdownOptionIdByName(
+    priorityField && priorityField.type_config && priorityField.type_config.options,
+    priorityName
+  );
+  const typeOptionId = getDropdownOptionIdByName(
+    typeField && typeField.type_config && typeField.type_config.options,
+    supportTypeName
+  );
+
+  await setClickUpCustomField(env, taskId, supportIdField, supportId);
+  await setClickUpCustomField(env, taskId, emailField, email);
+  await setClickUpCustomField(env, taskId, eventIdField, eventId);
+  await setClickUpCustomField(env, taskId, latestUpdateField, latestUpdate);
+
+  if (String(payload && payload.relatedOrderId || "").trim()) {
+    await setClickUpCustomField(env, taskId, relatedOrderIdField, String(payload.relatedOrderId).trim());
+  }
+
+  if (actionRequiredOptionId) {
+    await setClickUpCustomField(env, taskId, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.ACTION_REQUIRED, actionRequiredOptionId);
+  }
+
+  if (priorityOptionId) {
+    await setClickUpCustomField(env, taskId, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.PRIORITY, priorityOptionId);
+  }
+
+  if (typeOptionId) {
+    await setClickUpCustomField(env, taskId, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.TYPE, typeOptionId);
+  }
+
+  const fullSupportTask = await getClickUpTask(env, taskId);
+  const refreshedRecord = {
+    ...canonicalRecord,
+    taskId,
+    taskName: String(fullSupportTask && fullSupportTask.name || supportTask && supportTask.name || "").trim(),
+    updatedAt: new Date().toISOString(),
+  };
+
+  await kv.put(getSupportStatusKey(supportId), JSON.stringify(refreshedRecord, null, 2));
+  await kv.put(getSupportTaskKey(taskId), JSON.stringify({ supportId }, null, 2));
+
+  try {
+    const accountTask = await findAccountTaskByEmail(env, email);
+    if (accountTask && accountTask.id) {
+      const accountSupportStatusField = getTaskCustomField(accountTask, CLICKUP_TRANSCRIPT.ACCOUNT_FIELDS.SUPPORT_STATUS);
+      const accountSupportStatusOptionId = getDropdownOptionIdByName(
+        accountSupportStatusField && accountSupportStatusField.type_config && accountSupportStatusField.type_config.options,
+        mapSupportStatusToAccountStatus(supportStatus)
+      );
+
+      if (accountSupportStatusOptionId) {
+        await setClickUpCustomField(env, accountTask.id, CLICKUP_TRANSCRIPT.ACCOUNT_FIELDS.SUPPORT_STATUS, accountSupportStatusOptionId);
+      }
+
+      await linkClickUpTasks(env, taskId, accountTask.id);
+      await linkClickUpTasks(env, accountTask.id, taskId);
+    }
+  } catch (_) {
+    // Projection only. Ticket creation should still succeed.
+  }
+
+  return refreshedRecord;
+}/field/${encodeURIComponent(fieldId)}`, {
     method: "POST",
     body: JSON.stringify({ value }),
   });
@@ -2103,6 +2318,47 @@ async function handleTranscriptSignOut(request) {
   });
 }
 
+async function handlePostHelpTickets(request, env) {
+  const parsed = await parseInboundBody(request);
+  if (!parsed.ok) {
+    return json({ error: parsed.error, details: parsed.details }, 400, withCors(request));
+  }
+
+  const payload = parsed.data || {};
+  const required = ["category", "email", "eventId", "issueType", "message", "name", "priority", "subject", "urgency"];
+  const missing = required.filter((key) => !String(payload[key] || "").trim()).sort();
+
+  if (missing.length) {
+    return json({ error: "missing_required_fields", missing }, 400, withCors(request));
+  }
+
+  const email = normalizeEmail(payload.email);
+  const eventId = String(payload.eventId || "").trim();
+
+  if (!isLikelyEmail(email)) {
+    return json({ error: "invalid_email" }, 400, withCors(request));
+  }
+
+  if (!isUuidLike(eventId)) {
+    return json({ error: "invalid_eventId" }, 400, withCors(request));
+  }
+
+  const record = await createCanonicalSupportTicket(env, payload);
+
+  return json(
+    {
+      latestUpdate: record.latestUpdate,
+      ok: true,
+      status: record.status,
+      supportId: record.supportId,
+      taskId: record.taskId,
+      updatedAt: record.updatedAt,
+    },
+    200,
+    withCors(request)
+  );
+}
+
 async function handleGetHelpStatus(request, url, env) {
   const supportId = normalizeSupportId(
     url.searchParams.get("ticket_id") || url.searchParams.get("supportId") || url.searchParams.get("support_id") || ""
@@ -2333,6 +2589,17 @@ export default {
       try {
         return await handleGetHelpStatus(request, url, env);
       } catch (err) {
+        return jsonError(request, 500, "internal_error", String(err?.message || err));
+      }
+    }
+
+    if (request.method === "POST" && isPath(url, "/v1/help/tickets")) {
+      try {
+        return await handlePostHelpTickets(request, env);
+      } catch (err) {
+        return jsonError(request, 500, "internal_error", String(err?.message || err));
+      }
+    } catch (err) {
         return jsonError(request, 500, "internal_error", String(err?.message || err));
       }
     }
