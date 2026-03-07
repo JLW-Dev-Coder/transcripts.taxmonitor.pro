@@ -787,6 +787,31 @@
           return rows.some((row) => set.has(String(row.code)));
         }
 
+        function base64UrlToUint8Array(input) {
+          const raw = String(input || '').trim();
+          if (!raw) return new Uint8Array();
+          const normalized = raw.split('-').join('+').split('_').join('/');
+          const padLength = normalized.length % 4 === 0 ? 0 : 4 - (normalized.length % 4);
+          const padded = normalized + '='.repeat(padLength);
+          const decoded = atob(padded);
+          const bytes = new Uint8Array(decoded.length);
+          for (let i = 0; i < decoded.length; i++) bytes[i] = decoded.charCodeAt(i);
+          return bytes;
+        }
+
+        function base64UrlToText(input) {
+          const bytes = base64UrlToUint8Array(input);
+          return new TextDecoder().decode(bytes);
+        }
+
+        function tryParseJson(raw) {
+          try {
+            return JSON.parse(raw);
+          } catch (_) {
+            return null;
+          }
+        }
+
         function normalizeRow(row, index) {
           const code = cleanText(row?.code || row?.transactionCode || row?.tc || row?.cycleCode || `Item ${index + 1}`);
           const date = cleanText(row?.date || row?.transactionDate || row?.postedDate || row?.effectiveDate, 'Undated');
@@ -857,18 +882,59 @@
           if (!raw) return null;
           if (typeof raw === 'object') return raw;
           const attempts = [String(raw).trim()];
-          try { attempts.push(decodeURIComponent(String(raw).trim())); } catch (_) {}
+          try {
+            attempts.push(decodeURIComponent(String(raw).trim()));
+          } catch (_) {}
+
           for (const item of attempts) {
             if (!item) continue;
-            try { return JSON.parse(item); } catch (_) {}
+            const parsedJson = tryParseJson(item);
+            if (parsedJson) return parsedJson;
             try {
-              const normalized = item.replace(/-/g, '+').replace(/_/g, '/');
-              const padLength = normalized.length % 4 === 0 ? 0 : 4 - (normalized.length % 4);
-              const padded = normalized + '='.repeat(padLength);
-              const decoded = atob(padded);
-              return JSON.parse(decoded);
+              const decoded = base64UrlToText(item);
+              const parsedDecoded = tryParseJson(decoded);
+              if (parsedDecoded) return parsedDecoded;
             } catch (_) {}
           }
+          return null;
+        }
+
+        function readHashParams() {
+          const rawHash = String(window.location.hash || '').trim();
+          const value = rawHash.startsWith('#') ? rawHash.slice(1) : rawHash;
+          return new URLSearchParams(value);
+        }
+
+        async function decryptEncryptedPayload(params) {
+          const version = String(params.get('v') || '').trim();
+          const keyValue = String(params.get('k') || '').trim();
+          const ivValue = String(params.get('iv') || '').trim();
+          const reportValue = String(params.get('r') || '').trim();
+
+          if (version !== '1' || !keyValue || !ivValue || !reportValue) return null;
+
+          const rawKey = base64UrlToUint8Array(keyValue);
+          const iv = base64UrlToUint8Array(ivValue);
+          const ciphertext = base64UrlToUint8Array(reportValue);
+
+          const key = await crypto.subtle.importKey('raw', rawKey, { name: 'AES-GCM' }, false, ['decrypt']);
+          const plaintext = await crypto.subtle.decrypt({ iv, name: 'AES-GCM' }, key, ciphertext);
+          const decoded = new TextDecoder().decode(plaintext);
+          const parsed = tryParseJson(decoded);
+          if (!parsed) throw new Error('Decrypted payload was not valid JSON.');
+          return parsed;
+        }
+
+        async function readEncryptedPayload() {
+          const url = new URL(window.location.href);
+          const queryParams = url.searchParams;
+          const hashParams = readHashParams();
+
+          const hasQueryPayload = queryParams.get('v') && queryParams.get('k') && queryParams.get('iv') && queryParams.get('r');
+          const hasHashPayload = hashParams.get('v') && hashParams.get('k') && hashParams.get('iv') && hashParams.get('r');
+
+          if (hasQueryPayload) return await decryptEncryptedPayload(queryParams);
+          if (hasHashPayload) return await decryptEncryptedPayload(hashParams);
           return null;
         }
 
@@ -878,14 +944,18 @@
         }
 
         function readHashPayload() {
-          return extractPayloadCandidate(String(window.location.hash || '').replace(/^#/, '').trim());
+          const rawHash = String(window.location.hash || '').trim();
+          const value = rawHash.startsWith('#') ? rawHash.slice(1) : rawHash;
+          const hashParams = readHashParams();
+          if (hashParams.get('v') && hashParams.get('k') && hashParams.get('iv') && hashParams.get('r')) return null;
+          return extractPayloadCandidate(value);
         }
 
         function readStoragePayload() {
           const keys = ['tm_report_data', 'tmp_report_data', 'transcript_report_data', 'transcript_report_payload', 'reportData'];
           for (const key of keys) {
             try {
-              const raw = localStorage.getItem(key) || sessionStorage.getItem(key);
+              const raw = sessionStorage.getItem(key) || localStorage.getItem(key);
               const parsed = extractPayloadCandidate(raw);
               if (parsed) return parsed;
             } catch (_) {}
@@ -916,6 +986,8 @@
             return source;
           }
 
+          const header = source.header && typeof source.header === 'object' ? source.header : {};
+          const meta = source.meta && typeof source.meta === 'object' ? source.meta : {};
           const rowsRaw = Array.isArray(source.rows)
             ? source.rows
             : Array.isArray(source.transactions)
@@ -924,30 +996,31 @@
             ? source.transactionCodes
             : Array.isArray(source.codes)
             ? source.codes
+            : Array.isArray(source.codesFound)
+            ? source.codesFound
             : Array.isArray(source.timeline)
             ? source.timeline
             : [];
 
           const rows = rowsRaw.map(normalizeRow);
           const metadata = {
-            accountNumberMasked: cleanText(source.accountNumberMasked || source.ssnMasked || source.tinMasked || source.taxpayerIdMasked || '—'),
-            filingStatus: cleanText(source.filingStatus || source.maritalStatus || '—'),
+            accountNumberMasked: cleanText(meta.tinMasked || source.accountNumberMasked || source.ssnMasked || source.tinMasked || source.taxpayerIdMasked || '—'),
+            filingStatus: cleanText(meta.filingStatus || source.filingStatus || source.maritalStatus || '—'),
             preparedBy: cleanText(source.preparedBy || source.preparer || source.prepared_by || 'Tax Professional'),
-            taxpayerName: cleanText(source.taxpayerName || source.clientName || source.name || source.taxpayer || 'Unnamed Taxpayer'),
-            taxPeriodEnding: cleanText(source.taxPeriodEnding || source.taxPeriod || source.periodEnding || source.taxYear || '—'),
-            transcriptType: cleanText(source.transcriptType || source.reportType || source.transcript || 'IRS Account Transcript')
+            taxpayerName: cleanText(meta.taxpayerName || source.taxpayerName || source.clientName || source.name || source.taxpayer || 'Unnamed Taxpayer'),
+            taxPeriodEnding: cleanText(meta.taxPeriodEnding || source.taxPeriodEnding || source.taxPeriod || source.periodEnding || source.taxYear || '—'),
+            transcriptType: cleanText(meta.transcriptType || source.transcriptType || source.reportType || source.transcript || header.formNumber || 'IRS Account Transcript')
           };
 
           const summary = {
-            actionRequired: deriveActionRequired(rows, source),
-            currentBalance: deriveCurrentBalance(source),
-            noticesIssued: deriveNoticesIssued(rows, source),
-            refundStatus: deriveRefundStatus(rows, source),
-            riskLevel: deriveRiskLevel(rows, source)
+            actionRequired: deriveActionRequired(rows, { ...source, accountBalance: meta.accountBalance || source.accountBalance, actionRequired: meta.actionRequired || source.actionRequired }),
+            currentBalance: deriveCurrentBalance({ ...source, accountBalance: meta.accountBalance || source.accountBalance }),
+            noticesIssued: deriveNoticesIssued(rows, { ...source, noticeStatus: meta.noticeStatus || source.noticeStatus }),
+            refundStatus: deriveRefundStatus(rows, { ...source, refundStatus: meta.refundStatus || source.refundStatus }),
+            riskLevel: deriveRiskLevel(rows, { ...source, accountBalance: meta.accountBalance || source.accountBalance, riskLevel: meta.riskLevel || source.riskLevel })
           };
 
-          const summaryNarrative = cleanText(source.summary || '', '');
-
+          const summaryNarrative = cleanText(source.summaryNarrative || source.summary || meta.summary || '', '');
           const analysis = [];
           if (hasCode(rows, ['150'])) analysis.push({ title: 'Return posting detected', copy: 'A TC 150 entry usually means the return posted and the baseline tax computation is on the account. Useful, unlike most panic.' });
           if (hasCode(rows, ['806'])) analysis.push({ title: 'Withholding credit applied', copy: 'A TC 806 entry points to withholding credit being applied, which often explains refund or reduced balance behavior.' });
@@ -970,13 +1043,22 @@
 
           return {
             analysis,
-            generatedAt: toIsoish(source.generatedAt || source.reportDate || source.generatedOn || new Date().toISOString()) || new Date().toISOString(),
+            generatedAt: toIsoish(source.generatedAt || header.responseDate || header.requestDate || source.reportDate || source.generatedOn || new Date().toISOString()) || new Date().toISOString(),
+            header: {
+              formNumber: cleanText(header.formNumber || '—'),
+              requestDate: cleanText(header.requestDate || '—'),
+              responseDate: cleanText(header.responseDate || '—'),
+              trackingNumber: cleanText(header.trackingNumber || '—')
+            },
+            logo: source.logo || meta.logo || null,
+            logoWidth: Number(source.logoWidth || meta.logoWidth || 140) || 140,
             metadata,
             notices,
             recommendations,
             rows,
             summary,
-            summaryNarrative: summaryNarrative || `This ${metadata.transcriptType.toLowerCase()} for ${metadata.taxpayerName} shows a current balance of ${summary.currentBalance}. Refund status appears to be ${summary.refundStatus.toLowerCase()}, notices are marked ${summary.noticesIssued.toLowerCase()}, and risk is currently assessed as ${summary.riskLevel.toLowerCase()}.`
+            summaryNarrative: summaryNarrative || `This ${metadata.transcriptType.toLowerCase()} for ${metadata.taxpayerName} shows a current balance of ${summary.currentBalance}. Refund status appears to be ${summary.refundStatus.toLowerCase()}, notices are marked ${summary.noticesIssued.toLowerCase()}, and risk is currently assessed as ${summary.riskLevel.toLowerCase()}.`,
+            version: cleanText(source.version || '1')
           };
         }
 
@@ -1079,6 +1161,10 @@
                   <div class="summary-grid">
                     <div class="card"><div class="card-label">Generated</div><div class="card-value">${escapeHtml(reportDate)}</div></div>
                     <div class="card"><div class="card-label">Prepared By</div><div class="card-value">${escapeHtml(report.metadata.preparedBy || 'Tax Professional')}</div></div>
+                    <div class="card"><div class="card-label">Form Number</div><div class="card-value">${escapeHtml(report.header && report.header.formNumber || '—')}</div></div>
+                    <div class="card"><div class="card-label">Tracking Number</div><div class="card-value">${escapeHtml(report.header && report.header.trackingNumber || '—')}</div></div>
+                    <div class="card"><div class="card-label">Request Date</div><div class="card-value">${escapeHtml(toDisplayDate(report.header && report.header.requestDate || '—'))}</div></div>
+                    <div class="card"><div class="card-label">Response Date</div><div class="card-value">${escapeHtml(toDisplayDate(report.header && report.header.responseDate || '—'))}</div></div>
                   </div>
                 </section>
 
@@ -1169,17 +1255,42 @@
           `;
         }
 
-        function getStoredLogo() {
-          return String(localStorage.getItem('tmp_report_logo') || '').trim() || null;
+        function getReportFingerprint(report) {
+          const basis = [
+            report?.header?.trackingNumber || '',
+            report?.metadata?.accountNumberMasked || '',
+            report?.metadata?.taxpayerName || '',
+            report?.generatedAt || ''
+          ].join('|');
+          let hash = 0;
+          for (let i = 0; i < basis.length; i++) {
+            hash = (hash * 31 + basis.charCodeAt(i)) >>> 0;
+          }
+          return `tm_report_logo_${hash.toString(16)}`;
         }
 
-        function setStoredLogo(value) {
-          const text = String(value || '').trim();
-          if (text) localStorage.setItem('tmp_report_logo', text);
+        function getStoredLogo(report) {
+          try {
+            const key = getReportFingerprint(report);
+            return String(sessionStorage.getItem(key) || '').trim() || null;
+          } catch (_) {
+            return null;
+          }
         }
 
-        function clearStoredLogo() {
-          localStorage.removeItem('tmp_report_logo');
+        function setStoredLogo(report, value) {
+          try {
+            const key = getReportFingerprint(report);
+            const text = String(value || '').trim();
+            if (text) sessionStorage.setItem(key, text);
+          } catch (_) {}
+        }
+
+        function clearStoredLogo(report) {
+          try {
+            const key = getReportFingerprint(report);
+            sessionStorage.removeItem(key);
+          } catch (_) {}
         }
 
         function renderState(type, payload) {
@@ -1188,13 +1299,13 @@
           const configs = {
             malformed: {
               title: 'Malformed report payload',
-              copy: 'The report link included data, but it could not be decoded into a usable report object. That usually means the payload was damaged, double-encoded, or mutilated by a transport layer that felt creative.',
+              copy: 'The report link included data, but it could not be decoded into a usable report object. That usually means the encrypted payload was damaged, double-encoded, or otherwise mangled by transport weirdness.',
               detail: payload
             },
             missing: {
               title: 'Missing report payload',
-              copy: 'This page needs a report payload from ?data=..., ?payload=..., or the URL hash. Right now it has none, which is not a report workflow so much as a dramatic pause.',
-              detail: '?data=... | ?payload=... | #...'
+              copy: 'This page needs a report payload from encrypted URL params, ?data=..., ?payload=..., or the URL hash. Right now it has none, which is not a report workflow so much as a polite failure.',
+              detail: 'Encrypted: ?v=1&k=...&iv=...&r=... | Plain: ?data=... | ?payload=... | #...'
             },
             invalid: {
               title: 'Invalid report payload',
@@ -1232,18 +1343,25 @@
           reportWrap.innerHTML = renderReportPages(report);
         }
 
-        function getPayloadResult() {
+        async function getPayloadResult() {
+          const encryptedPayload = await readEncryptedPayload().catch((err) => ({ __decryptError: String(err && err.message || err || 'decrypt_failed') }));
           const paramsPayload = readParamsPayload();
           const hashPayload = readHashPayload();
           const winPayload = readWindowPayload();
           const storagePayload = readStoragePayload();
+          const url = new URL(window.location.href);
+          const hashParams = readHashParams();
 
-          const hasRawParam = new URL(window.location.href).searchParams.get('data') || new URL(window.location.href).searchParams.get('payload');
-          const hasRawHash = String(window.location.hash || '').replace(/^#/, '').trim();
+          const hasRawParam = url.searchParams.get('data') || url.searchParams.get('payload') || (url.searchParams.get('v') && url.searchParams.get('k') && url.searchParams.get('iv') && url.searchParams.get('r') ? 'encrypted_query_payload' : '');
+          const hasRawHash = String(window.location.hash || '').trim() || (hashParams.get('v') && hashParams.get('k') && hashParams.get('iv') && hashParams.get('r') ? 'encrypted_hash_payload' : '');
 
-          const payload = paramsPayload || hashPayload || winPayload || storagePayload;
+          if (encryptedPayload && encryptedPayload.__decryptError) {
+            return { status: 'malformed', payload: encryptedPayload.__decryptError };
+          }
+
+          const payload = encryptedPayload || paramsPayload || hashPayload || winPayload || storagePayload;
           if (!payload) {
-            if (hasRawParam || hasRawHash) return { status: 'malformed', payload: (hasRawParam || hasRawHash).slice(0, 500) };
+            if (hasRawParam || hasRawHash) return { status: 'malformed', payload: String(hasRawParam || hasRawHash).slice(0, 500) };
             return { status: 'missing', payload: null };
           }
           try {
@@ -1280,7 +1398,7 @@
                 if (!result.startsWith('data:image/')) return;
                 window.tmCanonicalReport = window.tmCanonicalReport || normalizeReport(FALLBACK_REPORT_DATA);
                 window.tmCanonicalReport.logo = result;
-                setStoredLogo(result);
+                setStoredLogo(window.tmCanonicalReport, result);
                 showReport(window.tmCanonicalReport);
                 syncButtons();
               };
@@ -1292,7 +1410,7 @@
             removeBtn.addEventListener('click', () => {
               if (!window.tmCanonicalReport) return;
               window.tmCanonicalReport.logo = null;
-              clearStoredLogo();
+              clearStoredLogo(window.tmCanonicalReport);
               showReport(window.tmCanonicalReport);
               syncButtons();
             });
@@ -1301,10 +1419,10 @@
           syncButtons();
         }
 
-        function boot() {
+        async function boot() {
           document.getElementById('footerYear').textContent = String(new Date().getFullYear());
 
-          const result = getPayloadResult();
+          const result = await getPayloadResult();
           if (result.status !== 'ok') {
             renderState(result.status, result.payload);
             wireControls();
@@ -1312,13 +1430,13 @@
           }
 
           const report = result.payload;
-          const storedLogo = getStoredLogo();
-          if (storedLogo) report.logo = storedLogo;
+          const storedLogo = getStoredLogo(report);
+          if (storedLogo && !report.logo) report.logo = storedLogo;
           window.tmCanonicalReport = report;
           window.TMReportShared = {
             normalizeReport,
             renderReportPages,
-            version: '1.0.0'
+            version: '1.1.0'
           };
           showReport(report);
           wireControls();
