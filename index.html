@@ -21,7 +21,7 @@
     };
   </script>
    
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/legacy/pdf.min.js"></script>
   <script src="/_sdk/element_sdk.js"></script>
   <script src="/_sdk/data_sdk.js"></script>
 
@@ -34,10 +34,15 @@
   <link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon" />
 
   <script>
-    if (typeof pdfjsLib !== 'undefined') {
-      pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.js";
-    }
-  </script>  
+    window.addEventListener("DOMContentLoaded", function () {
+      if (window.pdfjsLib) {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+          "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/legacy/pdf.worker.min.js";
+      } else {
+        console.error("PDF.js failed to load");
+      }
+    });
+  </script>
  </head>
 
  <body class="h-full noise font-sans">
@@ -223,7 +228,8 @@
          </svg>
         </div>
         <h3 class="font-bold text-xl text-midnight mb-3">Simple, One-Time Purchase
-Buy once and generate transcript reports as needed. No recurring billing. No surprise charges.</p>
+Buy once and generate transcript reports as needed. No recurring billing. No surprise charges.</h3>
+        <p class="text-gray-600">Purchase credits once and use them when you need them. No subscriptions. No recurring billing. No surprise charges.</p>
        </div>
        <div class="card-elevated p-8">
         <div class="feature-icon mb-6">
@@ -428,7 +434,6 @@ Buy once and generate transcript reports as needed. No recurring billing. No sur
       </div>
     </section>
 
-
     <!-- Free Report Page (shareable deliverable) -->
    <section id="free-report" class="page-section">
     <div class="min-h-full py-12">
@@ -442,7 +447,6 @@ Buy once and generate transcript reports as needed. No recurring billing. No sur
       </div>
 
       <div class="report-shell p-5 sm:p-7">
-
        <div id="free-report-output"></div>
       </div>
      </div>
@@ -469,7 +473,6 @@ Buy once and generate transcript reports as needed. No recurring billing. No sur
         </div>
 
         <div id="pricing-grid" class="grid md:grid-cols-3 gap-8">
-          <!-- Cards injected by JS -->
           <div class="card-elevated p-8 animate-pulse">
             <div class="h-6 bg-gray-200 rounded w-1/2 mb-3"></div>
             <div class="h-10 bg-gray-200 rounded w-3/4 mb-6"></div>
@@ -530,7 +533,6 @@ Buy once and generate transcript reports as needed. No recurring billing. No sur
             },
           ].slice().sort((a, b) => Number(a.credits || 0) - Number(b.credits || 0));
 
-          // --- tiny “tests” (in-browser) ---
           function assert(name, condition) {
             if (!condition) {
               console.error("test_failed", name);
@@ -539,39 +541,30 @@ Buy once and generate transcript reports as needed. No recurring billing. No sur
           }
 
           function runTests() {
-            // Alphabetical sort test (existing behavior)
             const sorted = ["b", "a", "c"].slice().sort((a, b) => String(a).localeCompare(String(b)));
             assert("alpha_sort", sorted.join("") === "abc");
 
-            // Payment links must exist and be https
             assert("payment_links_non_empty", Array.isArray(PAYMENT_LINKS) && PAYMENT_LINKS.length >= 3);
             assert(
               "payment_links_https",
               PAYMENT_LINKS.every((p) => typeof p.url === "string" && p.url.startsWith("https://"))
             );
 
-            // Packs should be sorted ascending by credits
             const credits = PAYMENT_LINKS.map((p) => Number(p.credits || 0));
             const sortedCredits = credits.slice().sort((a, b) => a - b);
             assert("credits_sorted", credits.join(",") === sortedCredits.join(","));
 
-            // Prices must not include trailing .00
             assert(
               "price_no_cents",
               PAYMENT_LINKS.every((p) => typeof p.priceText === "string" && !p.priceText.includes(".00"))
             );
 
-            // Parser token elements should exist
             assert("parser_token_available_exists", !!document.getElementById("parser-token-available"));
             assert("parser_token_input_exists", !!document.getElementById("parser-token-id"));
             assert("parser_token_save_exists", !!document.getElementById("parser-save-token"));
-            // Report preview UI should exist
             assert("mini_report_btn_exists", !!document.getElementById("mini-report-btn"));
             assert("preview_report_btn_exists", !!document.getElementById("preview-report-btn"));
-// renderPricing should exist
             assert("render_pricing_exists", typeof renderPricing === "function");
-
-            // Cal config should not contain invalid tokens
             assert("cal_namespace_exists", typeof window.Cal === "function");
           }
 
@@ -866,7 +859,6 @@ Buy once and generate transcript reports as needed. No recurring billing. No sur
 
     Cal("init", "tax-monitor-transcript-support", { origin: "https://app.cal.com" });
 
-    // Brand color: purple for BOTH themes.
     Cal.ns["tax-monitor-transcript-support"]("ui", {
       cssVarsPerTheme: {
         dark: { "cal-brand": "#a855f7" },
@@ -876,7 +868,6 @@ Buy once and generate transcript reports as needed. No recurring billing. No sur
       layout: "month_view"
     });
 
-    // Floating support button
     Cal.ns["tax-monitor-transcript-support"]("floatingButton", {
       calLink: "tax-monitor-pro/tax-monitor-transcript-support",
       buttonText: "Book Transcript Support",
@@ -886,6 +877,5 @@ Buy once and generate transcript reports as needed. No recurring billing. No sur
       }
     });
   </script>
-  </body>
-
+ </body>
 </html>
