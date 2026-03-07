@@ -715,7 +715,11 @@
       const model = {
         codesFound: Array.isArray(structured && structured.codesFound) ? structured.codesFound : [],
         header: structured && structured.header ? structured.header : {},
-        meta: structured && structured.meta ? structured.meta : {},
+        meta: {
+          ...(structured && structured.meta ? structured.meta : {}),
+          logo: state.brandLogoDataUrl || null,
+          logoWidth: 140,
+        },
         transactions: Array.isArray(structured && structured.transactions) ? structured.transactions : [],
         version: structured && structured.version ? structured.version : "unknown",
       };
