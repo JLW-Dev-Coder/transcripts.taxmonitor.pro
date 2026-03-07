@@ -1382,6 +1382,7 @@
           const fileInput = document.getElementById('logoFileInput');
 
           function syncButtons() {
+            if (!removeBtn) return;
             removeBtn.classList.toggle('hidden', !Boolean(window.tmCanonicalReport && window.tmCanonicalReport.logo));
           }
 
@@ -1442,7 +1443,9 @@
           wireControls();
         }
 
-        boot();
+        boot().catch((err) => {
+          renderState('malformed', String(err && err.message || err || 'unknown_boot_error'));
+        });
       })();
     </script>
   </body>
