@@ -629,7 +629,9 @@
         #addLogoBtn,
         #logoFileInput,
         #removeLogoBtn,
-        #printBtn {
+        #emailReportBtn,
+        #printBtn,
+        #reportBackButton {
           display: none !important;
         }
 
@@ -664,6 +666,8 @@
           </a>
 
           <div class="topbar-actions">
+            <button id="reportBackButton" type="button" class="btn btn-ghost">Back</button>
+            <button id="emailReportBtn" type="button" class="btn btn-soft">Email Report</button>
             <input id="logoFileInput" type="file" accept="image/*" class="hidden" />
             <button id="addLogoBtn" type="button" class="btn btn-soft">Add Logo</button>
             <button id="removeLogoBtn" type="button" class="btn btn-ghost hidden">Remove Logo</button>
@@ -1316,6 +1320,16 @@
           } catch (_) {}
         }
 
+        function getReturnUrl() {
+          const url = new URL(window.location.href);
+          const returnUrl = String(url.searchParams.get('return') || '').trim();
+          return returnUrl || '/partials/parse-lab.html';
+        }
+
+        function goBackToReturnUrl() {
+          window.location.href = getReturnUrl();
+        }
+
         function renderState(type, payload) {
           const wrap = document.getElementById('stateWrap');
           if (!wrap) return;
@@ -1358,12 +1372,14 @@
                 ${debugBlock}
                 <div class="state-actions">
                   <button type="button" class="btn btn-primary" id="statePrintBtn">Print Report</button>
-                  <a href="/" class="btn btn-ghost">Back to App</a>
+                  <button type="button" class="btn btn-ghost" id="stateBackBtn">Go Back</button>
                 </div>
               </div>
             </div>
           `;
+          const backBtn = document.getElementById('stateBackBtn');
           const btn = document.getElementById('statePrintBtn');
+          if (backBtn) backBtn.addEventListener('click', () => goBackToReturnUrl());
           if (btn) btn.addEventListener('click', () => window.print());
         }
 
@@ -1438,6 +1454,8 @@
 
         function wireControls() {
           const addBtn = document.getElementById('addLogoBtn');
+          const backBtn = document.getElementById('reportBackButton');
+          const emailBtn = document.getElementById('emailReportBtn');
           const removeBtn = document.getElementById('removeLogoBtn');
           const printBtn = document.getElementById('printBtn');
           const fileInput = document.getElementById('logoFileInput');
@@ -1445,6 +1463,16 @@
           function syncButtons() {
             if (!removeBtn) return;
             removeBtn.classList.toggle('hidden', !Boolean(window.tmCanonicalReport && window.tmCanonicalReport.logo));
+          }
+
+          if (backBtn) backBtn.addEventListener('click', () => goBackToReturnUrl());
+
+          if (emailBtn) {
+            emailBtn.addEventListener('click', () => {
+              const subject = encodeURIComponent('IRS Transcript Report');
+              const body = encodeURIComponent(`Open report: ${window.location.href}`);
+              window.location.href = `mailto:?subject=${subject}&body=${body}`;
+            });
           }
 
           if (printBtn) printBtn.addEventListener('click', () => window.print());
@@ -1498,7 +1526,7 @@
           window.TMReportShared = {
             normalizeReport,
             renderReportPages,
-            version: '1.1.0'
+            version: '1.2.0'
           };
           showReport(report);
           wireControls();
