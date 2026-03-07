@@ -122,6 +122,7 @@ function isSafeReportUrl(v) {
   if (url.origin !== "https://transcript.taxmonitor.pro") return false;
 
   const allowedPaths = new Set([
+    "/assets/report",
     "/assets/report.html",
     "/assets/report-preview.html",
     "/transcript/report",
@@ -145,7 +146,7 @@ async function getShortReportLink(env, reportId) {
   const stored = await resolveShortReportPayload(env, reportId);
   if (!stored || !stored.payload) return null;
 
-  const target = new URL("https://transcript.taxmonitor.pro/assets/report.html");
+  const target = new URL("https://transcript.taxmonitor.pro/assets/report");
 
   if (String(stored.payloadTransport || "hash") === "query") {
     target.searchParams.set("data", String(stored.payload));
@@ -223,7 +224,7 @@ async function storeShortReportPayload(env, payload, meta = {}) {
           createdAt: now,
           payload: String(payload || ""),
           payloadTransport: meta.payloadTransport || "hash",
-          sourcePath: meta.sourcePath || "/assets/report.html"
+          sourcePath: meta.sourcePath || "/assets/report"
         },
         null,
         2
@@ -909,7 +910,7 @@ async function handleShortReportLookup(request, env, url) {
     });
   }
 
-  const target = new URL("https://transcript.taxmonitor.pro/assets/report.html");
+  const target = new URL("https://transcript.taxmonitor.pro/assets/report");
   if (String(stored.payloadTransport || "hash") === "query") {
     target.searchParams.set("data", String(stored.payload));
   } else {
@@ -1020,7 +1021,7 @@ async function handleFormsTranscriptReportEmail(request, env, ctx) {
 
   const shortLink = await storeShortReportPayload(env, extracted.payload, {
     payloadTransport: extracted.transport,
-    sourcePath: "/assets/report.html",
+    sourcePath: "/assets/report",
   });
 
   const fromUser =
