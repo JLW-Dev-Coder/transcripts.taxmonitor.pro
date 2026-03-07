@@ -102,7 +102,6 @@
         </div>
       </div>
     </div>
-    </div>
 
     <!-- Upload -->
     <div class="mb-10 pb-10 border-b border-slate-700/30">
@@ -154,7 +153,7 @@
         </a>
       </div>
 
-      <div class="rounded-xl border border-slate-700/40 bg-slate-950/30 p-4 text-sm text-slate-300">
+      <div id="preview-action-status" class="rounded-xl border border-slate-700/40 bg-slate-950/30 p-4 text-sm text-slate-300">
         Runs in your browser. Your PDF is not uploaded or stored.
       </div>
 
@@ -178,8 +177,8 @@
 
       <div class="rounded-xl border border-slate-700/40 bg-slate-950/30 overflow-hidden">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 px-4 py-3 border-b border-slate-700/40">
-          <div class="text-sm font-semibold text-white">Email report link (no storage)</div>
-          <div class="text-xs text-slate-400">Encrypted report data lives in the URL fragment (not uploaded).</div>
+          <div class="text-sm font-semibold text-white">Email report link</div>
+          <div class="text-xs text-slate-400">A short secure report link is generated for email delivery.</div>
         </div>
         <div class="p-4 grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
           <div>
@@ -206,7 +205,10 @@
 <!-- Overlay -->
 <div id="mini-report-overlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden z-50 flex items-center justify-center p-6" aria-hidden="true">
   <div class="relative w-full max-w-5xl h-[85vh] bg-slate-950 rounded-2xl overflow-hidden border border-purple-500/20">
-    <button id="mini-report-close" class="absolute top-4 right-4 z-10 bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition">Close</button>
+    <div class="absolute top-4 right-4 z-10 flex items-center gap-2">
+      <button id="mini-report-print" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition">Print</button>
+      <button id="mini-report-close" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition">Close</button>
+    </div>
     <iframe id="mini-report-iframe" src="" class="w-full h-full border-0" title="Report preview"></iframe>
   </div>
 </div>
@@ -225,6 +227,7 @@
     const miniReportClose = document.getElementById("mini-report-close");
     const miniReportIframe = document.getElementById("mini-report-iframe");
     const miniReportOverlay = document.getElementById("mini-report-overlay");
+    const miniReportPrint = document.getElementById("mini-report-print");
     const parseStructuredBtn = document.getElementById("parse-structured-btn");
     const parserBuyCreditsBtn = document.getElementById("parser-buy-credits");
     const parserTokenBtn = document.getElementById("parser-save-token");
@@ -232,6 +235,7 @@
     const parserTokenStatus = document.getElementById("parser-token-status");
     const pdfDropZone = document.getElementById("pdf-drop-zone");
     const pdfUpload = document.getElementById("pdf-upload");
+    const previewActionStatus = document.getElementById("preview-action-status");
     const previewReportBtn = document.getElementById("preview-report-btn");
     const rawOutput = document.getElementById("raw-output");
     const reportEmailBtn = document.getElementById("report-email-btn");
@@ -241,17 +245,16 @@
     const API_BASE = "https://api-transcript.taxmonitor.pro";
     const NL = String.fromCharCode(10);
 
-    const PRICE_LABELS = {
-      price_1T83KXQEa4WBi79g8sD2NI7c: "10 credits",
-    };
+    const PRICE_LABELS = {};
 
     const state = {
       brandLogoDataUrl: "",
+      checkoutPrices: [],
       eventId: "",
       lastReportLink: "",
       pdfFile: null,
+      previewReady: false,
       rawText: "",
-      reportId: "",
       structured: null,
       tokenAvailable: null,
       tokenConsumed: false,
@@ -285,6 +288,14 @@
       el.textContent = val === null || typeof val === "undefined" ? "-" : String(val);
     }
 
+    function setPreviewActionStatus(msg, tone) {
+      if (!previewActionStatus) return;
+      const base = "rounded-xl border border-slate-700/40 bg-slate-950/30 p-4 text-sm ";
+      const color = tone === "error" ? "text-red-300" : tone === "ok" ? "text-green-300" : "text-slate-300";
+      previewActionStatus.className = base + color;
+      setText(previewActionStatus, msg);
+    }
+
     function setPreviewEnabled(enabled) {
       if (!previewReportBtn) return;
       if (enabled) {
@@ -314,21 +325,42 @@
 
     function updateControls() {
       const hasPdf = !!state.pdfFile;
+      const hasStructured = !!state.structured;
+      const hasCredits = typeof state.tokenAvailable === "number" && state.tokenAvailable > 0;
       const canBuy = state.tokenValid;
       const canExtract = state.tokenValid && hasPdf;
       const canParse = state.tokenValid && hasPdf && !!state.rawText;
-      const canPreviewUse = state.tokenValid && !!state.structured && !state.tokenConsumed;
-      const canEmail = state.tokenValid && !!state.structured && state.tokenConsumed;
+      const canPreviewUse = state.tokenValid && hasStructured && !state.tokenConsumed && hasCredits;
+      const canPrint = state.tokenValid && hasStructured && state.tokenConsumed && state.previewReady;
+      const canEmail = state.tokenValid && hasStructured && state.tokenConsumed && !!state.eventId;
 
       setButtonEnabled(extractRawBtn, canExtract);
       setButtonEnabled(parseStructuredBtn, canParse);
       setButtonEnabled(parserBuyCreditsBtn, canBuy);
       setButtonEnabled(reportEmailBtn, canEmail);
-      setPreviewEnabled(canPreviewUse);
+      setPreviewEnabled(canPreviewUse || canPrint);
+
+      if (previewReportBtn) {
+        setText(previewReportBtn, canPrint ? "Print Report" : "Preview Report & Use Token");
+      }
 
       if (!canBuy) setCheckoutStatus("Verify token to enable checkout.", "");
       else if (!checkoutPriceInput || !checkoutPriceInput.value) setCheckoutStatus("Choose a credit package.", "");
       else setCheckoutStatus("Ready to open Stripe Checkout for this token.", "");
+
+      if (!state.tokenValid) {
+        setPreviewActionStatus("Runs in your browser. Verify token first.", "");
+      } else if (!hasPdf) {
+        setPreviewActionStatus("Runs in your browser. Upload a transcript PDF to continue.", "");
+      } else if (!hasStructured) {
+        setPreviewActionStatus("Runs in your browser. Extract and parse the PDF before previewing.", "");
+      } else if (!state.tokenConsumed && !hasCredits) {
+        setPreviewActionStatus("Insufficient credits. Buy more credits before previewing.", "error");
+      } else if (canPrint) {
+        setPreviewActionStatus("Preview already generated for this upload. You can print it or email the link.", "ok");
+      } else {
+        setPreviewActionStatus("Runs in your browser. Preview consumes 1 credit only when you click the preview button.", "");
+      }
 
       if (reportEmailStatus && !canEmail) {
         if (!state.tokenValid) setText(reportEmailStatus, "Verify token to enable emailing.");
@@ -374,6 +406,47 @@
       const remaining = out.json && typeof out.json.balance === "number" ? out.json.balance : null;
       if (remaining === null) throw new Error("Token lookup returned no remaining balance.");
       return remaining;
+    }
+
+    async function fetchTranscriptPrices() {
+      const out = await fetchJson(API_BASE + "/transcript/prices", {
+        method: "GET",
+        mode: "cors",
+        credentials: "omit",
+      });
+
+      if (!out.ok) {
+        const msg = out.json && out.json.error ? String(out.json.error) : (out.text || out.res.statusText);
+        throw new Error("Prices lookup failed (" + String(out.res.status) + "): " + msg);
+      }
+
+      const prices = Array.isArray(out.json && out.json.prices) ? out.json.prices.slice() : [];
+      return prices.sort((a, b) => Number(a && a.credits || 0) - Number(b && b.credits || 0));
+    }
+
+    function renderCheckoutPrices(prices) {
+      if (!checkoutPriceInput) return;
+      const list = Array.isArray(prices) ? prices : [];
+      state.checkoutPrices = list;
+      checkoutPriceInput.innerHTML = "";
+      Object.keys(PRICE_LABELS).forEach((key) => delete PRICE_LABELS[key]);
+
+      for (const item of list) {
+        const credits = Number(item && item.credits || 0);
+        const priceId = String(item && item.priceId || "").trim();
+        if (!priceId || !credits) continue;
+
+        const label = credits + " credits" + ((item && item.recommended) ? "  • Recommended" : "");
+        PRICE_LABELS[priceId] = credits + " credits";
+
+        const opt = document.createElement("option");
+        opt.value = priceId;
+        opt.textContent = label;
+        checkoutPriceInput.appendChild(opt);
+      }
+
+      const preferred = list.find((item) => item && item.recommended) || list[0];
+      if (preferred && preferred.priceId) checkoutPriceInput.value = String(preferred.priceId);
     }
 
     async function createCheckoutSession(priceId, returnUrlBase, tokenId) {
@@ -644,7 +717,7 @@
       const rawKey = new Uint8Array(await crypto.subtle.exportKey("raw", key));
       const ciphertext = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, plaintext));
 
-      const base = window.location.origin + "/assets/report-preview.html";
+      const base = window.location.origin + "/assets/report.html";
       const frag = "#v=1&k=" + encodeURIComponent(toB64Url(rawKey)) +
         "&iv=" + encodeURIComponent(toB64Url(iv)) +
         "&r=" + encodeURIComponent(toB64Url(ciphertext));
@@ -652,107 +725,11 @@
       return base + frag;
     }
 
-    function openOverlayWithReport() {
+    async function openOverlayWithReport() {
       if (!miniReportOverlay || !miniReportIframe || !state.structured) return;
 
-      const safe = escapeHtml;
-      const meta = state.structured.meta || {};
-
-      const safeMeta = {
-        accountBalance: safe(meta.accountBalance || "-"),
-        taxPeriodEnding: safe(meta.taxPeriodEnding || "-"),
-        tinMasked: safe(meta.tinMasked || "-"),
-        transcriptType: safe(meta.transcriptType || "unknown"),
-      };
-
-      const rowCount = (state.structured.transactions || []).length;
-      const uniqueCodes = (state.structured.codesFound || []).length;
-
-      const tx = (state.structured.transactions || []).slice(0, 18);
-      const txRows = tx.map((t) => {
-        return (
-          "<tr>" +
-          '<td class="td mono">' + safe((t && t.code) || "") + "</td>" +
-          '<td class="td">' + safe((t && t.description) || "") + "</td>" +
-          '<td class="td mono">' + safe((t && t.date) || "") + "</td>" +
-          '<td class="td mono right">' + safe((t && t.amount) || "") + "</td>" +
-          "</tr>"
-        );
-      }).join("");
-
-      const codesHtml = (state.structured.codesFound || []).slice(0, 80).map((c) => {
-        return '<span class="code">' + safe(c) + "</span>";
-      }).join("");
-
-      const logoBlock = state.brandLogoDataUrl
-        ? '<img src="' + state.brandLogoDataUrl + '" alt="Firm logo" style="max-width:160px;height:auto;" />'
-        : '<div style="font-weight:800;letter-spacing:-.5px;">Your Firm</div>';
-
-      const subtitle = "Type: " + safeMeta.transcriptType + " • Period ending: " + safeMeta.taxPeriodEnding;
-
-      const srcdoc =
-        '<!doctype html><html><head><meta charset="utf-8" />' +
-        '<meta name="viewport" content="width=device-width, initial-scale=1" />' +
-        '<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">' +
-        "<style>" +
-        ":root{--ink:#0b0a14;--muted:#6b7280;--line:#e5e7eb;--p:#7c3aed;--bg:#f3f4f6}" +
-        "body{margin:0;background:var(--bg);font-family:DM Sans,system-ui,sans-serif;color:var(--ink)}" +
-        ".page{max-width:8.5in;margin:24px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 12px 28px rgba(0,0,0,.12)}" +
-        ".content{padding:52px}" +
-        ".header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:26px;padding-bottom:18px;border-bottom:2px solid var(--ink)}" +
-        ".h1{font-size:30px;font-weight:800;letter-spacing:-.5px;line-height:1.1;margin:0}" +
-        ".kicker{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:800;margin-top:8px}" +
-        ".sub{font-size:13px;color:var(--muted);margin-top:10px}" +
-        ".stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0 26px}" +
-        ".stat{border:1px solid var(--line);border-radius:14px;padding:14px;background:linear-gradient(135deg,#fafafa 0%,#f3f4f6 100%)}" +
-        ".statN{font-size:20px;font-weight:900;min-height:26px}" +
-        ".statL{font-size:11px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:6px}" +
-        ".section{margin:0 0 26px}" +
-        ".title{font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;margin:0 0 12px;padding-left:10px;border-left:4px solid var(--p)}" +
-        ".grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}" +
-        ".block{background:#f9fafb;padding:14px;border-radius:12px;border-left:3px solid var(--p)}" +
-        ".label{font-size:11px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}" +
-        ".value{font-size:15px;font-weight:800}" +
-        ".codes{display:flex;flex-wrap:wrap;gap:8px}" +
-        ".code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-size:12px;background:#111827;color:#a78bfa;padding:6px 8px;border-radius:999px}" +
-        ".table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}" +
-        ".th{background:#111827;color:#e5e7eb;font-size:11px;letter-spacing:.6px;text-transform:uppercase;font-weight:900;padding:10px 12px;text-align:left}" +
-        ".td{border-top:1px solid var(--line);padding:10px 12px;font-size:12px;vertical-align:top}" +
-        ".mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace}" +
-        ".right{text-align:right}" +
-        ".note{background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.18);border-left:4px solid var(--p);padding:14px;border-radius:12px;color:#374151;font-size:13px;line-height:1.7}" +
-        ".footer{margin-top:28px;padding-top:14px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;font-size:11px;color:#9ca3af}" +
-        "@media(max-width:640px){.content{padding:28px}.grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr}}" +
-        "</style></head><body>" +
-        '<div class="page"><div class="content">' +
-        '<div class="header"><div>' +
-        '<h1 class="h1">Transcript Report</h1>' +
-        '<div class="kicker">Generated locally (no uploads)</div>' +
-        '<div class="sub">' + safe(subtitle) + "</div>" +
-        "</div><div>" + logoBlock + "</div></div>" +
-        '<div class="stats">' +
-        '<div class="stat"><div class="statN">' + safeMeta.accountBalance + '</div><div class="statL">Account balance</div></div>' +
-        '<div class="stat"><div class="statN">' + String(rowCount) + '</div><div class="statL">Rows detected</div></div>' +
-        '<div class="stat"><div class="statN">' + String(uniqueCodes) + '</div><div class="statL">Unique codes</div></div>' +
-        "</div>" +
-        '<div class="section"><div class="title">Taxpayer details</div><div class="grid">' +
-        '<div class="block"><div class="label">TIN (masked)</div><div class="value">' + safeMeta.tinMasked + "</div></div>" +
-        '<div class="block"><div class="label">Tax period ending</div><div class="value">' + safeMeta.taxPeriodEnding + "</div></div>" +
-        "</div></div>" +
-        '<div class="section"><div class="title">Codes found</div><div class="codes">' +
-        (codesHtml || '<span style="color:var(--muted);font-size:13px;">(none detected)</span>') +
-        "</div></div>" +
-        '<div class="section"><div class="title">Transactions (first ' + String(tx.length) + ')</div>' +
-        '<table class="table"><thead><tr>' +
-        '<th class="th">Code</th><th class="th">Description</th><th class="th">Date</th><th class="th right">Amount</th>' +
-        "</tr></thead><tbody>" +
-        (txRows || '<tr><td class="td" colspan="4" style="color:var(--muted);">(no rows parsed)</td></tr>') +
-        "</tbody></table></div>" +
-        '<div class="note">Tip: The email link contains encrypted report data in the URL fragment. Nothing is uploaded.</div>' +
-        '<div class="footer"><div>Transcript.Tax Monitor Pro</div><div>Generated ' + safe(new Date().toLocaleString()) + "</div></div>" +
-        "</div></div></body></html>";
-
-      miniReportIframe.srcdoc = srcdoc;
+      const reportUrl = await buildEncryptedReportLink(state.structured);
+      miniReportIframe.src = reportUrl;
       miniReportOverlay.classList.remove("hidden");
       miniReportOverlay.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
@@ -762,15 +739,29 @@
       if (!miniReportOverlay || !miniReportIframe) return;
       miniReportOverlay.classList.add("hidden");
       miniReportOverlay.setAttribute("aria-hidden", "true");
-      miniReportIframe.srcdoc = "";
       document.body.style.overflow = "";
     }
 
+    function printOverlayReport() {
+      if (!miniReportIframe) return;
+      try {
+        miniReportIframe.contentWindow.focus();
+        miniReportIframe.contentWindow.print();
+      } catch {
+        window.print();
+      }
+    }
+
     function handlePdfSelected(file) {
+      state.eventId = "";
+      state.lastReportLink = "";
       state.pdfFile = file;
+      state.previewReady = false;
       state.rawText = "";
       state.structured = null;
+      state.tokenConsumed = false;
 
+      closeOverlay();
       setText(rawOutput, "(ready. click Extract Raw Text)");
       setText(jsonOutput, "(no json yet)");
 
@@ -786,6 +777,7 @@
     async function verifyToken() {
       const tokenId = String((parserTokenInput && parserTokenInput.value) || "").trim();
       if (!tokenId) {
+        state.tokenAvailable = null;
         state.tokenValid = false;
         state.tokenId = "";
         setParserAvailable("-");
@@ -803,6 +795,7 @@
         setParserAvailable(remaining);
         setTokenStatus("Token saved. " + String(remaining) + " credits available.", "ok");
       } catch (e) {
+        state.tokenAvailable = null;
         state.tokenValid = false;
         state.tokenId = "";
         setParserAvailable("-");
@@ -843,15 +836,32 @@
     }
 
     async function previewAndConsume() {
-      if (!state.tokenValid || !state.tokenId || !state.structured || state.tokenConsumed) return;
+      if (!state.tokenValid || !state.tokenId || !state.structured) return;
+
+      if (state.tokenConsumed && state.previewReady) {
+        await openOverlayWithReport();
+        return;
+      }
+
+      if (!(typeof state.tokenAvailable === "number" && state.tokenAvailable > 0)) {
+        setTokenStatus("Insufficient credits. Buy more credits before previewing.", "error");
+        updateControls();
+        return;
+      }
+
       setPreviewEnabled(false);
 
       try {
         if (!state.eventId) state.eventId = crypto.randomUUID();
         await consumeToken(state.tokenId, state.eventId);
         state.tokenConsumed = true;
-        openOverlayWithReport();
+        state.previewReady = true;
+        state.tokenAvailable = Math.max(0, Number(state.tokenAvailable || 0) - 1);
+        setParserAvailable(state.tokenAvailable);
+        setTokenStatus("Preview generated. 1 credit used for this upload.", "ok");
+        await openOverlayWithReport();
       } catch (e) {
+        state.previewReady = false;
         state.tokenConsumed = false;
         setTokenStatus(String((e && e.message) ? e.message : e), "error");
       } finally {
@@ -886,6 +896,7 @@
     }
 
     async function emailReportLink() {
+      // Send report link via Worker and surface returned short URL
       if (!state.tokenValid || !state.tokenId) {
         setReportEmailStatus("Verify token first.", "error");
         return;
@@ -912,12 +923,13 @@
         const reportUrl = await buildEncryptedReportLink(state.structured);
         state.lastReportLink = reportUrl;
 
-        if (!state.eventId) state.eventId = crypto.randomUUID();
-        if (!state.reportId) state.reportId = crypto.randomUUID();
+        if (!state.eventId) {
+          state.eventId = crypto.randomUUID();
+        }
 
         setReportEmailStatus("Sending email…", "");
 
-        const res = await fetch(API_BASE + "/forms/transcript/report-email", {
+        const out = await fetchJson(API_BASE + "/forms/transcript/report-email", {
           method: "POST",
           mode: "cors",
           credentials: "omit",
@@ -925,18 +937,23 @@
           body: JSON.stringify({
             email,
             eventId: state.eventId,
-            reportId: state.reportId,
             reportUrl,
             tokenId: state.tokenId,
           }),
         });
 
-        if (!res.ok) {
-          const t = await res.text().catch(() => "");
-          throw new Error("Email endpoint failed (" + String(res.status) + "): " + (t || res.statusText));
+        if (!out.ok) {
+          const msg = out.json && out.json.error ? String(out.json.error) : (out.text || out.res.statusText);
+          throw new Error("Email endpoint failed (" + String(out.res.status) + "): " + msg);
         }
 
-        setReportEmailStatus("✓ Email sent.", "ok");
+        state.lastReportLink = String((out.json && out.json.reportUrl) || "");
+        setReportEmailStatus(
+          state.lastReportLink
+            ? "✓ Email sent. Short link created: " + state.lastReportLink
+            : "✓ Email sent. Short report link created.",
+          "ok"
+        );
       } catch (e) {
         setReportEmailStatus(String((e && e.message) ? e.message : e), "error");
       } finally {
@@ -991,6 +1008,7 @@
 
     if (extractRawBtn) extractRawBtn.addEventListener("click", (e) => { e.preventDefault(); extractRaw(); });
     if (miniReportClose) miniReportClose.addEventListener("click", () => closeOverlay());
+    if (miniReportPrint) miniReportPrint.addEventListener("click", () => printOverlayReport());
     if (miniReportOverlay) miniReportOverlay.addEventListener("click", (e) => { if (e.target === miniReportOverlay) closeOverlay(); });
     if (parseStructuredBtn) parseStructuredBtn.addEventListener("click", (e) => { e.preventDefault(); parseStructured(); });
     if (parserBuyCreditsBtn) parserBuyCreditsBtn.addEventListener("click", (e) => { e.preventDefault(); beginCheckout(); });
@@ -1003,7 +1021,15 @@
     });
 
     // Init
-    updateControls();
-    setTokenStatus("Ready. Enter a token and click Verify Token.", "");
+    (async function initParserLab() {
+      try {
+        const prices = await fetchTranscriptPrices();
+        if (prices.length) renderCheckoutPrices(prices);
+      } catch (e) {
+        setCheckoutStatus(String((e && e.message) ? e.message : e), "error");
+      }
+      updateControls();
+      setTokenStatus("Ready. Enter a token and click Verify Token.", "");
+    })();
   })();
 </script>
