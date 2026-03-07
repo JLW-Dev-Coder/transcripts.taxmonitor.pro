@@ -1090,10 +1090,15 @@ export default {
       }
     }
 
-    if (request.method === "GET" && (isPath(url, "/assets/report") || isPath(url, "/assets/report.html"))) {
+    if (request.method === "GET" && isPath(url, "/assets/report")) {
       try {
         const redirectRes = await handleAssetReportRedirect(request, url, env);
         if (redirectRes) return redirectRes;
+
+        return new Response("Invalid report link.", {
+          status: 400,
+          headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" },
+        });
       } catch (err) {
         return new Response("Unable to open this report link.", {
           status: 500,
