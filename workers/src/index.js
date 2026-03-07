@@ -1197,6 +1197,32 @@ async function handlePostTranscriptReportLink(request, env) {
   );
 }
 
+async function handleGetTranscriptReportData(request, url, env) {
+  const reportId = (url.searchParams.get("reportId") || "").trim();
+
+  if (!reportId) {
+    return json({ error: "missing_reportId" }, 400, withCors(request));
+  }
+
+  const stored = await resolveShortReportPayload(env, reportId);
+
+  if (!stored || !stored.payload) {
+    return json({ error: "report_not_found" }, 404, withCors(request));
+  }
+
+  return json(
+    {
+      ok: true,
+      reportId,
+      payload: stored.payload,
+      transport: stored.payloadTransport || "hash",
+      createdAt: stored.createdAt || null,
+    },
+    200,
+    withCors(request)
+  );
+}
+
 async function handleAssetReportRedirect(request, url, env) {
   const reportId = (url.searchParams.get("r") || "").trim();
   if (!reportId) return null;
@@ -1247,6 +1273,10 @@ export default {
 
         if (request.method === "POST" && isPath(url, "/transcript/stripe/webhook")) {
           return await handleTranscriptStripeWebhook(request, env, ctx);
+        }
+
+        if (request.method === "GET" && isPath(url, "/transcript/report-data")) {
+          return await handleGetTranscriptReportData(request, url, env);
         }
 
         return jsonError(request, 404, "not_found");
