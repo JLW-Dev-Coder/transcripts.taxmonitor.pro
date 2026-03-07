@@ -4,7 +4,7 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   
+
   <title>Transcript.Tax Monitor Pro - IRS Transcript Automation</title>
 
   <!-- Tailwind (CDN). Yes, we are keeping it. -->
@@ -20,8 +20,20 @@
       }
     };
   </script>
-   
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/legacy/pdf.min.js"></script>
+
+  <!-- PDF.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    window.pdfjsLib = window.pdfjsLib || window["pdfjs-dist/build/pdf"];
+
+    if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    } else {
+      console.error("PDF.js failed to load. window.pdfjsLib is undefined.");
+    }
+  </script>
+
   <script src="/_sdk/element_sdk.js"></script>
   <script src="/_sdk/data_sdk.js"></script>
 
@@ -29,20 +41,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles/site.css?v=1" />
-  
+
   <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
   <link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon" />
-
-  <script>
-    window.addEventListener("DOMContentLoaded", function () {
-      if (window.pdfjsLib) {
-        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
-          "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/legacy/pdf.worker.min.js";
-      } else {
-        console.error("PDF.js failed to load");
-      }
-    });
-  </script>
  </head>
 
  <body class="h-full noise font-sans">
@@ -72,12 +73,12 @@
        </div>
        <div class="flex items-center gap-6 text-white/70 text-sm">
         <div class="flex items-center gap-2">
-         <svg class="w-5 h-5 text-gold" fill="currentColor" viewbox="0 0 20 20">
+         <svg class="w-5 h-5 text-gold" fill="currentColor" viewBox="0 0 20 20">
           <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
          </svg> No Credit Card Required
         </div>
         <div class="flex items-center gap-2">
-         <svg class="w-5 h-5 text-gold" fill="currentColor" viewbox="0 0 20 20">
+         <svg class="w-5 h-5 text-gold" fill="currentColor" viewBox="0 0 20 20">
           <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
          </svg> Instant Access
         </div>
@@ -118,7 +119,7 @@
       </div>
      </div>
     </header>
-    
+
     <!-- Pain Points Section -->
     <section class="py-20 bg-white">
      <div class="max-w-7xl mx-auto px-6">
@@ -192,7 +193,7 @@
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
        <div class="card-elevated p-8">
         <div class="feature-icon mb-6">
-         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
          </svg>
         </div>
         <h3 class="font-bold text-xl text-midnight mb-3">Smart PDF Parsing</h3>
@@ -200,7 +201,7 @@
        </div>
        <div class="card-elevated p-8">
         <div class="feature-icon mb-6">
-         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
          </svg>
         </div>
         <h3 class="font-bold text-xl text-midnight mb-3">IRS Code Interpretation</h3>
@@ -208,7 +209,7 @@
        </div>
        <div class="card-elevated p-8">
         <div class="feature-icon mb-6">
-         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
          </svg>
         </div>
         <h3 class="font-bold text-xl text-midnight mb-3">Branded Reports</h3>
@@ -216,7 +217,7 @@
        </div>
        <div class="card-elevated p-8">
         <div class="feature-icon mb-6">
-         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
          </svg>
         </div>
         <h3 class="font-bold text-xl text-midnight mb-3">Lightning Fast</h3>
@@ -224,7 +225,7 @@
        </div>
        <div class="card-elevated p-8">
         <div class="feature-icon mb-6">
-         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
          </svg>
         </div>
         <h3 class="font-bold text-xl text-midnight mb-3">Simple, One-Time Purchase
@@ -233,7 +234,7 @@ Buy once and generate transcript reports as needed. No recurring billing. No sur
        </div>
        <div class="card-elevated p-8">
         <div class="feature-icon mb-6">
-         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
          </svg>
         </div>
         <h3 class="font-bold text-xl text-midnight mb-3">Secure &amp; Private</h3>
@@ -242,7 +243,7 @@ Buy once and generate transcript reports as needed. No recurring billing. No sur
       </div>
      </div>
     </section>
-    
+
     <!-- What This Solves Section -->
     <section id="testimonials" class="py-20">
       <div class="max-w-7xl mx-auto px-6">
@@ -440,7 +441,7 @@ Buy once and generate transcript reports as needed. No recurring billing. No sur
      <div class="max-w-7xl mx-auto px-6">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
        <button onclick="showPage('landing-page')" class="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
         Back
        </button>
        <div class="text-white/70 text-sm">Client report preview</div>
@@ -654,7 +655,7 @@ Buy once and generate transcript reports as needed. No recurring billing. No sur
           }
 
           async function fetchTokenBalance(tokenId) {
-            const candidates = ["https://api.taxmonitor.pro", window.location.origin].filter(Boolean).sort();
+            const candidates = ["https://api-transcript.taxmonitor.pro", window.location.origin].filter(Boolean).sort();
             let lastErr = null;
 
             for (const base of candidates) {
@@ -749,7 +750,7 @@ Buy once and generate transcript reports as needed. No recurring billing. No sur
             function openOverlay() {
               overlay.classList.remove("hidden");
               overlay.setAttribute("aria-hidden", "false");
-              frame.src = "/report-preview.html";
+              frame.src = "/assets/report-preview.html";
               document.body.style.overflow = "hidden";
             }
 
@@ -815,7 +816,7 @@ Buy once and generate transcript reports as needed. No recurring billing. No sur
       <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-6">Ready to Transform Your Transcript Workflow?</h2>
       <p class="text-xl text-white/80 mb-8">Join thousands of tax professionals who've reclaimed their time and impressed their clients.</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <button onclick="window.location.href='https://transcript.taxmonitor.pro/magnets/lead-magnet.html'" class="btn-primary text-lg"> Get Your Free Guide First → </button> 
+        <button onclick="window.location.href='https://transcript.taxmonitor.pro/magnets/lead-magnet.html'" class="btn-primary text-lg"> Get Your Free Guide First → </button>
         <button onclick="window.location.href='https://transcript.taxmonitor.pro/#pricing'" class="btn-secondary"> Skip to Purchase </button>
       </div>
      </div>
@@ -824,7 +825,7 @@ Buy once and generate transcript reports as needed. No recurring billing. No sur
     <!-- PARTIAL:footer -->
 
    </section>
-   
+
    <!-- Toast Container -->
   <div id="toast-container"></div>
 
