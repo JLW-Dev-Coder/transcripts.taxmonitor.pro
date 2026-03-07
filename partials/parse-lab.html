@@ -15,8 +15,8 @@
       <div class="flex items-center gap-3">
         <div class="flex items-center justify-center w-9 h-9 rounded-full bg-purple-500/15 border border-purple-500/25 text-purple-200 font-extrabold">1</div>
         <div>
-          <div class="text-white font-semibold">Enter Your Token</div>
-          <div class="text-sm text-slate-400">Verify access credits</div>
+          <div class="text-white font-semibold">Check App Balance</div>
+          <div class="text-sm text-slate-400">Use your signed-in account</div>
         </div>
       </div>
 
@@ -45,27 +45,28 @@
     <div class="mb-10 pb-10 border-b border-slate-700/30">
       <h3 class="text-lg font-semibold text-white mb-6 flex items-center gap-3">
         <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-purple-500/15 border border-purple-500/25 text-purple-200 font-extrabold text-sm">1</span>
-        Enter Your Token
+        Check App Balance
       </h3>
 
       <div class="space-y-4">
         <div>
-          <label for="parser-token-id" class="block text-sm font-medium text-slate-300 mb-2">Token ID</label>
+          <label for="parser-token-id" class="block text-sm font-medium text-slate-300 mb-2">Signed-in Account</label>
           <input
             id="parser-token-id"
             type="text"
-            placeholder="Paste token ID here"
-            class="w-full rounded-lg px-4 py-3 bg-slate-900/40 border border-slate-700/50 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500/40"
+            placeholder="Signed in session required"
+            class="w-full rounded-lg px-4 py-3 bg-slate-900/40 border border-slate-700/50 text-white placeholder:text-white/40 focus:outline-none"
             autocomplete="off"
+            disabled
           />
           <p class="text-xs text-slate-400 mt-2">
-            We check remaining credits and (when you choose) consume 1 credit for preview.
+            Preview uses your authenticated app session and consumes 1 credit when saved.
           </p>
         </div>
 
         <div class="flex items-center justify-between gap-4">
           <div class="text-sm text-slate-300">
-            <span class="text-slate-400">Available credits:</span>
+            <span class="text-slate-400">Available balance:</span>
             <span id="parser-token-available" class="ml-2 font-semibold text-purple-300">-</span>
           </div>
           <button
@@ -73,7 +74,7 @@
             type="button"
             class="px-4 py-2 rounded-lg border border-purple-500/25 bg-purple-500/10 text-purple-200 text-sm font-semibold hover:bg-purple-500/15 transition"
           >
-            Verify Token
+            Refresh Balance
           </button>
         </div>
 
@@ -81,31 +82,21 @@
           id="parser-token-status"
           class="text-xs text-slate-400 p-3 rounded-lg bg-slate-900/30 border border-slate-700/40"
         >
-          Verify token → upload PDF → extract → parse → preview. Preview consumes 1 credit.
+          Refresh balance → upload PDF → extract → parse → save preview. Preview consumes 1 credit.
         </div>
 
         <div class="rounded-2xl border border-purple-500/20 bg-gradient-to-br from-slate-950/70 via-slate-900/70 to-purple-950/20 p-5 shadow-[0_0_0_1px_rgba(168,85,247,0.08)]">
           <div class="grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
             <div>
-              <label for="parser-checkout-price" class="block text-sm font-semibold text-white mb-2">Buy credits</label>
-              <div class="relative">
-                <select
-                  id="parser-checkout-price"
-                  class="w-full appearance-none rounded-xl px-4 py-3.5 pr-12 bg-slate-900/80 border border-purple-500/25 text-white font-medium shadow-inner shadow-black/20 focus:outline-none focus:ring-2 focus:ring-purple-500/30 focus:border-purple-400/50"
-                >
-                  <option value="price_1T83KXQEa4WBi79g8sD2NI7c">10 credits</option>
-                </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-purple-200/90">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
+              <div class="block text-sm font-semibold text-white mb-2">Need more credits?</div>
+              <div class="rounded-xl px-4 py-3.5 bg-slate-900/80 border border-purple-500/25 text-slate-300">
+                Buy more credits from your dashboard after preview flow is confirmed.
               </div>
-              <p class="text-xs text-slate-300 mt-2">Creates a live Stripe Checkout session for this token.</p>
+              <p class="text-xs text-slate-300 mt-2">This page now saves previews through the signed-in app session.</p>
             </div>
             <div class="grid gap-2">
-              <button id="parser-buy-credits" type="button" class="btn-secondary px-5 py-3 opacity-50 cursor-not-allowed" disabled>Buy Credits</button>
-              <div id="parser-checkout-status" class="text-xs text-slate-400">Verify token to enable checkout.</div>
+              <a id="parser-buy-credits" href="/app-dashboard.html" class="btn-secondary px-5 py-3 text-center">Buy Credits</a>
+              <div id="parser-checkout-status" class="text-xs text-slate-400">Open dashboard to buy more credits.</div>
             </div>
           </div>
         </div>
@@ -158,7 +149,7 @@
         <button id="extract-raw-btn" type="button" class="btn-secondary flex-1 opacity-50 cursor-not-allowed" disabled>Extract Raw Text</button>
         <button id="parse-structured-btn" type="button" class="btn-primary flex-1 opacity-50 cursor-not-allowed" disabled>Parse Structured JSON</button>
         <a id="preview-report-btn" href="#" class="btn-secondary flex-1 text-center opacity-50 cursor-not-allowed pointer-events-none" aria-disabled="true">
-          Preview Report &amp; Use Token
+          Save Preview Report
         </a>
       </div>
 
@@ -199,7 +190,7 @@
               class="w-full rounded-lg px-4 py-3 bg-slate-900/40 border border-slate-700/50 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500/40"
               autocomplete="email"
             />
-            <p class="text-xs text-slate-400 mt-2">Requires token + parsed JSON + 1 consumed credit.</p>
+            <p class="text-xs text-slate-400 mt-2">Requires parsed JSON and a saved preview report.</p>
           </div>
           <div class="grid gap-2">
             <button id="report-email-btn" type="button" class="btn-primary px-5 py-3 opacity-50 cursor-not-allowed" disabled>Email report link</button>
@@ -215,9 +206,7 @@
   (function () {
     // DOM (alphabetical)
     const brandLogoInput = document.getElementById("brand-logo");
-    const brandLogoName = document.getElementById("brand-logo-file-name");
-    const checkoutPriceInput = document.getElementById("parser-checkout-price");
-    const checkoutStatus = document.getElementById("parser-checkout-status");
+    const brandLogoName = document.getElementById("brand-logo-file-name");    const checkoutStatus = document.getElementById("parser-checkout-status");
     const copyJsonBtn = document.getElementById("copy-json");
     const copyRawBtn = document.getElementById("copy-raw");
     const extractRawBtn = document.getElementById("extract-raw-btn");
@@ -236,15 +225,11 @@
     const reportEmailInput = document.getElementById("report-email");
     const reportEmailStatus = document.getElementById("report-email-status");
 
-    const API_BASE = "https://api-transcript.taxmonitor.pro";
+    const API_BASE = "";
     const NL = String.fromCharCode(10);
 
-    const PRICE_LABELS = {};
-
     const state = {
-      brandLogoDataUrl: "",
-      checkoutPrices: [],
-      eventId: "",
+      brandLogoDataUrl: "",      eventId: "",
       lastReportLink: "",
       pdfFile: null,
       previewReady: false,
@@ -320,45 +305,46 @@
     function updateControls() {
       const hasPdf = !!state.pdfFile;
       const hasStructured = !!state.structured;
-      const hasCredits = typeof state.tokenAvailable === "number" && state.tokenAvailable > 0;
-      const canBuy = state.tokenValid;
+      const hasBalance = typeof state.tokenAvailable === "number";
+      const hasCredits = hasBalance && state.tokenAvailable > 0;
       const canExtract = state.tokenValid && hasPdf;
       const canParse = state.tokenValid && hasPdf && !!state.rawText;
       const canPreviewUse = state.tokenValid && hasStructured && !state.tokenConsumed && hasCredits;
-      const canEmail = state.tokenValid && hasStructured && state.tokenConsumed && !!state.eventId;
+      const canEmail = state.tokenValid && hasStructured && state.tokenConsumed && !!state.lastReportLink;
 
       setButtonEnabled(extractRawBtn, canExtract);
       setButtonEnabled(parseStructuredBtn, canParse);
-      setButtonEnabled(parserBuyCreditsBtn, canBuy);
       setButtonEnabled(reportEmailBtn, canEmail);
       setPreviewEnabled(canPreviewUse);
 
       if (previewReportBtn) {
-        setText(previewReportBtn, "Preview Report & Use Token");
+        setText(previewReportBtn, state.tokenConsumed && state.lastReportLink ? "Open Saved Preview" : "Save Preview Report");
+        previewReportBtn.href = state.tokenConsumed && state.lastReportLink ? state.lastReportLink : "#";
       }
 
-      if (!canBuy) setCheckoutStatus("Verify token to enable checkout.", "");
-      else if (!checkoutPriceInput || !checkoutPriceInput.value) setCheckoutStatus("Choose a credit package.", "");
-      else setCheckoutStatus("Ready to open Stripe Checkout for this token.", "");
+      if (!state.tokenValid) setCheckoutStatus("Sign in to the app to buy more credits.", "");
+      else setCheckoutStatus("Open dashboard to buy more credits.", "");
 
       if (!state.tokenValid) {
-        setPreviewActionStatus("Runs in your browser. Verify token first.", "");
+        setPreviewActionStatus("Runs in your browser. Sign in first, then refresh balance.", "");
+      } else if (!hasBalance) {
+        setPreviewActionStatus("Refresh balance before saving a preview report.", "");
       } else if (!hasPdf) {
         setPreviewActionStatus("Runs in your browser. Upload a transcript PDF to continue.", "");
       } else if (!hasStructured) {
         setPreviewActionStatus("Runs in your browser. Extract and parse the PDF before previewing.", "");
       } else if (!state.tokenConsumed && !hasCredits) {
-        setPreviewActionStatus("Insufficient credits. Buy more credits before previewing.", "error");
+        setPreviewActionStatus("Insufficient balance. Buy more credits before previewing.", "error");
       } else if (state.tokenConsumed && state.lastReportLink) {
-        setPreviewActionStatus("Report generated for this upload. You can reopen it from the email flow or generate a new upload preview.", "ok");
+        setPreviewActionStatus("Preview saved. Open the report or email the saved link.", "ok");
       } else {
-        setPreviewActionStatus("Runs in your browser. Preview consumes 1 credit only when you click the preview button.", "");
+        setPreviewActionStatus("Runs in your browser. Saving preview consumes 1 credit only when you click the preview button.", "");
       }
 
       if (reportEmailStatus && !canEmail) {
-        if (!state.tokenValid) setText(reportEmailStatus, "Verify token to enable emailing.");
+        if (!state.tokenValid) setText(reportEmailStatus, "Sign in to enable emailing.");
         else if (!state.structured) setText(reportEmailStatus, "Parse JSON to enable emailing.");
-        else if (!state.tokenConsumed) setText(reportEmailStatus, "Preview report (uses 1 credit) to enable emailing.");
+        else if (!state.tokenConsumed) setText(reportEmailStatus, "Save preview report before emailing.");
         else setText(reportEmailStatus, "Not ready.");
       }
     }
@@ -390,101 +376,38 @@
       return { json, ok: res.ok, res, text: txt };
     }
 
-    async function fetchTokenBalance(tokenId) {
-      const q = new URLSearchParams({ tokenId: String(tokenId || "").trim() });
-      const url = API_BASE + "/transcript/tokens?" + q.toString();
-      const out = await fetchJson(url, { method: "GET", mode: "cors", credentials: "omit" });
-
-      if (!out.ok) {
-        const msg = out.json && out.json.error ? String(out.json.error) : (out.text || out.res.statusText);
-        throw new Error("Token lookup failed (" + String(out.res.status) + "): " + msg);
-      }
-
-      const remaining = out.json && typeof out.json.balance === "number" ? out.json.balance : null;
-      if (remaining === null) throw new Error("Token lookup returned no remaining balance.");
-      return remaining;
-    }
-
-    async function fetchTranscriptPrices() {
-      const out = await fetchJson(API_BASE + "/transcript/prices", {
+    async function fetchTokenBalance() {
+      const out = await fetchJson("/api/transcripts/me", {
         method: "GET",
-        mode: "cors",
-        credentials: "omit",
+        credentials: "include",
       });
+
+      if (out.res && out.res.status === 401) {
+        window.location.href = "/sign-in.html";
+        return null;
+      }
 
       if (!out.ok) {
         const msg = out.json && out.json.error ? String(out.json.error) : (out.text || out.res.statusText);
-        throw new Error("Prices lookup failed (" + String(out.res.status) + "): " + msg);
+        throw new Error("Balance lookup failed (" + String(out.res.status) + "): " + msg);
       }
 
-      const prices = Array.isArray(out.json && out.json.prices) ? out.json.prices.slice() : [];
-      return prices.sort((a, b) => Number(a && a.credits || 0) - Number(b && b.credits || 0));
-    }
+      const me = out.json || {};
+      const balance =
+        (typeof me.balance === "number" ? me.balance : null) ??
+        (typeof me.tokenBalance === "number" ? me.tokenBalance : null) ??
+        (typeof me.tokens === "number" ? me.tokens : null) ??
+        (me.user && typeof me.user.balance === "number" ? me.user.balance : null) ??
+        (me.user && typeof me.user.tokenBalance === "number" ? me.user.tokenBalance : null);
 
-    function renderCheckoutPrices(prices) {
-      if (!checkoutPriceInput) return;
-      const list = Array.isArray(prices) ? prices : [];
-      state.checkoutPrices = list;
-      checkoutPriceInput.innerHTML = "";
-      Object.keys(PRICE_LABELS).forEach((key) => delete PRICE_LABELS[key]);
+      const tokenId =
+        (typeof me.tokenId === "string" ? me.tokenId.trim() : "") ||
+        (me.user && typeof me.user.tokenId === "string" ? me.user.tokenId.trim() : "");
 
-      for (const item of list) {
-        const credits = Number(item && item.credits || 0);
-        const priceId = String(item && item.priceId || "").trim();
-        if (!priceId || !credits) continue;
+      if (balance === null) throw new Error("Balance lookup returned no usable balance.");
+      if (!tokenId) throw new Error("Balance lookup returned no usable tokenId.");
 
-        const label = credits + " credits" + ((item && item.recommended) ? "  • Recommended" : "");
-        PRICE_LABELS[priceId] = credits + " credits";
-
-        const opt = document.createElement("option");
-        opt.value = priceId;
-        opt.textContent = label;
-        checkoutPriceInput.appendChild(opt);
-      }
-
-      const preferred = list.find((item) => item && item.recommended) || list[0];
-      if (preferred && preferred.priceId) checkoutPriceInput.value = String(preferred.priceId);
-    }
-
-    async function createCheckoutSession(priceId, returnUrlBase, tokenId) {
-      const url = API_BASE + "/transcript/checkout";
-      const body = { priceId, returnUrlBase, tokenId };
-
-      const out = await fetchJson(url, {
-        method: "POST",
-        mode: "cors",
-        credentials: "omit",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-
-      if (!out.ok) {
-        const msg = out.json && out.json.error ? String(out.json.error) : (out.text || out.res.statusText);
-        throw new Error("Checkout session failed (" + String(out.res.status) + "): " + msg);
-      }
-
-      if (!out.json || !out.json.url) throw new Error("Checkout session returned no URL.");
-      return out.json;
-    }
-
-    async function consumeToken(tokenId, requestId) {
-      const url = API_BASE + "/transcript/consume";
-      const body = { amount: 1, requestId, tokenId };
-
-      const out = await fetchJson(url, {
-        method: "POST",
-        mode: "cors",
-        credentials: "omit",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-
-      if (!out.ok) {
-        const msg = out.json && out.json.error ? String(out.json.error) : (out.text || out.res.statusText);
-        throw new Error("Token consume failed (" + String(out.res.status) + "): " + msg);
-      }
-
-      return out.json || {};
+      return { balance, tokenId };
     }
 
     function escapeRegexLiteral(s) {
@@ -728,28 +651,7 @@
     }
 
     async function createNormalizedReportLink(reportUrl) {
-      const out = await fetchJson(API_BASE + "/transcript/report-link", {
-        method: "POST",
-        mode: "cors",
-        credentials: "omit",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reportUrl }),
-      });
-
-      if (!out.ok) {
-        const msg = out.json && out.json.error ? String(out.json.error) : (out.text || out.res.statusText);
-        throw new Error("Report link normalization failed (" + String(out.res.status) + "): " + msg);
-      }
-
-      const normalizedUrl = String(
-        (out.json && (out.json.reportUrl || out.json.url || out.json.normalizedReportUrl)) || ""
-      ).trim();
-
-      if (!normalizedUrl) {
-        throw new Error("Report link normalization returned no report URL.");
-      }
-
-      return normalizedUrl;
+      return String(reportUrl || "").trim();
     }
 
     function getParseLabReturnUrl() {
@@ -757,15 +659,7 @@
     }
 
     async function redirectToReportWithPayload() {
-      if (!state.structured) throw new Error("Missing structured report data.");
-
-      const reportUrl = await buildEncryptedReportLink(state.structured, "hash", "/assets/report");
-      const normalizedReportUrl = await createNormalizedReportLink(reportUrl);
-      const target = new URL(normalizedReportUrl, window.location.origin);
-
-      target.searchParams.set("return", getParseLabReturnUrl());
-      state.lastReportLink = target.toString();
-
+      if (!state.lastReportLink) throw new Error("Missing saved report URL.");
       window.location.href = state.lastReportLink;
     }
 
@@ -791,30 +685,24 @@
     }
 
     async function verifyToken() {
-      const tokenId = String((parserTokenInput && parserTokenInput.value) || "").trim();
-      if (!tokenId) {
-        state.tokenAvailable = null;
-        state.tokenValid = false;
-        state.tokenId = "";
-        setParserAvailable("-");
-        setTokenStatus("Token ID is empty.", "error");
-        updateControls();
-        return;
-      }
-
-      setTokenStatus("Checking token…", "");
+      setTokenStatus("Checking signed-in balance…", "");
       try {
-        const remaining = await fetchTokenBalance(tokenId);
+        const sessionState = await fetchTokenBalance();
+        if (!sessionState) return;
+
         state.tokenValid = true;
-        state.tokenId = tokenId;
-        state.tokenAvailable = remaining;
-        setParserAvailable(remaining);
-        setTokenStatus("Token saved. " + String(remaining) + " credits available.", "ok");
+        state.tokenId = sessionState.tokenId;
+        state.tokenAvailable = sessionState.balance;
+
+        setParserAvailable(sessionState.balance);
+        if (parserTokenInput) parserTokenInput.value = "Signed in";
+        setTokenStatus("Session ready. " + String(sessionState.balance) + " credits available.", "ok");
       } catch (e) {
         state.tokenAvailable = null;
         state.tokenValid = false;
         state.tokenId = "";
         setParserAvailable("-");
+        if (parserTokenInput) parserTokenInput.value = "";
         setTokenStatus(String((e && e.message) ? e.message : e), "error");
       } finally {
         updateControls();
@@ -852,69 +740,87 @@
     }
 
     async function previewAndConsume() {
-      if (!state.tokenValid || !state.tokenId || !state.structured) return;
+      if (!state.tokenValid || !state.structured) return;
 
       if (state.tokenConsumed && state.lastReportLink) {
         window.location.href = state.lastReportLink;
         return;
       }
 
-      if (!(typeof state.tokenAvailable === "number" && state.tokenAvailable > 0)) {
-        setTokenStatus("Insufficient credits. Buy more credits before previewing.", "error");
-        updateControls();
-        return;
-      }
-
       setPreviewEnabled(false);
+      setPreviewActionStatus("Saving preview report…", "");
 
       try {
-        if (!state.eventId) state.eventId = crypto.randomUUID();
+        const out = await fetchJson("/api/transcripts/preview", {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ reportData: state.structured }),
+        });
 
-        await consumeToken(state.tokenId, state.eventId);
+        if (out.res && out.res.status === 401) {
+          window.location.href = "/sign-in.html";
+          return;
+        }
 
-        state.tokenConsumed = true;
+        if (!out.ok) {
+          const errorMsg = out.json && out.json.error ? String(out.json.error) : (out.text || out.res.statusText || "Preview save failed.");
+          const balance = out.json && typeof out.json.balance === "number" ? out.json.balance : state.tokenAvailable;
+          const needed = out.json && typeof out.json.needed === "number" ? out.json.needed : 1;
+
+          if (typeof balance === "number") {
+            state.tokenAvailable = balance;
+            setParserAvailable(balance);
+          }
+
+          if (typeof balance === "number" && balance < needed) {
+            setTokenStatus("Insufficient balance. Current balance: " + balance + ". Needed: " + needed + ".", "error");
+            setPreviewActionStatus("Insufficient balance. Buy more credits from the dashboard.", "error");
+          } else {
+            setTokenStatus(errorMsg, "error");
+            setPreviewActionStatus(errorMsg, "error");
+          }
+
+          updateControls();
+          return;
+        }
+
+        const data = out.json || {};
+        state.eventId = String(data.eventId || "").trim();
+        state.lastReportLink = String(data.reportUrl || "").trim();
         state.previewReady = true;
-        state.tokenAvailable = Math.max(0, Number(state.tokenAvailable || 0) - 1);
-        setParserAvailable(state.tokenAvailable);
-        setTokenStatus("Report generated. 1 credit used for this upload.", "ok");
+        state.tokenConsumed = true;
 
+        if (typeof data.balance === "number") {
+          state.tokenAvailable = data.balance;
+          setParserAvailable(data.balance);
+        }
+
+        setTokenStatus(
+          data.reportId
+            ? "Preview saved. Report ID: " + String(data.reportId)
+            : (state.eventId ? "Preview saved. Event ID stored." : "Preview saved."),
+          "ok"
+        );
+        setPreviewActionStatus("Preview saved successfully. Opening report…", "ok");
+
+        updateControls();
         await redirectToReportWithPayload();
       } catch (e) {
-        state.previewReady = false;
-        setTokenStatus(String((e && e.message) ? e.message : e), "error");
+        const msg = String((e && e.message) ? e.message : e);
+        setTokenStatus(msg, "error");
+        setPreviewActionStatus(msg, "error");
         updateControls();
       }
     }
 
     async function beginCheckout() {
-      if (!state.tokenValid || !state.tokenId) {
-        setCheckoutStatus("Verify token first.", "error");
-        return;
-      }
-
-      const priceId = String((checkoutPriceInput && checkoutPriceInput.value) || "").trim();
-      if (!priceId) {
-        setCheckoutStatus("Choose a credit package.", "error");
-        return;
-      }
-
-      setButtonEnabled(parserBuyCreditsBtn, false);
-      setCheckoutStatus("Creating Stripe Checkout session…", "");
-
-      try {
-        const out = await createCheckoutSession(priceId, window.location.origin, state.tokenId);
-        const label = PRICE_LABELS[priceId] || "credits";
-        setCheckoutStatus("Redirecting to Stripe for " + label + ".", "ok");
-        window.location.href = String(out.url);
-      } catch (e) {
-        setCheckoutStatus(String((e && e.message) ? e.message : e), "error");
-        updateControls();
-      }
+      window.location.href = "/app-dashboard.html";
     }
 
     async function emailReportLink() {
       if (!state.tokenValid || !state.tokenId) {
-        setReportEmailStatus("Verify token first.", "error");
+        setReportEmailStatus("Refresh balance first.", "error");
         return;
       }
       if (!state.structured) {
@@ -936,12 +842,10 @@
       setReportEmailStatus("Building secure link…", "");
 
       try {
-        const reportUrl = await buildEncryptedReportLink(state.structured, "hash", "/assets/report");
-        const normalizedReportUrl = await createNormalizedReportLink(reportUrl);
-        state.lastReportLink = normalizedReportUrl;
+        state.lastReportLink = state.lastReportLink || "";
 
         if (!state.eventId) {
-          state.eventId = crypto.randomUUID();
+          throw new Error("Missing preview eventId. Update /api/transcripts/preview to return eventId and store it before emailing.");
         }
 
         setReportEmailStatus("Sending email…", "");
@@ -954,7 +858,7 @@
           body: JSON.stringify({
             email,
             eventId: state.eventId,
-            reportUrl: normalizedReportUrl,
+            reportUrl: state.lastReportLink,
             tokenId: state.tokenId,
           }),
         });
@@ -964,7 +868,7 @@
           throw new Error("Email endpoint failed (" + String(out.res.status) + "): " + msg);
         }
 
-        state.lastReportLink = String((out.json && out.json.reportUrl) || "");
+        state.lastReportLink = String((out.json && out.json.reportUrl) || state.lastReportLink || "");
         setReportEmailStatus(
           state.lastReportLink
             ? "✓ Email sent. Short link created: " + state.lastReportLink
@@ -1061,13 +965,12 @@
 
     (async function initParserLab() {
       try {
-        const prices = await fetchTranscriptPrices();
-        if (prices.length) renderCheckoutPrices(prices);
+        await verifyToken();
       } catch (e) {
         setCheckoutStatus(String((e && e.message) ? e.message : e), "error");
       }
       updateControls();
-      setTokenStatus("Ready. Enter a token and click Verify Token.", "");
+      setTokenStatus("Ready. Signed-in session required.", "");
     })();
   })();
 </script>
