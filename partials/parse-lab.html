@@ -711,7 +711,7 @@
       return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
     }
 
-    async function buildEncryptedReportLink(structured, transport = "hash", path = "/assets/report.html") {
+    async function buildEncryptedReportLink(structured, transport = "hash", path = "/assets/report") {
   const model = {
     codesFound: Array.isArray(structured && structured.codesFound) ? structured.codesFound : [],
     header: structured && structured.header ? structured.header : {},
@@ -742,7 +742,7 @@
     async function openOverlayWithReport() {
       if (!miniReportOverlay || !miniReportIframe || !state.structured) return;
 
-      const reportUrl = await buildEncryptedReportLink(state.structured, "hash", "/assets/report.html");
+      const reportUrl = await buildEncryptedReportLink(state.structured, "hash", "/assets/report");
       miniReportIframe.src = "";
       miniReportIframe.src = reportUrl;
 
@@ -946,7 +946,7 @@
       setReportEmailStatus("Building secure link…", "");
 
       try {
-        const reportUrl = await buildEncryptedReportLink(state.structured, "hash", "/assets/report.html");
+        const reportUrl = await buildEncryptedReportLink(state.structured, "hash", "/assets/report");
         state.lastReportLink = reportUrl;
 
         if (!state.eventId) {
