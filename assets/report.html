@@ -4,87 +4,53 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>Transcript.Tax Monitor Pro - IRS Transcript Report</title>
 
-    <!-- Tailwind (CDN). Yes, we are keeping it. -->
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
             fontFamily: {
-              sans: [
-                'DM Sans',
-                'ui-sans-serif',
-                'system-ui',
-                '-apple-system',
-                'Segoe UI',
-                'Roboto',
-                'Helvetica',
-                'Arial'
-              ]
+              sans: ['DM Sans', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial']
             }
           }
         }
       };
     </script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.js"></script>
-    <script src="/_sdk/element_sdk.js"></script>
-    <script src="/_sdk/data_sdk.js"></script>
-
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/styles/site.css?v=1" />
     <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
     <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
 
-    <script>
-      if (typeof pdfjsLib !== 'undefined') {
-        pdfjsLib.GlobalWorkerOptions.workerSrc =
-          'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.js';
-      }
-    </script>
-
     <style>
-      @keyframes tmFadeUp {
-        0% { opacity: 0; transform: translateY(14px); }
-        100% { opacity: 1; transform: translateY(0); }
+      :root {
+        --tm-bg: #020617;
+        --tm-card: #ffffff;
+        --tm-copy: #0b0a14;
+        --tm-copy-soft: #4b5563;
+        --tm-line: #e5e7eb;
+        --tm-muted: #6b7280;
+        --tm-purple: #7c3aed;
+        --tm-purple-soft: rgba(124, 58, 237, 0.08);
+        --tm-success: #059669;
+        --tm-warn: #d97706;
+        --tm-danger: #dc2626;
       }
-
-      .tm-anim { opacity: 0; transform: translateY(14px); }
-      .tm-loaded .tm-anim { animation: tmFadeUp 700ms ease forwards; }
-      .tm-loaded .tm-anim.delay-1 { animation-delay: 80ms; }
-      .tm-loaded .tm-anim.delay-2 { animation-delay: 160ms; }
-      .tm-loaded .tm-anim.delay-3 { animation-delay: 240ms; }
-
-      @media (prefers-reduced-motion: reduce) {
-        .tm-anim { opacity: 1 !important; transform: none !important; }
-        .tm-loaded .tm-anim { animation: none !important; }
-      }
-
-
-      /*
-        Report-only styling.
-        This page is intentionally standalone and shareable.
-      */
 
       * {
+        box-sizing: border-box;
         margin: 0;
         padding: 0;
-        box-sizing: border-box;
       }
 
       html,
       body {
-        height: 100%;
         font-family: 'DM Sans', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-        color: #0b0a14;
+        height: 100%;
       }
 
       body {
@@ -92,391 +58,590 @@
           radial-gradient(1200px 600px at 20% -10%, rgba(168, 85, 247, 0.18), transparent 55%),
           radial-gradient(900px 500px at 80% 10%, rgba(249, 115, 22, 0.14), transparent 55%),
           radial-gradient(700px 500px at 50% 120%, rgba(59, 130, 246, 0.1), transparent 55%),
-          #020617;
+          var(--tm-bg);
+        color: var(--tm-copy);
       }
 
-      /* Container */
-      .report-container {
+      .report-shell {
+        min-height: 100vh;
+      }
+
+      .topbar {
+        backdrop-filter: blur(16px);
+        background: rgba(2, 6, 23, 0.82);
+        border-bottom: 1px solid rgba(51, 65, 85, 0.7);
+        position: sticky;
+        top: 0;
+        z-index: 40;
+      }
+
+      .topbar-inner,
+      .footer-inner,
+      .report-wrap,
+      .state-wrap {
+        margin: 0 auto;
+        max-width: 1280px;
         width: 100%;
-        overflow-y: auto;
+      }
 
-        /* Add spacing below sticky toolbar */
-        padding: 32px 16px 48px;
-
-        /* Proper centering */
-        display: flex;
-        flex-direction: column;
+      .topbar-inner {
         align-items: center;
+        display: flex;
+        gap: 16px;
+        justify-content: space-between;
+        padding: 16px 24px;
       }
 
-      /* Pages */
+      .brand {
+        align-items: center;
+        color: #fff;
+        display: flex;
+        gap: 12px;
+        text-decoration: none;
+      }
+
+      .brand-mark {
+        align-items: center;
+        background: linear-gradient(135deg, #9333ea, #7c3aed);
+        border-radius: 14px;
+        color: #020617;
+        display: inline-flex;
+        font-size: 14px;
+        font-weight: 800;
+        height: 40px;
+        justify-content: center;
+        width: 40px;
+      }
+
+      .brand-copy strong {
+        display: block;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .brand-copy span {
+        color: rgba(255, 255, 255, 0.62);
+        display: block;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        margin-top: 2px;
+        text-transform: uppercase;
+      }
+
+      .topbar-actions {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .btn {
+        align-items: center;
+        border-radius: 14px;
+        cursor: pointer;
+        display: inline-flex;
+        font-size: 14px;
+        font-weight: 700;
+        gap: 8px;
+        justify-content: center;
+        min-height: 44px;
+        padding: 0 16px;
+        text-decoration: none;
+        transition: 180ms ease;
+      }
+
+      .btn svg {
+        height: 18px;
+        width: 18px;
+      }
+
+      .btn-ghost {
+        background: rgba(15, 23, 42, 0.72);
+        border: 1px solid rgba(51, 65, 85, 0.9);
+        color: rgba(255, 255, 255, 0.86);
+      }
+
+      .btn-ghost:hover {
+        color: #fff;
+      }
+
+      .btn-primary {
+        background: linear-gradient(90deg, #7c3aed, #9333ea);
+        border: 1px solid transparent;
+        color: #fff;
+        box-shadow: 0 10px 24px rgba(124, 58, 237, 0.28);
+      }
+
+      .btn-primary:hover {
+        filter: brightness(1.05);
+      }
+
+      .btn-soft {
+        background: rgba(124, 58, 237, 0.12);
+        border: 1px solid rgba(168, 85, 247, 0.32);
+        color: #ede9fe;
+      }
+
+      .btn-soft:hover {
+        background: rgba(124, 58, 237, 0.18);
+        color: #fff;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .report-wrap,
+      .state-wrap {
+        padding: 28px 16px 48px;
+      }
+
       .report-page {
-        width: 100%;
-        max-width: 8.5in;
-        height: auto;
-        margin: 0 auto 28px;
-        background: #ffffff;
+        background: var(--tm-card);
+        border-radius: 18px;
         box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
-        border-radius: 16px;
+        margin: 0 auto 28px;
+        max-width: 8.5in;
         overflow: hidden;
         page-break-after: always;
-      }
-
-      /* Real visible spacing below toolbar */
-      .report-page:first-of-type {
-        margin-top: 48px;
+        width: 100%;
       }
 
       .page-content {
         padding: 56px;
-        background: #ffffff;
       }
 
-      /* Header */
       .report-header {
-        display: flex;
-        justify-content: space-between;
         align-items: flex-start;
+        border-bottom: 2px solid var(--tm-copy);
+        display: flex;
         gap: 20px;
-        margin-bottom: 44px;
+        justify-content: space-between;
+        margin-bottom: 32px;
         padding-bottom: 18px;
-        border-bottom: 2px solid #0b0a14;
       }
 
-      .header-left h1 {
+      .report-header h1 {
+        color: var(--tm-copy);
         font-size: 32px;
         font-weight: 800;
-        color: #0b0a14;
-        letter-spacing: -0.5px;
-        margin-bottom: 6px;
-        line-height: 1.1;
+        letter-spacing: -0.03em;
+        line-height: 1.05;
+        margin-bottom: 8px;
       }
 
-      .header-left p {
+      .report-header p {
+        color: var(--tm-muted);
         font-size: 12px;
-        color: #6b7280;
-        text-transform: uppercase;
-        letter-spacing: 1px;
         font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
       }
 
-      .header-right img {
-        max-width: 160px;
-        height: auto;
+      .report-header img {
         display: block;
+        height: auto;
+        max-width: 160px;
         object-fit: contain;
       }
 
-      /* Sections */
       .section {
-        margin-bottom: 34px;
+        margin-bottom: 30px;
       }
 
       .section-title {
+        border-left: 4px solid var(--tm-purple);
+        color: var(--tm-copy);
         font-size: 13px;
         font-weight: 800;
-        color: #0b0a14;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.05em;
         margin-bottom: 14px;
         padding-left: 10px;
-        border-left: 4px solid #7c3aed;
-      }
-
-      /* Client Info Grid */
-      .info-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-        margin-bottom: 26px;
-      }
-
-      .info-block {
-        background: #f9fafb;
-        padding: 14px;
-        border-radius: 10px;
-        border-left: 3px solid #7c3aed;
-      }
-
-      .info-label {
-        font-size: 11px;
-        font-weight: 700;
-        color: #6b7280;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+      }
+
+      .summary-grid,
+      .detail-grid,
+      .status-grid {
+        display: grid;
+        gap: 14px;
+      }
+
+      .summary-grid,
+      .detail-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .status-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .status-grid.two-col {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .card,
+      .metric,
+      .panel {
+        background: #f8fafc;
+        border: 1px solid var(--tm-line);
+        border-radius: 14px;
+      }
+
+      .card {
+        border-left: 3px solid var(--tm-purple);
+        padding: 14px;
+      }
+
+      .card-label,
+      .metric-label,
+      .badge {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .card-label,
+      .metric-label {
+        color: var(--tm-muted);
         margin-bottom: 6px;
       }
 
-      .info-value {
+      .card-value {
+        color: var(--tm-copy);
         font-size: 16px;
         font-weight: 700;
-        color: #0b0a14;
         word-break: break-word;
       }
 
-      /* Status Cards */
-      .status-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
-        margin-bottom: 14px;
-      }
-
-      .status-card {
-        background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+      .metric {
         padding: 18px;
-        border-radius: 12px;
-        border: 1px solid #e5e7eb;
         text-align: center;
       }
 
-      .status-value {
+      .metric-value {
+        color: var(--tm-copy);
         font-size: 20px;
         font-weight: 800;
-        color: #0b0a14;
-        margin-bottom: 6px;
-        min-height: 26px;
         line-height: 1.1;
+        margin-bottom: 6px;
       }
 
-      .status-value.low {
-        color: #059669;
-      }
+      .metric-value.low { color: var(--tm-success); }
+      .metric-value.moderate { color: var(--tm-warn); }
+      .metric-value.attention { color: var(--tm-danger); }
 
-      .status-value.moderate {
-        color: #d97706;
-      }
-
-      .status-value.attention {
-        color: #dc2626;
-      }
-
-      .status-label {
-        font-size: 11px;
-        font-weight: 800;
-        color: #6b7280;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-
-      /* Summary Box */
-      .summary-box {
-        background: rgba(124, 58, 237, 0.08);
-        border-left: 4px solid #7c3aed;
+      .panel {
         padding: 18px;
-        border-radius: 10px;
-        line-height: 1.7;
+      }
+
+      .panel.tint {
+        background: var(--tm-purple-soft);
+        border-left: 4px solid var(--tm-purple);
+      }
+
+      .panel-copy {
         color: #374151;
         font-size: 14px;
+        line-height: 1.75;
       }
 
-      /* Timeline */
-      .timeline {
-        margin-top: 14px;
-      }
-
-      .timeline-item {
+      .stack {
         display: grid;
-        grid-template-columns: 140px 1fr;
-        gap: 24px;
-        margin-bottom: 24px;
-        padding-bottom: 24px;
-        border-bottom: 1px solid #e5e7eb;
+        gap: 12px;
       }
 
-      .timeline-item:last-child {
+      .item {
+        background: #f9fafb;
+        border: 1px solid var(--tm-line);
+        border-radius: 12px;
+        padding: 14px 16px;
+      }
+
+      .item-title {
+        color: var(--tm-copy);
+        font-size: 13px;
+        font-weight: 800;
+        margin-bottom: 6px;
+      }
+
+      .item-copy {
+        color: var(--tm-copy-soft);
+        font-size: 13px;
+        line-height: 1.65;
+      }
+
+      .timeline {
+        display: grid;
+        gap: 18px;
+      }
+
+      .timeline-row {
+        border-bottom: 1px solid var(--tm-line);
+        display: grid;
+        gap: 22px;
+        grid-template-columns: 136px 1fr;
+        padding-bottom: 18px;
+      }
+
+      .timeline-row:last-child {
         border-bottom: none;
-        margin-bottom: 0;
         padding-bottom: 0;
       }
 
       .timeline-date {
+        color: var(--tm-purple);
         font-size: 12px;
         font-weight: 800;
-        color: #7c3aed;
+        letter-spacing: 0.04em;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
       }
 
       .timeline-code {
+        color: var(--tm-muted);
         font-size: 11px;
-        color: #6b7280;
-        margin-top: 4px;
         font-weight: 700;
+        margin-top: 4px;
       }
 
-      .timeline-description {
+      .timeline-desc {
+        color: var(--tm-copy);
         font-size: 15px;
         font-weight: 800;
-        color: #0b0a14;
         margin-bottom: 8px;
       }
 
       .timeline-impact {
+        color: var(--tm-copy-soft);
         font-size: 13px;
-        color: #6b7280;
         line-height: 1.6;
       }
 
-      /* Transaction Table */
-      .transaction-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 14px;
-        border: 1px solid #e5e7eb;
-        border-radius: 10px;
+      .table-wrap {
+        border: 1px solid var(--tm-line);
+        border-radius: 12px;
         overflow: hidden;
       }
 
-      .transaction-table th {
-        background: rgba(124, 58, 237, 0.1);
-        color: #374151;
-        padding: 12px 14px;
-        text-align: left;
-        font-weight: 800;
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        border-bottom: 1px solid #e5e7eb;
+      table {
+        border-collapse: collapse;
+        width: 100%;
       }
 
-      .transaction-table td {
-        padding: 12px 14px;
-        border-bottom: 1px solid #e5e7eb;
+      th,
+      td {
+        border-bottom: 1px solid var(--tm-line);
         font-size: 13px;
-        color: #374151;
+        padding: 12px 14px;
+        text-align: left;
         vertical-align: top;
       }
 
-      .transaction-table tr:hover {
-        background: #f9fafb;
+      th {
+        background: rgba(124, 58, 237, 0.1);
+        color: #374151;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
       }
 
-      .transaction-table tr:last-child td {
+      tr:last-child td {
         border-bottom: none;
       }
 
-      .code-column {
+      .code-cell {
+        color: var(--tm-purple);
         font-weight: 800;
-        color: #7c3aed;
         white-space: nowrap;
       }
 
-      /* Balance Breakdown */
       .balance-box {
         background: #f9fafb;
+        border-left: 4px solid var(--tm-purple);
+        border-radius: 12px;
         padding: 18px;
-        border-radius: 10px;
-        margin-top: 14px;
-        border-left: 4px solid #7c3aed;
       }
 
       .balance-row {
+        border-bottom: 1px solid var(--tm-line);
         display: grid;
-        grid-template-columns: 200px 1fr 120px;
         gap: 16px;
+        grid-template-columns: 200px 1fr 120px;
         padding: 12px 0;
-        border-bottom: 1px solid #e5e7eb;
-        font-size: 13px;
       }
 
       .balance-row:last-child {
         border-bottom: none;
-        padding-top: 14px;
-        padding-bottom: 0;
-        border-top: 2px solid #7c3aed;
+        border-top: 2px solid var(--tm-purple);
         margin-top: 8px;
+        padding-bottom: 0;
+        padding-top: 14px;
       }
 
       .balance-label {
+        color: var(--tm-copy);
+        font-size: 13px;
         font-weight: 800;
-        color: #0b0a14;
       }
 
       .balance-desc {
-        color: #6b7280;
+        color: var(--tm-muted);
+        font-size: 13px;
       }
 
       .balance-amount {
-        text-align: right;
+        color: var(--tm-purple);
+        font-size: 13px;
         font-weight: 800;
-        color: #7c3aed;
+        text-align: right;
         white-space: nowrap;
       }
 
       .balance-row:last-child .balance-amount {
+        color: var(--tm-copy);
         font-size: 16px;
-        color: #0b0a14;
       }
 
-      /* Footer (inside report page) */
       .report-footer {
-        margin-top: 40px;
-        padding-top: 16px;
-        border-top: 1px solid #e5e7eb;
-        display: flex;
-        justify-content: space-between;
         align-items: center;
-        gap: 16px;
-        font-size: 11px;
+        border-top: 1px solid var(--tm-line);
         color: #9ca3af;
+        display: flex;
+        font-size: 11px;
+        gap: 16px;
+        justify-content: space-between;
+        margin-top: 34px;
+        padding-top: 16px;
       }
 
-      /* Mobile */
-      @media (max-width: 640px) {
+      .state-card {
+        background: #fff;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 20px;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+        max-width: 860px;
+        overflow: hidden;
+      }
+
+      .state-top {
+        background: linear-gradient(135deg, rgba(124,58,237,0.16), rgba(14,165,233,0.12));
+        border-bottom: 1px solid var(--tm-line);
+        padding: 22px 24px;
+      }
+
+      .state-top h2 {
+        color: var(--tm-copy);
+        font-size: 24px;
+        font-weight: 800;
+        margin-bottom: 8px;
+      }
+
+      .state-top p,
+      .state-body p {
+        color: var(--tm-copy-soft);
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      .state-body {
+        padding: 22px 24px 24px;
+      }
+
+      .state-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .inline-code {
+        background: #f3f4f6;
+        border-radius: 8px;
+        color: var(--tm-purple);
+        display: inline-block;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 12px;
+        margin-top: 12px;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        padding: 8px 10px;
+      }
+
+      .footer-inner {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        justify-content: space-between;
+        padding: 12px 24px 18px;
+      }
+
+      .footer-inner p,
+      .footer-inner a {
+        color: #94a3b8;
+        font-size: 14px;
+        text-decoration: none;
+      }
+
+      @media (max-width: 720px) {
         .page-content {
           padding: 28px;
         }
 
-        .info-grid {
+        .detail-grid,
+        .summary-grid,
+        .status-grid,
+        .status-grid.two-col {
           grid-template-columns: 1fr;
         }
 
-        .status-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .timeline-item {
-          grid-template-columns: 1fr;
-          gap: 10px;
-        }
-
+        .timeline-row,
         .balance-row {
+          gap: 10px;
           grid-template-columns: 1fr;
         }
 
         .balance-amount {
           text-align: left;
         }
+
+        .report-footer,
+        .footer-inner,
+        .topbar-inner {
+          align-items: flex-start;
+          flex-direction: column;
+        }
       }
 
-      /* Print */
       @media print {
-        html,
-        body {
+        body,
+        html {
           background: #fff !important;
           height: auto;
           overflow: visible;
         }
 
+        .topbar,
+        footer,
         #addLogoBtn,
-        #downloadBtn,
-        #removeLogoBtn,
         #logoFileInput,
-        .sticky.top-0,
-        footer {
+        #removeLogoBtn,
+        #printBtn {
           display: none !important;
         }
 
-        .report-container {
-          display: block;
+        .report-wrap,
+        .state-wrap {
           padding: 0;
         }
 
         .report-page {
-          margin: 0;
-          box-shadow: none;
           border-radius: 0;
+          box-shadow: none;
+          margin: 0;
           page-break-after: always;
         }
 
@@ -486,74 +651,38 @@
       }
     </style>
   </head>
-
-  <body class="h-full noise font-sans">
-    <div class="relative z-10 min-h-screen w-full flex flex-col">
-      <!-- Sticky Header (standard) -->
-      <header class="sticky top-0 z-50 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur">
-        <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4 tm-anim">
-          <a href="https://transcript.taxmonitor.pro/" class="flex items-center gap-3 text-white">
-            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-purple-500 text-slate-950 font-extrabold">TM</span>
-            <div class="leading-tight">
-              <div class="text-sm font-semibold">Transcript.Tax Monitor Pro</div>
-              <div class="text-[11px] text-white/60">Report Preview</div>
-            </div>
+  <body class="h-full">
+    <div class="report-shell">
+      <header class="topbar">
+        <div class="topbar-inner">
+          <a href="https://transcript.taxmonitor.pro/" class="brand">
+            <span class="brand-mark">TM</span>
+            <span class="brand-copy">
+              <strong>Transcript.Tax Monitor Pro</strong>
+              <span>Canonical Report Page</span>
+            </span>
           </a>
 
-          <div class="flex items-center gap-2">
-            <a href="/" class="inline-flex items-center gap-2 rounded-xl border border-slate-800/60 bg-slate-950/60 px-3 py-2 text-sm font-semibold text-white/80 backdrop-blur hover:text-white transition">
-              <svg class="h-5 w-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M15 18l-6-6 6-6" />
-              </svg>
-              Back
-            </a>
-
+          <div class="topbar-actions">
             <input id="logoFileInput" type="file" accept="image/*" class="hidden" />
-
-            <button id="addLogoBtn" type="button" class="inline-flex items-center gap-2 rounded-xl border border-purple-500/30 bg-purple-500/10 px-4 py-2 text-sm font-semibold text-purple-200 shadow-sm hover:bg-purple-500/15 hover:text-white transition">
-              <svg class="h-5 w-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 5v14" />
-                <path d="M5 12h14" />
-              </svg>
-              Add Logo
-            </button>
-
-            <button id="removeLogoBtn" type="button" class="hidden inline-flex items-center gap-2 rounded-xl border border-slate-800/60 bg-slate-950/60 px-4 py-2 text-sm font-semibold text-white/80 backdrop-blur hover:text-white transition">
-              <svg class="h-5 w-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 6h18" />
-                <path d="M8 6V4h8v2" />
-                <path d="M10 11v6" />
-                <path d="M14 11v6" />
-                <path d="M6 6l1 16h10l1-16" />
-              </svg>
-              Remove
-            </button>
-
-            <button id="downloadBtn" type="button" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-purple-500 px-4 py-2 text-sm font-semibold text-white shadow hover:from-purple-700 hover:to-purple-600 transition">
-              <svg class="h-5 w-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 3v12" />
-                <path d="M7 10l5 5 5-5" />
-                <path d="M5 21h14" />
-              </svg>
-              Download as PDF
-            </button>
+            <button id="addLogoBtn" type="button" class="btn btn-soft">Add Logo</button>
+            <button id="removeLogoBtn" type="button" class="btn btn-ghost hidden">Remove Logo</button>
+            <button id="printBtn" type="button" class="btn btn-primary">Print Report</button>
           </div>
         </div>
       </header>
 
-      <main class="flex-1">
-        <div class="report-container tm-anim delay-1">
-          <div id="reportOutput"></div>
-        </div>
+      <main>
+        <div id="stateWrap" class="state-wrap"></div>
+        <div id="reportWrap" class="report-wrap hidden"></div>
       </main>
 
-      <!-- Footer (standard) -->
-      <footer class="px-6 py-3 mt-1 tm-anim delay-2">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <p class="text-slate-500 text-sm">© <span id="footer-year"></span> Transcript.Tax Monitor Pro. All rights reserved.</p>
-          <div class="flex items-center gap-6">
-            <a href="/legal/privacy.html" class="text-slate-400 hover:text-purple-300 text-sm transition-colors">Privacy Policy</a>
-            <a href="/legal/terms.html" class="text-slate-400 hover:text-purple-300 text-sm transition-colors">Terms of Service</a>
+      <footer>
+        <div class="footer-inner">
+          <p>© <span id="footerYear"></span> Transcript.Tax Monitor Pro. All rights reserved.</p>
+          <div style="display:flex; gap:16px; flex-wrap:wrap;">
+            <a href="/legal/privacy.html">Privacy Policy</a>
+            <a href="/legal/terms.html">Terms of Service</a>
           </div>
         </div>
       </footer>
@@ -561,364 +690,642 @@
 
     <script>
       (function () {
-        // Prevent the page from loading "flat".
-        // Adds a tiny entrance animation matching the main site vibe.
-        requestAnimationFrame(() => document.documentElement.classList.add("tm-loaded"));
-      })();
-    </script>
-
-    <script>
-      (function () {
-        var y = document.getElementById('footer-year');
-        if (y) y.textContent = String(new Date().getFullYear());
-      })();
-    </script>
-
-    <script>
-      // Sample data structure (will be replaced by actual transcript data)
-      const sampleData = {
-        logo: null,
-        logoWidth: 140,
-        preparedBy: "Tax Professional",
-        reportDate: "01/20/2024",
-        taxPeriodEnding: "12/31/2023",
-        taxpayerName: "John Q. Public",
-        currentBalance: "$0.00",
-        refundStatus: "Issued",
-        noticesIssued: "No",
-        actionRequired: "No",
-        riskLevel: "Low",
-        summary:
-          "The account shows a clean refund status with no outstanding balance or pending notices. All tax obligations for the 2023 tax year have been satisfied. No further action is required at this time.",
-        transactions: [
-          {
-            code: "150",
-            date: "03/15/2024",
-            description: "Assessment - Tax Return Filed",
-            impact: "Initial tax liability calculated and recorded"
+        const FALLBACK_REPORT_DATA = {
+          analysis: [],
+          generatedAt: new Date().toISOString(),
+          metadata: {
+            accountNumberMasked: '***-**-0000',
+            filingStatus: 'Single',
+            taxPeriodEnding: '2023-12-31',
+            taxpayerName: 'John Q. Public',
+            transcriptType: 'IRS Account Transcript'
           },
-          {
-            code: "290",
-            date: "04/10/2024",
-            description: "Withholding Applied",
-            impact: "Federal withholding from W-2 wages credited to account"
-          },
-          {
-            code: "846",
-            date: "05/05/2024",
-            description: "Refund Issued",
-            impact: "Overpayment refunded to taxpayer via direct deposit"
+          notices: [],
+          recommendations: [],
+          rows: [
+            {
+              amount: '$0.00',
+              code: '150',
+              date: '2024-03-15',
+              description: 'Return Filed & Assessed',
+              impact: 'Initial assessment posted to the account.'
+            },
+            {
+              amount: '$0.00',
+              code: '806',
+              date: '2024-04-10',
+              description: 'Withholding Credit',
+              impact: 'Withholding applied to reduce liability.'
+            },
+            {
+              amount: '$0.00',
+              code: '846',
+              date: '2024-05-05',
+              description: 'Refund Issued',
+              impact: 'Refund released by the IRS.'
+            }
+          ],
+          summary: {
+            actionRequired: 'No',
+            currentBalance: '$0.00',
+            noticesIssued: 'No',
+            refundStatus: 'Issued',
+            riskLevel: 'Low'
           }
-        ]
-      };
+        };
 
-      function getRiskClass(level) {
-        if (level === "Low") return "low";
-        if (level === "Moderate") return "moderate";
-        return "attention";
-      }
+        function escapeHtml(value) {
+          return String(value == null ? '' : value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+        }
 
-      function renderReport(data = sampleData) {
-        const html = `
-        <div class="report-page tm-anim delay-2">
-          <div class="page-content">
-            <div class="report-header">
-              <div class="header-left">
-                <h1>IRS Transcript Report</h1>
-                <p>Client-Ready Account Analysis</p>
-              </div>
-              <div class="header-right">
-                ${data.logo
-                  ? `<img src="${data.logo}" style="max-width: ${data.logoWidth}px; height: auto;" />`
-                  : `
-                    <div style="width: 160px; height: 110px; background: #f3f4f6; border: 2px dashed #d1d5db; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #9ca3af; font-size: 12px; text-align: center; font-weight: 800; padding: 8px;">
-                      <div>Company Logo</div>
-                      <div style="margin-top: 6px; font-size: 10px; font-weight: 600; color: #6b7280; line-height: 1.3;">
-                        600×600 PNG preferred • SVG/JPG accepted
-                      </div>
-                    </div>
-                  `}
-              </div>
+        function cleanText(value, fallback = '—') {
+          const text = String(value == null ? '' : value).trim();
+          return text || fallback;
+        }
+
+        function numberFromUnknown(value) {
+          if (typeof value === 'number' && Number.isFinite(value)) return value;
+          const text = String(value == null ? '' : value).trim();
+          if (!text) return null;
+          const cleaned = text.replace(/[$,()]/g, '').replace(/\s+/g, '');
+          if (!cleaned) return null;
+          const maybeNeg = String(value).includes('(') && String(value).includes(')');
+          const num = Number(cleaned);
+          if (!Number.isFinite(num)) return null;
+          return maybeNeg ? -Math.abs(num) : num;
+        }
+
+        function money(value) {
+          const num = numberFromUnknown(value);
+          if (num == null) return String(value || '—');
+          return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }).format(num);
+        }
+
+        function toIsoish(value) {
+          const d = new Date(value);
+          return Number.isNaN(d.getTime()) ? null : d.toISOString();
+        }
+
+        function toDisplayDate(value) {
+          const d = new Date(value);
+          if (Number.isNaN(d.getTime())) return cleanText(value, 'Undated');
+          return d.toLocaleDateString();
+        }
+
+        function hasCode(rows, codes) {
+          const set = new Set(codes.map((x) => String(x)));
+          return rows.some((row) => set.has(String(row.code)));
+        }
+
+        function normalizeRow(row, index) {
+          const code = cleanText(row?.code || row?.transactionCode || row?.tc || row?.cycleCode || `Item ${index + 1}`);
+          const date = cleanText(row?.date || row?.transactionDate || row?.postedDate || row?.effectiveDate, 'Undated');
+          const amountRaw = row?.amount ?? row?.transactionAmount ?? row?.value ?? row?.balanceChange ?? null;
+          return {
+            amount: amountRaw == null || String(amountRaw).trim() === '' ? '—' : money(amountRaw),
+            code,
+            date: toDisplayDate(date),
+            description: cleanText(row?.description || row?.title || row?.meaning || row?.name || 'Transcript activity'),
+            impact: cleanText(row?.impact || row?.analysis || row?.note || row?.details || 'Included in the transcript analysis.')
+          };
+        }
+
+        function deriveCurrentBalance(source) {
+          const candidates = [source?.currentBalance, source?.balanceDue, source?.accountBalance, source?.amountDue, source?.payoffBalance, source?.balance];
+          for (const candidate of candidates) {
+            const num = numberFromUnknown(candidate);
+            if (num != null) return money(num);
+            const text = String(candidate == null ? '' : candidate).trim();
+            if (text) return text;
+          }
+          return '$0.00';
+        }
+
+        function deriveRefundStatus(rows, source) {
+          const explicit = cleanText(source?.refundStatus || source?.refund_state || '', '');
+          if (explicit) return explicit;
+          if (hasCode(rows, ['846'])) return 'Issued';
+          if (hasCode(rows, ['898'])) return 'Applied Elsewhere';
+          if (hasCode(rows, ['570', '971'])) return 'Review / Hold Signals';
+          return 'No refund signal found';
+        }
+
+        function deriveNoticesIssued(rows, source) {
+          const explicit = cleanText(source?.noticesIssued || source?.noticeStatus || '', '');
+          if (explicit) return explicit;
+          return hasCode(rows, ['971']) ? 'Yes' : 'No';
+        }
+
+        function deriveRiskLevel(rows, source) {
+          const explicit = cleanText(source?.riskLevel || source?.risk || '', '');
+          if (explicit) return explicit;
+          const balanceNum = numberFromUnknown(source?.currentBalance ?? source?.balanceDue ?? source?.accountBalance ?? 0) || 0;
+          const urgent = hasCode(rows, ['420', '480', '582', '898', '922']);
+          const review = hasCode(rows, ['570', '576', '971']);
+          if (urgent || Math.abs(balanceNum) >= 100) return 'Attention';
+          if (review) return 'Moderate';
+          return 'Low';
+        }
+
+        function deriveActionRequired(rows, source) {
+          const explicit = cleanText(source?.actionRequired || source?.actionNeeded || '', '');
+          if (explicit) return explicit;
+          const balanceNum = numberFromUnknown(source?.currentBalance ?? source?.balanceDue ?? source?.accountBalance ?? 0) || 0;
+          if (Math.abs(balanceNum) >= 1) return 'Yes';
+          if (hasCode(rows, ['570', '971'])) return 'Possibly';
+          return 'No';
+        }
+
+        function getRiskClass(level) {
+          const text = String(level || '').toLowerCase();
+          if (text === 'low') return 'low';
+          if (text === 'moderate') return 'moderate';
+          return 'attention';
+        }
+
+        function extractPayloadCandidate(raw) {
+          if (!raw) return null;
+          if (typeof raw === 'object') return raw;
+          const attempts = [String(raw).trim()];
+          try { attempts.push(decodeURIComponent(String(raw).trim())); } catch (_) {}
+          for (const item of attempts) {
+            if (!item) continue;
+            try { return JSON.parse(item); } catch (_) {}
+            try {
+              const normalized = item.replace(/-/g, '+').replace(/_/g, '/');
+              const padLength = normalized.length % 4 === 0 ? 0 : 4 - (normalized.length % 4);
+              const padded = normalized + '='.repeat(padLength);
+              const decoded = atob(padded);
+              return JSON.parse(decoded);
+            } catch (_) {}
+          }
+          return null;
+        }
+
+        function readParamsPayload() {
+          const url = new URL(window.location.href);
+          return extractPayloadCandidate(url.searchParams.get('data')) || extractPayloadCandidate(url.searchParams.get('payload'));
+        }
+
+        function readHashPayload() {
+          return extractPayloadCandidate(String(window.location.hash || '').replace(/^#/, '').trim());
+        }
+
+        function readStoragePayload() {
+          const keys = ['tm_report_data', 'tmp_report_data', 'transcript_report_data', 'transcript_report_payload', 'reportData'];
+          for (const key of keys) {
+            try {
+              const raw = localStorage.getItem(key) || sessionStorage.getItem(key);
+              const parsed = extractPayloadCandidate(raw);
+              if (parsed) return parsed;
+            } catch (_) {}
+          }
+          return null;
+        }
+
+        function readWindowPayload() {
+          const candidates = [
+            window.reportData,
+            window.__REPORT_DATA__,
+            window.__TRANSCRIPT_REPORT_DATA__,
+            window.opener && window.opener.reportData,
+            window.opener && window.opener.__REPORT_DATA__,
+            window.parent && window.parent.reportData
+          ];
+          for (const candidate of candidates) {
+            if (candidate && typeof candidate === 'object') {
+              try { return JSON.parse(JSON.stringify(candidate)); } catch (_) { return candidate; }
+            }
+          }
+          return null;
+        }
+
+        function normalizeReport(raw) {
+          const source = raw && typeof raw === 'object' ? raw : {};
+          if (source.summary && source.metadata && Array.isArray(source.rows)) {
+            return source;
+          }
+
+          const rowsRaw = Array.isArray(source.rows)
+            ? source.rows
+            : Array.isArray(source.transactions)
+            ? source.transactions
+            : Array.isArray(source.transactionCodes)
+            ? source.transactionCodes
+            : Array.isArray(source.codes)
+            ? source.codes
+            : Array.isArray(source.timeline)
+            ? source.timeline
+            : [];
+
+          const rows = rowsRaw.map(normalizeRow);
+          const metadata = {
+            accountNumberMasked: cleanText(source.accountNumberMasked || source.ssnMasked || source.tinMasked || source.taxpayerIdMasked || '—'),
+            filingStatus: cleanText(source.filingStatus || source.maritalStatus || '—'),
+            preparedBy: cleanText(source.preparedBy || source.preparer || source.prepared_by || 'Tax Professional'),
+            taxpayerName: cleanText(source.taxpayerName || source.clientName || source.name || source.taxpayer || 'Unnamed Taxpayer'),
+            taxPeriodEnding: cleanText(source.taxPeriodEnding || source.taxPeriod || source.periodEnding || source.taxYear || '—'),
+            transcriptType: cleanText(source.transcriptType || source.reportType || source.transcript || 'IRS Account Transcript')
+          };
+
+          const summary = {
+            actionRequired: deriveActionRequired(rows, source),
+            currentBalance: deriveCurrentBalance(source),
+            noticesIssued: deriveNoticesIssued(rows, source),
+            refundStatus: deriveRefundStatus(rows, source),
+            riskLevel: deriveRiskLevel(rows, source)
+          };
+
+          const summaryNarrative = cleanText(source.summary || '', '');
+
+          const analysis = [];
+          if (hasCode(rows, ['150'])) analysis.push({ title: 'Return posting detected', copy: 'A TC 150 entry usually means the return posted and the baseline tax computation is on the account. Useful, unlike most panic.' });
+          if (hasCode(rows, ['806'])) analysis.push({ title: 'Withholding credit applied', copy: 'A TC 806 entry points to withholding credit being applied, which often explains refund or reduced balance behavior.' });
+          if (hasCode(rows, ['846'])) analysis.push({ title: 'Refund release signal found', copy: 'A TC 846 entry strongly suggests the refund was released instead of merely existing as a comforting theory.' });
+          if (hasCode(rows, ['570'])) analysis.push({ title: 'Processing hold or review signal', copy: 'A TC 570 entry often indicates a hold or pending review, so follow-through matters more than optimism.' });
+          if (hasCode(rows, ['971'])) analysis.push({ title: 'Notice activity detected', copy: 'A TC 971 entry often points to notice activity and should be matched against correspondence or client mail.' });
+          if ((numberFromUnknown(summary.currentBalance) || 0) !== 0) analysis.push({ title: 'Balance still appears open', copy: `The transcript suggests a current balance position of ${summary.currentBalance}. Reconcile credits, timing, and penalties before calling the account resolved.` });
+          if (!analysis.length) analysis.push({ title: 'No major adverse signal found', copy: 'The parsed transcript does not show a strong adverse pattern in the available fields. Routine is not the same as reviewed, but it is better than chaos.' });
+
+          const notices = [];
+          if (hasCode(rows, ['971'])) notices.push({ title: 'IRS notice or notice-related activity', copy: 'Review related correspondence and confirm whether the client already received or responded to the notice.' });
+          if (hasCode(rows, ['570'])) notices.push({ title: 'Hold or freeze indicator', copy: 'Monitor for additional transcript movement, supporting document requests, or delayed refund processing.' });
+          if (!notices.length) notices.push({ title: 'No major notice signal parsed', copy: 'The current payload does not show a clear notice-heavy pattern.' });
+
+          const recommendations = [];
+          if (summary.actionRequired === 'Yes' || summary.actionRequired === 'Possibly') recommendations.push({ title: 'Reconcile account status', copy: 'Compare transcript movement against balances, refund entries, and any client notices before finalizing advice.' });
+          if (summary.riskLevel === 'Attention') recommendations.push({ title: 'Escalate review depth', copy: 'Higher-risk patterns warrant line-by-line transcript review and documentation before communicating a final client position.' });
+          if (hasCode(rows, ['846']) && String(summary.currentBalance).trim() !== '$0.00') recommendations.push({ title: 'Reconcile refund against balance', copy: 'A refund release alongside a non-zero balance can be explainable, but it needs a clean narrative before this becomes someone else’s headache.' });
+          if (!recommendations.length) recommendations.push({ title: 'Maintain normal monitoring cadence', copy: 'The parsed data looks routine enough for standard retention and periodic recheck practices.' });
+
+          return {
+            analysis,
+            generatedAt: toIsoish(source.generatedAt || source.reportDate || source.generatedOn || new Date().toISOString()) || new Date().toISOString(),
+            metadata,
+            notices,
+            recommendations,
+            rows,
+            summary,
+            summaryNarrative: summaryNarrative || `This ${metadata.transcriptType.toLowerCase()} for ${metadata.taxpayerName} shows a current balance of ${summary.currentBalance}. Refund status appears to be ${summary.refundStatus.toLowerCase()}, notices are marked ${summary.noticesIssued.toLowerCase()}, and risk is currently assessed as ${summary.riskLevel.toLowerCase()}.`
+          };
+        }
+
+        function buildBalanceRows(report) {
+          return [
+            { label: 'Assessment', desc: 'Initial tax assessed from the filed or adjusted return.', amount: money(report.assessmentTotal || '—') },
+            { label: 'Withholding', desc: 'Federal withholding and wage-related credits applied to the account.', amount: money(report.withholdingTotal || '—') },
+            { label: 'Payments', desc: 'Estimated payments, direct payments, or other non-withholding credits.', amount: money(report.paymentTotal || '—') },
+            { label: 'Interest & Penalties', desc: 'Interest and penalty activity reflected in the transcript.', amount: money(report.interestAndPenaltyTotal || '—') },
+            { label: 'Current Balance', desc: '', amount: report.summary.currentBalance }
+          ].map((row) => ({ ...row, amount: row.amount === '$NaN' ? '—' : row.amount }));
+        }
+
+        function renderLogoBlock(report, allowPlaceholder) {
+          if (report.logo) {
+            const width = Math.max(80, Number(report.logoWidth || 140));
+            return `<img src="${escapeHtml(report.logo)}" alt="Company logo" style="max-width:${width}px;height:auto;" />`;
+          }
+          if (!allowPlaceholder) return '';
+          return `
+            <div style="width:160px;height:110px;background:#f3f4f6;border:2px dashed #d1d5db;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:8px;color:#9ca3af;text-align:center;font-size:12px;font-weight:800;">
+              <div>Company Logo</div>
+              <div style="margin-top:6px;font-size:10px;font-weight:600;color:#6b7280;line-height:1.3;">600×600 PNG preferred • SVG/JPG accepted</div>
             </div>
+          `;
+        }
 
-            <div class="section">
-              <div class="section-title">Client Information</div>
-              <div class="info-grid">
-                <div class="info-block">
-                  <div class="info-label">Taxpayer Name</div>
-                  <div class="info-value">${data.taxpayerName}</div>
+        function renderReportPages(report) {
+          const balanceRows = buildBalanceRows(report);
+          const riskClass = getRiskClass(report.summary.riskLevel);
+          const reportDate = new Date(report.generatedAt).toLocaleString();
+          const rowsHtml = report.rows.length
+            ? report.rows.map((row) => `
+                <div class="timeline-row">
+                  <div>
+                    <div class="timeline-date">${escapeHtml(row.date)}</div>
+                    <div class="timeline-code">TC ${escapeHtml(row.code)}</div>
+                  </div>
+                  <div>
+                    <div class="timeline-desc">${escapeHtml(row.description)}</div>
+                    <div class="timeline-impact">${escapeHtml(row.impact)}</div>
+                  </div>
                 </div>
-                <div class="info-block">
-                  <div class="info-label">Tax Period Ending</div>
-                  <div class="info-value">${data.taxPeriodEnding}</div>
-                </div>
-                <div class="info-block">
-                  <div class="info-label">Report Date</div>
-                  <div class="info-value">${data.reportDate}</div>
-                </div>
-                <div class="info-block">
-                  <div class="info-label">Prepared By</div>
-                  <div class="info-value">${data.preparedBy}</div>
-                </div>
-              </div>
-            </div>
+              `).join('')
+            : `<div class="panel tint"><div class="panel-copy">No parsed transcript rows were found in the payload.</div></div>`;
 
-            <div class="section">
-              <div class="section-title">Account Status</div>
-              <div class="status-grid">
-                <div class="status-card">
-                  <div class="status-value">${data.currentBalance}</div>
-                  <div class="status-label">Current Balance</div>
-                </div>
-                <div class="status-card">
-                  <div class="status-value">${data.refundStatus}</div>
-                  <div class="status-label">Refund Status</div>
-                </div>
-                <div class="status-card">
-                  <div class="status-value">${data.noticesIssued}</div>
-                  <div class="status-label">Notices Issued</div>
-                </div>
-              </div>
-              <div class="status-grid" style="grid-template-columns: repeat(2, 1fr);">
-                <div class="status-card">
-                  <div class="status-value">${data.actionRequired}</div>
-                  <div class="status-label">Action Required</div>
-                </div>
-                <div class="status-card">
-                  <div class="status-value ${getRiskClass(data.riskLevel)}">${data.riskLevel}</div>
-                  <div class="status-label">Risk Assessment</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="section">
-              <div class="section-title">What This Means</div>
-              <div class="summary-box">${data.summary}</div>
-            </div>
-
-            ${data.transactions && data.transactions.length > 0
-              ? `
-              <div class="section">
-                <div class="section-title">Key Transcript Events</div>
-                <div class="timeline">
-                  ${data.transactions
-                    .map(
-                      (tx) => `
-                    <div class="timeline-item">
-                      <div>
-                        <div class="timeline-date">${tx.date}</div>
-                        <div class="timeline-code">TC ${tx.code}</div>
-                      </div>
-                      <div>
-                        <div class="timeline-description">${tx.description}</div>
-                        <div class="timeline-impact">${tx.impact}</div>
-                      </div>
-                    </div>
-                  `
-                    )
-                    .join("")}
-                </div>
-              </div>
-            `
-              : ""}
-
-            <div class="report-footer">
-              <span>This report is confidential and for the named taxpayer and their representative only.</span>
-              <span>Generated ${new Date().toLocaleDateString()}</span>
-            </div>
-          </div>
-        </div>
-
-        ${data.transactions && data.transactions.length > 0
-          ? `
-          <div class="report-page tm-anim delay-3">
-            <div class="page-content">
-              <div class="report-header">
-                <div class="header-left">
-                  <h1>Technical Analysis</h1>
-                  <p>Transaction Code Breakdown</p>
-                </div>
-                <div class="header-right">
-                  ${data.logo ? `<img src="${data.logo}" style="max-width: ${data.logoWidth}px; height: auto;" />` : ""}
-                </div>
-              </div>
-
-              <div class="section">
-                <div class="section-title">Transaction Code Details</div>
-                <table class="transaction-table">
+          const analysisHtml = report.analysis.map((item) => `<div class="item"><div class="item-title">${escapeHtml(item.title)}</div><div class="item-copy">${escapeHtml(item.copy)}</div></div>`).join('');
+          const noticesHtml = report.notices.map((item) => `<div class="item"><div class="item-title">${escapeHtml(item.title)}</div><div class="item-copy">${escapeHtml(item.copy)}</div></div>`).join('');
+          const recommendationsHtml = report.recommendations.map((item) => `<div class="item"><div class="item-title">${escapeHtml(item.title)}</div><div class="item-copy">${escapeHtml(item.copy)}</div></div>`).join('');
+          const tableHtml = report.rows.length
+            ? `
+              <div class="table-wrap">
+                <table>
                   <thead>
                     <tr>
-                      <th>TC Code</th>
+                      <th>Amount</th>
+                      <th>Code</th>
                       <th>Date</th>
                       <th>Description</th>
-                      <th>Impact</th>
+                      <th>Interpretation</th>
                     </tr>
                   </thead>
                   <tbody>
-                    ${data.transactions
-                      .map(
-                        (tx) => `
+                    ${report.rows.map((row) => `
                       <tr>
-                        <td class="code-column">${tx.code}</td>
-                        <td>${tx.date}</td>
-                        <td>${tx.description}</td>
-                        <td>${tx.impact}</td>
+                        <td>${escapeHtml(row.amount)}</td>
+                        <td class="code-cell">${escapeHtml(row.code)}</td>
+                        <td>${escapeHtml(row.date)}</td>
+                        <td>${escapeHtml(row.description)}</td>
+                        <td>${escapeHtml(row.impact)}</td>
                       </tr>
-                    `
-                      )
-                      .join("")}
+                    `).join('')}
                   </tbody>
                 </table>
               </div>
+            `
+            : `<div class="panel tint"><div class="panel-copy">Transaction-level detail was not available in the payload.</div></div>`;
 
-              <div class="section">
-                <div class="section-title">Understanding These Codes</div>
-                ${data.transactions
-                  .map(
-                    (tx) => `
-                  <div style="margin-bottom: 20px; padding-bottom: 18px; border-bottom: 1px solid #e5e7eb;">
-                    <div style="font-weight: 800; color: #0b0a14; margin-bottom: 8px; font-size: 14px;">TC ${tx.code}: ${tx.description}</div>
-                    <div style="color: #6b7280; line-height: 1.6; font-size: 13px;">${tx.impact}</div>
-                  </div>
-                `
-                  )
-                  .join("")}
-              </div>
+          const balanceHtml = balanceRows.map((row, index) => `
+            <div class="balance-row">
+              <div class="balance-label">${escapeHtml(row.label)}</div>
+              <div class="balance-desc">${index === balanceRows.length - 1 ? '' : escapeHtml(row.desc)}</div>
+              <div class="balance-amount">${escapeHtml(row.amount)}</div>
+            </div>
+          `).join('');
 
-              <div class="section">
-                <div class="section-title">Balance Calculation</div>
-                <div class="balance-box">
-                  <div class="balance-row">
-                    <div class="balance-label">Assessment</div>
-                    <div class="balance-desc">Initial tax liability per return</div>
-                    <div class="balance-amount">—</div>
+          return `
+            <div class="report-page">
+              <div class="page-content">
+                <div class="report-header">
+                  <div>
+                    <h1>IRS Transcript Report</h1>
+                    <p>Client-Ready Account Analysis</p>
                   </div>
-                  <div class="balance-row">
-                    <div class="balance-label">Withholding</div>
-                    <div class="balance-desc">Federal tax withheld from income</div>
-                    <div class="balance-amount">—</div>
+                  <div>${renderLogoBlock(report, true)}</div>
+                </div>
+
+                <section class="section">
+                  <div class="section-title">Report Header</div>
+                  <div class="summary-grid">
+                    <div class="card"><div class="card-label">Generated</div><div class="card-value">${escapeHtml(reportDate)}</div></div>
+                    <div class="card"><div class="card-label">Prepared By</div><div class="card-value">${escapeHtml(report.metadata.preparedBy || 'Tax Professional')}</div></div>
                   </div>
-                  <div class="balance-row">
-                    <div class="balance-label">Payments</div>
-                    <div class="balance-desc">Additional payments made</div>
-                    <div class="balance-amount">—</div>
+                </section>
+
+                <section class="section">
+                  <div class="section-title">Account / Transcript Summary</div>
+                  <div class="detail-grid">
+                    <div class="card"><div class="card-label">Taxpayer Name</div><div class="card-value">${escapeHtml(report.metadata.taxpayerName)}</div></div>
+                    <div class="card"><div class="card-label">Transcript Type</div><div class="card-value">${escapeHtml(report.metadata.transcriptType)}</div></div>
+                    <div class="card"><div class="card-label">Tax Period Ending</div><div class="card-value">${escapeHtml(report.metadata.taxPeriodEnding)}</div></div>
+                    <div class="card"><div class="card-label">Taxpayer ID / Account</div><div class="card-value">${escapeHtml(report.metadata.accountNumberMasked)}</div></div>
+                    <div class="card"><div class="card-label">Filing Status</div><div class="card-value">${escapeHtml(report.metadata.filingStatus)}</div></div>
+                    <div class="card"><div class="card-label">Current Balance</div><div class="card-value">${escapeHtml(report.summary.currentBalance)}</div></div>
                   </div>
-                  <div class="balance-row">
-                    <div class="balance-label">Interest &amp; Penalties</div>
-                    <div class="balance-desc">Accrued based on timing</div>
-                    <div class="balance-amount">—</div>
+                </section>
+
+                <section class="section">
+                  <div class="section-title">Key Findings</div>
+                  <div class="status-grid">
+                    <div class="metric"><div class="metric-value">${escapeHtml(report.summary.currentBalance)}</div><div class="metric-label">Current Balance</div></div>
+                    <div class="metric"><div class="metric-value">${escapeHtml(report.summary.refundStatus)}</div><div class="metric-label">Refund Status</div></div>
+                    <div class="metric"><div class="metric-value">${escapeHtml(report.summary.noticesIssued)}</div><div class="metric-label">Notices Issued</div></div>
                   </div>
-                  <div class="balance-row">
-                    <div class="balance-label">Current Balance</div>
-                    <div></div>
-                    <div class="balance-amount">${data.currentBalance}</div>
+                  <div class="status-grid two-col" style="margin-top:14px;">
+                    <div class="metric"><div class="metric-value">${escapeHtml(report.summary.actionRequired)}</div><div class="metric-label">Action Required</div></div>
+                    <div class="metric"><div class="metric-value ${riskClass}">${escapeHtml(report.summary.riskLevel)}</div><div class="metric-label">Risk Assessment</div></div>
                   </div>
+                  <div class="panel tint" style="margin-top:14px;"><div class="panel-copy">${escapeHtml(report.summaryNarrative)}</div></div>
+                </section>
+
+                <section class="section">
+                  <div class="section-title">Notices or Risk Flags</div>
+                  <div class="stack">${noticesHtml}</div>
+                </section>
+
+                <section class="section">
+                  <div class="section-title">Parsed Transcript Details</div>
+                  <div class="timeline">${rowsHtml}</div>
+                </section>
+
+                <section class="section">
+                  <div class="section-title">Recommended Next Steps</div>
+                  <div class="stack">${recommendationsHtml}</div>
+                </section>
+
+                <div class="report-footer">
+                  <span>This report is confidential and intended for the named taxpayer and their representative.</span>
+                  <span>Generated ${escapeHtml(reportDate)}</span>
                 </div>
               </div>
+            </div>
 
-              <div class="report-footer">
-                <span>For IRS transaction code definitions, consult Publication 1546.</span>
-                <span>Generated ${new Date().toLocaleDateString()}</span>
+            <div class="report-page">
+              <div class="page-content">
+                <div class="report-header">
+                  <div>
+                    <h1>Technical Analysis</h1>
+                    <p>Shared Preview / Report Layout Contract</p>
+                  </div>
+                  <div>${renderLogoBlock(report, false)}</div>
+                </div>
+
+                <section class="section">
+                  <div class="section-title">Analysis Highlights</div>
+                  <div class="stack">${analysisHtml}</div>
+                </section>
+
+                <section class="section">
+                  <div class="section-title">Transcript Rows / Details</div>
+                  ${tableHtml}
+                </section>
+
+                <section class="section">
+                  <div class="section-title">Balance Summary</div>
+                  <div class="balance-box">${balanceHtml}</div>
+                </section>
+
+                <section class="section">
+                  <div class="section-title">Recommended Next Steps</div>
+                  <div class="stack">${recommendationsHtml}</div>
+                </section>
+
+                <div class="report-footer">
+                  <span>Interpretation is based on the normalized frontend report object and should be checked against the source transcript before final client advice.</span>
+                  <span>Generated ${escapeHtml(reportDate)}</span>
+                </div>
               </div>
             </div>
-          </div>
-        `
-          : ""}
-      `;
-
-        const root = document.getElementById("reportOutput");
-        if (root) root.innerHTML = html;
-      }
-
-      function getStoredLogo() {
-        return String(localStorage.getItem("tmp_report_logo") || "").trim() || null;
-      }
-
-      function setStoredLogo(dataUrl) {
-        const val = String(dataUrl || "").trim();
-        if (!val) return;
-        localStorage.setItem("tmp_report_logo", val);
-      }
-
-      function clearStoredLogo() {
-        localStorage.removeItem("tmp_report_logo");
-      }
-
-      function buildInitialReportData() {
-        const base = window.reportData ? { ...window.reportData } : { ...sampleData };
-        const stored = getStoredLogo();
-        if (stored) base.logo = stored;
-        return base;
-      }
-
-      function syncRemoveButton(data) {
-        const removeBtn = document.getElementById("removeLogoBtn");
-        if (!removeBtn) return;
-        const hasLogo = Boolean(data && data.logo);
-        removeBtn.classList.toggle("hidden", !hasLogo);
-      }
-
-      window.reportData = buildInitialReportData();
-      renderReport(window.reportData);
-      syncRemoveButton(window.reportData);
-
-      function wireControls() {
-        const addBtn = document.getElementById("addLogoBtn");
-        const fileInput = document.getElementById("logoFileInput");
-        const removeBtn = document.getElementById("removeLogoBtn");
-        const downloadBtn = document.getElementById("downloadBtn");
-
-        function applyLogo(dataUrl) {
-          window.reportData = window.reportData ? { ...window.reportData } : { ...sampleData };
-          window.reportData.logo = dataUrl;
-          setStoredLogo(dataUrl);
-          renderReport(window.reportData);
-          syncRemoveButton(window.reportData);
+          `;
         }
 
-        function removeLogo() {
-          window.reportData = window.reportData ? { ...window.reportData } : { ...sampleData };
-          window.reportData.logo = null;
-          clearStoredLogo();
-          renderReport(window.reportData);
-          syncRemoveButton(window.reportData);
+        function getStoredLogo() {
+          return String(localStorage.getItem('tmp_report_logo') || '').trim() || null;
         }
 
-        if (addBtn && fileInput) {
-          addBtn.addEventListener("click", () => fileInput.click());
-          fileInput.addEventListener("change", () => {
-            const file = fileInput.files && fileInput.files[0];
-            if (!file) return;
-            if (!String(file.type || "").startsWith("image/")) return;
-
-            const reader = new FileReader();
-            reader.onload = () => {
-              const dataUrl = String(reader.result || "");
-              if (!dataUrl.startsWith("data:image/")) return;
-              applyLogo(dataUrl);
-            };
-            reader.readAsDataURL(file);
-          });
+        function setStoredLogo(value) {
+          const text = String(value || '').trim();
+          if (text) localStorage.setItem('tmp_report_logo', text);
         }
 
-        if (removeBtn) removeBtn.addEventListener("click", removeLogo);
-
-        if (downloadBtn) {
-          downloadBtn.addEventListener("click", () => {
-            try {
-              const name = window.reportData && window.reportData.taxpayerName ? String(window.reportData.taxpayerName) : "Transcript Report";
-              document.title = `Transcript Report - ${name}`;
-            } catch (_) {}
-            window.print();
-          });
+        function clearStoredLogo() {
+          localStorage.removeItem('tmp_report_logo');
         }
-      }
 
-      if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", wireControls);
-      } else {
-        wireControls();
-      }
+        function renderState(type, payload) {
+          const wrap = document.getElementById('stateWrap');
+          if (!wrap) return;
+          const configs = {
+            malformed: {
+              title: 'Malformed report payload',
+              copy: 'The report link included data, but it could not be decoded into a usable report object. That usually means the payload was damaged, double-encoded, or mutilated by a transport layer that felt creative.',
+              detail: payload
+            },
+            missing: {
+              title: 'Missing report payload',
+              copy: 'This page needs a report payload from ?data=..., ?payload=..., or the URL hash. Right now it has none, which is not a report workflow so much as a dramatic pause.',
+              detail: '?data=... | ?payload=... | #...'
+            },
+            invalid: {
+              title: 'Invalid report payload',
+              copy: 'A payload was found, but it did not contain the minimum structure needed to render the report. The page expects transcript metadata, summary data, and parsed rows in a normalizable shape.',
+              detail: payload
+            }
+          };
+          const view = configs[type];
+          wrap.innerHTML = `
+            <div class="state-card">
+              <div class="state-top">
+                <h2>${escapeHtml(view.title)}</h2>
+                <p>${escapeHtml(view.copy)}</p>
+              </div>
+              <div class="state-body">
+                <p>This report page is the finished destination for printable output and emailed links. It is intentionally not showing parser, token, or checkout UI here.</p>
+                <div class="inline-code">${escapeHtml(view.detail || '')}</div>
+                <div class="state-actions">
+                  <button type="button" class="btn btn-primary" id="statePrintBtn">Print Report</button>
+                  <a href="/" class="btn btn-ghost">Back to App</a>
+                </div>
+              </div>
+            </div>
+          `;
+          const btn = document.getElementById('statePrintBtn');
+          if (btn) btn.addEventListener('click', () => window.print());
+        }
+
+        function showReport(report) {
+          const stateWrap = document.getElementById('stateWrap');
+          const reportWrap = document.getElementById('reportWrap');
+          if (!stateWrap || !reportWrap) return;
+          stateWrap.innerHTML = '';
+          reportWrap.classList.remove('hidden');
+          reportWrap.innerHTML = renderReportPages(report);
+        }
+
+        function getPayloadResult() {
+          const paramsPayload = readParamsPayload();
+          const hashPayload = readHashPayload();
+          const winPayload = readWindowPayload();
+          const storagePayload = readStoragePayload();
+
+          const hasRawParam = new URL(window.location.href).searchParams.get('data') || new URL(window.location.href).searchParams.get('payload');
+          const hasRawHash = String(window.location.hash || '').replace(/^#/, '').trim();
+
+          const payload = paramsPayload || hashPayload || winPayload || storagePayload;
+          if (!payload) {
+            if (hasRawParam || hasRawHash) return { status: 'malformed', payload: (hasRawParam || hasRawHash).slice(0, 500) };
+            return { status: 'missing', payload: null };
+          }
+          try {
+            const report = normalizeReport(payload);
+            if (!report || !report.summary || !report.metadata || !Array.isArray(report.rows)) {
+              return { status: 'invalid', payload: JSON.stringify(payload).slice(0, 500) };
+            }
+            return { status: 'ok', payload: report };
+          } catch (err) {
+            return { status: 'invalid', payload: String(err && err.message || err || 'Unknown error') };
+          }
+        }
+
+        function wireControls() {
+          const addBtn = document.getElementById('addLogoBtn');
+          const removeBtn = document.getElementById('removeLogoBtn');
+          const printBtn = document.getElementById('printBtn');
+          const fileInput = document.getElementById('logoFileInput');
+
+          function syncButtons() {
+            removeBtn.classList.toggle('hidden', !Boolean(window.tmCanonicalReport && window.tmCanonicalReport.logo));
+          }
+
+          if (printBtn) printBtn.addEventListener('click', () => window.print());
+
+          if (addBtn && fileInput) {
+            addBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', () => {
+              const file = fileInput.files && fileInput.files[0];
+              if (!file || !String(file.type || '').startsWith('image/')) return;
+              const reader = new FileReader();
+              reader.onload = () => {
+                const result = String(reader.result || '');
+                if (!result.startsWith('data:image/')) return;
+                window.tmCanonicalReport = window.tmCanonicalReport || normalizeReport(FALLBACK_REPORT_DATA);
+                window.tmCanonicalReport.logo = result;
+                setStoredLogo(result);
+                showReport(window.tmCanonicalReport);
+                syncButtons();
+              };
+              reader.readAsDataURL(file);
+            });
+          }
+
+          if (removeBtn) {
+            removeBtn.addEventListener('click', () => {
+              if (!window.tmCanonicalReport) return;
+              window.tmCanonicalReport.logo = null;
+              clearStoredLogo();
+              showReport(window.tmCanonicalReport);
+              syncButtons();
+            });
+          }
+
+          syncButtons();
+        }
+
+        function boot() {
+          document.getElementById('footerYear').textContent = String(new Date().getFullYear());
+
+          const result = getPayloadResult();
+          if (result.status !== 'ok') {
+            renderState(result.status, result.payload);
+            wireControls();
+            return;
+          }
+
+          const report = result.payload;
+          const storedLogo = getStoredLogo();
+          if (storedLogo) report.logo = storedLogo;
+          window.tmCanonicalReport = report;
+          window.TMReportShared = {
+            normalizeReport,
+            renderReportPages,
+            version: '1.0.0'
+          };
+          showReport(report);
+          wireControls();
+        }
+
+        boot();
+      })();
     </script>
   </body>
 </html>
