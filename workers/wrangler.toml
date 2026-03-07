@@ -2,15 +2,16 @@ name = "transcript-tax-monitor-pro-api"
 main = "src/index.js"
 compatibility_date = "2026-03-06"
 
+routes = [
+  { pattern = "api-transcript.taxmonitor.pro/*", zone_name = "taxmonitor.pro" }
+]
+
 [observability.logs]
 enabled = true
 
-[vars]
-CREDIT_MAP_JSON = "{\"price_1T83KXQEa4WBi79g8sD2NI7c\":10,\"price_1T84hAQEa4WBi79gCziLGXUD\":25,\"price_1T84ieQEa4WBi79gl92lyF0L\":100}"
-PRICE_10 = "price_1T83KXQEa4WBi79g8sD2NI7c"
-PRICE_100 = "price_1T84ieQEa4WBi79gl92lyF0L"
-PRICE_25 = "price_1T84hAQEa4WBi79gCziLGXUD"
-TRANSCRIPT_RETURN_ORIGINS_JSON = "[\"https://transcript.taxmonitor.pro\"]"
+[[r2_buckets]]
+binding = "R2_TRANSCRIPT"
+bucket_name = "transcript-taxmonitor-pro"
 
 [[durable_objects.bindings]]
 name = "TOKEN_LEDGER"
@@ -19,3 +20,20 @@ class_name = "TokenLedger"
 [[migrations]]
 tag = "v1"
 new_sqlite_classes = ["TokenLedger"]
+
+[vars]
+CREDIT_MAP_JSON = "{\"price_1T83KXQEa4WBi79g8sD2NI7c\":10,\"price_1T84hAQEa4WBi79gCziLGXUD\":25,\"price_1T84ieQEa4WBi79gl92lyF0L\":100}"
+GOOGLE_CLIENT_EMAIL = "tax-monitor-worker@tax-monitor-pro.iam.gserviceaccount.com"
+GOOGLE_TOKEN_URI = "https://oauth2.googleapis.com/token"
+GOOGLE_WORKSPACE_USER_INFO = "info@taxmonitor.pro"
+GOOGLE_WORKSPACE_USER_NOREPLY = "no-reply@taxmonitor.pro"
+GOOGLE_WORKSPACE_USER_SUPPORT = "support@taxmonitor.pro"
+PRICE_10 = "price_1T83KXQEa4WBi79g8sD2NI7c"
+PRICE_100 = "price_1T84ieQEa4WBi79gl92lyF0L"
+PRICE_25 = "price_1T84hAQEa4WBi79gCziLGXUD"
+TRANSCRIPT_RETURN_ORIGINS_JSON = "[\"https://transcript.taxmonitor.pro\"]"
+
+# Secrets (set in Cloudflare / wrangler secret put)
+# GOOGLE_PRIVATE_KEY
+# STRIPE_SECRET_KEY
+# STRIPE_WEBHOOK_SECRET
