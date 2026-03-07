@@ -362,7 +362,7 @@
 
     <script>
       (function () {
-        const API_BASE = 'https://tools-api.taxmonitor.pro';
+        const API_BASE = 'https://transcript.taxmonitor.pro';
         const SUPPORT_POST = API_BASE + '/v1/help/tickets';
         const SUPPORT_STATUS_GET = API_BASE + '/v1/help/status?ticket_id=';
 
@@ -400,6 +400,80 @@
           el.classList.remove('hidden', 'status-error', 'status-info', 'status-success');
           el.classList.add('status', kind);
           el.textContent = String(text || '');
+        }
+
+        function escapeHtml(value) {
+          return String(value == null ? '' : value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+        }
+
+        function firstDefinedValue() {
+          for (let i = 0; i < arguments.length; i++) {
+            const v = arguments[i];
+            if (v !== undefined && v !== null && String(v).trim() !== '') return String(v).trim();
+          }
+          return '';
+        }
+
+        function renderLookupStatus(kind, payload) {
+          const el = document.getElementById('support-lookup-status');
+          if (!el) return;
+
+          const supportId = firstDefinedValue(
+            payload && payload.supportId,
+            payload && payload.support_id,
+            payload && payload.ticketId,
+            payload && payload.ticket_id
+          );
+          const status = firstDefinedValue(
+            payload && payload.statusLabel,
+            payload && payload.status_label,
+            payload && payload.status,
+            payload && payload.supportStatus,
+            payload && payload.support_status
+          );
+          const latestUpdate = firstDefinedValue(
+            payload && payload.latestUpdate,
+            payload && payload.latest_update,
+            payload && payload.message,
+            payload && payload.note
+          );
+          const updatedAt = firstDefinedValue(
+            payload && payload.updatedAt,
+            payload && payload.updated_at,
+            payload && payload.lastSyncedAt,
+            payload && payload.last_synced_at
+          );
+          const source = firstDefinedValue(payload && payload.source, payload && payload.statusSource);
+
+          const lines = [];
+          if (latestUpdate) {
+            lines.push('<div class="font-medium text-white">' + escapeHtml(latestUpdate) + '</div>');
+          }
+
+          const meta = [];
+          if (supportId) meta.push('Support ID: ' + escapeHtml(supportId));
+          if (status) meta.push('Status: ' + escapeHtml(status));
+          if (updatedAt) meta.push('Updated: ' + escapeHtml(formatIso(updatedAt)));
+          if (source) meta.push('Source: ' + escapeHtml(source));
+
+          if (!lines.length && meta.length) {
+            lines.push('<div>' + meta.join(' • ') + '</div>');
+          } else if (meta.length) {
+            lines.push('<div class="text-white/80 text-sm mt-2">' + meta.join(' • ') + '</div>');
+          }
+
+          if (!lines.length) {
+            lines.push('<div>Your ticket is in progress. Please check back later.</div>');
+          }
+
+          el.classList.remove('hidden', 'status-error', 'status-info', 'status-success');
+          el.classList.add('status', kind);
+          el.innerHTML = lines.join('');
         }
 
         function disable(btn) {
@@ -516,16 +590,7 @@
               return;
             }
 
-            const status = json && json.status ? String(json.status) : '';
-            const updatedAt = json && (json.updatedAt || json.updated_at) ? String(json.updatedAt || json.updated_at) : '';
-            const latestUpdate = json && (json.latestUpdate || json.latest_update) ? String(json.latestUpdate || json.latest_update) : '';
-
-            const parts = [];
-            if (latestUpdate) parts.push(latestUpdate);
-            if (status) parts.push('Status: ' + status);
-            if (updatedAt) parts.push('Updated: ' + formatIso(updatedAt));
-
-            setLookupStatus('status-success', parts.length ? parts.join(' • ') : 'Your ticket is in progress. Please check back later.');
+            renderLookupStatus('status-success', json || {});
             enable(btn);
           } catch (_) {
             setLookupStatus('status-error', 'Network error. Please try again.');
