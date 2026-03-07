@@ -241,7 +241,6 @@ async function storeShortReportPayload(env, payload, meta = {}) {
 
 function buildShortReportUrl(reportId) {
   return `https://transcript.taxmonitor.pro/transcript/report?r=${encodeURIComponent(reportId)}`;
-}`;
 }
 
 async function resolveShortReportPayload(env, reportId) {
