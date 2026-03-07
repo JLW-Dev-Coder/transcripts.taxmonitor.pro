@@ -867,18 +867,28 @@
 
       setPreviewEnabled(false);
 
+      let consumedThisAttempt = false;
+
       try {
         if (!state.eventId) state.eventId = crypto.randomUUID();
+
         await consumeToken(state.tokenId, state.eventId);
+        consumedThisAttempt = true;
+
         state.tokenConsumed = true;
         state.previewReady = true;
         state.tokenAvailable = Math.max(0, Number(state.tokenAvailable || 0) - 1);
         setParserAvailable(state.tokenAvailable);
         setTokenStatus("Preview generated. 1 credit used for this upload.", "ok");
+
         await openOverlayWithReport();
       } catch (e) {
         state.previewReady = false;
-        state.tokenConsumed = false;
+
+        if (!consumedThisAttempt) {
+          state.tokenConsumed = false;
+        }
+
         setTokenStatus(String((e && e.message) ? e.message : e), "error");
       } finally {
         updateControls();
