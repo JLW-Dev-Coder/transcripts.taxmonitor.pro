@@ -393,31 +393,3 @@ Alphabetical list:
 * `STRIPE_SECRET_KEY`
 * `STRIPE_WEBHOOK_SECRET`
 * `TRANSCRIPT_RETURN_ORIGINS_JSON`
-
----
-
-## Development
-
-### Install Wrangler
-
-```bash
-npm install -g wrangler
-```
-
-### Local Development
-
-```bash
-wrangler dev
-```
-
-### Deploy
-
-```bash
-wrangler deploy
-```
-
----
-
-## License
-
-Proprietary. Lenore, Inc.
