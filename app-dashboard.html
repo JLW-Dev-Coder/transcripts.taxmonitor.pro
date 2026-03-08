@@ -72,7 +72,7 @@
     .button-row {
       padding-top: 10px;
     }
-    
+
     .detail-row {
       padding-top: 10px;
     }
@@ -612,7 +612,8 @@
 
     .parser-status-box,
     .parser-info-box,
-    .parser-output-box {
+    .parser-output-box,
+    .unauthorized-box {
       border-radius: 18px;
       border: 1px solid rgba(148, 163, 184, 0.16);
       background: rgba(15, 23, 42, 0.58);
@@ -622,6 +623,31 @@
     .parser-info-box {
       border-color: rgba(168, 85, 247, 0.18);
       background: linear-gradient(135deg, rgba(15, 23, 42, 0.84) 0%, rgba(76, 29, 149, 0.14) 100%);
+    }
+
+    .unauthorized-box {
+      background: rgba(127, 29, 29, 0.18);
+      border-color: rgba(248, 113, 113, 0.22);
+      margin-bottom: 20px;
+    }
+
+    .unauthorized-box h2 {
+      color: white;
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0 0 10px;
+    }
+
+    .unauthorized-box p {
+      color: #fecaca;
+      line-height: 1.7;
+      margin: 0 0 14px;
+    }
+
+    .unauthorized-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
     }
 
     .parser-balance-value {
@@ -755,7 +781,10 @@
 
     @media (max-width: 720px) {
       .workflow-grid,
-      .metrics-grid {
+      .metrics-grid,
+      .parser-action-row,
+      .parser-email-grid,
+      .parser-output-grid {
         grid-template-columns: 1fr;
       }
 
@@ -795,6 +824,15 @@
       </header>
 
       <main class="workspace">
+        <div id="unauthorizedNotice" class="unauthorized-box hidden">
+          <h2>Sign-in required</h2>
+          <p>Your session is missing or expired. The dashboard will stay here instead of throwing you at the sign-in page like a shopping cart with bad wheels.</p>
+          <div class="unauthorized-actions">
+            <a href="/sign-in.html?redirect=/app-dashboard.html" class="btn btn-primary">Sign In</a>
+            <a href="/index.html" class="btn btn-secondary">Back to Home</a>
+          </div>
+        </div>
+
         <section id="dashboardPage" class="page active">
           <div class="stack">
             <div class="parser-card-shell">
@@ -1131,6 +1169,7 @@
     let latestPurchases = [];
     let latestReports = [];
     let savedBrandLogo = null;
+    let isUnauthorized = false;
 
     const BRAND_LOGO_STORAGE_KEY = "tm_brand_logo_v1";
 
@@ -1401,6 +1440,58 @@
       });
     }
 
+    function disableProtectedUi() {
+      [
+        'brand-logo',
+        'extract-raw-btn',
+        'parse-structured-btn',
+        'parser-save-token',
+        'report-email',
+        'report-email-btn',
+        'pdf-upload',
+        'preview-report-btn',
+        'remove-brand-logo'
+      ].sort().forEach(function (id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        if ('disabled' in el) el.disabled = true;
+        if (el.tagName === 'A') {
+          el.setAttribute('aria-disabled', 'true');
+          el.classList.add('opacity-50', 'pointer-events-none', 'cursor-not-allowed');
+        }
+      });
+
+      const dropZone = document.getElementById('pdf-drop-zone');
+      if (dropZone) {
+        dropZone.setAttribute('aria-disabled', 'true');
+        dropZone.style.opacity = '0.55';
+        dropZone.style.pointerEvents = 'none';
+      }
+    }
+
+    function showUnauthorizedState() {
+      isUnauthorized = true;
+
+      const box = document.getElementById('unauthorizedNotice');
+      if (box) box.classList.remove('hidden');
+
+      setText('accountEmail', 'Not signed in');
+      setText('accountTokens', '—');
+      setText('parser-token-available', '—');
+      setText('receiptSummaryEmail', 'Not signed in');
+      setText('receiptSummaryStatus', '—');
+      setText('receiptSummaryTokens', '—');
+      setText('sidebarEmail', 'Not signed in');
+      setText('sidebarTokens', '—');
+      setValue('parser-token-id', '');
+
+      const statusEl = document.getElementById('preview-action-status');
+      if (statusEl) statusEl.textContent = 'Sign in to use saved reports, credits, and email delivery.';
+
+      disableProtectedUi();
+    }
+
     async function fetchJson(url, options) {
       const response = await fetch(url, Object.assign({
         credentials: 'include',
@@ -1408,7 +1499,7 @@
       }, options || {}));
 
       if (response.status === 401) {
-        window.location.href = '/sign-in.html';
+        showUnauthorizedState();
         throw new Error('unauthorized');
       }
 
@@ -1623,7 +1714,13 @@
         });
       } catch (_) {
       }
-      window.location.href = '/sign-in.html';
+
+      latestMe = null;
+      latestPurchases = [];
+      latestReports = [];
+      showUnauthorizedState();
+      switchPage('dashboard');
+      showToast('You are signed out.');
     }
 
     function wireNavigation() {
@@ -1646,6 +1743,7 @@
     function wireStaticButtons() {
       wireBrandLogo();
       wirePdfUpload();
+
       document.querySelectorAll('[data-toast]').forEach(function (btn) {
         btn.addEventListener('click', function () {
           showToast(btn.getAttribute('data-toast'));
@@ -1681,7 +1779,6 @@
     }
 
     async function boot() {
-      setText('footerYear', new Date().getFullYear());
       wireNavigation();
       wireStaticButtons();
       switchPage('dashboard');
@@ -1704,9 +1801,12 @@
     }
 
     boot().catch(function (error) {
-      if (String(error && error.message || error) === 'unauthorized') return;
+      if (String(error && error.message || error) === 'unauthorized') {
+        return;
+      }
 
       const message = 'Dashboard failed to load. ' + String(error && error.message || error || 'unknown_error');
+
       ['purchasesEmpty', 'receiptsPageEmpty', 'reportsEmpty', 'reportsPageEmpty'].sort().forEach(function (id) {
         const el = document.getElementById(id);
         if (el) {
