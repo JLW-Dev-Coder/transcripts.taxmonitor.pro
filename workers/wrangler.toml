@@ -23,7 +23,7 @@ new_sqlite_classes = ["TokenLedger"]
 [[kv_namespaces]]
 binding = "KV_TRANSCRIPT"
 id = "cf03ea6f9e934bd59d301192352f0489"
-preview_id = "YOUR_PREVIEW_KV_NAMESPACE_ID"
+preview_id = "cf03ea6f9e934bd59d301192352f0489"
 
 [[r2_buckets]]
 binding = "R2_TRANSCRIPT"
