@@ -7,7 +7,6 @@
 
   <title>Transcript.Tax Monitor Pro - IRS Transcript Automation</title>
 
-  <!-- Tailwind (CDN). Yes, we are keeping it. -->
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script>
     tailwind.config = {
@@ -21,7 +20,6 @@
     };
   </script>
 
-  <!-- PDF.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>
     window.pdfjsLib = window.pdfjsLib || window["pdfjs-dist/build/pdf"];
@@ -44,840 +42,857 @@
 
   <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
   <link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon" />
+
+  <style>
+    .parser-preview-shell {
+      position: relative;
+      overflow: hidden;
+      border-radius: 28px;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 28px 80px rgba(2, 8, 23, 0.34);
+    }
+
+    .parser-preview-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(15, 23, 42, 0.08) 0%, rgba(15, 23, 42, 0.22) 100%);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .parser-preview-fade {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 12%, rgba(168, 85, 247, 0.14), transparent 28%),
+        linear-gradient(180deg, rgba(2, 6, 23, 0.08) 0%, rgba(2, 6, 23, 0.52) 100%);
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .parser-preview-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .parser-preview-card {
+      width: 100%;
+      max-width: 560px;
+      border: 1px solid rgba(168, 85, 247, 0.22);
+      border-radius: 24px;
+      background: rgba(15, 23, 42, 0.84);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 24px 60px rgba(2, 8, 23, 0.42);
+      padding: 28px;
+      text-align: center;
+    }
+
+    .parser-preview-lock {
+      width: 58px;
+      height: 58px;
+      margin: 0 auto 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.22) 0%, rgba(99, 102, 241, 0.18) 100%);
+      border: 1px solid rgba(168, 85, 247, 0.24);
+      color: #c4b5fd;
+      box-shadow: 0 14px 36px rgba(124, 58, 237, 0.18);
+    }
+
+    .parser-preview-lock svg {
+      width: 26px;
+      height: 26px;
+      display: block;
+    }
+
+    .parser-preview-root.is-gated {
+      user-select: none;
+    }
+
+    .parser-preview-root.is-gated [data-parser-preview-disabled="true"] {
+      cursor: not-allowed !important;
+    }
+  </style>
  </head>
 
  <body class="h-full noise font-sans">
   <div id="app-container" class="h-full overflow-auto">
 
-    <!-- Landing Page -->
-   <section id="landing-page" class="page-section active">
+    <section id="landing-page" class="page-section active">
 
-    <!-- PARTIAL:header -->
+      <!-- PARTIAL:header -->
 
-    <!-- Hero Section -->
-    <header class="gradient-hero relative min-h-[90%] flex items-center">
-     <div class="max-w-7xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-12 items-center">
-      <div class="text-white">
-       <div class="counter inline-block mb-6">
-        <span class="inline-flex items-center gap-2">
-          <svg class="w-4 h-4 text-gold" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M13.5 2.1c.2 1.9-.4 3.4-1.4 4.7-.9 1.2-2 2.3-2.4 3.8-.5 1.9.4 3.7 2.1 4.5.7.3 1.5.4 2.2.2-.6 1.6-2.1 2.7-3.9 2.7-2.3 0-4.2-1.8-4.2-4.2 0-2.5 1.7-4.1 3.4-5.8 1.4-1.4 2.7-2.9 2.7-5.9 0-.1 1.4 1.2 1.5 2.0z"/>
-            <path d="M17.3 6.3c1.7 2.1 2.7 4.3 2.7 6.8 0 4.9-3.8 8.9-9 8.9s-9-4-9-8.9c0-2.6 1.1-4.9 3-6.9.1 2 .9 3.5 2 4.7-.1-2.4 1.5-4.3 3.2-6.1 1.5-1.6 3-3.3 3-5.7 1.9 1.3 3.3 3 4.1 5.2z" opacity=".35"/>
-          </svg>
-          <span>Built for 750,000+ U.S. Tax Professionals</span>
-        </span>
-       </div>
-       <h1 id="hero-headline" class="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">Transform IRS Transcripts Into Professional Reports in Minutes</h1>
-       <p id="hero-subheadline" class="text-xl text-white/80 mb-8 leading-relaxed">The only automation tool tax professionals need to parse, interpret, and present IRS transcript data with beautiful, branded reports your clients will love.</p>
-       <div class="flex flex-col sm:flex-row gap-4 mb-8"><button onclick="window.location.href='https://transcript.taxmonitor.pro/magnets/lead-magnet.html'" id="hero-cta" class="btn-primary text-lg">Get Your Free Guide →</button> <button onclick="window.location.href='#how-it-works'" class="btn-secondary"> See How It Works </button>
-       </div>
-       <div class="flex items-center gap-6 text-white/70 text-sm">
-        <div class="flex items-center gap-2">
-         <svg class="w-5 h-5 text-gold" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-         </svg> No Credit Card Required
-        </div>
-        <div class="flex items-center gap-2">
-         <svg class="w-5 h-5 text-gold" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-         </svg> Instant Access
-        </div>
-       </div>
-      </div>
-      <div class="relative hidden lg:block">
-       <div class="float-animation">
-        <div class="card-elevated p-8 max-w-md mx-auto">
-         <div class="flex items-center gap-3 mb-6">
-          <div class="w-12 h-12 bg-sage rounded-full flex items-center justify-center text-white text-xl">
-           ✓
-          </div>
-          <div>
-           <p class="font-bold text-midnight">Report Generated</p>
-           <p class="text-sm text-gray-500">Client: Johnson Family Trust</p>
-          </div>
+      <header class="gradient-hero relative min-h-[90%] flex items-center">
+       <div class="max-w-7xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-12 items-center">
+        <div class="text-white">
+         <div class="counter inline-block mb-6">
+          <span class="inline-flex items-center gap-2">
+            <svg class="w-4 h-4 text-gold" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M13.5 2.1c.2 1.9-.4 3.4-1.4 4.7-.9 1.2-2 2.3-2.4 3.8-.5 1.9.4 3.7 2.1 4.5.7.3 1.5.4 2.2.2-.6 1.6-2.1 2.7-3.9 2.7-2.3 0-4.2-1.8-4.2-4.2 0-2.5 1.7-4.1 3.4-5.8 1.4-1.4 2.7-2.9 2.7-5.9 0-.1 1.4 1.2 1.5 2.0z"/>
+              <path d="M17.3 6.3c1.7 2.1 2.7 4.3 2.7 6.8 0 4.9-3.8 8.9-9 8.9s-9-4-9-8.9c0-2.6 1.1-4.9 3-6.9.1 2 .9 3.5 2 4.7-.1-2.4 1.5-4.3 3.2-6.1 1.5-1.6 3-3.3 3-5.7 1.9 1.3 3.3 3 4.1 5.2z" opacity=".35"/>
+            </svg>
+            <span>Built for 750,000+ U.S. Tax Professionals</span>
+          </span>
          </div>
-         <div class="space-y-3">
-          <div class="flex justify-between text-sm"><span class="text-gray-600">Transcript Codes Found</span> <span class="font-bold text-midnight">24</span>
-          </div>
-          <div class="flex justify-between text-sm"><span class="text-gray-600">Interpretation Accuracy</span> <span class="font-bold text-sage">100%</span>
-          </div>
-          <div class="flex justify-between text-sm"><span class="text-gray-600">Processing Time</span> <span class="font-bold text-midnight">8.3 sec</span>
-          </div>
+         <h1 id="hero-headline" class="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">Transform IRS Transcripts Into Professional Reports in Minutes</h1>
+         <p id="hero-subheadline" class="text-xl text-white/80 mb-8 leading-relaxed">The only automation tool tax professionals need to parse, interpret, and present IRS transcript data with beautiful, branded reports your clients will love.</p>
+         <div class="flex flex-col sm:flex-row gap-4 mb-8">
+          <button onclick="window.location.href='https://transcript.taxmonitor.pro/magnets/lead-magnet.html'" id="hero-cta" class="btn-primary text-lg">Get Your Free Guide →</button>
+          <button onclick="window.location.href='#how-it-works'" class="btn-secondary">See How It Works</button>
          </div>
-         <div class="mt-6 p-4 bg-cream rounded-lg">
-          <p class="text-xs text-gray-500 mb-2">Sample Output Preview</p>
+         <div class="flex items-center gap-6 text-white/70 text-sm">
           <div class="flex items-center gap-2">
-           <div class="w-8 h-8 bg-navy rounded"></div>
-           <div class="flex-1">
-            <div class="h-2 bg-gray-200 rounded w-3/4 mb-1"></div>
-            <div class="h-2 bg-gray-200 rounded w-1/2"></div>
+           <svg class="w-5 h-5 text-gold" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+           </svg>
+           Free Sign-In
+          </div>
+          <div class="flex items-center gap-2">
+           <svg class="w-5 h-5 text-gold" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+           </svg>
+           Instant Access
+          </div>
+         </div>
+        </div>
+        <div class="relative hidden lg:block">
+         <div class="float-animation">
+          <div class="card-elevated p-8 max-w-md mx-auto">
+           <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 bg-sage rounded-full flex items-center justify-center text-white text-xl">✓</div>
+            <div>
+             <p class="font-bold text-midnight">Report Generated</p>
+             <p class="text-sm text-gray-500">Client: Johnson Family Trust</p>
+            </div>
+           </div>
+           <div class="space-y-3">
+            <div class="flex justify-between text-sm"><span class="text-gray-600">Transcript Codes Found</span> <span class="font-bold text-midnight">24</span></div>
+            <div class="flex justify-between text-sm"><span class="text-gray-600">Interpretation Accuracy</span> <span class="font-bold text-sage">100%</span></div>
+            <div class="flex justify-between text-sm"><span class="text-gray-600">Processing Time</span> <span class="font-bold text-midnight">8.3 sec</span></div>
+           </div>
+           <div class="mt-6 p-4 bg-cream rounded-lg">
+            <p class="text-xs text-gray-500 mb-2">Sample Output Preview</p>
+            <div class="flex items-center gap-2">
+             <div class="w-8 h-8 bg-navy rounded"></div>
+             <div class="flex-1">
+              <div class="h-2 bg-gray-200 rounded w-3/4 mb-1"></div>
+              <div class="h-2 bg-gray-200 rounded w-1/2"></div>
+             </div>
+            </div>
            </div>
           </div>
          </div>
         </div>
        </div>
-      </div>
-     </div>
-    </header>
+      </header>
 
-    <!-- Pain Points Section -->
-    <section class="py-20 bg-white">
-     <div class="max-w-7xl mx-auto px-6">
-      <div class="text-center max-w-3xl mx-auto mb-16">
-       <h2 class="font-display text-3xl md:text-4xl font-bold text-midnight mb-6">Sound Familiar?</h2>
-          <p class="text-slate-300 max-w-2xl mx-auto">Handle IRS transcripts long enough and this stops being rare. It becomes routine...</p>
+      <section class="py-20 bg-white">
+       <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+         <h2 class="font-display text-3xl md:text-4xl font-bold text-midnight mb-6">Sound Familiar?</h2>
+         <p class="text-slate-300 max-w-2xl mx-auto">Handle IRS transcripts long enough and this stops being rare. It becomes routine...</p>
         </div>
 
         <div class="grid md:grid-cols-3 gap-8">
-          <div class="glass rounded-2xl p-8 border border-slate-700/30 h-full flex flex-col">
-            <div class="feature-icon mb-6">
-              <svg class="w-7 h-7 block" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid meet">
-                <path d="M8 10h8" />
-                <path d="M8 14h5" />
-                <path d="M21 12a8.5 8.5 0 0 1-8.5 8.5c-1.7 0-3.3-.5-4.7-1.3L3 21l1.8-4.8A8.5 8.5 0 1 1 21 12Z" />
-              </svg>
+         <div class="glass rounded-2xl p-8 border border-slate-700/30 h-full flex flex-col">
+          <div class="feature-icon mb-6">
+           <svg class="w-7 h-7 block" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid meet">
+            <path d="M8 10h8" />
+            <path d="M8 14h5" />
+            <path d="M21 12a8.5 8.5 0 0 1-8.5 8.5c-1.7 0-3.3-.5-4.7-1.3L3 21l1.8-4.8A8.5 8.5 0 1 1 21 12Z" />
+           </svg>
+          </div>
+          <h3 class="text-xl font-semibold text-white mb-3">Clients are confused</h3>
+          <p class="text-slate-300">They send a transcript and ask, “Is this bad?” You lose 20 minutes translating codes that should be plain English already, today!!</p>
+         </div>
+
+         <div class="glass rounded-2xl p-8 border border-slate-700/30 h-full flex flex-col">
+          <div class="feature-icon mb-6">
+           <svg class="w-7 h-7 block" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid meet">
+            <path d="M8 6h10" />
+            <path d="M8 10h10" />
+            <path d="M8 14h6" />
+            <path d="M6 6v12a2 2 0 0 0 2 2h10" />
+            <path d="M16 18l2 2 4-4" />
+           </svg>
+          </div>
+          <h3 class="text-xl font-semibold text-white mb-3">You rewrite explanations</h3>
+          <p class="text-slate-300">Same transcripts. Same codes. Same explanations. Same copy-paste. Let software do the boring part....</p>
+         </div>
+
+         <div class="glass rounded-2xl p-8 border border-slate-700/30 h-full flex flex-col">
+          <div class="feature-icon mb-6">
+           <svg class="w-7 h-7 block" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid meet">
+            <path d="M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" />
+            <path d="M9 7h6" />
+            <path d="M9 11h6" />
+            <path d="M9 15h4" />
+            <path d="M14 15l2 2 4-4" />
+           </svg>
+          </div>
+          <h3 class="text-xl font-semibold text-white mb-3">Intimidating Transcripts</h3>
+          <p class="text-slate-300">Even when nothing is wrong. A clean summary of an intimidating transcript builds trust and removes anxiety instantly.</p>
+         </div>
+        </div>
+       </div>
+      </section>
+
+      <section id="how-it-works" class="py-20 bg-gradient-to-b from-slate-900 to-slate-800 scroll-mt-28">
+        <div class="max-w-7xl mx-auto px-6">
+          <div class="text-center max-w-3xl mx-auto mb-12">
+            <div class="counter inline-block mb-4">
+              <span class="inline-flex items-center gap-2">
+                <svg class="w-4 h-4 text-gold" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2l1.2 5.3L18 9l-4.8 1.7L12 16l-1.2-5.3L6 9l4.8-1.7L12 2z" />
+                  <path d="M19 3l.6 2.6L22 6.5l-2.4.9L19 10l-.6-2.6L16 6.5l2.4-.9L19 3z" />
+                  <path d="M5 14l.6 2.6L8 17.5l-2.4.9L5 21l-.6-2.6L2 17.5l2.4-.9L5 14z" />
+                </svg>
+                <span>Interactive preview</span>
+              </span>
             </div>
-            <h3 class="text-xl font-semibold text-white mb-3">Clients are confused</h3>
-            <p class="text-slate-300">They send a transcript and ask, “Is this bad?” You lose 20 minutes translating codes that should be plain English already, today!!</p>
+            <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-5">Preview the parser workflow</h2>
+            <p class="text-lg text-white/70">Explore the parser layout on this page, then sign in for free to run the live transcript workflow, generate report previews, and save history inside the app.</p>
           </div>
 
-          <div class="glass rounded-2xl p-8 border border-slate-700/30 h-full flex flex-col">
-            <div class="feature-icon mb-6">
-              <svg class="w-7 h-7 block" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid meet">
-                <path d="M8 6h10" />
-                <path d="M8 10h10" />
-                <path d="M8 14h6" />
-                <path d="M6 6v12a2 2 0 0 0 2 2h10" />
-                <path d="M16 18l2 2 4-4" />
-              </svg>
-            </div>
-            <h3 class="text-xl font-semibold text-white mb-3">You rewrite explanations</h3>
-            <p class="text-slate-300">Same transcripts. Same codes. Same explanations. Same copy-paste. Let software do the boring part....</p>
-          </div>
+          <div id="parser-preview-root" class="parser-preview-root parser-preview-shell is-gated">
+            <!-- PARTIAL:parse-lab -->
 
-          <div class="glass rounded-2xl p-8 border border-slate-700/30 h-full flex flex-col">
-            <div class="feature-icon mb-6">
-              <svg class="w-7 h-7 block" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid meet">
-                <path d="M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" />
-                <path d="M9 7h6" />
-                <path d="M9 11h6" />
-                <path d="M9 15h4" />
-                <path d="M14 15l2 2 4-4" />
-              </svg>
+            <div class="parser-preview-fade"></div>
+
+            <div class="parser-preview-overlay">
+              <div class="parser-preview-card">
+                <div class="parser-preview-lock">
+                  <svg aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="4" y="11" width="16" height="9" rx="2"></rect>
+                    <path d="M8 11V8a4 4 0 1 1 8 0v3"></path>
+                  </svg>
+                </div>
+
+                <h3 class="text-2xl md:text-3xl font-bold text-white mb-3">Sign in to use the live parser</h3>
+                <p class="text-white/70 leading-relaxed mb-6">This landing page is now marketing-only. You can preview the parser layout here, but live transcript parsing, token use, and saved reports happen inside the authenticated app workspace.</p>
+
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                  <a href="/sign-in.html?redirect=/app-dashboard.html" class="btn-primary text-base inline-flex items-center justify-center">Sign In Free →</a>
+                  <a href="/app-dashboard.html" class="btn-secondary inline-flex items-center justify-center">Open App</a>
+                </div>
+
+                <p class="text-xs text-white/45 mt-4">Free sign-in. No credit card required to access the app workspace.</p>
+              </div>
             </div>
-            <h3 class="text-xl font-semibold text-white mb-3">Intimidating Transcripts</h3>
-            <p class="text-slate-300">Even when nothing is wrong. A clean summary of an intimidating transcript builds trust and removes anxiety instantly.</p>
           </div>
         </div>
-      </div>
-    </section>
-    <section id="how-it-works" class="py-20 bg-gradient-to-b from-slate-900 to-slate-800 scroll-mt-28">
-      <!-- PARTIAL:parse-lab -->
-    </section>
-<!-- Features Section -->
-    <section id="features" class="py-20 bg-cream scroll-mt-28">
-     <div class="max-w-7xl mx-auto px-6">
-      <div class="text-center max-w-3xl mx-auto mb-16">
-       <div class="counter inline-block mb-4">
-        <span class="inline-flex items-center gap-2">
-          <svg class="w-4 h-4 text-gold" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2l1.2 5.3L18 9l-4.8 1.7L12 16l-1.2-5.3L6 9l4.8-1.7L12 2z" />
-            <path d="M19 3l.6 2.6L22 6.5l-2.4.9L19 10l-.6-2.6L16 6.5l2.4-.9L19 3z" />
-            <path d="M5 14l.6 2.6L8 17.5l-2.4.9L5 21l-.6-2.6L2 17.5l2.4-.9L5 14z" />
-          </svg>
-          <span>Powerful Features</span>
-        </span>
-       </div>
-       <h2 class="font-display text-3xl md:text-4xl font-bold text-midnight mb-6">Everything You Need to Master IRS Transcripts</h2>
-      </div>
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-       <div class="card-elevated p-8">
-        <div class="feature-icon mb-6">
-         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-         </svg>
+      </section>
+
+      <section id="features" class="py-20 bg-cream scroll-mt-28">
+       <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+         <div class="counter inline-block mb-4">
+          <span class="inline-flex items-center gap-2">
+            <svg class="w-4 h-4 text-gold" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2l1.2 5.3L18 9l-4.8 1.7L12 16l-1.2-5.3L6 9l4.8-1.7L12 2z" />
+              <path d="M19 3l.6 2.6L22 6.5l-2.4.9L19 10l-.6-2.6L16 6.5l2.4-.9L19 3z" />
+              <path d="M5 14l.6 2.6L8 17.5l-2.4.9L5 21l-.6-2.6L2 17.5l2.4-.9L5 14z" />
+            </svg>
+            <span>Powerful Features</span>
+          </span>
+         </div>
+         <h2 class="font-display text-3xl md:text-4xl font-bold text-midnight mb-6">Everything You Need to Master IRS Transcripts</h2>
         </div>
-        <h3 class="font-bold text-xl text-midnight mb-3">Smart PDF Parsing</h3>
-        <p class="text-gray-600">Upload PDFs directly from SOAR or IRS accounts. Our AI extracts every code perfectly. Runs locally on your computer.</p>
-       </div>
-       <div class="card-elevated p-8">
-        <div class="feature-icon mb-6">
-         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-         </svg>
-        </div>
-        <h3 class="font-bold text-xl text-midnight mb-3">IRS Code Interpretation</h3>
-        <p class="text-gray-600">Automatic interpretation using official IRS publications. Always accurate, always current.</p>
-       </div>
-       <div class="card-elevated p-8">
-        <div class="feature-icon mb-6">
-         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-         </svg>
-        </div>
-        <h3 class="font-bold text-xl text-midnight mb-3">Branded Reports</h3>
-        <p class="text-gray-600">Add your logo and firm colors. Every report looks like you spent hours designing it.</p>
-       </div>
-       <div class="card-elevated p-8">
-        <div class="feature-icon mb-6">
-         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-         </svg>
-        </div>
-        <h3 class="font-bold text-xl text-midnight mb-3">Lightning Fast</h3>
-        <p class="text-gray-600">Process transcripts in seconds, not hours. Handle multiple clients back-to-back.</p>
-       </div>
-       <div class="card-elevated p-8">
-        <div class="feature-icon mb-6">
-         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-         </svg>
-        </div>
-        <h3 class="font-bold text-xl text-midnight mb-3">Simple, One-Time Purchase
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+         <div class="card-elevated p-8">
+          <div class="feature-icon mb-6">
+           <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+          </div>
+          <h3 class="font-bold text-xl text-midnight mb-3">Smart PDF Parsing</h3>
+          <p class="text-gray-600">Upload PDFs directly from SOAR or IRS accounts. Our AI extracts every code perfectly. Runs locally on your computer.</p>
+         </div>
+         <div class="card-elevated p-8">
+          <div class="feature-icon mb-6">
+           <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+          </div>
+          <h3 class="font-bold text-xl text-midnight mb-3">IRS Code Interpretation</h3>
+          <p class="text-gray-600">Automatic interpretation using official IRS publications. Always accurate, always current.</p>
+         </div>
+         <div class="card-elevated p-8">
+          <div class="feature-icon mb-6">
+           <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" /></svg>
+          </div>
+          <h3 class="font-bold text-xl text-midnight mb-3">Branded Reports</h3>
+          <p class="text-gray-600">Add your logo and firm colors. Every report looks like you spent hours designing it.</p>
+         </div>
+         <div class="card-elevated p-8">
+          <div class="feature-icon mb-6">
+           <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+          </div>
+          <h3 class="font-bold text-xl text-midnight mb-3">Lightning Fast</h3>
+          <p class="text-gray-600">Process transcripts in seconds, not hours. Handle multiple clients back-to-back.</p>
+         </div>
+         <div class="card-elevated p-8">
+          <div class="feature-icon mb-6">
+           <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+          </div>
+          <h3 class="font-bold text-xl text-midnight mb-3">Simple, One-Time Purchase
 Buy once and generate transcript reports as needed. No recurring billing. No surprise charges.</h3>
-        <p class="text-gray-600">Purchase credits once and use them when you need them. No subscriptions. No recurring billing. No surprise charges.</p>
+          <p class="text-gray-600">Purchase credits once and use them when you need them. No subscriptions. No recurring billing. No surprise charges.</p>
+         </div>
+         <div class="card-elevated p-8">
+          <div class="feature-icon mb-6">
+           <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+          </div>
+          <h3 class="font-bold text-xl text-midnight mb-3">Secure &amp; Private</h3>
+          <p class="text-gray-600">Runs locally on your computer. Client data never leaves your machine.</p>
+         </div>
+        </div>
        </div>
-       <div class="card-elevated p-8">
-        <div class="feature-icon mb-6">
-         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-         </svg>
+      </section>
+
+      <section id="testimonials" class="py-20">
+        <div class="max-w-7xl mx-auto px-6">
+          <div class="text-center max-w-3xl mx-auto mb-16">
+            <div class="counter inline-block mb-4">
+              <span class="inline-flex items-center gap-2">
+                <svg class="w-4 h-4 text-gold" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M8.5 8.5c0-1.1.9-2 2-2H12V5c0-1.1.9-2 2-2h2c1.1 0 2 .9 2 2v2h-1.5c-1.1 0-2 .9-2 2s.9 2 2 2H20V15c0 1.1-.9 2-2 2h-2v-1.5c0-1.1-.9-2-2-2s-2 .9-2 2V17H9c-1.1 0-2-.9-2-2v-2H8.5c1.1 0 2-.9 2-2s-.9-2-2-2H7V5c0-1.1.9-2 2-2h1v1.5c0 1.1.9 2 2 2s2-.9 2-2V3" />
+                </svg>
+                <span>The real problem</span>
+              </span>
+            </div>
+            <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-6">What this tool will solve</h2>
+            <p class="text-lg text-white/70">Transcripts are readable to computers and terrifying to humans. This turns “what does this mean?” into a clean, client-ready explanation.</p>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-8">
+            <div class="glass rounded-2xl p-8 border border-slate-700/30 h-full flex flex-col">
+              <div class="feature-icon mb-6">
+                <svg class="w-7 h-7 block" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid meet">
+                  <path d="M12 6v6l4 2" />
+                  <path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+              </div>
+              <h3 class="text-xl font-semibold text-white mb-3">Stop wasting billable time</h3>
+              <p class="text-slate-300">No more re-explaining the same transaction codes to different clients. Parse, summarize, and move on with your life.</p>
+              <ul class="mt-5 space-y-2 text-sm text-white/70">
+                <li class="flex gap-2"><span class="text-purple-300">•</span><span>Find TC codes fast</span></li>
+                <li class="flex gap-2"><span class="text-purple-300">•</span><span>Generate a consistent explanation</span></li>
+                <li class="flex gap-2"><span class="text-purple-300">•</span><span>Keep a clean client narrative</span></li>
+              </ul>
+            </div>
+
+            <div class="glass rounded-2xl p-8 border border-slate-700/30 h-full flex flex-col">
+              <div class="feature-icon mb-6">
+                <svg class="w-7 h-7 block" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid meet">
+                  <path d="M7 8h10" />
+                  <path d="M7 12h6" />
+                  <path d="M7 16h8" />
+                  <path d="M5 4h14a2 2 0 0 1 2 2v13a1 1 0 0 1-1 1H7l-4 3V6a2 2 0 0 1 2-2Z" />
+                </svg>
+              </div>
+              <h3 class="text-xl font-semibold text-white mb-3">Reduce client anxiety</h3>
+              <p class="text-slate-300">Most transcripts look scary even when nothing is wrong. A clean summary builds trust and stops panic emails.</p>
+              <ul class="mt-5 space-y-2 text-sm text-white/70">
+                <li class="flex gap-2"><span class="text-purple-300">•</span><span>Plain-English “what happened”</span></li>
+                <li class="flex gap-2"><span class="text-purple-300">•</span><span>What needs action, what doesn’t</span></li>
+                <li class="flex gap-2"><span class="text-purple-300">•</span><span>Client-ready report format</span></li>
+              </ul>
+            </div>
+
+            <div class="glass rounded-2xl p-8 border border-slate-700/30 h-full flex flex-col">
+              <div class="feature-icon mb-6">
+                <svg class="w-7 h-7 block" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid meet">
+                  <path d="M6 18h12" />
+                  <path d="M8 22h8" />
+                  <path d="M12 2a7 7 0 0 1 7 7c0 2.2-1 3.7-2.2 5.1-.6.7-.9 1.4-1.1 2.2H8.3c-.2-.8-.5-1.5-1.1-2.2C6 12.7 5 11.2 5 9a7 7 0 0 1 7-7Z" />
+                </svg>
+              </div>
+              <h3 class="text-xl font-semibold text-white mb-3">Make “weird transcript stuff” understandable</h3>
+              <p class="text-slate-300">People get stuck on the transactions list and random codes. This translates those into next steps you can stand behind.</p>
+              <ul class="mt-5 space-y-2 text-sm text-white/70">
+                <li class="flex gap-2"><span class="text-purple-300">•</span><span>Highlight holds, notices, and refunds</span></li>
+                <li class="flex gap-2"><span class="text-purple-300">•</span><span>Explain common code patterns</span></li>
+                <li class="flex gap-2"><span class="text-purple-300">•</span><span>Keep your messaging consistent</span></li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <h3 class="font-bold text-xl text-midnight mb-3">Secure &amp; Private</h3>
-        <p class="text-gray-600">Runs locally on your computer. Client data never leaves your machine.</p>
+      </section>
+
+      <section id="use-cases" class="py-20 bg-gradient-to-b from-slate-900 to-slate-800 scroll-mt-28">
+        <div class="max-w-7xl mx-auto px-6">
+          <div class="text-center max-w-3xl mx-auto mb-16">
+            <div class="counter inline-block mb-4">
+              <span class="inline-flex items-center gap-2">
+                <svg class="w-4 h-4 text-gold" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 3l2.2 4.6 5 .7-3.6 3.5.9 5-4.5-2.4L7.5 17l.9-5L4.8 8.3l5-.7L12 3z" />
+                </svg>
+                <span>Use cases</span>
+              </span>
+            </div>
+            <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-6">Real transcript problems this solves</h2>
+            <p class="text-lg text-white/70">These are real threads where people get stuck on transcript codes, holds, refunds, and confusing timelines. This tool turns that chaos into a clean report you can send to clients.</p>
+          </div>
+
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <a class="glass rounded-2xl p-7 border border-slate-700/30 hover:border-purple-500/40 transition h-full flex flex-col" href="https://www.reddit.com/r/IRS/comments/1r9uyfz/got_an_846_code_drop_your_bank_deposit_timing_here/" target="_blank" rel="noopener">
+              <div class="flex items-start justify-between gap-4">
+                <div class="text-white font-semibold">846 refund timing confusion</div>
+                <div class="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center border border-purple-500/30 bg-purple-500/10">
+                  <svg class="w-4 h-4 text-purple-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+                </div>
+              </div>
+              <div class="mt-3 text-sm text-white/70">People see “846” and a date, then spiral because deposits do not match WMR or bank timing.</div>
+              <div class="mt-5 text-xs text-purple-300 inline-flex items-center gap-2">Read thread <span aria-hidden="true">→</span></div>
+            </a>
+
+            <a class="glass rounded-2xl p-7 border border-slate-700/30 hover:border-purple-500/40 transition h-full flex flex-col" href="https://www.reddit.com/r/IRS/comments/1v70k4u/irs_transcript_code_420_is_anyone_experiencing_a/" target="_blank" rel="noopener">
+              <div class="flex items-start justify-between gap-4">
+                <div class="text-white font-semibold">420 audit code and delay stress</div>
+                <div class="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center border border-purple-500/30 bg-purple-500/10">
+                  <svg class="w-4 h-4 text-purple-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+                </div>
+              </div>
+              <div class="mt-3 text-sm text-white/70">A single “420” makes the transcript look like a disaster. Clients need a calm summary of what it actually means.</div>
+              <div class="mt-5 text-xs text-purple-300 inline-flex items-center gap-2">Read thread <span aria-hidden="true">→</span></div>
+            </a>
+
+            <a class="glass rounded-2xl p-7 border border-slate-700/30 hover:border-purple-500/40 transition h-full flex flex-col" href="https://www.reddit.com/r/IRS/comments/fmdy88/424_examination_request/" target="_blank" rel="noopener">
+              <div class="flex items-start justify-between gap-4">
+                <div class="text-white font-semibold">424 examination request panic</div>
+                <div class="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center border border-purple-500/30 bg-purple-500/10">
+                  <svg class="w-4 h-4 text-purple-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+                </div>
+              </div>
+              <div class="mt-3 text-sm text-white/70">Clients see “Examination Request” and think it is an audit notice. Your report clarifies status and next steps.</div>
+              <div class="mt-5 text-xs text-purple-300 inline-flex items-center gap-2">Read thread <span aria-hidden="true">→</span></div>
+            </a>
+
+            <a class="glass rounded-2xl p-7 border border-slate-700/30 hover:border-purple-500/40 transition h-full flex flex-col" href="https://www.reddit.com/r/IRS/comments/1c3k6sy/help_code_810/" target="_blank" rel="noopener">
+              <div class="flex items-start justify-between gap-4">
+                <div class="text-white font-semibold">810 refund freeze confusion</div>
+                <div class="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center border border-purple-500/30 bg-purple-500/10">
+                  <svg class="w-4 h-4 text-purple-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+                </div>
+              </div>
+              <div class="mt-3 text-sm text-white/70">“810” reads like the end of the world. This turns it into a plain-English explanation and a client-facing timeline.</div>
+              <div class="mt-5 text-xs text-purple-300 inline-flex items-center gap-2">Read thread <span aria-hidden="true">→</span></div>
+            </a>
+
+            <a class="glass rounded-2xl p-7 border border-slate-700/30 hover:border-purple-500/40 transition h-full flex flex-col" href="https://www.reddit.com/r/IRS/comments/1jpoiws/code_290_additional_tax_assessments/" target="_blank" rel="noopener">
+              <div class="flex items-start justify-between gap-4">
+                <div class="text-white font-semibold">290 “additional tax” even at $0</div>
+                <div class="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center border border-purple-500/30 bg-purple-500/10">
+                  <svg class="w-4 h-4 text-purple-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+                </div>
+              </div>
+              <div class="mt-3 text-sm text-white/70">The transcript says “additional tax assessed” and people panic, even when the amount is zero. Translate it once, send it forever.</div>
+              <div class="mt-5 text-xs text-purple-300 inline-flex items-center gap-2">Read thread <span aria-hidden="true">→</span></div>
+            </a>
+
+            <a class="glass rounded-2xl p-7 border border-slate-700/30 hover:border-purple-500/40 transition h-full flex flex-col" href="https://www.reddit.com/r/IRS/comments/1jn67nh/what_does_this_mean_i_have_a_570_code_806_code/" target="_blank" rel="noopener">
+              <div class="flex items-start justify-between gap-4">
+                <div class="text-white font-semibold">570 hold with 806 credits</div>
+                <div class="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center border border-purple-500/30 bg-purple-500/10">
+                  <svg class="w-4 h-4 text-purple-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+                </div>
+              </div>
+              <div class="mt-3 text-sm text-white/70">Clients see “570” and “806” and ask if they are in trouble. Your report shows what is normal vs what needs action.</div>
+              <div class="mt-5 text-xs text-purple-300 inline-flex items-center gap-2">Read thread <span aria-hidden="true">→</span></div>
+            </a>
+
+            <a class="glass rounded-2xl p-7 border border-slate-700/30 hover:border-purple-500/40 transition h-full flex flex-col" href="https://www.reddit.com/r/IRS/comments/1igrqqr/federal_tax_refund/" target="_blank" rel="noopener">
+              <div class="flex items-start justify-between gap-4">
+                <div class="text-white font-semibold">150 and 806 “what is this?”</div>
+                <div class="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center border border-purple-500/30 bg-purple-500/10">
+                  <svg class="w-4 h-4 text-purple-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+                </div>
+              </div>
+              <div class="mt-3 text-sm text-white/70">Basic codes still trip people up. Your client does not want code definitions. They want “What does this mean for me?”</div>
+              <div class="mt-5 text-xs text-purple-300 inline-flex items-center gap-2">Read thread <span aria-hidden="true">→</span></div>
+            </a>
+
+            <a class="glass rounded-2xl p-7 border border-slate-700/30 hover:border-purple-500/40 transition h-full flex flex-col" href="https://www.reddit.com/r/IRS/comments/1ike0nw/570971_both_dated_224/" target="_blank" rel="noopener">
+              <div class="flex items-start justify-between gap-4">
+                <div class="text-white font-semibold">570 and 971 timeline questions</div>
+                <div class="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center border border-purple-500/30 bg-purple-500/10">
+                  <svg class="w-4 h-4 text-purple-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+                </div>
+              </div>
+              <div class="mt-3 text-sm text-white/70">Same codes, same dates, different outcomes. The report makes the sequence readable and highlights what matters.</div>
+              <div class="mt-5 text-xs text-purple-300 inline-flex items-center gap-2">Read thread <span aria-hidden="true">→</span></div>
+            </a>
+
+            <a class="glass rounded-2xl p-7 border border-slate-700/30 hover:border-purple-500/40 transition h-full flex flex-col" href="https://www.reddit.com/r/tax/comments/1q40o5h/can_someone_please_explain_what_my_tax_return/" target="_blank" rel="noopener">
+              <div class="flex items-start justify-between gap-4">
+                <div class="text-white font-semibold">Transactions section is unreadable</div>
+                <div class="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center border border-purple-500/30 bg-purple-500/10">
+                  <svg class="w-4 h-4 text-purple-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+                </div>
+              </div>
+              <div class="mt-3 text-sm text-white/70">The classic: “I am really just confused on the transactions section.” Your deliverable should never look like a transcript.</div>
+              <div class="mt-5 text-xs text-purple-300 inline-flex items-center gap-2">Read thread <span aria-hidden="true">→</span></div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section id="free-report" class="page-section">
+       <div class="min-h-full py-12">
+        <div class="max-w-7xl mx-auto px-6">
+         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <button onclick="showPage('landing-page')" class="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
+           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+           Back
+          </button>
+          <div class="text-white/70 text-sm">Client report preview</div>
+         </div>
+
+         <div class="report-shell p-5 sm:p-7">
+          <div id="free-report-output"></div>
+         </div>
+        </div>
        </div>
-      </div>
-     </div>
-    </section>
+      </section>
 
-    <!-- What This Solves Section -->
-    <section id="testimonials" class="py-20">
-      <div class="max-w-7xl mx-auto px-6">
-        <div class="text-center max-w-3xl mx-auto mb-16">
-          <div class="counter inline-block mb-4">
-            <span class="inline-flex items-center gap-2">
-              <svg class="w-4 h-4 text-gold" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M8.5 8.5c0-1.1.9-2 2-2H12V5c0-1.1.9-2 2-2h2c1.1 0 2 .9 2 2v2h-1.5c-1.1 0-2 .9-2 2s.9 2 2 2H20V15c0 1.1-.9 2-2 2h-2v-1.5c0-1.1-.9-2-2-2s-2 .9-2 2V17H9c-1.1 0-2-.9-2-2v-2H8.5c1.1 0 2-.9 2-2s-.9-2-2-2H7V5c0-1.1.9-2 2-2h1v1.5c0 1.1.9 2 2 2s2-.9 2-2V3" />
-              </svg>
-              <span>The real problem</span>
-            </span>
-          </div>
-          <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-6">What this tool will solve</h2>
-          <p class="text-lg text-white/70">Transcripts are readable to computers and terrifying to humans. This turns “what does this mean?” into a clean, client-ready explanation.</p>
-        </div>
-
-        <div class="grid md:grid-cols-3 gap-8">
-          <div class="glass rounded-2xl p-8 border border-slate-700/30 h-full flex flex-col">
-            <div class="feature-icon mb-6">
-              <svg class="w-7 h-7 block" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid meet">
-                <path d="M12 6v6l4 2" />
-                <path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-              </svg>
+      <section id="pricing" class="py-20 bg-cream scroll-mt-28">
+        <div class="max-w-7xl mx-auto px-6">
+          <div class="text-center max-w-3xl mx-auto mb-12">
+            <div class="counter inline-block mb-4">
+              <span class="inline-flex items-center gap-2">
+                <svg class="w-4 h-4 text-gold" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="5" width="20" height="14" rx="2" />
+                  <path d="M2 10h20" />
+                  <path d="M6 15h3" />
+                </svg>
+                <span>Pricing</span>
+              </span>
             </div>
-            <h3 class="text-xl font-semibold text-white mb-3">Stop wasting billable time</h3>
-            <p class="text-slate-300">No more re-explaining the same transaction codes to different clients. Parse, summarize, and move on with your life.</p>
-            <ul class="mt-5 space-y-2 text-sm text-white/70">
-              <li class="flex gap-2"><span class="text-purple-300">•</span><span>Find TC codes fast</span></li>
-              <li class="flex gap-2"><span class="text-purple-300">•</span><span>Generate a consistent explanation</span></li>
-              <li class="flex gap-2"><span class="text-purple-300">•</span><span>Keep a clean client narrative</span></li>
-            </ul>
+            <h2 class="font-display text-3xl md:text-4xl font-bold text-midnight mb-4">Simple pricing. Buy credits. Move on.</h2>
+            <p class="text-gray-600">Credits unlock transcript parsing. No subscriptions, no weird tiers, no drama.</p>
+            <div id="pricing-balance" class="mt-4 text-sm text-gray-500 hidden"></div>
           </div>
 
-          <div class="glass rounded-2xl p-8 border border-slate-700/30 h-full flex flex-col">
-            <div class="feature-icon mb-6">
-              <svg class="w-7 h-7 block" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid meet">
-                <path d="M7 8h10" />
-                <path d="M7 12h6" />
-                <path d="M7 16h8" />
-                <path d="M5 4h14a2 2 0 0 1 2 2v13a1 1 0 0 1-1 1H7l-4 3V6a2 2 0 0 1 2-2Z" />
-              </svg>
+          <div id="pricing-grid" class="grid md:grid-cols-3 gap-8">
+            <div class="card-elevated p-8 animate-pulse">
+              <div class="h-6 bg-gray-200 rounded w-1/2 mb-3"></div>
+              <div class="h-10 bg-gray-200 rounded w-3/4 mb-6"></div>
+              <div class="space-y-2 mb-8">
+                <div class="h-3 bg-gray-200 rounded"></div>
+                <div class="h-3 bg-gray-200 rounded w-5/6"></div>
+                <div class="h-3 bg-gray-200 rounded w-2/3"></div>
+              </div>
+              <div class="h-10 bg-gray-200 rounded"></div>
             </div>
-            <h3 class="text-xl font-semibold text-white mb-3">Reduce client anxiety</h3>
-            <p class="text-slate-300">Most transcripts look scary even when nothing is wrong. A clean summary builds trust and stops panic emails.</p>
-            <ul class="mt-5 space-y-2 text-sm text-white/70">
-              <li class="flex gap-2"><span class="text-purple-300">•</span><span>Plain-English “what happened”</span></li>
-              <li class="flex gap-2"><span class="text-purple-300">•</span><span>What needs action, what doesn’t</span></li>
-              <li class="flex gap-2"><span class="text-purple-300">•</span><span>Client-ready report format</span></li>
-            </ul>
+            <div class="card-elevated p-8 animate-pulse hidden md:block">
+              <div class="h-6 bg-gray-200 rounded w-1/2 mb-3"></div>
+              <div class="h-10 bg-gray-200 rounded w-3/4 mb-6"></div>
+              <div class="space-y-2 mb-8">
+                <div class="h-3 bg-gray-200 rounded"></div>
+                <div class="h-3 bg-gray-200 rounded w-5/6"></div>
+                <div class="h-3 bg-gray-200 rounded w-2/3"></div>
+              </div>
+              <div class="h-10 bg-gray-200 rounded"></div>
+            </div>
+            <div class="card-elevated p-8 animate-pulse hidden md:block">
+              <div class="h-6 bg-gray-200 rounded w-1/2 mb-3"></div>
+              <div class="h-10 bg-gray-200 rounded w-3/4 mb-6"></div>
+              <div class="space-y-2 mb-8">
+                <div class="h-3 bg-gray-200 rounded"></div>
+                <div class="h-3 bg-gray-200 rounded w-5/6"></div>
+                <div class="h-3 bg-gray-200 rounded w-2/3"></div>
+              </div>
+              <div class="h-10 bg-gray-200 rounded"></div>
+            </div>
           </div>
 
-          <div class="glass rounded-2xl p-8 border border-slate-700/30 h-full flex flex-col">
-            <div class="feature-icon mb-6">
-              <svg class="w-7 h-7 block" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid meet">
-                <path d="M6 18h12" />
-                <path d="M8 22h8" />
-                <path d="M12 2a7 7 0 0 1 7 7c0 2.2-1 3.7-2.2 5.1-.6.7-.9 1.4-1.1 2.2H8.3c-.2-.8-.5-1.5-1.1-2.2C6 12.7 5 11.2 5 9a7 7 0 0 1 7-7Z" />
-              </svg>
-            </div>
-            <h3 class="text-xl font-semibold text-white mb-3">Make “weird transcript stuff” understandable</h3>
-            <p class="text-slate-300">People get stuck on the transactions list and random codes. This translates those into next steps you can stand behind.</p>
-            <ul class="mt-5 space-y-2 text-sm text-white/70">
-              <li class="flex gap-2"><span class="text-purple-300">•</span><span>Highlight holds, notices, and refunds</span></li>
-              <li class="flex gap-2"><span class="text-purple-300">•</span><span>Explain common code patterns</span></li>
-              <li class="flex gap-2"><span class="text-purple-300">•</span><span>Keep your messaging consistent</span></li>
-            </ul>
+          <div class="mt-10 text-center text-xs text-gray-500">
+            Payments are processed by Stripe. Credits apply instantly after checkout.
           </div>
         </div>
 
-      </div>
-    </section>
+        <script>
+          (function () {
+            const PAYMENT_LINKS = [
+              {
+                credits: 10,
+                recommended: false,
+                priceText: "$19",
+                url: "https://billing.taxmonitor.pro/b/4gM8wOaAe1oKcUEdTkaR203",
+              },
+              {
+                credits: 25,
+                recommended: true,
+                priceText: "$29",
+                url: "https://billing.taxmonitor.pro/b/cNi14m5fU3wS1bW9D4aR204",
+              },
+              {
+                credits: 100,
+                recommended: false,
+                priceText: "$129",
+                url: "https://billing.taxmonitor.pro/b/dRm8wO7o27N83k47uWaR205",
+              },
+            ].slice().sort((a, b) => Number(a.credits || 0) - Number(b.credits || 0));
 
-    <!-- Use Cases Section -->
-    <section id="use-cases" class="py-20 bg-gradient-to-b from-slate-900 to-slate-800 scroll-mt-28">
-      <div class="max-w-7xl mx-auto px-6">
-        <div class="text-center max-w-3xl mx-auto mb-16">
-          <div class="counter inline-block mb-4">
-            <span class="inline-flex items-center gap-2">
-              <svg class="w-4 h-4 text-gold" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 3l2.2 4.6 5 .7-3.6 3.5.9 5-4.5-2.4L7.5 17l.9-5L4.8 8.3l5-.7L12 3z" />
-              </svg>
-              <span>Use cases</span>
-            </span>
-          </div>
-          <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-6">Real transcript problems this solves</h2>
-          <p class="text-lg text-white/70">These are real threads where people get stuck on transcript codes, holds, refunds, and confusing timelines. This tool turns that chaos into a clean report you can send to clients.</p>
-        </div>
-
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <a class="glass rounded-2xl p-7 border border-slate-700/30 hover:border-purple-500/40 transition h-full flex flex-col" href="https://www.reddit.com/r/IRS/comments/1r9uyfz/got_an_846_code_drop_your_bank_deposit_timing_here/" target="_blank" rel="noopener">
-            <div class="flex items-start justify-between gap-4">
-              <div class="text-white font-semibold">846 refund timing confusion</div>
-              <div class="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center border border-purple-500/30 bg-purple-500/10">
-                <svg class="w-4 h-4 text-purple-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
-              </div>
-            </div>
-            <div class="mt-3 text-sm text-white/70">People see “846” and a date, then spiral because deposits do not match WMR or bank timing.</div>
-            <div class="mt-5 text-xs text-purple-300 inline-flex items-center gap-2">Read thread <span aria-hidden="true">→</span></div>
-          </a>
-
-          <a class="glass rounded-2xl p-7 border border-slate-700/30 hover:border-purple-500/40 transition h-full flex flex-col" href="https://www.reddit.com/r/IRS/comments/1v70k4u/irs_transcript_code_420_is_anyone_experiencing_a/" target="_blank" rel="noopener">
-            <div class="flex items-start justify-between gap-4">
-              <div class="text-white font-semibold">420 audit code and delay stress</div>
-              <div class="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center border border-purple-500/30 bg-purple-500/10">
-                <svg class="w-4 h-4 text-purple-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
-              </div>
-            </div>
-            <div class="mt-3 text-sm text-white/70">A single “420” makes the transcript look like a disaster. Clients need a calm summary of what it actually means.</div>
-            <div class="mt-5 text-xs text-purple-300 inline-flex items-center gap-2">Read thread <span aria-hidden="true">→</span></div>
-          </a>
-
-          <a class="glass rounded-2xl p-7 border border-slate-700/30 hover:border-purple-500/40 transition h-full flex flex-col" href="https://www.reddit.com/r/IRS/comments/fmdy88/424_examination_request/" target="_blank" rel="noopener">
-            <div class="flex items-start justify-between gap-4">
-              <div class="text-white font-semibold">424 examination request panic</div>
-              <div class="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center border border-purple-500/30 bg-purple-500/10">
-                <svg class="w-4 h-4 text-purple-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
-              </div>
-            </div>
-            <div class="mt-3 text-sm text-white/70">Clients see “Examination Request” and think it is an audit notice. Your report clarifies status and next steps.</div>
-            <div class="mt-5 text-xs text-purple-300 inline-flex items-center gap-2">Read thread <span aria-hidden="true">→</span></div>
-          </a>
-
-          <a class="glass rounded-2xl p-7 border border-slate-700/30 hover:border-purple-500/40 transition h-full flex flex-col" href="https://www.reddit.com/r/IRS/comments/1c3k6sy/help_code_810/" target="_blank" rel="noopener">
-            <div class="flex items-start justify-between gap-4">
-              <div class="text-white font-semibold">810 refund freeze confusion</div>
-              <div class="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center border border-purple-500/30 bg-purple-500/10">
-                <svg class="w-4 h-4 text-purple-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
-              </div>
-            </div>
-            <div class="mt-3 text-sm text-white/70">“810” reads like the end of the world. This turns it into a plain-English explanation and a client-facing timeline.</div>
-            <div class="mt-5 text-xs text-purple-300 inline-flex items-center gap-2">Read thread <span aria-hidden="true">→</span></div>
-          </a>
-
-          <a class="glass rounded-2xl p-7 border border-slate-700/30 hover:border-purple-500/40 transition h-full flex flex-col" href="https://www.reddit.com/r/IRS/comments/1jpoiws/code_290_additional_tax_assessments/" target="_blank" rel="noopener">
-            <div class="flex items-start justify-between gap-4">
-              <div class="text-white font-semibold">290 “additional tax” even at $0</div>
-              <div class="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center border border-purple-500/30 bg-purple-500/10">
-                <svg class="w-4 h-4 text-purple-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
-              </div>
-            </div>
-            <div class="mt-3 text-sm text-white/70">The transcript says “additional tax assessed” and people panic, even when the amount is zero. Translate it once, send it forever.</div>
-            <div class="mt-5 text-xs text-purple-300 inline-flex items-center gap-2">Read thread <span aria-hidden="true">→</span></div>
-          </a>
-
-          <a class="glass rounded-2xl p-7 border border-slate-700/30 hover:border-purple-500/40 transition h-full flex flex-col" href="https://www.reddit.com/r/IRS/comments/1jn67nh/what_does_this_mean_i_have_a_570_code_806_code/" target="_blank" rel="noopener">
-            <div class="flex items-start justify-between gap-4">
-              <div class="text-white font-semibold">570 hold with 806 credits</div>
-              <div class="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center border border-purple-500/30 bg-purple-500/10">
-                <svg class="w-4 h-4 text-purple-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
-              </div>
-            </div>
-            <div class="mt-3 text-sm text-white/70">Clients see “570” and “806” and ask if they are in trouble. Your report shows what is normal vs what needs action.</div>
-            <div class="mt-5 text-xs text-purple-300 inline-flex items-center gap-2">Read thread <span aria-hidden="true">→</span></div>
-          </a>
-
-          <a class="glass rounded-2xl p-7 border border-slate-700/30 hover:border-purple-500/40 transition h-full flex flex-col" href="https://www.reddit.com/r/IRS/comments/1igrqqr/federal_tax_refund/" target="_blank" rel="noopener">
-            <div class="flex items-start justify-between gap-4">
-              <div class="text-white font-semibold">150 and 806 “what is this?”</div>
-              <div class="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center border border-purple-500/30 bg-purple-500/10">
-                <svg class="w-4 h-4 text-purple-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
-              </div>
-            </div>
-            <div class="mt-3 text-sm text-white/70">Basic codes still trip people up. Your client does not want code definitions. They want “What does this mean for me?”</div>
-            <div class="mt-5 text-xs text-purple-300 inline-flex items-center gap-2">Read thread <span aria-hidden="true">→</span></div>
-          </a>
-
-          <a class="glass rounded-2xl p-7 border border-slate-700/30 hover:border-purple-500/40 transition h-full flex flex-col" href="https://www.reddit.com/r/IRS/comments/1ike0nw/570971_both_dated_224/" target="_blank" rel="noopener">
-            <div class="flex items-start justify-between gap-4">
-              <div class="text-white font-semibold">570 and 971 timeline questions</div>
-              <div class="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center border border-purple-500/30 bg-purple-500/10">
-                <svg class="w-4 h-4 text-purple-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
-              </div>
-            </div>
-            <div class="mt-3 text-sm text-white/70">Same codes, same dates, different outcomes. The report makes the sequence readable and highlights what matters.</div>
-            <div class="mt-5 text-xs text-purple-300 inline-flex items-center gap-2">Read thread <span aria-hidden="true">→</span></div>
-          </a>
-
-          <a class="glass rounded-2xl p-7 border border-slate-700/30 hover:border-purple-500/40 transition h-full flex flex-col" href="https://www.reddit.com/r/tax/comments/1q40o5h/can_someone_please_explain_what_my_tax_return/" target="_blank" rel="noopener">
-            <div class="flex items-start justify-between gap-4">
-              <div class="text-white font-semibold">Transactions section is unreadable</div>
-              <div class="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center border border-purple-500/30 bg-purple-500/10">
-                <svg class="w-4 h-4 text-purple-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
-              </div>
-            </div>
-            <div class="mt-3 text-sm text-white/70">The classic: “I am really just confused on the transactions section.” Your deliverable should never look like a transcript.</div>
-            <div class="mt-5 text-xs text-purple-300 inline-flex items-center gap-2">Read thread <span aria-hidden="true">→</span></div>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Free Report Page (shareable deliverable) -->
-   <section id="free-report" class="page-section">
-    <div class="min-h-full py-12">
-     <div class="max-w-7xl mx-auto px-6">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-       <button onclick="showPage('landing-page')" class="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-        Back
-       </button>
-       <div class="text-white/70 text-sm">Client report preview</div>
-      </div>
-
-      <div class="report-shell p-5 sm:p-7">
-       <div id="free-report-output"></div>
-      </div>
-     </div>
-    </div>
-   </section>
-
-   <!-- Pricing Section -->
-    <section id="pricing" class="py-20 bg-cream scroll-mt-28">
-      <div class="max-w-7xl mx-auto px-6">
-        <div class="text-center max-w-3xl mx-auto mb-12">
-          <div class="counter inline-block mb-4">
-            <span class="inline-flex items-center gap-2">
-              <svg class="w-4 h-4 text-gold" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="5" width="20" height="14" rx="2" />
-                <path d="M2 10h20" />
-                <path d="M6 15h3" />
-              </svg>
-              <span>Pricing</span>
-            </span>
-          </div>
-          <h2 class="font-display text-3xl md:text-4xl font-bold text-midnight mb-4">Simple pricing. Buy credits. Move on.</h2>
-          <p class="text-gray-600">Credits unlock transcript parsing. No subscriptions, no weird tiers, no drama.</p>
-          <div id="pricing-balance" class="mt-4 text-sm text-gray-500 hidden"></div>
-        </div>
-
-        <div id="pricing-grid" class="grid md:grid-cols-3 gap-8">
-          <div class="card-elevated p-8 animate-pulse">
-            <div class="h-6 bg-gray-200 rounded w-1/2 mb-3"></div>
-            <div class="h-10 bg-gray-200 rounded w-3/4 mb-6"></div>
-            <div class="space-y-2 mb-8">
-              <div class="h-3 bg-gray-200 rounded"></div>
-              <div class="h-3 bg-gray-200 rounded w-5/6"></div>
-              <div class="h-3 bg-gray-200 rounded w-2/3"></div>
-            </div>
-            <div class="h-10 bg-gray-200 rounded"></div>
-          </div>
-          <div class="card-elevated p-8 animate-pulse hidden md:block">
-            <div class="h-6 bg-gray-200 rounded w-1/2 mb-3"></div>
-            <div class="h-10 bg-gray-200 rounded w-3/4 mb-6"></div>
-            <div class="space-y-2 mb-8">
-              <div class="h-3 bg-gray-200 rounded"></div>
-              <div class="h-3 bg-gray-200 rounded w-5/6"></div>
-              <div class="h-3 bg-gray-200 rounded w-2/3"></div>
-            </div>
-            <div class="h-10 bg-gray-200 rounded"></div>
-          </div>
-          <div class="card-elevated p-8 animate-pulse hidden md:block">
-            <div class="h-6 bg-gray-200 rounded w-1/2 mb-3"></div>
-            <div class="h-10 bg-gray-200 rounded w-3/4 mb-6"></div>
-            <div class="space-y-2 mb-8">
-              <div class="h-3 bg-gray-200 rounded"></div>
-              <div class="h-3 bg-gray-200 rounded w-5/6"></div>
-              <div class="h-3 bg-gray-200 rounded w-2/3"></div>
-            </div>
-            <div class="h-10 bg-gray-200 rounded"></div>
-          </div>
-        </div>
-
-        <div class="mt-10 text-center text-xs text-gray-500">
-          Payments are processed by Stripe. Credits apply instantly after checkout.
-        </div>
-      </div>
-
-      <script>
-        (function () {
-          const PAYMENT_LINKS = [
-            {
-              credits: 10,
-              recommended: false,
-              priceText: "$19",
-              url: "https://billing.taxmonitor.pro/b/4gM8wOaAe1oKcUEdTkaR203",
-            },
-            {
-              credits: 25,
-              recommended: true,
-              priceText: "$29",
-              url: "https://billing.taxmonitor.pro/b/cNi14m5fU3wS1bW9D4aR204",
-            },
-            {
-              credits: 100,
-              recommended: false,
-              priceText: "$129",
-              url: "https://billing.taxmonitor.pro/b/dRm8wO7o27N83k47uWaR205",
-            },
-          ].slice().sort((a, b) => Number(a.credits || 0) - Number(b.credits || 0));
-
-          function assert(name, condition) {
-            if (!condition) {
-              console.error("test_failed", name);
-              throw new Error(`test_failed:${name}`);
-            }
-          }
-
-          function runTests() {
-            const sorted = ["b", "a", "c"].slice().sort((a, b) => String(a).localeCompare(String(b)));
-            assert("alpha_sort", sorted.join("") === "abc");
-
-            assert("payment_links_non_empty", Array.isArray(PAYMENT_LINKS) && PAYMENT_LINKS.length >= 3);
-            assert(
-              "payment_links_https",
-              PAYMENT_LINKS.every((p) => typeof p.url === "string" && p.url.startsWith("https://"))
-            );
-
-            const credits = PAYMENT_LINKS.map((p) => Number(p.credits || 0));
-            const sortedCredits = credits.slice().sort((a, b) => a - b);
-            assert("credits_sorted", credits.join(",") === sortedCredits.join(","));
-
-            assert(
-              "price_no_cents",
-              PAYMENT_LINKS.every((p) => typeof p.priceText === "string" && !p.priceText.includes(".00"))
-            );
-
-            assert("parser_token_available_exists", !!document.getElementById("parser-token-available"));
-            assert("parser_token_input_exists", !!document.getElementById("parser-token-id"));
-            assert("parser_token_save_exists", !!document.getElementById("parser-save-token"));
-            assert("mini_report_btn_exists", !!document.getElementById("mini-report-btn"));
-            assert("preview_report_btn_exists", !!document.getElementById("preview-report-btn"));
-            assert("render_pricing_exists", typeof renderPricing === "function");
-            assert("cal_namespace_exists", typeof window.Cal === "function");
-          }
-
-          function renderPricing() {
-            const grid = document.getElementById("pricing-grid");
-            if (!grid) return;
-
-            grid.innerHTML = PAYMENT_LINKS.map((p) => {
-              const featured = Boolean(p.recommended);
-
-              const badge = featured
-                ? `<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-purple-600 text-white">Most popular</div>`
-                : `<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-slate-900/10 text-slate-800">Credits pack</div>`;
-
-              const cardClass = featured
-                ? "card-elevated p-8 border-2 border-purple-500/30 relative flex flex-col"
-                : "card-elevated p-8 flex flex-col";
-
-              const ctaClass = featured ? "btn-primary" : "btn-secondary";
-
-              const perks = [
-                "Client-ready report preview",
-                "Credits applied instantly",
-                "Local PDF parsing (no uploads)",
-              ].slice().sort((a, b) => String(a).localeCompare(String(b)));
-
-              return `
-                  <div class="${cardClass}">
-                    <div class="flex items-center justify-between mb-5">
-                      ${badge.replace(
-                        "bg-purple-600 text-white",
-                        "bg-purple-500/15 text-purple-800 border border-purple-600/30"
-                      ).replace(
-                        "bg-slate-900/10 text-slate-800",
-                        "bg-white/70 text-slate-900 border border-slate-200"
-                      )}
-                      <div class="text-xs text-gray-500">Transcript.Tax Monitor Pro</div>
-                    </div>
-
-                    <div class="mb-5">
-                      <div class="text-4xl font-extrabold text-midnight leading-none">${Number(p.credits || 0)}</div>
-                      <div class="text-sm text-gray-600 mt-1">credits</div>
-                    </div>
-
-                    <div class="mb-6">
-                      <div class="text-2xl font-bold text-midnight">${String(p.priceText || "")}</div>
-                      <div class="text-xs text-gray-500 mt-1">one-time purchase</div>
-                    </div>
-
-                    <ul class="space-y-2 text-sm text-gray-700 mb-8">
-                      ${perks
-                        .map((perk) => `<li class="flex items-start gap-2"><span class="text-purple-600">✓</span><span>${perk}</span></li>`)
-                        .join("")}
-                    </ul>
-
-                    <div class="mt-auto flex justify-center">
-                      <a class="${ctaClass} inline-flex items-center justify-center" href="${String(p.url)}" target="_blank" rel="noopener">Pay with Stripe</a>
-                    </div>
-                  </div>
-                `;
-            }).join("");
-          }
-
-          function getStoredTokenId() {
-            return String(localStorage.getItem("tmp_tokenId") || "").trim();
-          }
-
-          function setStoredTokenId(tokenId) {
-            const cleaned = String(tokenId || "").trim();
-            if (!cleaned) return;
-            localStorage.setItem("tmp_tokenId", cleaned);
-          }
-
-          function setParserTokenStatus(text, tone) {
-            const el = document.getElementById("parser-token-status");
-            if (!el) return;
-            el.textContent = String(text || "");
-            el.className =
-              "mt-2 text-xs " +
-              (tone === "error" ? "text-red-300" : tone === "ok" ? "text-green-300" : "text-white/50");
-          }
-
-          function setParserAvailable(val) {
-            const el = document.getElementById("parser-token-available");
-            if (!el) return;
-            el.textContent = val === null || typeof val === "undefined" ? "-" : String(val);
-          }
-
-          async function fetchTokenBalance(tokenId) {
-            const candidates = ["https://api-transcript.taxmonitor.pro", window.location.origin].filter(Boolean).sort();
-            let lastErr = null;
-
-            for (const base of candidates) {
-              const url = `${base}/transcript/tokens?tokenId=${encodeURIComponent(tokenId)}`;
-              try {
-                const res = await fetch(url);
-                const text = await res.text();
-                let data;
-                try {
-                  data = JSON.parse(text);
-                } catch {
-                  data = { raw: text };
-                }
-                if (!res.ok) throw new Error(data?.error || data?.message || `Request failed (${res.status})`);
-                return { ok: true, base, data };
-              } catch (e) {
-                lastErr = e;
+            function assert(name, condition) {
+              if (!condition) {
+                console.error("test_failed", name);
+                throw new Error(`test_failed:${name}`);
               }
             }
 
-            return { ok: false, error: lastErr };
-          }
+            function runTests() {
+              const sorted = ["b", "a", "c"].slice().sort((a, b) => String(a).localeCompare(String(b)));
+              assert("alpha_sort", sorted.join("") === "abc");
 
-          function initParserTokenControls() {
-            const input = document.getElementById("parser-token-id");
-            const saveBtn = document.getElementById("parser-save-token");
+              assert("payment_links_non_empty", Array.isArray(PAYMENT_LINKS) && PAYMENT_LINKS.length >= 3);
+              assert(
+                "payment_links_https",
+                PAYMENT_LINKS.every((p) => typeof p.url === "string" && p.url.startsWith("https://"))
+              );
 
-            const existing = getStoredTokenId();
-            if (input && existing) input.value = existing;
+              const credits = PAYMENT_LINKS.map((p) => Number(p.credits || 0));
+              const sortedCredits = credits.slice().sort((a, b) => a - b);
+              assert("credits_sorted", credits.join(",") === sortedCredits.join(","));
+              assert(
+                "price_no_cents",
+                PAYMENT_LINKS.every((p) => typeof p.priceText === "string" && !p.priceText.includes(".00"))
+              );
+              assert("render_pricing_exists", typeof renderPricing === "function");
+              assert("cal_namespace_exists", typeof window.Cal === "function");
+            }
 
-            async function refreshUI() {
-              const tokenId = String(input?.value || "").trim();
-              if (!tokenId) {
-                setParserAvailable("-");
-                setParserTokenStatus("Enter a token and click \"Save\" to check availability and activate the \"Parse PDF\" button.", "neutral");
-                return;
+            function renderPricing() {
+              const grid = document.getElementById("pricing-grid");
+              if (!grid) return;
+
+              grid.innerHTML = PAYMENT_LINKS.map((p) => {
+                const featured = Boolean(p.recommended);
+
+                const badge = featured
+                  ? `<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-purple-600 text-white">Most popular</div>`
+                  : `<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-slate-900/10 text-slate-800">Credits pack</div>`;
+
+                const cardClass = featured
+                  ? "card-elevated p-8 border-2 border-purple-500/30 relative flex flex-col"
+                  : "card-elevated p-8 flex flex-col";
+
+                const ctaClass = featured ? "btn-primary" : "btn-secondary";
+
+                const perks = [
+                  "Client-ready report preview",
+                  "Credits applied instantly",
+                  "Local PDF parsing (no uploads)",
+                ].slice().sort((a, b) => String(a).localeCompare(String(b)));
+
+                return `
+                    <div class="${cardClass}">
+                      <div class="flex items-center justify-between mb-5">
+                        ${badge.replace(
+                          "bg-purple-600 text-white",
+                          "bg-purple-500/15 text-purple-800 border border-purple-600/30"
+                        ).replace(
+                          "bg-slate-900/10 text-slate-800",
+                          "bg-white/70 text-slate-900 border border-slate-200"
+                        )}
+                        <div class="text-xs text-gray-500">Transcript.Tax Monitor Pro</div>
+                      </div>
+
+                      <div class="mb-5">
+                        <div class="text-4xl font-extrabold text-midnight leading-none">${Number(p.credits || 0)}</div>
+                        <div class="text-sm text-gray-600 mt-1">credits</div>
+                      </div>
+
+                      <div class="mb-6">
+                        <div class="text-2xl font-bold text-midnight">${String(p.priceText || "")}</div>
+                        <div class="text-xs text-gray-500 mt-1">one-time purchase</div>
+                      </div>
+
+                      <ul class="space-y-2 text-sm text-gray-700 mb-8">
+                        ${perks
+                          .map((perk) => `<li class="flex items-start gap-2"><span class="text-purple-600">✓</span><span>${perk}</span></li>`)
+                          .join("")}
+                      </ul>
+
+                      <div class="mt-auto flex justify-center">
+                        <a class="${ctaClass} inline-flex items-center justify-center" href="${String(p.url)}" target="_blank" rel="noopener">Pay with Stripe</a>
+                      </div>
+                    </div>
+                  `;
+              }).join("");
+            }
+
+            function initBrandLogoPicker() {
+              const input = document.getElementById("brand-logo");
+              const nameEl = document.getElementById("brand-logo-file-name");
+              if (!input || !nameEl) return;
+
+              input.addEventListener("change", () => {
+                const file = input.files && input.files[0];
+                nameEl.textContent = file ? String(file.name || "") : "No file chosen";
+              });
+            }
+
+            function initMiniReportOverlay() {
+              const btn = document.getElementById("mini-report-btn");
+              const closeBtn = document.getElementById("mini-report-close");
+              const frame = document.getElementById("mini-report-iframe");
+              const overlay = document.getElementById("mini-report-overlay");
+
+              if (!btn || !closeBtn || !frame || !overlay) return;
+
+              function openOverlay() {
+                overlay.classList.remove("hidden");
+                overlay.setAttribute("aria-hidden", "false");
+                frame.src = "/assets/report-preview.html";
+                document.body.style.overflow = "hidden";
               }
 
-              setParserTokenStatus("Checking token availability…", "neutral");
-              const out = await fetchTokenBalance(tokenId);
-              if (!out.ok) {
-                setParserAvailable("-");
-                setParserTokenStatus("Token status unavailable (API not reachable).", "error");
-                return;
+              function closeOverlay() {
+                overlay.classList.add("hidden");
+                overlay.setAttribute("aria-hidden", "true");
+                frame.src = "";
+                document.body.style.overflow = "";
               }
 
-              const balance = Number(out.data?.balance || 0);
-              setParserAvailable(balance);
-              setParserTokenStatus(`Token saved. ${balance} credits available.`, "ok");
+              btn.addEventListener("click", (e) => {
+                e.preventDefault();
+                openOverlay();
+              });
+
+              closeBtn.addEventListener("click", (e) => {
+                e.preventDefault();
+                closeOverlay();
+              });
+
+              overlay.addEventListener("click", (e) => {
+                if (e.target === overlay) closeOverlay();
+              });
+
+              document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape" && !overlay.classList.contains("hidden")) closeOverlay();
+              });
             }
 
-            if (saveBtn) {
-              saveBtn.addEventListener("click", async () => {
-                const tokenId = String(input?.value || "").trim();
-                if (!tokenId) {
-                  setParserTokenStatus("Token ID is empty.", "error");
-                  return;
+            function initParserPreviewGate() {
+              const root = document.getElementById("parser-preview-root");
+              if (!root) return;
+
+              const redirectUrl = "/sign-in.html?redirect=/app-dashboard.html";
+
+              root.querySelectorAll("button, input, select, textarea").forEach((el) => {
+                el.setAttribute("data-parser-preview-disabled", "true");
+                el.setAttribute("tabindex", "-1");
+                if (el.tagName === "INPUT" || el.tagName === "SELECT" || el.tagName === "TEXTAREA" || el.tagName === "BUTTON") {
+                  el.disabled = true;
                 }
-                setStoredTokenId(tokenId);
-                await refreshUI();
               });
-            }
 
-            if (input) {
-              input.addEventListener("keydown", (e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  saveBtn?.click();
-                }
+              root.querySelectorAll("a").forEach((el) => {
+                el.setAttribute("data-parser-preview-disabled", "true");
+                el.setAttribute("tabindex", "-1");
               });
+
+              root.addEventListener("click", (event) => {
+                const trigger = event.target.closest("a, button, input, label, select, textarea, [role='button']");
+                if (!trigger) return;
+                event.preventDefault();
+                event.stopPropagation();
+                window.location.href = redirectUrl;
+              }, true);
             }
 
-            if (existing) {
-              setParserTokenStatus("Checking token availability…", "neutral");
-              fetchTokenBalance(existing).then((out) => {
-                if (!out.ok) return;
-                const balance = Number(out.data?.balance || 0);
-                setParserAvailable(balance);
-                setParserTokenStatus(`${balance} credits available.`, "ok");
-              });
-            }
-          }
+            function initAll() {
+              const url = new URL(window.location.href);
+              const run = String(url.searchParams.get("runTests") || "").trim().toLowerCase();
+              if (run === "1" || run === "true") runTests();
 
-          function initMiniReportOverlay() {
-            const btn = document.getElementById("mini-report-btn");
-            const closeBtn = document.getElementById("mini-report-close");
-            const frame = document.getElementById("mini-report-iframe");
-            const overlay = document.getElementById("mini-report-overlay");
-
-            if (!btn || !closeBtn || !frame || !overlay) return;
-
-            function openOverlay() {
-              overlay.classList.remove("hidden");
-              overlay.setAttribute("aria-hidden", "false");
-              frame.src = "/assets/report-preview.html";
-              document.body.style.overflow = "hidden";
+              initBrandLogoPicker();
+              initMiniReportOverlay();
+              initParserPreviewGate();
+              renderPricing();
             }
 
-            function closeOverlay() {
-              overlay.classList.add("hidden");
-              overlay.setAttribute("aria-hidden", "true");
-              frame.src = "";
-              document.body.style.overflow = "";
+            if (document.readyState === "loading") {
+              document.addEventListener("DOMContentLoaded", initAll);
+            } else {
+              initAll();
             }
+          })();
+        </script>
+      </section>
 
-            btn.addEventListener("click", (e) => {
-              e.preventDefault();
-              openOverlay();
-            });
+      <section class="py-20 gradient-hero">
+       <div class="max-w-4xl mx-auto px-6 text-center">
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-6">Ready to Transform Your Transcript Workflow?</h2>
+        <p class="text-xl text-white/80 mb-8">Join thousands of tax professionals who've reclaimed their time and impressed their clients.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <button onclick="window.location.href='https://transcript.taxmonitor.pro/magnets/lead-magnet.html'" class="btn-primary text-lg">Get Your Free Guide First →</button>
+          <button onclick="window.location.href='/sign-in.html?redirect=/app-dashboard.html'" class="btn-secondary">Sign In Free</button>
+        </div>
+       </div>
+      </section>
 
-            closeBtn.addEventListener("click", (e) => {
-              e.preventDefault();
-              closeOverlay();
-            });
+      <!-- PARTIAL:footer -->
 
-            overlay.addEventListener("click", (e) => {
-              if (e.target === overlay) closeOverlay();
-            });
-
-            document.addEventListener("keydown", (e) => {
-              if (e.key === "Escape" && !overlay.classList.contains("hidden")) closeOverlay();
-            });
-          }
-
-          function initBrandLogoPicker() {
-            const input = document.getElementById("brand-logo");
-            const nameEl = document.getElementById("brand-logo-file-name");
-            if (!input || !nameEl) return;
-
-            input.addEventListener("change", () => {
-              const file = input.files && input.files[0];
-              nameEl.textContent = file ? String(file.name || "") : "No file chosen";
-            });
-          }
-
-          function initAll() {
-            const url = new URL(window.location.href);
-            const run = String(url.searchParams.get("runTests") || "").trim().toLowerCase();
-            if (run === "1" || run === "true") runTests();
-
-            initMiniReportOverlay();
-            initBrandLogoPicker();
-            initParserTokenControls();
-            renderPricing();
-          }
-
-          if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", initAll);
-          } else {
-            initAll();
-          }
-        })();
-      </script>
     </section>
 
-    <section class="py-20 gradient-hero">
-     <div class="max-w-4xl mx-auto px-6 text-center">
-      <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-6">Ready to Transform Your Transcript Workflow?</h2>
-      <p class="text-xl text-white/80 mb-8">Join thousands of tax professionals who've reclaimed their time and impressed their clients.</p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <button onclick="window.location.href='https://transcript.taxmonitor.pro/magnets/lead-magnet.html'" class="btn-primary text-lg"> Get Your Free Guide First → </button>
-        <button onclick="window.location.href='https://transcript.taxmonitor.pro/#pricing'" class="btn-secondary"> Skip to Purchase </button>
-      </div>
-     </div>
-    </section>
+    <div id="toast-container"></div>
 
-    <!-- PARTIAL:footer -->
+    <script type="text/javascript">
+      (function (C, A, L) {
+        let p = function (a, ar) { a.q.push(ar); };
+        let d = C.document;
+        C.Cal = C.Cal || function () {
+          let cal = C.Cal;
+          let ar = arguments;
+          if (!cal.loaded) {
+            cal.ns = {};
+            cal.q = cal.q || [];
+            d.head.appendChild(d.createElement("script")).src = A;
+            cal.loaded = true;
+          }
+          if (ar[0] === L) {
+            const api = function () { p(api, arguments); };
+            const namespace = ar[1];
+            api.q = api.q || [];
+            if (typeof namespace === "string") {
+              cal.ns[namespace] = cal.ns[namespace] || api;
+              p(cal.ns[namespace], ar);
+              p(cal, ["initNamespace", namespace]);
+            } else p(cal, ar);
+            return;
+          }
+          p(cal, ar);
+        };
+      })(window, "https://app.cal.com/embed/embed.js", "init");
 
-   </section>
+      Cal("init", "tax-monitor-transcript-support", { origin: "https://app.cal.com" });
 
-   <!-- Toast Container -->
-  <div id="toast-container"></div>
+      Cal.ns["tax-monitor-transcript-support"]("ui", {
+        cssVarsPerTheme: {
+          dark: { "cal-brand": "#a855f7" },
+          light: { "cal-brand": "#a855f7" }
+        },
+        hideEventTypeDetails: false,
+        layout: "month_view"
+      });
 
-  <!-- Cal.com embed (single loader + config). Fixes the invalid token syntax error. -->
-  <script type="text/javascript">
-    (function (C, A, L) {
-      let p = function (a, ar) { a.q.push(ar); };
-      let d = C.document;
-      C.Cal = C.Cal || function () {
-        let cal = C.Cal;
-        let ar = arguments;
-        if (!cal.loaded) {
-          cal.ns = {};
-          cal.q = cal.q || [];
-          d.head.appendChild(d.createElement("script")).src = A;
-          cal.loaded = true;
+      Cal.ns["tax-monitor-transcript-support"]("floatingButton", {
+        calLink: "tax-monitor-pro/tax-monitor-transcript-support",
+        buttonText: "Book Transcript Support",
+        config: {
+          layout: "month_view",
+          useSlotsViewOnSmallScreen: "true"
         }
-        if (ar[0] === L) {
-          const api = function () { p(api, arguments); };
-          const namespace = ar[1];
-          api.q = api.q || [];
-          if (typeof namespace === "string") {
-            cal.ns[namespace] = cal.ns[namespace] || api;
-            p(cal.ns[namespace], ar);
-            p(cal, ["initNamespace", namespace]);
-          } else p(cal, ar);
-          return;
-        }
-        p(cal, ar);
-      };
-    })(window, "https://app.cal.com/embed/embed.js", "init");
-
-    Cal("init", "tax-monitor-transcript-support", { origin: "https://app.cal.com" });
-
-    Cal.ns["tax-monitor-transcript-support"]("ui", {
-      cssVarsPerTheme: {
-        dark: { "cal-brand": "#a855f7" },
-        light: { "cal-brand": "#a855f7" }
-      },
-      hideEventTypeDetails: false,
-      layout: "month_view"
-    });
-
-    Cal.ns["tax-monitor-transcript-support"]("floatingButton", {
-      calLink: "tax-monitor-pro/tax-monitor-transcript-support",
-      buttonText: "Book Transcript Support",
-      config: {
-        layout: "month_view",
-        useSlotsViewOnSmallScreen: "true"
-      }
-    });
-  </script>
+      });
+    </script>
  </body>
 </html>
-
