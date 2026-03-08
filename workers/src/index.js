@@ -2,7 +2,7 @@
  * Transcript Tax Monitor Pro — Cloudflare Worker
  *
  * Routes:
- * - GET  /health
+ * - GET  /api/health
  * - GET  /transcript/prices
  * - POST /transcript/checkout
  * - GET  /transcript/tokens?tokenId=...
@@ -2693,7 +2693,7 @@ export default {
       }
     }
 
-    if (request.method === "GET" && isPath(url, "/health")) {
+    if (request.method === "GET" && isPath(url, "/api/health")) {
       return jsonResponse({ ok: true, service: "transcript-tax-monitor-pro-api" }, { status: 200 });
     }
 
