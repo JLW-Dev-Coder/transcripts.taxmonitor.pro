@@ -278,9 +278,9 @@
 
       function getBalanceValue(data) {
         if (!data || typeof data !== 'object') return 0;
+        if (typeof data.balance === 'number') return data.balance;
         if (typeof data.credits === 'number') return data.credits;
         if (typeof data.remainingCredits === 'number') return data.remainingCredits;
-        if (typeof data.balance === 'number') return data.balance;
         if (typeof data.tokens === 'number') return data.tokens;
         return 0;
       }
@@ -319,13 +319,23 @@
         if (accountMobile) accountMobile.classList.remove('hidden');
       }
 
+      function shouldHydrateAuth() {
+        var body = document.body;
+        if (!body) return false;
+
+        var attr = body.getAttribute('data-auth-header');
+        if (attr === 'true' || attr === '1') return true;
+
+        return false;
+      }
+
       function wireSignout(link) {
         if (!link) return;
         link.addEventListener('click', function (e) {
           e.preventDefault();
           fetch(buildUrl('/api/transcripts/sign-out'), {
-            method: 'POST',
-            credentials: 'include'
+            credentials: 'include',
+            method: 'POST'
           }).finally(function () {
             window.location.href = '/index.html';
           });
@@ -413,9 +423,11 @@
         }
       }
 
-      hydrate();
+      showLoggedOut();
+
+      if (shouldHydrateAuth()) {
+        hydrate();
+      }
     })();
   </script>
 </header>
-
-
