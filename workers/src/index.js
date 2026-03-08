@@ -551,6 +551,35 @@ async function stripeFetch(env, method, path, bodyObj = null, extraHeaders = {})
   return data;
 }
 
+function getTranscriptCreditMap(env) {
+  const raw = String(env.CREDIT_MAP_JSON || "").trim();
+  if (!raw) throw new Error("Missing CREDIT_MAP_JSON");
+
+  const parsed = JSON.parse(raw);
+  if (!parsed || typeof parsed !== "object") {
+    throw new Error("Invalid CREDIT_MAP_JSON");
+  }
+
+  return parsed;
+}
+
+function getCreditsForPriceId(env, priceId) {
+  const creditMap = getTranscriptCreditMap(env);
+  const credits = creditMap[String(priceId || "").trim()];
+  return typeof credits === "number" && Number.isFinite(credits) ? credits : null;
+}
+
+function buildPaymentMethodLabel(paymentMethod) {
+  const card = paymentMethod && paymentMethod.card ? paymentMethod.card : null;
+  if (!card) return "Not available";
+
+  const brandRaw = String(card.brand || "").trim();
+  const brand = brandRaw ? brandRaw.charAt(0).toUpperCase() + brandRaw.slice(1) : "Card";
+  const last4 = String(card.last4 || "").trim();
+
+  return last4 ? `${brand} • ${last4}` : brand;
+}
+
 async function verifyStripeSignature(env, sigHeader, rawBodyText) {
   const parts = sigHeader.split(",").map((p) => p.trim());
   const tPart = parts.find((p) => p.startsWith("t="));
@@ -937,14 +966,10 @@ async function createCanonicalSupportTicket(env, payload) {
     throw new Error("clickup_support_task_not_created");
   }
 
-  const supportIdField = CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.SUPPORT_ID;
-  const emailField = CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.EMAIL;
-  const eventIdField = CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.EVENT_ID;
-  const latestUpdateField = CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.LATEST_UPDATE;
-  const relatedOrderIdField = CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.RELATED_ORDER_ID;
-  const actionRequiredField = getTaskCustomField(supportTask, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.ACTION_REQUIRED);
-  const priorityField = getTaskCustomField(supportTask, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.PRIORITY);
-  const typeField = getTaskCustomField(supportTask, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.TYPE);
+  const fullSupportTask = await getClickUpTask(env, taskId);
+  const actionRequiredField = getTaskCustomField(fullSupportTask, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.ACTION_REQUIRED);
+  const priorityField = getTaskCustomField(fullSupportTask, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.PRIORITY);
+  const typeField = getTaskCustomField(fullSupportTask, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.TYPE);
 
   const actionRequiredOptionId = getDropdownOptionIdByName(
     actionRequiredField && actionRequiredField.type_config && actionRequiredField.type_config.options,
@@ -959,13 +984,13 @@ async function createCanonicalSupportTicket(env, payload) {
     supportTypeName
   );
 
-  await setClickUpCustomField(env, taskId, supportIdField, supportId);
-  await setClickUpCustomField(env, taskId, emailField, email);
-  await setClickUpCustomField(env, taskId, eventIdField, eventId);
-  await setClickUpCustomField(env, taskId, latestUpdateField, latestUpdate);
+  await setClickUpCustomField(env, taskId, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.SUPPORT_ID, supportId);
+  await setClickUpCustomField(env, taskId, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.EMAIL, email);
+  await setClickUpCustomField(env, taskId, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.EVENT_ID, eventId);
+  await setClickUpCustomField(env, taskId, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.LATEST_UPDATE, latestUpdate);
 
   if (String(payload && payload.relatedOrderId || "").trim()) {
-    await setClickUpCustomField(env, taskId, relatedOrderIdField, String(payload.relatedOrderId).trim());
+    await setClickUpCustomField(env, taskId, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.RELATED_ORDER_ID, String(payload.relatedOrderId).trim());
   }
 
   if (actionRequiredOptionId) {
@@ -980,7 +1005,6 @@ async function createCanonicalSupportTicket(env, payload) {
     await setClickUpCustomField(env, taskId, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.TYPE, typeOptionId);
   }
 
-  const fullSupportTask = await getClickUpTask(env, taskId);
   const refreshedRecord = {
     ...canonicalRecord,
     taskId,
@@ -1012,10 +1036,6 @@ async function createCanonicalSupportTicket(env, payload) {
   }
 
   return refreshedRecord;
-}/field/${encodeURIComponent(fieldId)}`, {
-    method: "POST",
-    body: JSON.stringify({ value }),
-  });
 }
 
 async function listClickUpTasksByList(env, listId, page = 0) {
@@ -1520,7 +1540,9 @@ async function handleCreateTranscriptCheckout(request, env) {
     });
   }
 
-  const successPath = successPathRaw === "/payment-confirmation" ? "/payment-confirmation" : "/payment-confirmation";
+  const successPath = successPathRaw === "/assets/payment-success.html"
+    ? "/assets/payment-success.html"
+    : "/assets/payment-success.html";
 
   try {
     const session = await stripeFetch(env, "POST", "/checkout/sessions", {
@@ -1537,6 +1559,86 @@ async function handleCreateTranscriptCheckout(request, env) {
     return json({ id: session.id, url: session.url }, 200, withCors(request));
   } catch (err) {
     return jsonError(request, 502, "checkout_temporarily_unavailable", String(err?.message || err));
+  }
+}
+
+async function handleGetTranscriptCheckoutStatus(request, url, env) {
+  const sessionId = String(url.searchParams.get("session_id") || "").trim();
+  const tokenIdFromQuery = String(url.searchParams.get("tokenId") || "").trim();
+
+  if (!sessionId) {
+    return json({ error: "missing_session_id", ok: false }, 400, withCors(request));
+  }
+
+  try {
+    const session = await stripeFetch(
+      env,
+      "GET",
+      `/checkout/sessions/${encodeURIComponent(sessionId)}?expand[]=payment_intent.payment_method&expand[]=line_items.data.price.product`
+    );
+
+    const metadata = session && session.metadata ? session.metadata : {};
+    const priceId = String(
+      metadata.priceId ||
+      (session && session.line_items && session.line_items.data && session.line_items.data[0] && session.line_items.data[0].price && session.line_items.data[0].price.id) ||
+      ""
+    ).trim();
+    const tokenId = String(metadata.tokenId || tokenIdFromQuery || "").trim();
+    const creditsAdded = priceId ? getCreditsForPriceId(env, priceId) : null;
+    const amountPaid = Number(session && (session.amount_total ?? session.amount_subtotal) ?? 0);
+    const currency = String(session && session.currency || "usd").trim();
+    const quantityRaw = session && session.line_items && session.line_items.data && session.line_items.data[0] ? session.line_items.data[0].quantity : 1;
+    const quantity = Number.isFinite(Number(quantityRaw)) ? Number(quantityRaw) : 1;
+    const productName = String(
+      metadata.productLabel ||
+      (session && session.line_items && session.line_items.data && session.line_items.data[0] && session.line_items.data[0].description) ||
+      (session && session.line_items && session.line_items.data && session.line_items.data[0] && session.line_items.data[0].price && session.line_items.data[0].price.product && session.line_items.data[0].price.product.name) ||
+      "Transcript credits"
+    ).trim();
+    const paymentMethod = session && session.payment_intent && session.payment_intent.payment_method
+      ? session.payment_intent.payment_method
+      : null;
+    const paymentMethodLabel = buildPaymentMethodLabel(paymentMethod);
+    const paymentStatus = String(session && session.payment_status || session && session.status || "unpaid").trim().toLowerCase();
+    const receiptNumber = String(session && (session.client_reference_id || session.id) || sessionId).trim();
+    const datePaidValue = session && (session.created ? Number(session.created) * 1000 : Date.now());
+    const datePaid = new Date(datePaidValue).toISOString();
+
+    let balance = null;
+    if (tokenId) {
+      try {
+        const stub = getLedgerStub(env, tokenId);
+        const balanceRes = await stub.fetch("https://ledger/balance", { method: "GET" });
+        const balanceOut = await balanceRes.json().catch(() => ({}));
+        if (typeof balanceOut.balance === "number") {
+          balance = balanceOut.balance;
+        }
+      } catch (_) {
+        balance = null;
+      }
+    }
+
+    return json(
+      {
+        amountPaid,
+        balance,
+        creditsAdded,
+        currency,
+        datePaid,
+        ok: true,
+        paymentMethodLabel,
+        paymentStatus,
+        productLabel: productName,
+        quantity,
+        receiptNumber,
+        sessionId: String(session && session.id || sessionId),
+        tokenId,
+      },
+      200,
+      withCors(request)
+    );
+  } catch (err) {
+    return jsonError(request, 502, "checkout_status_unavailable", String(err?.message || err));
   }
 }
 
@@ -2476,6 +2578,10 @@ export default {
           return await handleTranscriptMagicLinkVerify(request, url, env);
         }
 
+        if (request.method === "GET" && isPath(url, "/api/transcripts/checkout/status")) {
+          return await handleGetTranscriptCheckoutStatus(request, url, env);
+        }
+
         if (request.method === "GET" && isPath(url, "/api/transcripts/me")) {
           return await handleGetTranscriptMe(request, env);
         }
@@ -2597,9 +2703,6 @@ export default {
       try {
         return await handlePostHelpTickets(request, env);
       } catch (err) {
-        return jsonError(request, 500, "internal_error", String(err?.message || err));
-      }
-    } catch (err) {
         return jsonError(request, 500, "internal_error", String(err?.message || err));
       }
     }
