@@ -1,4 +1,3 @@
-<!-- app-dashboard.html -->
 <!doctype html>
 <html lang="en" class="h-full">
 <head>
@@ -99,11 +98,11 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+      background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
       color: #020617;
       font-size: 14px;
       font-weight: 800;
-      box-shadow: 0 14px 30px rgba(139, 92, 246, 0.28);
+      box-shadow: 0 14px 30px rgba(99, 102, 241, 0.22);
     }
 
     .brand-copy strong {
@@ -278,20 +277,21 @@
     .btn:hover { transform: translateY(-1px); }
 
     .btn-primary {
-      background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+      background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
       color: white;
-      box-shadow: 0 14px 30px rgba(99, 102, 241, 0.20);
+      box-shadow: 0 16px 34px rgba(99, 102, 241, 0.22);
     }
 
     .btn-secondary {
-      background: rgba(139, 92, 246, 0.10);
-      border-color: rgba(139, 92, 246, 0.24);
-      color: #ddd6fe;
+      background: rgba(15, 23, 42, 0.66);
+      border-color: rgba(168, 85, 247, 0.22);
+      color: #ede9fe;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
     }
 
     .btn-danger {
-      background: rgba(239, 68, 68, 0.10);
-      border-color: rgba(239, 68, 68, 0.24);
+      background: rgba(127, 29, 29, 0.22);
+      border-color: rgba(248, 113, 113, 0.22);
       color: #fecaca;
     }
 
@@ -354,23 +354,26 @@
     }
 
     .workflow-step {
-      background: rgba(2, 6, 23, 0.30);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 16px;
+      background: rgba(2, 6, 23, 0.34);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 18px;
       padding: 16px;
       text-align: center;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
     }
 
     .workflow-step .icon-wrap {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       margin: 0 auto 10px;
-      border-radius: 12px;
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(139, 92, 246, 0.18);
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.22) 0%, rgba(124, 58, 237, 0.14) 100%);
       color: #c4b5fd;
+      border: 1px solid rgba(168, 85, 247, 0.24);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 10px 24px rgba(124, 58, 237, 0.14);
     }
 
     .workflow-step .label {
@@ -388,10 +391,11 @@
     }
 
     .metric {
-      background: rgba(2, 6, 23, 0.30);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 16px;
+      background: rgba(2, 6, 23, 0.34);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 18px;
       padding: 16px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
     }
 
     .metric-label {
@@ -677,10 +681,14 @@
 </head>
 <body class="h-full">
   <div class="app-shell">
-    <aside id="sidebarMount" class="sidebar"></aside>
+    <aside class="sidebar">
+      <!-- PARTIAL:app-sidebar -->
+    </aside>
 
     <div class="main-shell">
-      <header id="topbarMount" class="topbar"></header>
+      <header class="topbar">
+        <!-- PARTIAL:app-topbar -->
+      </header>
 
       <main class="workspace">
         <section id="dashboardPage" class="page active">
@@ -688,35 +696,62 @@
             <div class="stack">
               <div class="card hero-card">
                 <div class="card-body">
-                  <h2 class="card-title">Start processing transcripts</h2>
-                  <p class="card-desc">This keeps the Canva-style shell, but the wiring stays disciplined. Auth loads from <code>/api/transcripts/me</code>, reports from <code>/api/transcripts/reports</code>, receipts from <code>/api/transcripts/purchases</code>, and parser flow can plug into <code>/api/transcripts/preview</code> later without turning the dashboard into spaghetti.</p>
+                  <h2 class="card-title">Create a new transcript report</h2>
+                  <p class="card-desc">Upload an IRS transcript, preview the finished report, print it when ready, and keep a clean history of completed work in your account.</p>
 
                   <div class="workflow-grid">
                     <div class="workflow-step">
-                      <div class="icon-wrap"><i data-lucide="upload-cloud"></i></div>
-                      <div class="label">Upload<br />Transcript</div>
+                      <div class="icon-wrap">
+                        <svg class="w-7 h-7 block" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid meet" style="width:22px;height:22px;">
+                          <path d="M8 6h10" />
+                          <path d="M8 10h10" />
+                          <path d="M8 14h6" />
+                          <path d="M6 6v12a2 2 0 0 0 2 2h10" />
+                          <path d="M16 18l2 2 4-4" />
+                        </svg>
+                      </div>
+                      <div class="label">Upload<br />IRS Transcript</div>
                     </div>
                     <div class="workflow-step">
-                      <div class="icon-wrap"><i data-lucide="eye"></i></div>
-                      <div class="label">Preview<br />Report</div>
+                      <div class="icon-wrap">
+                        <svg class="w-7 h-7 block" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid meet" style="width:22px;height:22px;">
+                          <path d="M7 8h10" />
+                          <path d="M7 12h6" />
+                          <path d="M7 16h8" />
+                          <path d="M5 4h14a2 2 0 0 1 2 2v13a1 1 0 0 1-1 1H7l-4 3V6a2 2 0 0 1 2-2Z" />
+                        </svg>
+                      </div>
+                      <div class="label">Review<br />Parsed Data</div>
                     </div>
                     <div class="workflow-step">
-                      <div class="icon-wrap"><i data-lucide="printer"></i></div>
-                      <div class="label">Print<br />Report</div>
+                      <div class="icon-wrap">
+                        <svg class="w-7 h-7 block" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid meet" style="width:22px;height:22px;">
+                          <path d="M8 10h8" />
+                          <path d="M8 14h5" />
+                          <path d="M21 12a8.5 8.5 0 0 1-8.5 8.5c-1.7 0-3.3-.5-4.7-1.3L3 21l1.8-4.8A8.5 8.5 0 1 1 21 12Z" />
+                        </svg>
+                      </div>
+                      <div class="label">Preview<br />Client Report</div>
                     </div>
                     <div class="workflow-step">
-                      <div class="icon-wrap"><i data-lucide="archive"></i></div>
-                      <div class="label">Access<br />History</div>
+                      <div class="icon-wrap">
+                        <svg class="w-7 h-7 block" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" preserveAspectRatio="xMidYMid meet" style="width:22px;height:22px;">
+                          <path d="M6 18h12" />
+                          <path d="M8 22h8" />
+                          <path d="M12 2a7 7 0 0 1 7 7c0 2.2-1 3.7-2.2 5.1-.6.7-.9 1.4-1.1 2.2H8.3c-.2-.8-.5-1.5-1.1-2.2C6 12.7 5 11.2 5 9a7 7 0 0 1 7-7Z" />
+                        </svg>
+                      </div>
+                      <div class="label">Print &amp;<br />Save History</div>
                     </div>
                   </div>
 
                   <div class="button-row">
-                    <a href="/index.html#how-it-works" class="btn btn-primary">Open Parse Flow</a>
-                    <a href="/assets/report.html" class="btn btn-secondary">Open Report Shell</a>
+                    <a href="/index.html#how-it-works" class="btn btn-primary">Open Transcript Parser</a>
+                    <a href="/assets/report.html" class="btn btn-secondary">Open Report Layout</a>
                   </div>
 
                   <div class="info-box">
-                    One token should be spent when you create a preview through <strong>/api/transcripts/preview</strong>. Printing should then finalize through <strong>/api/transcripts/report/:reportId/print-complete</strong>. Humans adore turning one clean loop into six messy ones, so this is the part worth protecting.
+                    Previewing a report uses one token. Printing the finished report marks it complete and stores it in your report history for future access.
                   </div>
                 </div>
               </div>
@@ -724,18 +759,18 @@
               <div class="card">
                 <div class="card-body">
                   <h2 class="card-title">Upload transcript</h2>
-                  <p class="card-desc">UI shell only for now. Keep parser and local PDF logic separate, then post normalized report data into the Worker once the transcript preview loop is ready.</p>
+                  <p class="card-desc">Use this workspace to begin a new report. The live parser flow can stay local, then hand the normalized report object to the Worker when preview is ready.</p>
 
                   <div class="upload-area">
                     <i data-lucide="file-up"></i>
-                    <div class="upload-title">Drop transcript PDF here</div>
-                    <div class="upload-copy">This dashboard keeps the layout ready, but it does not fake parser behavior. That saves you from debugging decorative lies later.</div>
+                    <div class="upload-title">Upload IRS transcript PDF</div>
+                    <div class="upload-copy">PDF only. Once parsed, the report preview should open in the canonical report page and stay available from your report history.</div>
                   </div>
 
                   <div class="button-row">
-                    <button type="button" class="btn btn-secondary" data-toast="Extract raw text will connect to your local parser flow.">Extract Raw Text</button>
-                    <button type="button" class="btn btn-secondary" data-toast="Parse structured data will connect to your local parser flow.">Parse Structured Data</button>
-                    <button type="button" class="btn btn-secondary" data-toast="Preview report should ultimately POST to /api/transcripts/preview.">Preview Report</button>
+                    <button type="button" class="btn btn-secondary" data-toast="Extract raw text will connect to your local transcript parser.">Extract Raw Text</button>
+                    <button type="button" class="btn btn-secondary" data-toast="Parse structured data will connect to your local transcript parser.">Parse Structured Data</button>
+                    <button type="button" class="btn btn-secondary" data-toast="Preview report should POST normalized report data to /api/transcripts/preview.">Preview Report</button>
                   </div>
                 </div>
               </div>
@@ -745,7 +780,7 @@
                   <div class="section-header">
                     <div>
                       <h2 class="card-title">Recent report history</h2>
-                      <p class="card-desc">Live authenticated data from the Worker, not made-up dashboard confetti.</p>
+                      <p class="card-desc">Open saved reports, review print status, and return to recent client work quickly.</p>
                     </div>
                     <button type="button" class="btn btn-secondary" data-page-jump="reports">View all</button>
                   </div>
@@ -777,8 +812,8 @@
             <div class="stack">
               <div class="card">
                 <div class="card-body">
-                  <h2 class="card-title">Account status</h2>
-                  <p class="card-desc">Authenticated app state from <code>/api/transcripts/me</code>.</p>
+                  <h2 class="card-title">Your account</h2>
+                <p class="card-desc">Review your signed-in details, token balance, and core account information.</p>
 
                   <div class="metrics-grid">
                     <div class="metric">
@@ -797,8 +832,8 @@
 
               <div class="card">
                 <div class="card-body">
-                  <h2 class="card-title">Purchase history</h2>
-                  <p class="card-desc">Receipt-level account history from <code>/api/transcripts/purchases</code>.</p>
+                  <h2 class="card-title">Credit purchase history</h2>
+                  <p class="card-desc">Review completed credit purchases and confirm that new credits were applied to your account.</p>
 
                   <div id="purchasesEmpty" class="empty-state hidden">No purchases found yet.</div>
 
@@ -824,8 +859,8 @@
 
               <div class="card">
                 <div class="card-body">
-                  <h2 class="card-title">Support links</h2>
-                  <p class="card-desc">Useful exits, because not every page needs to cosplay as the entire application.</p>
+                  <h2 class="card-title">Help and support</h2>
+                  <p class="card-desc">Need help with transcript reports, purchases, or account access? Start with the right support path below.</p>
                   <div class="support-links">
                     <a href="/contact.html" class="support-link"><span>Contact support</span><span>→</span></a>
                     <a href="/legal/privacy.html" class="support-link"><span>Privacy policy</span><span>→</span></a>
@@ -843,7 +878,7 @@
               <div class="section-header">
                 <div>
                   <h2 class="card-title">Reports history</h2>
-                  <p class="card-desc">Same Worker data, just expanded into its own page instead of hiding everything in one dashboard block like a junk drawer.</p>
+                  <p class="card-desc">Review saved reports, reopen prior work, and confirm whether each report has been printed and finalized.</p>
                 </div>
               </div>
 
@@ -876,7 +911,7 @@
             <div class="card">
               <div class="card-body">
                 <h2 class="card-title">Receipt summary</h2>
-                <p class="card-desc">Latest purchase state at a glance. Keep the pretty receipt styling on the dedicated receipt page later. Here we stay contract-safe and useful.</p>
+                <p class="card-desc">See your latest purchase state at a glance, including current tokens and most recent payment status.</p>
 
                 <div class="detail-list">
                   <div class="detail-row">
@@ -898,7 +933,7 @@
             <div class="card">
               <div class="card-body">
                 <h2 class="card-title">Purchase history</h2>
-                <p class="card-desc">Worker-backed receipts list for the authenticated token account.</p>
+                <p class="card-desc">Review your receipt history and verify completed credit purchases tied to this account.</p>
 
                 <div id="receiptsPageEmpty" class="empty-state hidden">No purchases found yet.</div>
 
@@ -929,10 +964,10 @@
             <div class="card">
               <div class="card-body">
                 <h2 class="card-title">Support</h2>
-                <p class="card-desc">Dedicated help space without shoving support tickets into the dashboard just because empty white space made somebody nervous.</p>
+                <p class="card-desc">Get help with transcript reports, account questions, and purchase issues from the appropriate support path.</p>
                 <div class="support-links">
-                  <a href="/contact.html" class="support-link"><span>Contact page</span><span>→</span></a>
-                  <a href="/contact.html" class="support-link"><span>Support page</span><span>→</span></a>
+                  <a href="/contact.html" class="support-link"><span>Contact support</span><span>→</span></a>
+                  <a href="/contact.html" class="support-link"><span>Open support page</span><span>→</span></a>
                   <a href="/legal/terms.html" class="support-link"><span>Terms &amp; privacy</span><span>→</span></a>
                 </div>
               </div>
@@ -940,8 +975,8 @@
 
             <div class="card">
               <div class="card-body">
-                <h2 class="card-title">Implementation note</h2>
-                <p class="card-desc">If you later add help tickets here, the Worker already has support-oriented routes in the newer transcript worker branch. That belongs here, not jammed into account or receipts where it has no business living.</p>
+                <h2 class="card-title">Response expectations</h2>
+                <p class="card-desc">For the fastest resolution, include the report ID, purchase date, or signed-in email when you contact support. That gives your team something concrete to work from instead of interpretive dance.</p>
               </div>
             </div>
           </div>
@@ -972,8 +1007,8 @@
 
             <div class="card">
               <div class="card-body">
-                <h2 class="card-title">Actions</h2>
-                <p class="card-desc">Keep billing and session actions here so the rest of the app can stay focused on transcript work.</p>
+                <h2 class="card-title">Account actions</h2>
+                <p class="card-desc">Buy more credits when needed or sign out of the current session.</p>
                 <div class="button-row">
                   <a href="/index.html#pricing" class="btn btn-primary">Manage Billing</a>
                   <button id="signOutBtnSecondary" type="button" class="btn btn-danger">Log Out</button>
@@ -997,34 +1032,6 @@
   </div>
 
   <script>
-    const PARTIAL_PATHS = {
-      sidebar: '/partials/app-sidebar.html',
-      topbar: '/partials/app-topbar.html'
-    };
-
-    const PAGE_META = {
-      account: {
-        desc: 'Manage core account state and session actions without muddying the report workflow.',
-        title: 'Account Settings'
-      },
-      dashboard: {
-        desc: 'Upload transcripts, generate reports, and manage your account without wrecking the Worker contract.',
-        title: 'Dashboard'
-      },
-      receipts: {
-        desc: 'Review purchase history and receipt-level account activity.',
-        title: 'Receipts'
-      },
-      reports: {
-        desc: 'View generated and finalized reports from the authenticated Worker history.',
-        title: 'Reports History'
-      },
-      support: {
-        desc: 'Get help, jump to support resources, and keep ticket workflow in the right place.',
-        title: 'Support'
-      }
-    };
-
     let latestMe = null;
     let latestPurchases = [];
     let latestReports = [];
@@ -1063,101 +1070,6 @@
 
     function showToast(message) {
       window.alert(String(message || 'Not wired yet.'));
-    }
-
-    async function loadHtmlIntoMount(mountId, url) {
-      const mount = document.getElementById(mountId);
-      if (!mount) return;
-
-      const fallbackMap = {
-        sidebarMount: `
-          <div class="sidebar-inner">
-            <a href="/index.html" class="brand">
-              <span class="brand-mark">TM</span>
-              <span class="brand-copy">
-                <strong>Transcript.Tax Monitor Pro</strong>
-                <span>App Workspace</span>
-              </span>
-            </a>
-
-            <div class="nav-section">
-              <div class="nav-title">Main</div>
-              <button type="button" class="nav-item active" data-page="dashboard">
-                <i data-lucide="layout-dashboard"></i>
-                <span>Dashboard</span>
-              </button>
-              <button type="button" class="nav-item" data-page="receipts">
-                <i data-lucide="receipt"></i>
-                <span>Receipts</span>
-              </button>
-              <button type="button" class="nav-item" data-page="reports">
-                <i data-lucide="file-text"></i>
-                <span>Reports History</span>
-              </button>
-            </div>
-
-            <div class="nav-section">
-              <div class="nav-title">Help &amp; Settings</div>
-              <button type="button" class="nav-item" data-page="account">
-                <i data-lucide="settings"></i>
-                <span>Account</span>
-              </button>
-              <button type="button" class="nav-item" data-page="support">
-                <i data-lucide="headphones"></i>
-                <span>Support</span>
-              </button>
-            </div>
-
-            <div class="sidebar-card">
-              <div class="sidebar-label">Signed in email</div>
-              <div id="sidebarEmail" class="sidebar-value">Loading...</div>
-              <div class="sidebar-subcopy">Session active</div>
-            </div>
-
-            <div class="sidebar-card">
-              <div class="sidebar-label">Token balance</div>
-              <div id="sidebarTokens" class="sidebar-value">—</div>
-            </div>
-          </div>
-        `,
-        topbarMount: `
-          <div class="topbar-inner">
-            <div>
-              <h1 id="pageTitle" class="topbar-title">Dashboard</h1>
-              <p id="pageDesc" class="topbar-desc">Upload transcripts, generate reports, and manage your account without wrecking the Worker contract.</p>
-            </div>
-
-            <div class="topbar-actions">
-              <a href="/index.html#pricing" class="btn btn-primary">Buy Credits</a>
-              <a href="/contact.html" class="btn btn-secondary">Support</a>
-              <button id="signOutBtn" type="button" class="btn btn-danger">Log Out</button>
-            </div>
-          </div>
-        `
-      };
-
-      const fallbackHtml = fallbackMap[mountId] || '';
-
-      try {
-        const response = await fetch(url, {
-          credentials: 'same-origin',
-          method: 'GET'
-        });
-
-        if (!response.ok) throw new Error('partial_request_failed');
-
-        const html = await response.text();
-        mount.innerHTML = String(html || '').trim() || fallbackHtml;
-      } catch (_) {
-        mount.innerHTML = fallbackHtml;
-      }
-    }
-
-    async function loadShellPartials() {
-      await Promise.all([
-        loadHtmlIntoMount('sidebarMount', PARTIAL_PATHS.sidebar),
-        loadHtmlIntoMount('topbarMount', PARTIAL_PATHS.topbar)
-      ]);
     }
 
     async function fetchJson(url) {
@@ -1392,7 +1304,6 @@
 
     async function boot() {
       document.getElementById('footerYear').textContent = String(new Date().getFullYear());
-      await loadShellPartials();
       wireNavigation();
       wireStaticButtons();
       switchPage('dashboard');
