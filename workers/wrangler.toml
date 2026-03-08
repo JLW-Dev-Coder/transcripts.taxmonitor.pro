@@ -30,15 +30,15 @@ binding = "R2_TRANSCRIPT"
 bucket_name = "transcript-taxmonitor-pro"
 
 [vars]
-CREDIT_MAP_JSON = "{\"price_1T83KXQEa4WBi79g8sD2NI7c\":10,\"price_1T84hAQEa4WBi79gCziLGXUD\":25,\"price_1T88lHQEa4WBi79gRkhxn2mv\":100}"
+CREDIT_MAP_JSON = "{\"price_1T83KXQEa4WBi79g8sD2NI7c\":10,\"price_1T84hAQEa4WBi79gCziLGXUD\":25,\"price_1T8pDtQEa4WBi79gWfSQwLgM\":100}"
 GOOGLE_CLIENT_EMAIL = "tax-monitor-worker@tax-monitor-pro.iam.gserviceaccount.com"
 GOOGLE_TOKEN_URI = "https://oauth2.googleapis.com/token"
 GOOGLE_WORKSPACE_USER_INFO = "info@taxmonitor.pro"
 GOOGLE_WORKSPACE_USER_NOREPLY = "no-reply@taxmonitor.pro"
 GOOGLE_WORKSPACE_USER_SUPPORT = "support@taxmonitor.pro"
 PRICE_10 = "price_1T83KXQEa4WBi79g8sD2NI7c"
-PRICE_100 = "price_1T88lHQEa4WBi79gRkhxn2mv"
-PRICE_25 = "price_1T8pDtQEa4WBi79gWfSQwLgM"
+PRICE_100 = "price_1T8pDtQEa4WBi79gWfSQwLgM"
+PRICE_25 = "price_1T84hAQEa4WBi79gCziLGXUD"
 TRANSCRIPT_RETURN_ORIGINS_JSON = "[\"https://transcript.taxmonitor.pro\"]"
 
 # Secrets (set using `wrangler secret put`)
