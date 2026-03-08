@@ -1,4 +1,3 @@
-<!-- app-dashboard.html -->
 <!doctype html>
 <html lang="en" class="h-full">
 <head>
@@ -758,8 +757,6 @@
                       <button id="parser-save-token" type="button" class="btn btn-secondary">Refresh Balance</button>
                     </div>
 
-                    
-
                     <div class="parser-info-box">
                       <div class="parser-balance-row" style="align-items:center;">
                         <div>
@@ -1014,8 +1011,6 @@
           </div>
         </section>
       </main>
-
-      
     </div>
   </div>
 
@@ -1023,8 +1018,6 @@
     let latestMe = null;
     let latestPurchases = [];
     let latestReports = [];
-
-    
 
     function escapeHtml(value) {
       return String(value == null ? '' : value)
@@ -1062,11 +1055,11 @@
       window.alert(String(message || 'Not wired yet.'));
     }
 
-    async function fetchJson(url) {
-      const response = await fetch(url, {
+    async function fetchJson(url, options) {
+      const response = await fetch(url, Object.assign({
         credentials: 'include',
         method: 'GET'
-      });
+      }, options || {}));
 
       if (response.status === 401) {
         window.location.href = '/sign-in.html';
@@ -1103,10 +1096,16 @@
       return [];
     }
 
-    function setAccountState(me) {
-      latestMe = me || {};
-      const email = firstDefined(me && me.email, me && me.user && me.user.email, 'Unknown');
-      const tokens = firstDefined(
+    function getMeEmail(me) {
+      return firstDefined(me && me.email, me && me.user && me.user.email, 'Unknown');
+    }
+
+    function getMeTokenId(me) {
+      return firstDefined(me && me.tokenId, me && me.user && me.user.tokenId, me && me.ledgerId, me && me.user && me.user.ledgerId, '');
+    }
+
+    function getMeTokens(me) {
+      const raw = firstDefined(
         me && me.tokenBalance,
         me && me.tokens,
         me && me.balance,
@@ -1115,22 +1114,41 @@
         me && me.user && me.user.tokenBalance,
         '0'
       );
+      return String(raw);
+    }
 
-      const updates = {
-        accountEmail: email,
-        accountTokens: tokens,
-        heroEmail: email,
-        heroTokens: tokens,
-        receiptSummaryEmail: email,
-        receiptSummaryTokens: tokens,
-        sidebarEmail: email,
-        sidebarTokens: tokens
-      };
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = String(value == null ? '' : value);
+    }
 
-      Object.keys(updates).sort().forEach(function (id) {
-        const el = document.getElementById(id);
-        if (el) el.textContent = String(updates[id]);
+    function setValue(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.value = String(value == null ? '' : value);
+    }
+
+    function setAccountState(me) {
+      latestMe = me || {};
+
+      const email = getMeEmail(latestMe);
+      const tokenId = getMeTokenId(latestMe);
+      const tokens = getMeTokens(latestMe);
+
+      [
+        ['accountEmail', email],
+        ['accountTokens', tokens],
+        ['parser-token-available', tokens],
+        ['receiptSummaryEmail', email],
+        ['receiptSummaryTokens', tokens],
+        ['sidebarEmail', email],
+        ['sidebarTokens', tokens]
+      ].sort(function (a, b) {
+        return a[0].localeCompare(b[0]);
+      }).forEach(function (entry) {
+        setText(entry[0], entry[1]);
       });
+
+      setValue('parser-token-id', tokenId || email);
     }
 
     function renderReportRows(tbodyId, reports) {
@@ -1232,13 +1250,11 @@
 
       const latest = latestPurchases[0] || null;
       const latestStatus = latest ? firstDefined(latest.status, latest.paymentStatus, 'completed') : '—';
-      const summary = document.getElementById('receiptSummaryStatus');
-      if (summary) summary.textContent = String(latestStatus);
+      setText('receiptSummaryStatus', latestStatus);
     }
 
     function switchPage(page) {
       const key = String(page || 'dashboard').trim().toLowerCase();
-      
 
       document.querySelectorAll('.page').forEach(function (el) {
         el.classList.toggle('active', el.id === key + 'Page');
@@ -1247,8 +1263,6 @@
       document.querySelectorAll('.nav-item').forEach(function (el) {
         el.classList.toggle('active', String(el.getAttribute('data-page') || '').trim().toLowerCase() === key);
       });
-
-      
 
       if (window.lucide && typeof window.lucide.createIcons === 'function') {
         window.lucide.createIcons();
@@ -1290,14 +1304,36 @@
         });
       });
 
+      const refreshBalanceBtn = document.getElementById('parser-save-token');
       const signOutBtn = document.getElementById('signOutBtn');
       const signOutBtnSecondary = document.getElementById('signOutBtnSecondary');
+
+      if (refreshBalanceBtn) {
+        refreshBalanceBtn.addEventListener('click', async function () {
+          refreshBalanceBtn.disabled = true;
+          const originalText = refreshBalanceBtn.textContent;
+          refreshBalanceBtn.textContent = 'Refreshing...';
+
+          try {
+            const me = await fetchJson('/api/transcripts/me');
+            setAccountState(me || {});
+          } catch (error) {
+            if (String(error && error.message || error) !== 'unauthorized') {
+              showToast('Failed to refresh balance. ' + String(error && error.message || error || 'unknown_error'));
+            }
+          } finally {
+            refreshBalanceBtn.disabled = false;
+            refreshBalanceBtn.textContent = originalText;
+          }
+        });
+      }
+
       if (signOutBtn) signOutBtn.addEventListener('click', signOut);
       if (signOutBtnSecondary) signOutBtnSecondary.addEventListener('click', signOut);
     }
 
     async function boot() {
-      document.getElementById('footerYear').textContent = String(new Date().getFullYear());
+      setText('footerYear', new Date().getFullYear());
       wireNavigation();
       wireStaticButtons();
       switchPage('dashboard');
