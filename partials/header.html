@@ -1,225 +1,221 @@
 <!-- partials/header.html -->
-<header class="sticky top-0 z-50 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur">
+<header class="sticky top-0 z-50 border-b border-blue-900/40 bg-navy/80 backdrop-blur text-white">
   <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
 
     <!-- Logo -->
     <a href="/index.html" class="flex items-center gap-3">
-      <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 text-slate-950 font-bold">
+      <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-navy font-bold">
         TM
       </span>
       <div class="flex flex-col leading-tight">
         <span class="font-semibold tracking-tight text-white">Transcript.Tax Monitor Pro</span>
-        <span class="text-xs text-slate-400">Transcript automation</span>
+        <span class="text-xs text-blue-300">Transcript automation</span>
       </div>
     </a>
 
-    <!-- Desktop Navigation -->
+    <!-- Desktop Header -->
     <div class="hidden items-center gap-10 md:flex">
 
+      <!-- Primary nav -->
       <nav class="flex items-center gap-8">
 
-        <!-- Primary -->
-        <a href="/about.html" class="text-sm text-slate-300 hover:text-white transition">About</a>
-        <a href="/index.html#features" class="text-sm text-slate-300 hover:text-white transition">Features</a>
-        <a href="/index.html#how-it-works" class="text-sm text-slate-300 hover:text-white transition">How It Works</a>
-        <a href="/index.html#pricing" class="text-sm text-slate-300 hover:text-white transition">Pricing</a>
-        <a href="/contact.html" class="text-sm text-slate-300 hover:text-white transition">Contact</a>
+        <a href="/about.html" class="text-sm text-blue-200 hover:text-white transition">About</a>
+        <a href="/index.html#features" class="text-sm text-blue-200 hover:text-white transition">Features</a>
+        <a href="/index.html#how-it-works" class="text-sm text-blue-200 hover:text-white transition">How It Works</a>
+        <a href="/index.html#pricing" class="text-sm text-blue-200 hover:text-white transition">Pricing</a>
+        <a href="/contact.html" class="text-sm text-blue-200 hover:text-white transition">Contact</a>
 
-        <!-- Resources Mega Menu -->
+        <!-- Resources -->
         <div class="relative">
           <button
             id="resources-toggle"
             type="button"
-            class="inline-flex items-center gap-2 text-sm text-slate-300 hover:text-white transition"
+            class="inline-flex items-center gap-2 text-sm text-blue-200 hover:text-white transition"
             aria-expanded="false"
             aria-controls="resources-menu"
           >
             Resources
             <svg class="h-4 w-4 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
             </svg>
           </button>
 
           <div
             id="resources-menu"
-            class="hidden absolute left-1/2 mt-3 w-[min(920px,calc(100vw-3rem))] -translate-x-1/2 rounded-2xl border border-slate-800/70 bg-slate-950 shadow-2xl"
+            class="hidden absolute left-1/2 mt-3 w-[min(520px,calc(100vw-3rem))] -translate-x-1/2 rounded-2xl border border-blue-900/40 bg-navy shadow-2xl"
           >
-            <div class="grid gap-4 p-4 lg:grid-cols-3">
+            <div class="grid gap-4 p-4">
+              <div class="rounded-xl border border-blue-900/40 bg-blue-950/10 p-4">
 
-              <!-- Discover -->
-              <div class="rounded-xl border border-slate-800/60 bg-slate-950/40 p-4">
-                <div class="text-xs font-semibold uppercase tracking-wide text-slate-400">Discover</div>
+                <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">
+                  Resources
+                </div>
+
                 <div class="mt-2 space-y-1">
 
-                  <a href="/resources/index.html" class="group flex items-start justify-between gap-3 rounded-lg px-3 py-2 hover:bg-slate-900 transition">
+                  <a href="/resources/index.html" class="group flex items-start justify-between gap-3 rounded-lg px-3 py-2 hover:bg-blue-950/20 transition">
                     <div>
-                      <div class="text-sm font-semibold text-slate-100 group-hover:text-white">Resources Hub</div>
-                      <div class="text-xs text-slate-400">Guides, workflows, comparisons, problems</div>
+                      <div class="text-sm font-semibold text-white">Resources Hub</div>
+                      <div class="text-xs text-blue-300">Guides, workflows, comparisons</div>
                     </div>
-                    <span class="text-slate-500 group-hover:text-purple-300 transition">→</span>
+                    <span class="text-blue-300/70 group-hover:text-white transition">→</span>
                   </a>
 
-                  <a href="/resources/transcript-codes.html" class="group flex items-start justify-between gap-3 rounded-lg px-3 py-2 hover:bg-slate-900 transition">
+                  <a href="/contact.html" class="group flex items-start justify-between gap-3 rounded-lg px-3 py-2 hover:bg-blue-950/20 transition">
                     <div>
-                      <div class="text-sm font-semibold text-slate-100 group-hover:text-white">Transcript Codes Database</div>
-                      <div class="text-xs text-slate-400">Search and filter every code page</div>
+                      <div class="text-sm font-semibold text-white">Support</div>
+                      <div class="text-xs text-blue-300">Contact the team</div>
                     </div>
-                    <span class="text-slate-500 group-hover:text-purple-300 transition">→</span>
+                    <span class="text-blue-300/70 group-hover:text-white transition">→</span>
                   </a>
 
-                  <a href="/resources/how-to-read-irs-transcripts.html" class="group flex items-start justify-between gap-3 rounded-lg px-3 py-2 hover:bg-slate-900 transition">
+                  <a href="https://taxmonitor.pro" class="group flex items-start justify-between gap-3 rounded-lg px-3 py-2 hover:bg-blue-950/20 transition">
                     <div>
-                      <div class="text-sm font-semibold text-slate-100 group-hover:text-white">How to Read IRS Transcripts</div>
-                      <div class="text-xs text-slate-400">Start here: layout, sequencing, pitfalls</div>
+                      <div class="text-sm font-semibold text-white">Tax Monitor Pro</div>
+                      <div class="text-xs text-blue-300">IRS monitoring</div>
                     </div>
-                    <span class="text-slate-500 group-hover:text-purple-300 transition">→</span>
+                    <span class="text-blue-300/70 group-hover:text-white transition">→</span>
                   </a>
 
-                  <a href="/index.html#use-cases" class="group flex items-start justify-between gap-3 rounded-lg px-3 py-2 hover:bg-slate-900 transition">
+                  <a href="https://taxtools.taxmonitor.pro" class="group flex items-start justify-between gap-3 rounded-lg px-3 py-2 hover:bg-blue-950/20 transition">
                     <div>
-                      <div class="text-sm font-semibold text-slate-100 group-hover:text-white">Use Cases</div>
-                      <div class="text-xs text-slate-400">See who this works for and when to use it</div>
+                      <div class="text-sm font-semibold text-white">TaxTools Arcade</div>
+                      <div class="text-xs text-blue-300">Simple and addicting tax games</div>
                     </div>
-                    <span class="text-slate-500 group-hover:text-purple-300 transition">→</span>
+                    <span class="text-blue-300/70 group-hover:text-white transition">→</span>
                   </a>
 
                 </div>
               </div>
-
-              <!-- Transcript Types -->
-              <div class="rounded-xl border border-slate-800/60 bg-slate-950/40 p-4">
-                <div class="text-xs font-semibold uppercase tracking-wide text-slate-400">Transcript types</div>
-                <div class="mt-2 space-y-1">
-                  <!-- Alphabetical -->
-                  <a href="/resources/transcript-types.html" class="block rounded-lg px-3 py-2 text-sm text-slate-200 hover:bg-slate-900 transition">Account Transcript</a>
-                  <a href="/resources/transcript-types.html" class="block rounded-lg px-3 py-2 text-sm text-slate-200 hover:bg-slate-900 transition">Record of Account Transcript</a>
-                  <a href="/resources/transcript-types.html" class="block rounded-lg px-3 py-2 text-sm text-slate-200 hover:bg-slate-900 transition">Return Transcript</a>
-                  <a href="/resources/transcript-types.html" class="block rounded-lg px-3 py-2 text-sm text-slate-200 hover:bg-slate-900 transition">Tax Compliance Transcript</a>
-                  <a href="/resources/transcript-types.html" class="block rounded-lg px-3 py-2 text-sm text-slate-200 hover:bg-slate-900 transition">Tax Return vs Account Transcript</a>
-                  <a href="/resources/transcript-types.html" class="block rounded-lg px-3 py-2 text-sm text-slate-200 hover:bg-slate-900 transition">Wage and Income Transcript</a>
-                </div>
-              </div>
-
-              <!-- Tools + Extras -->
-              <div class="rounded-xl border border-slate-800/60 bg-slate-950/40 p-4">
-                <div class="text-xs font-semibold uppercase tracking-wide text-slate-400">Tools &amp; extras</div>
-                <div class="mt-2 space-y-1">
-                  <!-- Alphabetical -->
-                                    <a href="/magnets/lead-magnet.html" class="block rounded-lg px-3 py-2 text-sm text-slate-200 hover:bg-slate-900 transition">Code Guide</a>
-                  <a href="/contact.html" class="block rounded-lg px-3 py-2 text-sm text-slate-200 hover:bg-slate-900 transition">Contact</a>
-                  <a href="/resources/transcript-orders.html" class="block rounded-lg px-3 py-2 text-sm text-slate-200 hover:bg-slate-900 transition">Order Walkthrough</a>
-                  <a href="https://taxmonitor.pro" target="_blank" rel="noopener" class="block rounded-lg px-3 py-2 text-sm text-slate-200 hover:bg-slate-900 transition">Tax Monitor Pro</a>
-                  <a href="https://taxtools.taxmonitor.pro" target="_blank" rel="noopener" class="block rounded-lg px-3 py-2 text-sm text-slate-200 hover:bg-slate-900 transition">TaxTools Arcade</a>
-                </div>
-
-                <div class="mt-4 rounded-xl border border-slate-800/60 bg-slate-950/60 p-4">
-                  <div class="text-xs text-slate-400">Want the deliverable clients actually understand?</div>
-                  <div class="mt-3 flex flex-col gap-2">
-                    <a
-                      href="/index.html#how-it-works"
-                      class="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white hover:from-purple-400 hover:to-purple-500 transition"
-                    >
-                      Generate a report →
-                    </a>
-                    <a
-                      href="/assets/report-preview.html"
-                      class="inline-flex items-center justify-center rounded-lg border border-slate-800/70 bg-slate-950/40 px-4 py-2 text-sm font-semibold text-slate-200 hover:bg-slate-900 transition"
-                    >
-                      View sample report
-                    </a>
-                  </div>
-                </div>
-              </div>
-
             </div>
           </div>
         </div>
+
       </nav>
 
-      <div class="h-6 w-px bg-slate-700"></div>
+      <!-- Divider -->
+      <div class="h-6 w-px bg-white/20"></div>
 
-      <div class="flex items-center gap-3">
-        <a
-          href="/sign-in.html"
-          class="inline-flex items-center justify-center rounded-lg border border-slate-700 bg-slate-900/60 px-4 py-2 text-sm font-semibold text-slate-200 hover:bg-slate-800 hover:text-white transition"
-        >
+      <!-- Account area -->
+      <div class="flex items-center gap-6">
+
+        <!-- Login (shown logged out) -->
+        <a id="login-link"
+           href="/sign-in.html"
+           class="text-sm text-blue-200 hover:text-white transition">
           Sign In
         </a>
-        <a
-          href="/magnets/lead-magnet.html"
-          class="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white hover:from-purple-400 hover:to-purple-500 transition"
-        >
-          Get Free Guide →
-        </a>
+
+        <!-- Credits -->
+        <div id="token-pill"
+          class="hidden items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-3 py-2 text-xs text-blue-100">
+          <span class="text-blue-300">Credits:</span>
+          <span id="token-balance" class="font-semibold text-white">0</span>
+        </div>
+
+        <!-- Account dropdown -->
+        <div id="account-wrap" class="relative hidden">
+
+          <button
+            id="account-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="account-menu"
+            class="flex items-center gap-2 text-sm text-blue-200 hover:text-white transition"
+          >
+            <span id="auth-email"></span>
+
+            <svg class="h-4 w-4 opacity-70" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+
+          <div
+            id="account-menu"
+            class="hidden absolute right-0 mt-3 w-56 rounded-xl border border-blue-900/40 bg-navy shadow-xl"
+          >
+
+            <div class="border-b border-blue-900/40 px-4 py-3 text-xs text-blue-300">
+              Signed in as<br>
+              <span id="auth-email-menu" class="font-semibold text-white"></span>
+            </div>
+
+            <a href="/app/index.html"
+               class="block px-4 py-3 text-sm text-blue-200 hover:bg-blue-950/20">
+               Dashboard
+            </a>
+
+            <a id="signout-link"
+               href="#"
+               class="block px-4 py-3 text-sm text-blue-200 hover:bg-blue-950/20">
+               Sign out
+            </a>
+
+          </div>
+
+        </div>
+
       </div>
 
     </div>
 
     <!-- Mobile Toggle -->
     <button
-      id="menu-toggle"
-      class="md:hidden inline-flex items-center justify-center rounded-lg p-2 text-slate-300 hover:text-white"
+      id="mobile-menu-btn"
+      class="md:hidden inline-flex items-center justify-center rounded-lg p-2 text-blue-200 hover:bg-blue-950/40 hover:text-white"
       aria-expanded="false"
       type="button"
     >
       <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
       </svg>
     </button>
 
   </div>
 
   <!-- Mobile Menu -->
-  <div id="mobile-menu" class="hidden border-t border-slate-800 bg-slate-950 md:hidden">
+  <div id="mobile-menu" class="hidden border-t border-blue-900/40 bg-navy md:hidden">
     <div class="flex flex-col gap-4 px-6 py-6 text-sm">
 
-      <a href="/about.html" class="text-slate-300 hover:text-white transition">About</a>
-      <a href="/index.html#features" class="text-slate-300 hover:text-white transition">Features</a>
-      <a href="/index.html#how-it-works" class="text-slate-300 hover:text-white transition">How It Works</a>
-      <a href="/index.html#pricing" class="text-slate-300 hover:text-white transition">Pricing</a>
-      <a href="/contact.html" class="text-slate-300 hover:text-white transition">Contact</a>
+      <a href="/about.html" class="text-blue-200 hover:text-white transition">About</a>
+      <a href="/index.html#features" class="text-blue-200 hover:text-white transition">Features</a>
+      <a href="/index.html#how-it-works" class="text-blue-200 hover:text-white transition">How It Works</a>
+      <a href="/index.html#pricing" class="text-blue-200 hover:text-white transition">Pricing</a>
+      <a href="/contact.html" class="text-blue-200 hover:text-white transition">Contact</a>
 
-      <!-- Mobile Resources -->
-      <button
-        id="mobile-resources-toggle"
-        class="flex items-center justify-between rounded-lg border border-slate-800 px-4 py-3 text-left text-slate-200 hover:bg-slate-900 transition"
-        aria-expanded="false"
-        type="button"
-      >
-        <span>Resources</span>
-        <svg class="h-4 w-4 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
+      <div class="border-t border-blue-900/40 pt-4">
 
-      <div id="mobile-resources-menu" class="hidden pl-2 flex flex-col gap-2">
-        <!-- Alphabetical -->
-                <a href="/magnets/lead-magnet.html" class="rounded-lg px-4 py-2 text-slate-300 hover:text-white hover:bg-slate-900 transition">Code Guide</a>
-        <a href="/resources/how-to-read-irs-transcripts.html" class="rounded-lg px-4 py-2 text-slate-300 hover:text-white hover:bg-slate-900 transition">How to Read IRS Transcripts</a>
-        <a href="/resources/index.html" class="rounded-lg px-4 py-2 text-slate-300 hover:text-white hover:bg-slate-900 transition">Resources Hub</a>
-        <a href="https://taxmonitor.pro" target="_blank" rel="noopener" class="rounded-lg px-4 py-2 text-slate-300 hover:text-white hover:bg-slate-900 transition">Tax Monitor Pro</a>
-        <a href="https://taxtools.taxmonitor.pro" target="_blank" rel="noopener" class="rounded-lg px-4 py-2 text-slate-300 hover:text-white hover:bg-slate-900 transition">TaxTools Arcade</a>
-        <a href="/resources/transcript-codes.html" class="rounded-lg px-4 py-2 text-slate-300 hover:text-white hover:bg-slate-900 transition">Transcript Codes Database</a>
-        <a href="/resources/transcript-orders.html" class="rounded-lg px-4 py-2 text-slate-300 hover:text-white hover:bg-slate-900 transition">Order Walkthrough</a>
-        <a href="/resources/transcript-types.html" class="rounded-lg px-4 py-2 text-slate-300 hover:text-white hover:bg-slate-900 transition">Transcript Types</a>
-        <a href="/index.html#use-cases" class="rounded-lg px-4 py-2 text-slate-300 hover:text-white hover:bg-slate-900 transition">Use Cases</a>
-      </div>
+        <a id="login-link-mobile"
+           href="/sign-in.html"
+           class="text-blue-200 hover:text-white transition">
+          Sign In
+        </a>
 
-      <div class="border-t border-slate-800 pt-4 mt-2">
-        <div class="flex flex-col gap-3">
-          <a
-            href="/sign-in.html"
-            class="inline-flex w-full items-center justify-center rounded-lg border border-slate-700 bg-slate-900/60 px-4 py-3 font-semibold text-slate-200 hover:bg-slate-800 hover:text-white transition"
-          >
-            Sign In
-          </a>
-          <a
-            href="/magnets/lead-magnet.html"
-            class="inline-flex w-full items-center justify-center rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 px-4 py-3 font-semibold text-white hover:from-purple-400 hover:to-purple-500 transition"
-          >
-            Get Free Guide →
-          </a>
+        <div id="token-pill-mobile"
+          class="hidden mt-4 items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-4 py-3 text-xs text-blue-100">
+          <span class="text-blue-300">Credits:</span>
+          <span id="token-balance-mobile" class="font-semibold text-white">0</span>
         </div>
+
+        <div id="account-mobile"
+             class="hidden mt-4 text-sm text-blue-200">
+
+          <div class="text-xs text-blue-300">Signed in as</div>
+          <div id="auth-email-mobile" class="font-semibold text-white"></div>
+
+          <a href="/app/index.html"
+             class="mt-2 block text-blue-300 underline hover:text-white">
+             Dashboard
+          </a>
+
+          <a id="signout-link-mobile"
+             href="#"
+             class="mt-2 block text-blue-300 underline hover:text-white">
+             Sign out
+          </a>
+
+        </div>
+
       </div>
 
     </div>
@@ -227,71 +223,197 @@
 
   <script>
     (function () {
-      var toggle = document.getElementById('menu-toggle');
+      var API = window.TRANSCRIPT_API_BASE || '';
+
+      var login = document.getElementById('login-link');
+      var loginMobile = document.getElementById('login-link-mobile');
+
+      var token = document.getElementById('token-pill');
+      var tokenMobile = document.getElementById('token-pill-mobile');
+
+      var account = document.getElementById('account-wrap');
+      var accountMobile = document.getElementById('account-mobile');
+
+      var email = document.getElementById('auth-email');
+      var emailMenu = document.getElementById('auth-email-menu');
+      var emailMobile = document.getElementById('auth-email-mobile');
+
+      var balance = document.getElementById('token-balance');
+      var balanceMobile = document.getElementById('token-balance-mobile');
+
+      var accountToggle = document.getElementById('account-toggle');
+      var accountMenu = document.getElementById('account-menu');
+
+      var mobileMenuBtn = document.getElementById('mobile-menu-btn');
       var mobileMenu = document.getElementById('mobile-menu');
 
       var resourcesToggle = document.getElementById('resources-toggle');
       var resourcesMenu = document.getElementById('resources-menu');
 
-      var mobileResourcesToggle = document.getElementById('mobile-resources-toggle');
-      var mobileResourcesMenu = document.getElementById('mobile-resources-menu');
+      var signout = document.getElementById('signout-link');
+      var signoutMobile = document.getElementById('signout-link-mobile');
 
-      toggle && toggle.addEventListener('click', function () {
-        var isHidden = mobileMenu.classList.toggle('hidden');
-        toggle.setAttribute('aria-expanded', String(!isHidden));
-      });
+      function setExpanded(btn, isOpen) {
+        if (!btn) return;
+        btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      }
 
-      resourcesToggle && resourcesToggle.addEventListener('click', function (e) {
-        e.preventDefault();
-        var isHidden = resourcesMenu.classList.toggle('hidden');
-        resourcesToggle.setAttribute('aria-expanded', String(!isHidden));
-      });
+      function closeMenu(btn, menu) {
+        if (!menu) return;
+        menu.classList.add('hidden');
+        setExpanded(btn, false);
+      }
 
-      mobileResourcesToggle && mobileResourcesToggle.addEventListener('click', function () {
-        var isHidden = mobileResourcesMenu.classList.toggle('hidden');
-        mobileResourcesToggle.setAttribute('aria-expanded', String(!isHidden));
-      });
+      function toggleMenu(btn, menu, otherBtn, otherMenu) {
+        if (!btn || !menu) return;
+        var willOpen = menu.classList.contains('hidden');
+        if (otherMenu) closeMenu(otherBtn, otherMenu);
+        menu.classList.toggle('hidden', !willOpen);
+        setExpanded(btn, willOpen);
+      }
+
+      function buildUrl(path) {
+        return API ? String(API).replace(/\/$/, '') + path : path;
+      }
+
+      function getBalanceValue(data) {
+        if (!data || typeof data !== 'object') return 0;
+        if (typeof data.credits === 'number') return data.credits;
+        if (typeof data.remainingCredits === 'number') return data.remainingCredits;
+        if (typeof data.balance === 'number') return data.balance;
+        if (typeof data.tokens === 'number') return data.tokens;
+        return 0;
+      }
+
+      function hideCredits() {
+        if (token) token.classList.add('hidden');
+        if (tokenMobile) tokenMobile.classList.add('hidden');
+      }
+
+      function showCredits(value) {
+        if (balance) balance.textContent = String(value);
+        if (balanceMobile) balanceMobile.textContent = String(value);
+        if (token) token.classList.remove('hidden');
+        if (tokenMobile) tokenMobile.classList.remove('hidden');
+      }
+
+      function showLoggedOut() {
+        if (login) login.classList.remove('hidden');
+        if (loginMobile) loginMobile.classList.remove('hidden');
+
+        if (account) account.classList.add('hidden');
+        if (accountMobile) accountMobile.classList.add('hidden');
+
+        hideCredits();
+      }
+
+      function showLoggedIn(user) {
+        if (email) email.textContent = user;
+        if (emailMenu) emailMenu.textContent = user;
+        if (emailMobile) emailMobile.textContent = user;
+
+        if (login) login.classList.add('hidden');
+        if (loginMobile) loginMobile.classList.add('hidden');
+
+        if (account) account.classList.remove('hidden');
+        if (accountMobile) accountMobile.classList.remove('hidden');
+      }
+
+      function wireSignout(link) {
+        if (!link) return;
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          fetch(buildUrl('/api/transcripts/sign-out'), {
+            method: 'POST',
+            credentials: 'include'
+          }).finally(function () {
+            window.location.href = '/index.html';
+          });
+        });
+      }
+
+      if (mobileMenuBtn && mobileMenu) {
+        mobileMenuBtn.addEventListener('click', function () {
+          var willOpen = mobileMenu.classList.contains('hidden');
+          mobileMenu.classList.toggle('hidden', !willOpen);
+          setExpanded(mobileMenuBtn, willOpen);
+        });
+      }
+
+      if (accountToggle && accountMenu) {
+        accountToggle.addEventListener('click', function (e) {
+          e.stopPropagation();
+          toggleMenu(accountToggle, accountMenu, resourcesToggle, resourcesMenu);
+        });
+      }
+
+      if (resourcesToggle && resourcesMenu) {
+        resourcesToggle.addEventListener('click', function (e) {
+          e.stopPropagation();
+          toggleMenu(resourcesToggle, resourcesMenu, accountToggle, accountMenu);
+        });
+      }
 
       document.addEventListener('click', function (e) {
-        if (!resourcesMenu || !resourcesToggle) return;
-        var clickedInside = resourcesMenu.contains(e.target) || resourcesToggle.contains(e.target);
+        if (accountMenu && accountToggle) {
+          var insideAccount = accountMenu.contains(e.target) || accountToggle.contains(e.target);
+          if (!insideAccount) closeMenu(accountToggle, accountMenu);
+        }
 
-        if (!clickedInside) {
-          resourcesMenu.classList.add('hidden');
-          resourcesToggle.setAttribute('aria-expanded', 'false');
+        if (resourcesMenu && resourcesToggle) {
+          var insideResources = resourcesMenu.contains(e.target) || resourcesToggle.contains(e.target);
+          if (!insideResources) closeMenu(resourcesToggle, resourcesMenu);
         }
       });
 
       document.addEventListener('keydown', function (e) {
         if (e.key !== 'Escape') return;
-        resourcesMenu && resourcesMenu.classList.add('hidden');
-        resourcesToggle && resourcesToggle.setAttribute('aria-expanded', 'false');
-        mobileResourcesMenu && mobileResourcesMenu.classList.add('hidden');
-        mobileResourcesToggle && mobileResourcesToggle.setAttribute('aria-expanded', 'false');
-        mobileMenu && mobileMenu.classList.add('hidden');
-        toggle && toggle.setAttribute('aria-expanded', 'false');
+        closeMenu(accountToggle, accountMenu);
+        closeMenu(resourcesToggle, resourcesMenu);
+        if (mobileMenu) mobileMenu.classList.add('hidden');
+        setExpanded(mobileMenuBtn, false);
       });
 
-      var head = document.head;
-      if (!head) return;
+      wireSignout(signout);
+      wireSignout(signoutMobile);
 
-      var icons = [
-        { rel: 'icon', href: '/assets/favicon.ico', type: 'image/x-icon' },
-        { rel: 'icon', href: '/assets/favicon.svg', type: 'image/svg+xml' }
-      ].sort(function (a, b) { return String(a.href).localeCompare(String(b.href)); });
+      async function hydrate() {
+        try {
+          var response = await fetch(buildUrl('/api/transcripts/me'), {
+            credentials: 'include'
+          });
 
-      function hasIcon(href) {
-        return !!head.querySelector('link[rel~="icon"][href="' + href + '"]');
+          if (!response.ok) {
+            showLoggedOut();
+            return;
+          }
+
+          var data = await response.json();
+          var user = '';
+
+          if (data && typeof data.email === 'string' && data.email) {
+            user = data.email;
+          } else if (data && data.user && typeof data.user.email === 'string' && data.user.email) {
+            user = data.user.email;
+          }
+
+          if (!user) {
+            showLoggedOut();
+            return;
+          }
+
+          showLoggedIn(user);
+
+          var creditsValue = getBalanceValue(data);
+          if (creditsValue > 0 || creditsValue === 0) {
+            showCredits(creditsValue);
+          }
+        } catch (err) {
+          showLoggedOut();
+        }
       }
 
-      icons.forEach(function (i) {
-        if (hasIcon(i.href)) return;
-        var link = document.createElement('link');
-        link.rel = i.rel;
-        link.href = i.href;
-        link.type = i.type;
-        head.appendChild(link);
-      });
+      hydrate();
     })();
   </script>
 </header>
