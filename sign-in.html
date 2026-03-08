@@ -86,6 +86,12 @@
       filter: brightness(1.05);
     }
 
+    .btn-action:disabled {
+      cursor: not-allowed;
+      filter: saturate(0.9) brightness(0.95);
+      opacity: 0.9;
+    }
+
     .glass-card {
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255, 255, 255, 0.14);
@@ -197,7 +203,7 @@
   </div>
 
   <script>
-    const API_BASE = "https://api-transcript.taxmonitor.pro";
+    const API_BASE = "";
 
     function getRedirect() {
       const p = new URLSearchParams(String(window.location.search || ""));
@@ -251,10 +257,14 @@
       });
 
       const data = await res.json().catch(() => null);
+
       if (!res.ok) {
-        const msg = data && (data.message || data.error) ? String(data.message || data.error) : "Request failed.";
+        const msg = data && (data.message || data.error)
+          ? String(data.message || data.error)
+          : "Request failed.";
         throw new Error(msg);
       }
+
       return data;
     }
 
