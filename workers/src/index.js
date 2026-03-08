@@ -912,8 +912,7 @@ function buildSupportTaskDescription(payload, supportId) {
   lines.push("Message:");
   lines.push(String(payload && payload.message || "").trim());
 
-  return lines.join("
-");
+  return lines.join("\n");
 }
 
 async function createCanonicalSupportTicket(env, payload) {
