@@ -7,6 +7,7 @@
   <title>Transcript.Tax Monitor Pro — App Dashboard</title>
 
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -29,63 +30,55 @@
 
   <style>
     :root {
-      --tm-bg: #070d18;
-      --tm-bg-soft: #0b1220;
-      --tm-line: rgba(148, 163, 184, 0.14);
-      --tm-panel: rgba(15, 23, 42, 0.92);
-      --tm-panel-soft: rgba(15, 23, 42, 0.72);
-      --tm-purple: #a855f7;
-      --tm-purple-soft: rgba(168, 85, 247, 0.12);
+      --tm-bg: #0f172a;
+      --tm-bg-soft: #111827;
+      --tm-card: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      --tm-line: rgba(148, 163, 184, 0.18);
+      --tm-purple: #8b5cf6;
+      --tm-purple-soft: rgba(139, 92, 246, 0.12);
+      --tm-blue-soft: rgba(59, 130, 246, 0.12);
+      --tm-green-soft: rgba(16, 185, 129, 0.12);
+      --tm-red-soft: rgba(239, 68, 68, 0.12);
       --tm-text: #f8fafc;
-      --tm-text-muted: rgba(255, 255, 255, 0.64);
-      --tm-text-soft: rgba(255, 255, 255, 0.82);
-      --tm-green: #22c55e;
-      --tm-red: #ef4444;
-      --tm-yellow: #f59e0b;
-      --tm-shadow: 0 24px 64px rgba(2, 8, 23, 0.34);
+      --tm-text-soft: #cbd5e1;
+      --tm-text-muted: #94a3b8;
+      --tm-shadow: 0 24px 64px rgba(2, 8, 23, 0.32);
     }
 
     * { box-sizing: border-box; }
     html, body { height: 100%; }
     body {
-      background:
-        radial-gradient(circle at 20% 18%, rgba(168, 85, 247, 0.22), transparent 28%),
-        radial-gradient(circle at 82% 20%, rgba(99, 102, 241, 0.18), transparent 24%),
-        linear-gradient(180deg, #2a0447 0%, #13163a 45%, #020617 100%);
+      margin: 0;
       color: var(--tm-text);
       font-family: 'DM Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      margin: 0;
+      background:
+        radial-gradient(circle at 18% 14%, rgba(168, 85, 247, 0.18), transparent 24%),
+        radial-gradient(circle at 82% 18%, rgba(99, 102, 241, 0.14), transparent 20%),
+        linear-gradient(180deg, #1e1b4b 0%, #111827 42%, #020617 100%);
     }
 
-    .shell {
+    .app-shell {
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
     }
 
-    .topbar {
+    .sidebar {
+      width: 270px;
+      background: linear-gradient(180deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%);
+      border-right: 1px solid var(--tm-line);
+      display: flex;
+      flex-direction: column;
+      padding: 22px 0;
       position: sticky;
       top: 0;
-      z-index: 20;
-      backdrop-filter: blur(16px);
-      background: rgba(7, 13, 24, 0.74);
-      border-bottom: 1px solid var(--tm-line);
+      height: 100vh;
+      overflow-y: auto;
     }
 
-    .topbar-inner,
-    .content,
-    .footer-inner {
-      width: 100%;
-      max-width: 1280px;
-      margin: 0 auto;
-    }
-
-    .topbar-inner {
-      padding: 18px 24px;
+    .sidebar-inner {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
+      flex-direction: column;
+      min-height: 100%;
     }
 
     .brand {
@@ -94,26 +87,29 @@
       gap: 12px;
       text-decoration: none;
       color: white;
+      padding: 0 22px 22px;
+      border-bottom: 1px solid var(--tm-line);
+      margin-bottom: 20px;
     }
 
     .brand-mark {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+      background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
       color: #020617;
       font-size: 14px;
       font-weight: 800;
-      box-shadow: 0 14px 32px rgba(168, 85, 247, 0.28);
+      box-shadow: 0 14px 30px rgba(139, 92, 246, 0.28);
     }
 
     .brand-copy strong {
       display: block;
       font-size: 15px;
-      line-height: 1.15;
+      line-height: 1.1;
     }
 
     .brand-copy span {
@@ -122,8 +118,136 @@
       font-size: 11px;
       font-weight: 700;
       letter-spacing: 0.06em;
-      margin-top: 2px;
+      margin-top: 4px;
       text-transform: uppercase;
+    }
+
+    .nav-section {
+      padding: 0 12px 18px;
+    }
+
+    .nav-title {
+      color: var(--tm-text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 0 10px 10px;
+      text-transform: uppercase;
+    }
+
+    .nav-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: transparent;
+      border: 0;
+      border-radius: 12px;
+      color: var(--tm-text-soft);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 12px;
+      text-align: left;
+      transition: 180ms ease;
+    }
+
+    .nav-item:hover {
+      background: rgba(139, 92, 246, 0.10);
+      color: white;
+    }
+
+    .nav-item.active {
+      background: linear-gradient(90deg, rgba(139, 92, 246, 0.22) 0%, rgba(59, 130, 246, 0.10) 100%);
+      color: #ddd6fe;
+      box-shadow: inset 3px 0 0 #8b5cf6;
+    }
+
+    .nav-item svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-card {
+      margin: auto 12px 0;
+      background: rgba(139, 92, 246, 0.10);
+      border: 1px solid rgba(139, 92, 246, 0.22);
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .sidebar-card + .sidebar-card {
+      margin-top: 12px;
+    }
+
+    .sidebar-label {
+      color: var(--tm-text-muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .sidebar-value {
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .sidebar-subcopy {
+      color: #86efac;
+      font-size: 12px;
+      margin-top: 8px;
+    }
+
+    .main-shell {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(16px);
+      background: rgba(15, 23, 42, 0.78);
+      border-bottom: 1px solid var(--tm-line);
+    }
+
+    .topbar-inner,
+    .workspace,
+    .footer-inner {
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 20px 28px;
+    }
+
+    .topbar-title {
+      color: white;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0 0 4px;
+    }
+
+    .topbar-desc {
+      color: var(--tm-text-muted);
+      font-size: 13px;
+      margin: 0;
     }
 
     .topbar-actions {
@@ -133,11 +257,56 @@
       gap: 10px;
     }
 
-    .content {
-      padding: 28px 24px 48px;
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 42px;
+      padding: 0 16px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: 180ms ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+      color: white;
+      box-shadow: 0 14px 30px rgba(99, 102, 241, 0.20);
+    }
+
+    .btn-secondary {
+      background: rgba(139, 92, 246, 0.10);
+      border-color: rgba(139, 92, 246, 0.24);
+      color: #ddd6fe;
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.10);
+      border-color: rgba(239, 68, 68, 0.24);
+      color: #fecaca;
+    }
+
+    .workspace {
+      padding: 28px;
+      flex: 1;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .dashboard-grid {
       display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.85fr);
       gap: 24px;
-      grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.9fr);
     }
 
     .stack {
@@ -146,9 +315,9 @@
     }
 
     .card {
-      background: linear-gradient(180deg, rgba(15, 23, 42, 0.96) 0%, rgba(8, 14, 26, 0.98) 100%);
+      background: var(--tm-card);
       border: 1px solid var(--tm-line);
-      border-radius: 20px;
+      border-radius: 18px;
       box-shadow: var(--tm-shadow);
       overflow: hidden;
     }
@@ -159,7 +328,7 @@
 
     .card-title {
       color: white;
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 700;
       letter-spacing: -0.02em;
       margin: 0 0 8px;
@@ -167,25 +336,59 @@
 
     .card-desc {
       color: var(--tm-text-muted);
-      font-size: 14px;
-      line-height: 1.65;
+      font-size: 13px;
+      line-height: 1.7;
       margin: 0;
     }
 
     .hero-card {
-      background: linear-gradient(135deg, rgba(168, 85, 247, 0.16) 0%, rgba(99, 102, 241, 0.10) 100%);
-      border: 1px solid rgba(168, 85, 247, 0.24);
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.16) 0%, rgba(59, 130, 246, 0.10) 100%);
+      border-color: rgba(139, 92, 246, 0.22);
     }
 
-    .hero-grid {
+    .workflow-grid {
       display: grid;
-      gap: 16px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin: 22px 0;
+    }
+
+    .workflow-step {
+      background: rgba(2, 6, 23, 0.30);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .workflow-step .icon-wrap {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 10px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(139, 92, 246, 0.18);
+      color: #c4b5fd;
+    }
+
+    .workflow-step .label {
+      color: var(--tm-text-soft);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .metrics-grid {
+      display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      margin-top: 20px;
+      gap: 14px;
+      margin-top: 18px;
     }
 
     .metric {
-      background: rgba(2, 6, 23, 0.36);
+      background: rgba(2, 6, 23, 0.30);
       border: 1px solid rgba(255, 255, 255, 0.06);
       border-radius: 16px;
       padding: 16px;
@@ -208,60 +411,74 @@
       word-break: break-word;
     }
 
-    .metric-subcopy {
+    .metric-copy {
       color: var(--tm-text-muted);
-      font-size: 13px;
+      font-size: 12px;
       margin-top: 6px;
     }
 
-    .section-header {
-      align-items: flex-start;
-      display: flex;
-      gap: 16px;
-      justify-content: space-between;
-      margin-bottom: 18px;
+    .upload-area {
+      border: 2px dashed rgba(139, 92, 246, 0.34);
+      border-radius: 16px;
+      padding: 28px;
+      text-align: center;
+      background: rgba(139, 92, 246, 0.05);
+      margin-top: 18px;
     }
 
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-height: 44px;
-      padding: 0 16px;
-      border-radius: 14px;
-      border: 1px solid transparent;
-      cursor: pointer;
-      font-family: inherit;
+    .upload-area svg {
+      width: 46px;
+      height: 46px;
+      color: #c4b5fd;
+      margin-bottom: 12px;
+    }
+
+    .upload-title {
+      color: white;
       font-size: 14px;
       font-weight: 700;
-      text-decoration: none;
-      transition: 180ms ease;
+      margin-bottom: 6px;
     }
 
-    .btn:hover { transform: translateY(-1px); }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
-      color: white;
-      box-shadow: 0 14px 32px rgba(99, 102, 241, 0.22);
+    .upload-copy {
+      color: var(--tm-text-muted);
+      font-size: 12px;
+      line-height: 1.6;
     }
 
-    .btn-secondary {
-      background: rgba(168, 85, 247, 0.08);
-      border-color: rgba(168, 85, 247, 0.22);
-      color: #eadcff;
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
     }
 
-    .btn-danger {
-      background: rgba(239, 68, 68, 0.08);
-      border-color: rgba(239, 68, 68, 0.22);
-      color: #fecaca;
+    .button-row .btn {
+      flex: 1 1 180px;
+    }
+
+    .info-box {
+      margin-top: 16px;
+      background: rgba(59, 130, 246, 0.10);
+      border: 1px solid rgba(59, 130, 246, 0.22);
+      border-radius: 14px;
+      padding: 14px 16px;
+      color: #bfdbfe;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
     }
 
     .table-wrap {
       overflow-x: auto;
-      border: 1px solid rgba(255,255,255,0.06);
+      border: 1px solid rgba(255, 255, 255, 0.06);
       border-radius: 16px;
       background: rgba(2, 6, 23, 0.28);
     }
@@ -283,14 +500,14 @@
       font-weight: 800;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       white-space: nowrap;
     }
 
     td {
       color: var(--tm-text-soft);
       font-size: 14px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
 
     tr:last-child td { border-bottom: none; }
@@ -300,9 +517,9 @@
       font-size: 14px;
       line-height: 1.7;
       padding: 18px;
-      border: 1px dashed rgba(168, 85, 247, 0.22);
+      border: 1px dashed rgba(139, 92, 246, 0.24);
       border-radius: 16px;
-      background: rgba(168, 85, 247, 0.04);
+      background: rgba(139, 92, 246, 0.05);
     }
 
     .pill {
@@ -317,56 +534,43 @@
     }
 
     .pill-printed {
-      background: rgba(34, 197, 94, 0.12);
-      border: 1px solid rgba(34, 197, 94, 0.2);
-      color: #9ff0be;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.22);
+      color: #86efac;
     }
 
     .pill-pending {
       background: rgba(245, 158, 11, 0.12);
-      border: 1px solid rgba(245, 158, 11, 0.2);
-      color: #ffd58d;
+      border: 1px solid rgba(245, 158, 11, 0.22);
+      color: #fcd34d;
     }
 
-    .muted {
-      color: var(--tm-text-muted);
-    }
-
-    .loading-row {
-      color: var(--tm-text-muted);
-    }
-
-    .right-card-grid {
-      display: grid;
-      gap: 24px;
-    }
-
-    .info-list {
+    .detail-list {
       display: grid;
       gap: 14px;
       margin-top: 18px;
     }
 
-    .info-row {
+    .detail-row {
       display: flex;
       justify-content: space-between;
-      gap: 14px;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
       padding-bottom: 14px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
     }
 
-    .info-row:last-child {
+    .detail-row:last-child {
       border-bottom: none;
       padding-bottom: 0;
     }
 
-    .info-label {
+    .detail-label {
       color: var(--tm-text-muted);
       font-size: 13px;
       font-weight: 600;
     }
 
-    .info-value {
+    .detail-value {
       color: white;
       font-size: 14px;
       font-weight: 700;
@@ -383,58 +587,82 @@
     .support-link {
       display: flex;
       justify-content: space-between;
-      gap: 12px;
       align-items: center;
+      gap: 12px;
       padding: 14px 16px;
       border-radius: 14px;
-      border: 1px solid rgba(168, 85, 247, 0.14);
-      background: rgba(168, 85, 247, 0.05);
-      color: #eadcff;
+      border: 1px solid rgba(139, 92, 246, 0.16);
+      background: rgba(139, 92, 246, 0.05);
+      color: #e9d5ff;
       text-decoration: none;
       font-size: 14px;
       font-weight: 600;
     }
 
+    .panel-grid {
+      display: grid;
+      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
     .footer-inner {
-      padding: 8px 24px 24px;
       display: flex;
       justify-content: space-between;
       gap: 16px;
       flex-wrap: wrap;
+      padding: 10px 28px 24px;
     }
 
     .footer-inner p,
     .footer-inner a {
-      color: #94a3b8;
+      color: var(--tm-text-muted);
       font-size: 14px;
       text-decoration: none;
     }
 
     .hidden { display: none !important; }
 
-    @media (max-width: 1080px) {
-      .content {
+    @media (max-width: 1180px) {
+      .dashboard-grid {
         grid-template-columns: 1fr;
       }
     }
 
+    @media (max-width: 980px) {
+      .app-shell {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding-bottom: 16px;
+      }
+
+      .sidebar-card {
+        margin-top: 16px;
+      }
+    }
+
     @media (max-width: 720px) {
-      .content,
-      .footer-inner,
-      .topbar-inner {
-        padding-left: 16px;
-        padding-right: 16px;
+      .workflow-grid,
+      .metrics-grid {
+        grid-template-columns: 1fr;
       }
 
       .topbar-inner,
       .section-header,
       .footer-inner {
-        align-items: flex-start;
         flex-direction: column;
+        align-items: flex-start;
       }
 
-      .hero-grid {
-        grid-template-columns: 1fr;
+      .workspace,
+      .topbar-inner,
+      .footer-inner {
+        padding-left: 16px;
+        padding-right: 16px;
       }
 
       .topbar-actions {
@@ -448,184 +676,359 @@
   </style>
 </head>
 <body class="h-full">
-  <div class="shell">
-    <header class="topbar">
-      <div class="topbar-inner">
-        <a href="/index.html" class="brand">
-          <span class="brand-mark">TM</span>
-          <span class="brand-copy">
-            <strong>Transcript.Tax Monitor Pro</strong>
-            <span>Authenticated App Dashboard</span>
-          </span>
-        </a>
+  <div class="app-shell">
+    <aside id="sidebarMount" class="sidebar"></aside>
 
-        <div class="topbar-actions">
-          <a href="/contact.html" class="btn btn-secondary">Support</a>
-          <button id="signOutBtn" type="button" class="btn btn-danger">Log Out</button>
-        </div>
-      </div>
-    </header>
+    <div class="main-shell">
+      <header id="topbarMount" class="topbar"></header>
 
-    <main class="content">
-      <section class="stack">
-        <div class="card hero-card">
-          <div class="card-body">
-            <div class="section-header">
-              <div>
-                <h1 class="card-title">Transcript app dashboard</h1>
-                <p class="card-desc">This page proves the session is real, shows the account state, and loads report and purchase history without dragging upload or parser logic into every corner of the app like a bad habit.</p>
+      <main class="workspace">
+        <section id="dashboardPage" class="page active">
+          <div class="dashboard-grid">
+            <div class="stack">
+              <div class="card hero-card">
+                <div class="card-body">
+                  <h2 class="card-title">Start processing transcripts</h2>
+                  <p class="card-desc">This keeps the Canva-style shell, but the wiring stays disciplined. Auth loads from <code>/api/transcripts/me</code>, reports from <code>/api/transcripts/reports</code>, receipts from <code>/api/transcripts/purchases</code>, and parser flow can plug into <code>/api/transcripts/preview</code> later without turning the dashboard into spaghetti.</p>
+
+                  <div class="workflow-grid">
+                    <div class="workflow-step">
+                      <div class="icon-wrap"><i data-lucide="upload-cloud"></i></div>
+                      <div class="label">Upload<br />Transcript</div>
+                    </div>
+                    <div class="workflow-step">
+                      <div class="icon-wrap"><i data-lucide="eye"></i></div>
+                      <div class="label">Preview<br />Report</div>
+                    </div>
+                    <div class="workflow-step">
+                      <div class="icon-wrap"><i data-lucide="printer"></i></div>
+                      <div class="label">Print<br />Report</div>
+                    </div>
+                    <div class="workflow-step">
+                      <div class="icon-wrap"><i data-lucide="archive"></i></div>
+                      <div class="label">Access<br />History</div>
+                    </div>
+                  </div>
+
+                  <div class="button-row">
+                    <a href="/index.html#how-it-works" class="btn btn-primary">Open Parse Flow</a>
+                    <a href="/assets/report.html" class="btn btn-secondary">Open Report Shell</a>
+                  </div>
+
+                  <div class="info-box">
+                    One token should be spent when you create a preview through <strong>/api/transcripts/preview</strong>. Printing should then finalize through <strong>/api/transcripts/report/:reportId/print-complete</strong>. Humans adore turning one clean loop into six messy ones, so this is the part worth protecting.
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-body">
+                  <h2 class="card-title">Upload transcript</h2>
+                  <p class="card-desc">UI shell only for now. Keep parser and local PDF logic separate, then post normalized report data into the Worker once the transcript preview loop is ready.</p>
+
+                  <div class="upload-area">
+                    <i data-lucide="file-up"></i>
+                    <div class="upload-title">Drop transcript PDF here</div>
+                    <div class="upload-copy">This dashboard keeps the layout ready, but it does not fake parser behavior. That saves you from debugging decorative lies later.</div>
+                  </div>
+
+                  <div class="button-row">
+                    <button type="button" class="btn btn-secondary" data-toast="Extract raw text will connect to your local parser flow.">Extract Raw Text</button>
+                    <button type="button" class="btn btn-secondary" data-toast="Parse structured data will connect to your local parser flow.">Parse Structured Data</button>
+                    <button type="button" class="btn btn-secondary" data-toast="Preview report should ultimately POST to /api/transcripts/preview.">Preview Report</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-body">
+                  <div class="section-header">
+                    <div>
+                      <h2 class="card-title">Recent report history</h2>
+                      <p class="card-desc">Live authenticated data from the Worker, not made-up dashboard confetti.</p>
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-page-jump="reports">View all</button>
+                  </div>
+
+                  <div id="reportsEmpty" class="empty-state hidden">No reports found yet.</div>
+
+                  <div id="reportsTableWrap" class="table-wrap hidden">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Created At</th>
+                          <th>Printed At</th>
+                          <th>Report ID</th>
+                          <th>Status</th>
+                          <th>Open</th>
+                        </tr>
+                      </thead>
+                      <tbody id="reportsTbody">
+                        <tr>
+                          <td colspan="5">Loading reports...</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div class="hero-grid">
-              <div class="metric">
-                <div class="metric-label">Email</div>
-                <div id="heroEmail" class="metric-value" style="font-size:18px;">Loading...</div>
-                <div class="metric-subcopy">Authenticated account</div>
+            <div class="stack">
+              <div class="card">
+                <div class="card-body">
+                  <h2 class="card-title">Account status</h2>
+                  <p class="card-desc">Authenticated app state from <code>/api/transcripts/me</code>.</p>
+
+                  <div class="metrics-grid">
+                    <div class="metric">
+                      <div class="metric-label">Email</div>
+                      <div id="heroEmail" class="metric-value" style="font-size:18px;">Loading...</div>
+                      <div class="metric-copy">Signed-in account</div>
+                    </div>
+                    <div class="metric">
+                      <div class="metric-label">Token Balance</div>
+                      <div id="heroTokens" class="metric-value">—</div>
+                      <div class="metric-copy">Available credits</div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="metric">
-                <div class="metric-label">Token Balance</div>
-                <div id="heroTokens" class="metric-value">—</div>
-                <div class="metric-subcopy">Available transcript credits</div>
+
+              <div class="card">
+                <div class="card-body">
+                  <h2 class="card-title">Purchase history</h2>
+                  <p class="card-desc">Receipt-level account history from <code>/api/transcripts/purchases</code>.</p>
+
+                  <div id="purchasesEmpty" class="empty-state hidden">No purchases found yet.</div>
+
+                  <div id="purchasesTableWrap" class="table-wrap hidden">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Created At</th>
+                          <th>Credits</th>
+                          <th>Price ID</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody id="purchasesTbody">
+                        <tr>
+                          <td colspan="4">Loading purchases...</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-body">
+                  <h2 class="card-title">Support links</h2>
+                  <p class="card-desc">Useful exits, because not every page needs to cosplay as the entire application.</p>
+                  <div class="support-links">
+                    <a href="/contact.html" class="support-link"><span>Contact support</span><span>→</span></a>
+                    <a href="/legal/privacy.html" class="support-link"><span>Privacy policy</span><span>→</span></a>
+                    <a href="/legal/terms.html" class="support-link"><span>Terms of service</span><span>→</span></a>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div class="card">
-          <div class="card-body">
-            <div class="section-header">
-              <div>
-                <h2 class="card-title">Report history</h2>
-                <p class="card-desc">Each row shows the minimum contract fields your Worker returns. Miracles remain optional.</p>
+        <section id="reportsPage" class="page">
+          <div class="card">
+            <div class="card-body">
+              <div class="section-header">
+                <div>
+                  <h2 class="card-title">Reports history</h2>
+                  <p class="card-desc">Same Worker data, just expanded into its own page instead of hiding everything in one dashboard block like a junk drawer.</p>
+                </div>
+              </div>
+
+              <div id="reportsPageEmpty" class="empty-state hidden">No reports found yet.</div>
+
+              <div id="reportsPageTableWrap" class="table-wrap hidden">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Created At</th>
+                      <th>Printed At</th>
+                      <th>Report ID</th>
+                      <th>Status</th>
+                      <th>Open</th>
+                    </tr>
+                  </thead>
+                  <tbody id="reportsPageTbody">
+                    <tr>
+                      <td colspan="5">Loading reports...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="receiptsPage" class="page">
+          <div class="stack">
+            <div class="card">
+              <div class="card-body">
+                <h2 class="card-title">Receipt summary</h2>
+                <p class="card-desc">Latest purchase state at a glance. Keep the pretty receipt styling on the dedicated receipt page later. Here we stay contract-safe and useful.</p>
+
+                <div class="detail-list">
+                  <div class="detail-row">
+                    <div class="detail-label">Signed-in email</div>
+                    <div id="receiptSummaryEmail" class="detail-value">Loading...</div>
+                  </div>
+                  <div class="detail-row">
+                    <div class="detail-label">Current tokens</div>
+                    <div id="receiptSummaryTokens" class="detail-value">—</div>
+                  </div>
+                  <div class="detail-row">
+                    <div class="detail-label">Latest purchase status</div>
+                    <div id="receiptSummaryStatus" class="detail-value">—</div>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div id="reportsEmpty" class="empty-state hidden">No reports found yet.</div>
-
-            <div id="reportsTableWrap" class="table-wrap hidden">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Created At</th>
-                    <th>Printed At</th>
-                    <th>Report ID</th>
-                    <th>Status</th>
-                    <th>Open</th>
-                  </tr>
-                </thead>
-                <tbody id="reportsTbody">
-                  <tr>
-                    <td colspan="5" class="loading-row">Loading reports...</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-body">
-            <div class="section-header">
-              <div>
+            <div class="card">
+              <div class="card-body">
                 <h2 class="card-title">Purchase history</h2>
-                <p class="card-desc">This stays focused on receipt-level account history. No parser drama, no checkout flow on this page.</p>
-              </div>
-            </div>
+                <p class="card-desc">Worker-backed receipts list for the authenticated token account.</p>
 
-            <div id="purchasesEmpty" class="empty-state hidden">No purchases found yet.</div>
+                <div id="receiptsPageEmpty" class="empty-state hidden">No purchases found yet.</div>
 
-            <div id="purchasesTableWrap" class="table-wrap hidden">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Created At</th>
-                    <th>Credits</th>
-                    <th>Price ID</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody id="purchasesTbody">
-                  <tr>
-                    <td colspan="4" class="loading-row">Loading purchases...</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <aside class="right-card-grid">
-        <div class="card">
-          <div class="card-body">
-            <h2 class="card-title">Account summary</h2>
-            <p class="card-desc">Session-backed account info from <code>/api/transcripts/me</code>.</p>
-
-            <div class="info-list">
-              <div class="info-row">
-                <div class="info-label">Email</div>
-                <div id="accountEmail" class="info-value">Loading...</div>
-              </div>
-              <div class="info-row">
-                <div class="info-label">Account status</div>
-                <div class="info-value">Signed in</div>
-              </div>
-              <div class="info-row">
-                <div class="info-label">Token balance</div>
-                <div id="accountTokens" class="info-value">—</div>
+                <div id="receiptsPageTableWrap" class="table-wrap hidden">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Created At</th>
+                        <th>Credits</th>
+                        <th>Price ID</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="receiptsPageTbody">
+                      <tr>
+                        <td colspan="4">Loading receipts...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div class="card">
-          <div class="card-body">
-            <h2 class="card-title">Token balance</h2>
-            <p class="card-desc">Pulled from the authenticated app state so the user can see whether they still have room to do useful work.</p>
+        <section id="supportPage" class="page">
+          <div class="panel-grid">
+            <div class="card">
+              <div class="card-body">
+                <h2 class="card-title">Support</h2>
+                <p class="card-desc">Dedicated help space without shoving support tickets into the dashboard just because empty white space made somebody nervous.</p>
+                <div class="support-links">
+                  <a href="/contact.html" class="support-link"><span>Contact page</span><span>→</span></a>
+                  <a href="/contact.html" class="support-link"><span>Support page</span><span>→</span></a>
+                  <a href="/legal/terms.html" class="support-link"><span>Terms &amp; privacy</span><span>→</span></a>
+                </div>
+              </div>
+            </div>
 
-            <div class="metric" style="margin-top:18px;">
-              <div class="metric-label">Available Tokens</div>
-              <div id="sideTokens" class="metric-value">—</div>
-              <div class="metric-subcopy">Updates when account state loads</div>
+            <div class="card">
+              <div class="card-body">
+                <h2 class="card-title">Implementation note</h2>
+                <p class="card-desc">If you later add help tickets here, the Worker already has support-oriented routes in the newer transcript worker branch. That belongs here, not jammed into account or receipts where it has no business living.</p>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div class="card">
-          <div class="card-body">
-            <h2 class="card-title">Sign-out</h2>
-            <p class="card-desc">Ends the authenticated session and sends the user back to the sign-in page, as civilized software should.</p>
-            <button id="signOutBtnSecondary" type="button" class="btn btn-danger" style="margin-top:18px; width:100%;">Log Out</button>
-          </div>
-        </div>
+        <section id="accountPage" class="page">
+          <div class="panel-grid">
+            <div class="card">
+              <div class="card-body">
+                <h2 class="card-title">Account summary</h2>
+                <p class="card-desc">Core session-backed account state.</p>
+                <div class="detail-list">
+                  <div class="detail-row">
+                    <div class="detail-label">Email</div>
+                    <div id="accountEmail" class="detail-value">Loading...</div>
+                  </div>
+                  <div class="detail-row">
+                    <div class="detail-label">Sign-in method</div>
+                    <div class="detail-value">Magic link</div>
+                  </div>
+                  <div class="detail-row">
+                    <div class="detail-label">Token balance</div>
+                    <div id="accountTokens" class="detail-value">—</div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-        <div class="card">
-          <div class="card-body">
-            <h2 class="card-title">Support</h2>
-            <p class="card-desc">Useful links without stuffing a whole second product into the dashboard.</p>
-            <div class="support-links">
-              <a href="/contact.html" class="support-link"><span>Contact support</span><span>→</span></a>
-              <a href="/legal/privacy.html" class="support-link"><span>Privacy policy</span><span>→</span></a>
-              <a href="/legal/terms.html" class="support-link"><span>Terms of service</span><span>→</span></a>
+            <div class="card">
+              <div class="card-body">
+                <h2 class="card-title">Actions</h2>
+                <p class="card-desc">Keep billing and session actions here so the rest of the app can stay focused on transcript work.</p>
+                <div class="button-row">
+                  <a href="/index.html#pricing" class="btn btn-primary">Manage Billing</a>
+                  <button id="signOutBtnSecondary" type="button" class="btn btn-danger">Log Out</button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </aside>
-    </main>
+        </section>
+      </main>
 
-    <footer>
-      <div class="footer-inner">
-        <p>© <span id="footerYear"></span> Transcript.Tax Monitor Pro. All rights reserved.</p>
-        <div style="display:flex; gap:16px; flex-wrap:wrap;">
-          <a href="/legal/privacy.html">Privacy Policy</a>
-          <a href="/legal/terms.html">Terms of Service</a>
+      <footer>
+        <div class="footer-inner">
+          <p>© <span id="footerYear"></span> Transcript.Tax Monitor Pro. All rights reserved.</p>
+          <div style="display:flex; gap:16px; flex-wrap:wrap;">
+            <a href="/legal/privacy.html">Privacy Policy</a>
+            <a href="/legal/terms.html">Terms of Service</a>
+          </div>
         </div>
-      </div>
-    </footer>
+      </footer>
+    </div>
   </div>
 
   <script>
+    const PARTIAL_PATHS = {
+      sidebar: '/partials/app-sidebar.html',
+      topbar: '/partials/app-topbar.html'
+    };
+
+    const PAGE_META = {
+      account: {
+        desc: 'Manage core account state and session actions without muddying the report workflow.',
+        title: 'Account Settings'
+      },
+      dashboard: {
+        desc: 'Upload transcripts, generate reports, and manage your account without wrecking the Worker contract.',
+        title: 'Dashboard'
+      },
+      receipts: {
+        desc: 'Review purchase history and receipt-level account activity.',
+        title: 'Receipts'
+      },
+      reports: {
+        desc: 'View generated and finalized reports from the authenticated Worker history.',
+        title: 'Reports History'
+      },
+      support: {
+        desc: 'Get help, jump to support resources, and keep ticket workflow in the right place.',
+        title: 'Support'
+      }
+    };
+
+    let latestMe = null;
+    let latestPurchases = [];
+    let latestReports = [];
+
     function escapeHtml(value) {
       return String(value == null ? '' : value)
         .replace(/&/g, '&amp;')
@@ -633,6 +1036,14 @@
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
+    }
+
+    function firstDefined() {
+      for (let i = 0; i < arguments.length; i++) {
+        const value = arguments[i];
+        if (value !== undefined && value !== null && String(value).trim() !== '') return value;
+      }
+      return '';
     }
 
     function formatDate(value) {
@@ -650,12 +1061,41 @@
       return '<span class="' + cls + '">' + escapeHtml(text) + '</span>';
     }
 
-    function firstDefined() {
-      for (let i = 0; i < arguments.length; i++) {
-        const value = arguments[i];
-        if (value !== undefined && value !== null && String(value).trim() !== '') return value;
+    function showToast(message) {
+      window.alert(String(message || 'Not wired yet.'));
+    }
+
+    async function loadHtmlIntoMount(mountId, url) {
+      const mount = document.getElementById(mountId);
+      if (!mount) return;
+
+      const response = await fetch(url, {
+        credentials: 'same-origin',
+        method: 'GET'
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to load partial: ' + url);
       }
-      return '';
+
+      const html = await response.text();
+      mount.innerHTML = String(html || '').trim();
+    });
+
+        if (!response.ok) throw new Error('partial_request_failed');
+
+        const html = await response.text();
+        mount.innerHTML = String(html || '').trim() || fallbackHtml;
+      } catch (_) {
+        mount.innerHTML = fallbackHtml;
+      }
+    }
+
+    async function loadShellPartials() {
+      await Promise.all([
+        loadHtmlIntoMount('sidebarMount', PARTIAL_PATHS.sidebar),
+        loadHtmlIntoMount('topbarMount', PARTIAL_PATHS.topbar)
+      ]);
     }
 
     async function fetchJson(url) {
@@ -685,25 +1125,6 @@
       return data;
     }
 
-    function setAccountState(me) {
-      const email = firstDefined(me && me.email, me && me.user && me.user.email, 'Unknown');
-      const tokens = firstDefined(
-        me && me.tokenBalance,
-        me && me.tokens,
-        me && me.balance,
-        me && me.availableTokens,
-        me && me.user && me.user.balance,
-        me && me.user && me.user.tokenBalance,
-        '0'
-      );
-
-      document.getElementById('accountEmail').textContent = String(email);
-      document.getElementById('accountTokens').textContent = String(tokens);
-      document.getElementById('heroEmail').textContent = String(email);
-      document.getElementById('heroTokens').textContent = String(tokens);
-      document.getElementById('sideTokens').textContent = String(tokens);
-    }
-
     function normalizeReports(data) {
       if (Array.isArray(data)) return data;
       if (data && Array.isArray(data.reports)) return data.reports;
@@ -718,21 +1139,40 @@
       return [];
     }
 
-    function renderReports(data) {
-      const reports = normalizeReports(data);
-      const empty = document.getElementById('reportsEmpty');
-      const tableWrap = document.getElementById('reportsTableWrap');
-      const tbody = document.getElementById('reportsTbody');
+    function setAccountState(me) {
+      latestMe = me || {};
+      const email = firstDefined(me && me.email, me && me.user && me.user.email, 'Unknown');
+      const tokens = firstDefined(
+        me && me.tokenBalance,
+        me && me.tokens,
+        me && me.balance,
+        me && me.availableTokens,
+        me && me.user && me.user.balance,
+        me && me.user && me.user.tokenBalance,
+        '0'
+      );
 
-      if (!reports.length) {
-        empty.classList.remove('hidden');
-        tableWrap.classList.add('hidden');
-        tbody.innerHTML = '';
-        return;
-      }
+      const updates = {
+        accountEmail: email,
+        accountTokens: tokens,
+        heroEmail: email,
+        heroTokens: tokens,
+        receiptSummaryEmail: email,
+        receiptSummaryTokens: tokens,
+        sidebarEmail: email,
+        sidebarTokens: tokens
+      };
 
-      empty.classList.add('hidden');
-      tableWrap.classList.remove('hidden');
+      Object.keys(updates).sort().forEach(function (id) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = String(updates[id]);
+      });
+    }
+
+    function renderReportRows(tbodyId, reports) {
+      const tbody = document.getElementById(tbodyId);
+      if (!tbody) return;
+
       tbody.innerHTML = reports.map(function (item) {
         const createdAt = firstDefined(item.createdAt, item.created_at, item.insertedAt);
         const printedAt = firstDefined(item.printedAt, item.printed_at);
@@ -751,21 +1191,10 @@
       }).join('');
     }
 
-    function renderPurchases(data) {
-      const purchases = normalizePurchases(data);
-      const empty = document.getElementById('purchasesEmpty');
-      const tableWrap = document.getElementById('purchasesTableWrap');
-      const tbody = document.getElementById('purchasesTbody');
+    function renderPurchaseRows(tbodyId, purchases) {
+      const tbody = document.getElementById(tbodyId);
+      if (!tbody) return;
 
-      if (!purchases.length) {
-        empty.classList.remove('hidden');
-        tableWrap.classList.add('hidden');
-        tbody.innerHTML = '';
-        return;
-      }
-
-      empty.classList.add('hidden');
-      tableWrap.classList.remove('hidden');
       tbody.innerHTML = purchases.map(function (item) {
         const createdAt = firstDefined(item.createdAt, item.created_at, item.at);
         const credits = firstDefined(item.credits, item.creditAmount, item.amountCredits, '—');
@@ -782,6 +1211,85 @@
       }).join('');
     }
 
+    function renderReports(data) {
+      latestReports = normalizeReports(data);
+      const hasReports = latestReports.length > 0;
+
+      const pairs = [
+        ['reportsEmpty', 'reportsTableWrap', 'reportsTbody'],
+        ['reportsPageEmpty', 'reportsPageTableWrap', 'reportsPageTbody']
+      ];
+
+      pairs.forEach(function (pair) {
+        const empty = document.getElementById(pair[0]);
+        const wrap = document.getElementById(pair[1]);
+        if (!empty || !wrap) return;
+
+        if (!hasReports) {
+          empty.classList.remove('hidden');
+          wrap.classList.add('hidden');
+          const tbody = document.getElementById(pair[2]);
+          if (tbody) tbody.innerHTML = '';
+          return;
+        }
+
+        empty.classList.add('hidden');
+        wrap.classList.remove('hidden');
+        renderReportRows(pair[2], latestReports);
+      });
+    }
+
+    function renderPurchases(data) {
+      latestPurchases = normalizePurchases(data);
+      const hasPurchases = latestPurchases.length > 0;
+
+      const pairs = [
+        ['purchasesEmpty', 'purchasesTableWrap', 'purchasesTbody'],
+        ['receiptsPageEmpty', 'receiptsPageTableWrap', 'receiptsPageTbody']
+      ];
+
+      pairs.forEach(function (pair) {
+        const empty = document.getElementById(pair[0]);
+        const wrap = document.getElementById(pair[1]);
+        if (!empty || !wrap) return;
+
+        if (!hasPurchases) {
+          empty.classList.remove('hidden');
+          wrap.classList.add('hidden');
+          const tbody = document.getElementById(pair[2]);
+          if (tbody) tbody.innerHTML = '';
+          return;
+        }
+
+        empty.classList.add('hidden');
+        wrap.classList.remove('hidden');
+        renderPurchaseRows(pair[2], latestPurchases);
+      });
+
+      const latest = latestPurchases[0] || null;
+      const latestStatus = latest ? firstDefined(latest.status, latest.paymentStatus, 'completed') : '—';
+      const summary = document.getElementById('receiptSummaryStatus');
+      if (summary) summary.textContent = String(latestStatus);
+    }
+
+    function switchPage(page) {
+      const key = String(page || 'dashboard');
+      const config = PAGE_META[key] || PAGE_META.dashboard;
+
+      document.querySelectorAll('.page').forEach(function (el) {
+        el.classList.toggle('active', el.id === key + 'Page');
+      });
+
+      document.querySelectorAll('.nav-item').forEach(function (el) {
+        el.classList.toggle('active', el.getAttribute('data-page') === key);
+      });
+
+      const title = document.getElementById('pageTitle');
+      const desc = document.getElementById('pageDesc');
+      if (title) title.textContent = config.title;
+      if (desc) desc.textContent = config.desc;
+    }
+
     async function signOut() {
       try {
         await fetch('/api/transcripts/sign-out', {
@@ -793,10 +1301,39 @@
       window.location.href = '/sign-in.html';
     }
 
+    function wireNavigation() {
+      document.querySelectorAll('[data-page]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          switchPage(btn.getAttribute('data-page'));
+        });
+      });
+
+      document.querySelectorAll('[data-page-jump]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          switchPage(btn.getAttribute('data-page-jump'));
+        });
+      });
+    }
+
+    function wireStaticButtons() {
+      document.querySelectorAll('[data-toast]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          showToast(btn.getAttribute('data-toast'));
+        });
+      });
+
+      const signOutBtn = document.getElementById('signOutBtn');
+      const signOutBtnSecondary = document.getElementById('signOutBtnSecondary');
+      if (signOutBtn) signOutBtn.addEventListener('click', signOut);
+      if (signOutBtnSecondary) signOutBtnSecondary.addEventListener('click', signOut);
+    }
+
     async function boot() {
       document.getElementById('footerYear').textContent = String(new Date().getFullYear());
-      document.getElementById('signOutBtn').addEventListener('click', signOut);
-      document.getElementById('signOutBtnSecondary').addEventListener('click', signOut);
+      await loadShellPartials();
+      wireNavigation();
+      wireStaticButtons();
+      switchPage('dashboard');
 
       const me = await fetchJson('/api/transcripts/me');
       setAccountState(me || {});
@@ -809,18 +1346,28 @@
 
       const reports = await reportsPromise;
       renderReports(reports);
+
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+      }
     }
 
     boot().catch(function (error) {
       if (String(error && error.message || error) === 'unauthorized') return;
 
       const message = 'Dashboard failed to load. ' + String(error && error.message || error || 'unknown_error');
-      document.getElementById('reportsEmpty').classList.remove('hidden');
-      document.getElementById('purchasesEmpty').classList.remove('hidden');
-      document.getElementById('reportsEmpty').textContent = message;
-      document.getElementById('purchasesEmpty').textContent = message;
-      document.getElementById('reportsTableWrap').classList.add('hidden');
-      document.getElementById('purchasesTableWrap').classList.add('hidden');
+      ['purchasesEmpty', 'receiptsPageEmpty', 'reportsEmpty', 'reportsPageEmpty'].sort().forEach(function (id) {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.remove('hidden');
+          el.textContent = message;
+        }
+      });
+
+      ['purchasesTableWrap', 'receiptsPageTableWrap', 'reportsTableWrap', 'reportsPageTableWrap'].sort().forEach(function (id) {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+      });
     });
   </script>
 </body>
