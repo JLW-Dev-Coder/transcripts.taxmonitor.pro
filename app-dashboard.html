@@ -83,8 +83,8 @@
       color: var(--tm-text-muted);
       font-size: 12px;
       font-weight: 700;
-      text-transform: uppercase;
       letter-spacing: 0.05em;
+      text-transform: uppercase;
     }
 
     .detail-row {
@@ -136,13 +136,53 @@
     .section-header {
       align-items: flex-start;
       display: flex;
-      justify-content: space-between;
       gap: 16px;
+      justify-content: space-between;
+    }
+
+    .table-controls {
+      align-items: end;
+      display: grid;
+      gap: 12px;
+      grid-template-columns: minmax(0, 1fr) repeat(2, minmax(180px, 220px));
+      margin-top: 18px;
+    }
+
+    .table-filter-label {
+      color: var(--tm-text-muted);
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+      text-transform: uppercase;
     }
 
     .table-wrap {
       margin-top: 16px;
       overflow-x: auto;
+    }
+
+    .report-label-input {
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid rgba(148, 163, 184, 0.20);
+      border-radius: 10px;
+      color: white;
+      font-family: inherit;
+      font-size: 12px;
+      min-width: 160px;
+      outline: none;
+      padding: 8px 10px;
+    }
+
+    .table-meta-row {
+      align-items: center;
+      color: var(--tm-text-muted);
+      display: flex;
+      font-size: 12px;
+      gap: 12px;
+      justify-content: space-between;
+      margin-top: 12px;
     }
 
     table {
@@ -190,28 +230,28 @@
     }
 
     .brand {
-      display: flex;
       align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      color: white;
-      padding: 0 22px 22px;
       border-bottom: 1px solid var(--tm-line);
+      color: white;
+      display: flex;
+      gap: 12px;
       margin-bottom: 20px;
+      padding: 0 22px 22px;
+      text-decoration: none;
     }
 
     .brand-mark {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      display: inline-flex;
       align-items: center;
-      justify-content: center;
       background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+      border-radius: 12px;
+      box-shadow: 0 14px 30px rgba(99, 102, 241, 0.22);
       color: #020617;
+      display: inline-flex;
       font-size: 14px;
       font-weight: 800;
-      box-shadow: 0 14px 30px rgba(99, 102, 241, 0.22);
+      height: 40px;
+      justify-content: center;
+      width: 40px;
     }
 
     .brand-copy strong {
@@ -245,17 +285,17 @@
 
     .nav-item {
       width: 100%;
-      display: flex;
       align-items: center;
-      gap: 12px;
       background: transparent;
       border: 0;
       border-radius: 12px;
       color: var(--tm-text-soft);
       cursor: pointer;
+      display: flex;
       font-family: inherit;
       font-size: 14px;
       font-weight: 600;
+      gap: 12px;
       padding: 12px 12px;
       text-align: left;
       transition: 180ms ease;
@@ -268,21 +308,21 @@
 
     .nav-item.active {
       background: linear-gradient(90deg, rgba(139, 92, 246, 0.22) 0%, rgba(59, 130, 246, 0.10) 100%);
-      color: #ddd6fe;
       box-shadow: inset 3px 0 0 #8b5cf6;
+      color: #ddd6fe;
     }
 
     .nav-item svg {
-      width: 18px;
-      height: 18px;
       flex-shrink: 0;
+      height: 18px;
+      width: 18px;
     }
 
     .sidebar-card {
-      margin: auto 12px 0;
       background: rgba(139, 92, 246, 0.10);
       border: 1px solid rgba(139, 92, 246, 0.22);
       border-radius: 16px;
+      margin: auto 12px 0;
       padding: 16px;
     }
 
@@ -313,34 +353,34 @@
     }
 
     .main-shell {
-      flex: 1;
-      min-width: 0;
       display: flex;
+      flex: 1;
       flex-direction: column;
+      min-width: 0;
     }
 
     .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 10;
       backdrop-filter: blur(16px);
       background: rgba(15, 23, 42, 0.78);
       border-bottom: 1px solid var(--tm-line);
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     .topbar-inner,
     .workspace,
     .footer-inner {
-      width: 100%;
-      max-width: 1440px;
       margin: 0 auto;
+      max-width: 1440px;
+      width: 100%;
     }
 
     .topbar-inner {
-      display: flex;
       align-items: center;
-      justify-content: space-between;
+      display: flex;
       gap: 16px;
+      justify-content: space-between;
       padding: 20px 28px;
     }
 
@@ -359,43 +399,45 @@
     }
 
     .topbar-actions {
+      align-items: center;
       display: flex;
       flex-wrap: wrap;
-      align-items: center;
       gap: 10px;
     }
 
     .btn {
-      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-height: 42px;
-      padding: 0 16px;
-      border-radius: 12px;
       border: 1px solid transparent;
+      border-radius: 12px;
       cursor: pointer;
+      display: inline-flex;
       font-family: inherit;
       font-size: 13px;
       font-weight: 700;
+      gap: 8px;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 16px;
       text-decoration: none;
       transition: 180ms ease;
       white-space: nowrap;
     }
 
-    .btn:hover { transform: translateY(-1px); }
+    .btn:hover {
+      transform: translateY(-1px);
+    }
 
     .btn-primary {
       background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
-      color: white;
       box-shadow: 0 16px 34px rgba(99, 102, 241, 0.22);
+      color: white;
     }
 
     .btn-secondary {
       background: rgba(15, 23, 42, 0.66);
       border-color: rgba(168, 85, 247, 0.22);
-      color: #ede9fe;
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+      color: #ede9fe;
     }
 
     .btn-danger {
@@ -405,12 +447,17 @@
     }
 
     .workspace {
-      padding: 28px;
       flex: 1;
+      padding: 28px;
     }
 
-    .page { display: none; }
-    .page.active { display: block; }
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
 
     .stack {
       display: grid;
@@ -478,35 +525,35 @@
     }
 
     .parser-card-shell {
-      position: relative;
-      overflow: hidden;
-      border-radius: 28px;
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 28px 80px rgba(2, 8, 23, 0.34);
       background: linear-gradient(180deg, rgba(15, 23, 42, 0.96) 0%, rgba(2, 6, 23, 0.92) 100%);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 28px;
+      box-shadow: 0 28px 80px rgba(2, 8, 23, 0.34);
+      overflow: hidden;
+      position: relative;
     }
 
     .parser-card-shell::before {
-      content: '';
-      position: absolute;
-      inset: 0;
       background:
         radial-gradient(circle at 18% 14%, rgba(168, 85, 247, 0.12), transparent 24%),
         linear-gradient(180deg, rgba(15, 23, 42, 0.08) 0%, rgba(15, 23, 42, 0.20) 100%);
+      content: '';
+      inset: 0;
       pointer-events: none;
+      position: absolute;
       z-index: 1;
     }
 
     .parser-card-body {
+      padding: 28px;
       position: relative;
       z-index: 2;
-      padding: 28px;
     }
 
     .parser-hero {
-      text-align: center;
       margin: 0 auto 26px;
       max-width: 720px;
+      text-align: center;
     }
 
     .parser-hero h2 {
@@ -532,35 +579,35 @@
     }
 
     .parser-steps {
+      border-bottom: 1px solid rgba(255,255,255,0.08);
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 18px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       margin-bottom: 28px;
       padding-bottom: 26px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
     }
 
     .parser-step {
-      display: flex;
       align-items: center;
+      display: flex;
       gap: 12px;
       min-width: 0;
     }
 
     .parser-step-badge,
     .section-badge {
-      width: 36px;
-      height: 36px;
-      flex-shrink: 0;
-      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      border-radius: 999px;
       background: rgba(139, 92, 246, 0.14);
       border: 1px solid rgba(168, 85, 247, 0.24);
+      border-radius: 999px;
       color: #ddd6fe;
+      display: inline-flex;
+      flex-shrink: 0;
       font-size: 14px;
       font-weight: 800;
+      height: 36px;
+      justify-content: center;
+      width: 36px;
     }
 
     .parser-step-title,
@@ -592,23 +639,23 @@
     }
 
     .parser-section-head {
-      display: flex;
       align-items: center;
+      display: flex;
       gap: 12px;
       margin-bottom: 18px;
     }
 
     .parser-input {
       width: 100%;
-      border-radius: 14px;
-      border: 1px solid rgba(148, 163, 184, 0.20);
       background: rgba(15, 23, 42, 0.72);
+      border: 1px solid rgba(148, 163, 184, 0.20);
+      border-radius: 14px;
       color: white;
       font-family: inherit;
       font-size: 14px;
       line-height: 1.5;
-      padding: 14px 16px;
       outline: none;
+      padding: 14px 16px;
     }
 
     .parser-input::placeholder {
@@ -702,8 +749,8 @@
     }
 
     .parser-info-box {
-      border-color: rgba(168, 85, 247, 0.18);
       background: linear-gradient(135deg, rgba(15, 23, 42, 0.84) 0%, rgba(76, 29, 149, 0.14) 100%);
+      border-color: rgba(168, 85, 247, 0.18);
     }
 
     .parser-balance-value {
@@ -714,9 +761,9 @@
     }
 
     .parser-upload-zone {
+      background: rgba(139, 92, 246, 0.06);
       border: 2px dashed rgba(168, 85, 247, 0.34);
       border-radius: 22px;
-      background: rgba(139, 92, 246, 0.06);
       cursor: pointer;
       padding: 34px 24px;
       text-align: center;
@@ -810,7 +857,9 @@
       text-decoration: none;
     }
 
-    .hidden { display: none !important; }
+    .hidden {
+      display: none !important;
+    }
 
     @media (max-width: 1180px) {
       .parser-output-grid {
@@ -824,14 +873,20 @@
       }
 
       .sidebar {
-        width: 100%;
         height: auto;
-        position: relative;
         padding-bottom: 16px;
+        position: relative;
+        width: 100%;
       }
 
       .sidebar-card {
         margin-top: 16px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .table-controls {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -1072,15 +1127,46 @@
 
               <div id="reportsPageEmpty" class="empty-state hidden">No reports found yet.</div>
 
+              <div class="table-controls">
+                <div>
+                  <label for="reportsFilterInput" class="table-filter-label">Filter reports</label>
+                  <input id="reportsFilterInput" type="text" class="parser-input" placeholder="Search by report ID, label, status, credits, or date" autocomplete="off" />
+                </div>
+                <div>
+                  <label for="reportsSortField" class="table-filter-label">Sort by</label>
+                  <select id="reportsSortField" class="parser-input">
+                    <option value="createdAt" selected>Newest Created</option>
+                    <option value="printedAt">Newest Printed</option>
+                    <option value="creditsUsed">Credits Used</option>
+                    <option value="label">Label</option>
+                    <option value="reportId">Report ID</option>
+                    <option value="status">Status</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="reportsSortDirection" class="table-filter-label">Direction</label>
+                  <select id="reportsSortDirection" class="parser-input">
+                    <option value="desc">Descending</option>
+                    <option value="asc">Ascending</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="table-meta-row">
+                <div id="reportsSummaryText">Search, sort, and label saved reports.</div>
+              </div>
+
               <div id="reportsPageTableWrap" class="table-wrap hidden">
                 <table>
                   <thead>
                     <tr>
-                      <th>Created At</th>
-                      <th>Printed At</th>
                       <th>Report ID</th>
+                      <th>Created</th>
+                      <th>Printed</th>
                       <th>Status</th>
-                      <th>Open</th>
+                      <th>Credits Used</th>
+                      <th>Label</th>
+                      <th>Quick Open</th>
                     </tr>
                   </thead>
                   <tbody id="reportsPageTbody">
@@ -1124,6 +1210,29 @@
                 <p class="card-desc">Review your receipt history and verify completed credit purchases tied to this account.</p>
 
                 <div id="receiptsPageEmpty" class="empty-state hidden">No purchases found yet.</div>
+
+                <div class="table-controls">
+                  <div>
+                    <label for="receiptsFilterInput" class="table-filter-label">Filter receipts</label>
+                    <input id="receiptsFilterInput" type="text" class="parser-input" placeholder="Search by credits, price ID, or status" autocomplete="off" />
+                  </div>
+                  <div>
+                    <label for="receiptsSortField" class="table-filter-label">Sort by</label>
+                    <select id="receiptsSortField" class="parser-input">
+                      <option value="createdAt">Created At</option>
+                      <option value="credits">Credits</option>
+                      <option value="priceId">Price ID</option>
+                      <option value="status">Status</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="receiptsSortDirection" class="table-filter-label">Direction</label>
+                    <select id="receiptsSortDirection" class="parser-input">
+                      <option value="desc">Descending</option>
+                      <option value="asc">Ascending</option>
+                    </select>
+                  </div>
+                </div>
 
                 <div id="receiptsPageTableWrap" class="table-wrap hidden">
                   <table>
@@ -1216,6 +1325,7 @@
     let savedBrandLogo = null;
 
     const BRAND_LOGO_STORAGE_KEY = 'tm_brand_logo_v1';
+    const REPORT_LABELS_STORAGE_KEY = 'tm_report_labels_v1';
 
     function escapeHtml(value) {
       return String(value == null ? '' : value)
@@ -1245,6 +1355,53 @@
     function buildReportHistoryUrl(reportId) {
       const clean = String(reportId || '').trim();
       return clean ? ('/transcript/report?r=' + encodeURIComponent(clean)) : '';
+    }
+
+    function getCreditsUsed(item) {
+      const raw = firstDefined(
+        item && item.creditsUsed,
+        item && item.credits_used,
+        item && item.creditCost,
+        item && item.credit_cost,
+        item && item.tokensUsed,
+        item && item.tokens_used,
+        '1'
+      );
+      const value = Number(raw);
+      return Number.isFinite(value) && value > 0 ? String(value) : '1';
+    }
+
+    function loadReportLabels() {
+      try {
+        const raw = window.localStorage.getItem(REPORT_LABELS_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : {};
+        return parsed && typeof parsed === 'object' ? parsed : {};
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function getReportLabel(reportId) {
+      const clean = String(reportId || '').trim();
+      if (!clean) return '';
+      const labels = loadReportLabels();
+      return String(labels[clean] || '').trim();
+    }
+
+    function saveReportLabel(reportId, label) {
+      const cleanId = String(reportId || '').trim();
+      if (!cleanId) return;
+      const labels = loadReportLabels();
+      const cleanLabel = String(label || '').trim();
+      if (cleanLabel) {
+        labels[cleanId] = cleanLabel;
+      } else {
+        delete labels[cleanId];
+      }
+      try {
+        window.localStorage.setItem(REPORT_LABELS_STORAGE_KEY, JSON.stringify(labels));
+      } catch (_) {
+      }
     }
 
     function getStatusBadge(status) {
@@ -1629,16 +1786,23 @@
         const reportId = firstDefined(item.reportId, item.report_id, item.id);
         const reportUrl = reportId ? buildReportHistoryUrl(reportId) : firstDefined(item.reportUrl, item.report_url, '');
         const status = firstDefined(item.status, printedAt ? 'printed' : 'pending');
+        const creditsUsed = getCreditsUsed(item);
+        const label = getReportLabel(reportId);
 
         return '' +
           '<tr>' +
+            '<td>' + escapeHtml(reportId || '—') + '</td>' +
             '<td>' + escapeHtml(formatDate(createdAt)) + '</td>' +
             '<td>' + escapeHtml(formatDate(printedAt)) + '</td>' +
-            '<td>' + escapeHtml(reportId || '—') + '</td>' +
             '<td>' + getStatusBadge(status) + '</td>' +
+            '<td>' + escapeHtml(creditsUsed) + '</td>' +
+            '<td>' +
+              '<input class="report-label-input" type="text" data-report-label="' + escapeHtml(reportId || '') + '" value="' + escapeHtml(label) + '" placeholder="Add internal label" maxlength="80" />' +
+            '</td>' +
             '<td>' + (reportUrl ? '<a class="btn btn-secondary" style="min-height:36px; padding:0 12px;" href="' + escapeHtml(reportUrl) + '">Open report</a>' : '—') + '</td>' +
           '</tr>';
       }).join('');
+    }).join('');
     }
 
     function renderPurchaseRows(tbodyId, purchases) {
@@ -1661,42 +1825,155 @@
       }).join('');
     }
 
+    function clearTableBody(id) {
+      const tbody = document.getElementById(id);
+      if (tbody) tbody.innerHTML = '';
+    }
+
+    function getFilterValue(id) {
+      const el = document.getElementById(id);
+      return String(el && el.value || '').trim().toLowerCase();
+    }
+
+    function getSortDirection(id) {
+      const value = getFilterValue(id);
+      return value === 'asc' ? 1 : -1;
+    }
+
+    function getSortField(id, fallback) {
+      const el = document.getElementById(id);
+      return String(el && el.value || fallback || '').trim();
+    }
+
+    function getComparableValue(item, field) {
+      if (field === 'createdAt') return Date.parse(firstDefined(item.createdAt, item.created_at, item.insertedAt)) || 0;
+      if (field === 'credits') return Number(firstDefined(item.credits, item.creditAmount, item.amountCredits, 0)) || 0;
+      if (field === 'creditsUsed') return Number(getCreditsUsed(item)) || 0;
+      if (field === 'label') return getReportLabel(firstDefined(item.reportId, item.report_id, item.id)).toLowerCase();
+      if (field === 'priceId') return String(firstDefined(item.priceId, item.price_id, '')).toLowerCase();
+      if (field === 'printedAt') return Date.parse(firstDefined(item.printedAt, item.printed_at)) || 0;
+      if (field === 'reportId') return String(firstDefined(item.reportId, item.report_id, item.id, '')).toLowerCase();
+      if (field === 'status') return String(firstDefined(item.status, item.paymentStatus, item.printedAt ? 'printed' : 'pending')).toLowerCase();
+      return String(firstDefined(item[field], '')).toLowerCase();
+    }
+
+    function compareValues(a, b) {
+      if (typeof a === 'number' && typeof b === 'number') return a - b;
+      return String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' });
+    }
+
+    function getVisiblePurchases() {
+      const filter = getFilterValue('receiptsFilterInput');
+      const sortDirection = getSortDirection('receiptsSortDirection');
+      const sortField = getSortField('receiptsSortField', 'createdAt');
+
+      return latestPurchases.filter(function (item) {
+        if (!filter) return true;
+
+        const haystack = [
+          firstDefined(item.createdAt, item.created_at, item.at),
+          firstDefined(item.credits, item.creditAmount, item.amountCredits, ''),
+          firstDefined(item.priceId, item.price_id, ''),
+          firstDefined(item.status, item.paymentStatus, 'completed')
+        ].join(' ').toLowerCase();
+
+        return haystack.includes(filter);
+      }).slice().sort(function (a, b) {
+        return compareValues(getComparableValue(a, sortField), getComparableValue(b, sortField)) * sortDirection;
+      });
+    }
+
+    function getVisibleReports() {
+      const filter = getFilterValue('reportsFilterInput');
+      const sortDirection = getSortDirection('reportsSortDirection');
+      const sortField = getSortField('reportsSortField', 'createdAt');
+
+      return latestReports.filter(function (item) {
+        if (!filter) return true;
+
+        const reportId = firstDefined(item.reportId, item.report_id, item.id);
+        const haystack = [
+          firstDefined(item.createdAt, item.created_at, item.insertedAt),
+          getCreditsUsed(item),
+          getReportLabel(reportId),
+          firstDefined(item.printedAt, item.printed_at),
+          reportId,
+          firstDefined(item.status, item.printedAt ? 'printed' : 'pending')
+        ].join(' ').toLowerCase();
+
+        return haystack.includes(filter);
+      }).slice().sort(function (a, b) {
+        return compareValues(getComparableValue(a, sortField), getComparableValue(b, sortField)) * sortDirection;
+      });
+    }).slice().sort(function (a, b) {
+        return compareValues(getComparableValue(a, sortField), getComparableValue(b, sortField)) * sortDirection;
+      });
+    }
+
+    function updateReportsSummaryText(filteredCount, totalCount) {
+      const el = document.getElementById('reportsSummaryText');
+      if (!el) return;
+      el.textContent = String(filteredCount) + ' of ' + String(totalCount) + ' reports shown.';
+    }
+
     function renderReports(data) {
       latestReports = normalizeReports(data);
+      const filteredReports = getVisibleReports();
       const hasReports = latestReports.length > 0;
+      const hasFilteredReports = filteredReports.length > 0;
       const empty = document.getElementById('reportsPageEmpty');
       const wrap = document.getElementById('reportsPageTableWrap');
+
+      updateReportsSummaryText(filteredReports.length, latestReports.length);
 
       if (!empty || !wrap) return;
 
       if (!hasReports) {
         empty.classList.remove('hidden');
+        empty.textContent = 'No reports found yet.';
         wrap.classList.add('hidden');
-        setText('reportsPageTbody', '');
+        clearTableBody('reportsPageTbody');
+        return;
+      }
+
+      if (!hasFilteredReports) {
+        empty.classList.remove('hidden');
+        empty.textContent = 'No reports match the current search or sort view.';
+        wrap.classList.add('hidden');
+        clearTableBody('reportsPageTbody');
         return;
       }
 
       empty.classList.add('hidden');
+      empty.textContent = 'No reports found yet.';
       wrap.classList.remove('hidden');
-      renderReportRows('reportsPageTbody', latestReports);
+      renderReportRows('reportsPageTbody', filteredReports);
     }
 
     function renderPurchases(data) {
       latestPurchases = normalizePurchases(data);
+      const filteredPurchases = getVisiblePurchases();
       const hasPurchases = latestPurchases.length > 0;
+      const hasFilteredPurchases = filteredPurchases.length > 0;
       const empty = document.getElementById('receiptsPageEmpty');
       const wrap = document.getElementById('receiptsPageTableWrap');
 
       if (empty && wrap) {
         if (!hasPurchases) {
           empty.classList.remove('hidden');
+          empty.textContent = 'No purchases found yet.';
           wrap.classList.add('hidden');
-          const tbody = document.getElementById('receiptsPageTbody');
-          if (tbody) tbody.innerHTML = '';
+          clearTableBody('receiptsPageTbody');
+        } else if (!hasFilteredPurchases) {
+          empty.classList.remove('hidden');
+          empty.textContent = 'No receipts match the current filter.';
+          wrap.classList.add('hidden');
+          clearTableBody('receiptsPageTbody');
         } else {
           empty.classList.add('hidden');
+          empty.textContent = 'No purchases found yet.';
           wrap.classList.remove('hidden');
-          renderPurchaseRows('receiptsPageTbody', latestPurchases);
+          renderPurchaseRows('receiptsPageTbody', filteredPurchases);
         }
       }
 
@@ -1753,9 +2030,73 @@
       });
     }
 
+    function wireReportLabelControls() {
+      document.addEventListener('input', function (event) {
+        const input = event.target.closest('[data-report-label]');
+        if (!input) return;
+        const reportId = input.getAttribute('data-report-label');
+        saveReportLabel(reportId, input.value);
+        updateReportsSummaryText(getVisibleReports().length, latestReports.length);
+      });
+    }
+
+    function wireTableControls() {
+      [
+        'receiptsFilterInput',
+        'receiptsSortDirection',
+        'receiptsSortField'
+      ].sort().forEach(function (id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('input', function () {
+          renderPurchases(latestPurchases);
+        });
+        el.addEventListener('change', function () {
+          renderPurchases(latestPurchases);
+        });
+      });
+
+      [
+        'reportsFilterInput',
+        'reportsSortDirection',
+        'reportsSortField'
+      ].sort().forEach(function (id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('input', function () {
+          renderReports(latestReports);
+        });
+        el.addEventListener('change', function () {
+          renderReports(latestReports);
+        });
+      });
+    });
+        el.addEventListener('change', function () {
+          renderPurchases(latestPurchases);
+        });
+      });
+
+      [
+        'reportsFilterInput',
+        'reportsSortDirection',
+        'reportsSortField'
+      ].sort().forEach(function (id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('input', function () {
+          renderReports(latestReports);
+        });
+        el.addEventListener('change', function () {
+          renderReports(latestReports);
+        });
+      });
+    }
+
     function wireStaticButtons() {
       wireBrandLogo();
       wirePdfUpload();
+      wireReportLabelControls();
+      wireTableControls();
 
       document.querySelectorAll('[data-toast]').forEach(function (btn) {
         btn.addEventListener('click', function () {
@@ -1848,6 +2189,73 @@
           run: function () {
             return normalizeReports([1]).length === 1;
           }
+        },
+        {
+          name: 'purchase filtering matches price ID',
+          run: function () {
+            latestPurchases = [{ createdAt: '2026-03-01', credits: 25, priceId: 'price_abc', status: 'completed' }];
+            const filterEl = document.getElementById('receiptsFilterInput');
+            const sortFieldEl = document.getElementById('receiptsSortField');
+            const sortDirectionEl = document.getElementById('receiptsSortDirection');
+            if (!filterEl || !sortFieldEl || !sortDirectionEl) return true;
+            filterEl.value = 'abc';
+            sortFieldEl.value = 'createdAt';
+            sortDirectionEl.value = 'desc';
+            const result = getVisiblePurchases().length === 1;
+            filterEl.value = '';
+            return result;
+          }
+        },
+        {
+          name: 'report sorting orders ascending by report ID',
+          run: function () {
+            latestReports = [{ reportId: 'B2' }, { reportId: 'A1' }];
+            const filterEl = document.getElementById('reportsFilterInput');
+            const sortFieldEl = document.getElementById('reportsSortField');
+            const sortDirectionEl = document.getElementById('reportsSortDirection');
+            if (!filterEl || !sortFieldEl || !sortDirectionEl) return true;
+            filterEl.value = '';
+            sortFieldEl.value = 'reportId';
+            sortDirectionEl.value = 'asc';
+            const result = getVisibleReports()[0].reportId === 'A1';
+            sortDirectionEl.value = 'desc';
+            return result;
+          }
+        },
+        {
+          name: 'renderReports clears tbody when filter removes all rows',
+          run: function () {
+            const filterEl = document.getElementById('reportsFilterInput');
+            if (!filterEl) return true;
+            latestReports = [{ createdAt: '2026-03-01', reportId: 'R1', status: 'printed' }];
+            filterEl.value = 'zzz';
+            renderReports(latestReports);
+            const tbody = document.getElementById('reportsPageTbody');
+            const result = tbody ? tbody.innerHTML === '' : true;
+            filterEl.value = '';
+            return result;
+          }
+        },
+        {
+          name: 'report labels persist by report ID',
+          run: function () {
+            saveReportLabel('R-123', 'Amended return');
+            return getReportLabel('R-123') === 'Amended return';
+          }
+        },
+        {
+          name: 'report filtering matches saved label',
+          run: function () {
+            const filterEl = document.getElementById('reportsFilterInput');
+            if (!filterEl) return true;
+            saveReportLabel('R-456', 'Urgent case');
+            latestReports = [{ createdAt: '2026-03-01', reportId: 'R-456', status: 'pending' }];
+            filterEl.value = 'urgent';
+            const result = getVisibleReports().length === 1;
+            filterEl.value = '';
+            return result;
+          }
+        }
         }
       ];
 
