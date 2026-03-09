@@ -657,7 +657,7 @@
     <div class="report-shell">
       <header class="topbar">
         <div class="topbar-inner">
-          <a href="https://transcript.taxmonitor.pro/" class="brand">
+          <a href="/app-dashboard" class="brand">
             <span class="brand-mark">TM</span>
             <span class="brand-copy">
               <strong>Transcript.Tax Monitor Pro</strong>
@@ -1427,7 +1427,7 @@
         function getReturnUrl() {
           const url = new URL(window.location.href);
           const returnUrl = String(url.searchParams.get('return') || '').trim();
-          return returnUrl || '/partials/parse-lab.html';
+          return returnUrl || '/app-dashboard';
         }
 
         function goBackToReturnUrl() {
