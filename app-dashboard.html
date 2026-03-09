@@ -1001,7 +1001,7 @@
                       <div>
                         <label for="report-email" class="parser-form-label">Email</label>
                         <input id="report-email" type="email" placeholder="client@firm.com" class="parser-input" autocomplete="email" />
-                        <p class="parser-note">Requires parsed JSON, a saved preview report, and a generated secure preview link.</p>
+                        <p class="parser-note">Requires parsed JSON and a saved preview report.</p>
                       </div>
                       <div style="display:grid; gap:8px;">
                         <button id="report-email-btn" type="button" class="btn btn-primary opacity-50 cursor-not-allowed" disabled>Email report link</button>
@@ -1619,7 +1619,9 @@
         const createdAt = firstDefined(item.createdAt, item.created_at, item.insertedAt);
         const printedAt = firstDefined(item.printedAt, item.printed_at);
         const reportId = firstDefined(item.reportId, item.report_id, item.id);
-        const reportUrl = firstDefined(item.reportUrl, item.report_url, reportId ? '/assets/report.html?reportId=' + encodeURIComponent(reportId) : '');
+        const reportUrl = reportId
+          ? '/transcript/report?r=' + encodeURIComponent(reportId)
+          : firstDefined(item.reportUrl, item.report_url, '');
         const status = firstDefined(item.status, printedAt ? 'printed' : 'pending');
 
         return '' +
@@ -1849,6 +1851,21 @@
     });
   </script>
   <script>
+    async function fetchJsonLocal(url, options) {
+      return fetchJson(url, options);
+    }
+
+    async function resolvePreviewUrlFromReportId(reportId) {
+      const cleanReportId = String(reportId || '').trim();
+      if (!cleanReportId) throw new Error('missing_reportId');
+
+      const response = await fetchJsonLocal('/transcript/report-link?reportId=' + encodeURIComponent(cleanReportId));
+      const reportUrl = String(response && response.reportUrl || '').trim();
+      if (!reportUrl) throw new Error('missing_reportUrl');
+
+      return reportUrl;
+    }
+
     (function () {
       const parserState = {
         extractedAt: '',
@@ -1860,121 +1877,49 @@
         resolvedPreviewUrl: ''
       };
 
-      function setStatus(message) {
-        const el = document.getElementById('preview-action-status');
-        if (el) el.textContent = String(message || '');
-      }
-
-      function setOutput(id, value) {
-        const el = document.getElementById(id);
-        if (el) el.textContent = String(value == null ? '' : value);
-      }
-
-      function buildResolvedPreviewUrl(reportData) {
-        const payload = encodeURIComponent(JSON.stringify(reportData || {}));
-        return window.location.origin + '/assets/report.html?data=' + payload;
-      }
-
-      function getSavedLogo() {
-        try {
-          const raw = localStorage.getItem('tm_brand_logo_v1');
-          return raw ? JSON.parse(raw) : null;
-        } catch (_) {
-          return null;
-        }
-      }
-
-      function getTokenId() {
-        const me = typeof latestMe !== 'undefined' ? latestMe : null;
-        if (typeof getMeTokenId === 'function') return String(getMeTokenId(me || {}) || '').trim();
-        return '';
-      }
-
-      function updateControls() {
-        const emailBtn = document.getElementById('report-email-btn');
-        const emailInput = document.getElementById('report-email');
+      function updateParserControls() {
         const extractBtn = document.getElementById('extract-raw-btn');
         const parseBtn = document.getElementById('parse-structured-btn');
         const previewBtn = document.getElementById('preview-report-btn');
-
-        const hasEmail = !!String(emailInput && emailInput.value || '').trim();
+        const emailBtn = document.getElementById('report-email-btn');
+        const emailInput = document.getElementById('report-email');
         const hasFile = !!parserState.file;
         const hasJson = !!parserState.json;
-        const hasPreview = !!parserState.previewReportId;
-        const hasResolvedPreview = !!parserState.resolvedPreviewUrl;
-        const hasToken = !!getTokenId();
+        const hasPreview = !!parserState.previewReportId && !!parserState.resolvedPreviewUrl;
+        const hasEmail = !!String(emailInput && emailInput.value || '').trim();
+        const hasToken = !!getMeTokenId(latestMe || {});
 
         if (extractBtn) {
           extractBtn.disabled = !hasFile;
           extractBtn.className = extractBtn.disabled ? 'btn btn-secondary opacity-50 cursor-not-allowed' : 'btn btn-secondary';
         }
-
         if (parseBtn) {
           parseBtn.disabled = !hasFile;
           parseBtn.className = parseBtn.disabled ? 'btn btn-primary opacity-50 cursor-not-allowed' : 'btn btn-primary';
         }
-
         if (previewBtn) {
-          const disabled = !hasJson;
-          previewBtn.className = disabled ? 'btn btn-secondary opacity-50 cursor-not-allowed pointer-events-none' : 'btn btn-secondary';
-          previewBtn.setAttribute('aria-disabled', disabled ? 'true' : 'false');
-          previewBtn.href = hasResolvedPreview ? parserState.resolvedPreviewUrl : '#';
-
-          if (hasResolvedPreview) {
-            previewBtn.target = '_blank';
-            previewBtn.rel = 'noopener';
-          } else {
-            previewBtn.removeAttribute('target');
-            previewBtn.removeAttribute('rel');
-          }
+          previewBtn.href = hasPreview ? parserState.resolvedPreviewUrl : '#';
+          previewBtn.setAttribute('aria-disabled', hasJson ? 'false' : 'true');
+          previewBtn.className = hasJson ? 'btn btn-secondary' : 'btn btn-secondary opacity-50 cursor-not-allowed pointer-events-none';
         }
-
         if (emailBtn) {
-          emailBtn.disabled = !(hasEmail && hasJson && hasPreview && hasResolvedPreview && hasToken);
+          emailBtn.disabled = !(hasJson && hasPreview && hasEmail && hasToken);
           emailBtn.className = emailBtn.disabled ? 'btn btn-primary opacity-50 cursor-not-allowed' : 'btn btn-primary';
         }
       }
 
-      function resetParserForFile(file) {
-        parserState.file = file || null;
-        parserState.extractedAt = '';
+      function readSelectedPdf() {
+        const input = document.getElementById('pdf-upload');
+        parserState.file = input && input.files && input.files[0] ? input.files[0] : null;
         parserState.json = null;
         parserState.lastEmailEventId = '';
         parserState.previewReportId = '';
         parserState.rawText = '';
         parserState.resolvedPreviewUrl = '';
-
-        setOutput('json-output', '(no json yet)');
-        setOutput('raw-output', '(no text yet)');
-        setOutput('report-email-status', 'Not ready.');
-
-        const titleEl = document.querySelector('#pdf-drop-zone .parser-upload-title');
-        const copyEl = document.querySelector('#pdf-drop-zone .parser-upload-copy');
-
-        if (!file) {
-          if (titleEl) titleEl.textContent = 'Drop PDF here or click to browse';
-          if (copyEl) copyEl.textContent = 'Accepts IRS transcripts (Account, Return, Wage & Income)';
-          setStatus('Runs in your browser. Your PDF is not uploaded or stored.');
-        } else {
-          if (titleEl) titleEl.textContent = file.name || 'PDF selected';
-          if (copyEl) copyEl.textContent = 'File selected locally. Ready to parse.';
-          setStatus('PDF selected: ' + (file.name || 'transcript.pdf') + '. Ready for local parsing.');
-        }
-
-        updateControls();
-      }
-
-      async function fetchJsonLocal(url, options) {
-        if (typeof fetchJson === 'function') return await fetchJson(url, options);
-
-        const response = await fetch(url, Object.assign({
-          credentials: 'include',
-          method: 'GET'
-        }, options || {}));
-
-        const data = await response.json().catch(() => null);
-        if (!response.ok) throw new Error(data && (data.error || data.message) || 'request_failed');
-        return data;
+        setText('json-output', '(no json yet)');
+        setText('raw-output', '(no text yet)');
+        setText('report-email-status', 'Not ready.');
+        updateParserControls();
       }
 
       async function extractPdfText(file) {
@@ -1988,345 +1933,249 @@
 
         for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
           const page = await pdf.getPage(pageNumber);
-          const content = await page.getTextContent();
+          const text = await page.getTextContent();
+          const parts = [];
 
-          const rows = [];
-          let active = [];
-          let lastY = null;
-
-          content.items.forEach(function (item) {
-            const text = String(item && item.str || '').replace(/\s+/g, ' ').trim();
-            if (!text) return;
-
-            const y = item && item.transform ? Number(item.transform[5]) : null;
-            if (lastY === null || y === null || Math.abs(y - lastY) <= 3) {
-              active.push(text);
-            } else {
-              if (active.length) rows.push(active.join(' '));
-              active = [text];
-            }
-            lastY = y;
+          text.items.forEach(function (item) {
+            const str = String(item && item.str || '').trim();
+            if (str) parts.push(str);
           });
 
-          if (active.length) rows.push(active.join('\n'));
-          pages.push(rows.join('\n'));
+          pages.push(parts.join(' '));
         }
 
-        return pages.join('\n\n').replace(/\r/g, '').replace(/\n{3,}/g, '\n\n').trim();
-      }
+        return pages.join('
 
-      function uniqueSorted(values) {
-        return Array.from(new Set(
-          values.map(function (value) { return String(value || '').trim(); }).filter(Boolean)
-        )).sort(function (a, b) {
-          return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
-        });
-      }
-
-      function detectTranscriptType(text) {
-        const lower = String(text || '').toLowerCase();
-        const found = [];
-
-        if (lower.includes('account transcript')) found.push('Account Transcript');
-        if (lower.includes('record of account')) found.push('Record of Account');
-        if (lower.includes('return transcript')) found.push('Return Transcript');
-        if (lower.includes('wage and income transcript') || lower.includes('wage & income transcript')) found.push('Wage & Income Transcript');
-
-        return found.length ? found.join(' + ') : 'IRS Transcript';
+').trim();
       }
 
       function parseStructuredTranscript(rawText, fileName) {
-        const lines = String(rawText || '')
-          .split('\n')
-          .map(function (line) { return line.replace(/\s+/g, ' ').trim(); })
-          .filter(Boolean);
+        const text = String(rawText || '');
+        const lower = text.toLowerCase();
+        const years = [];
+        text.split(/[^0-9]/).forEach(function (token) {
+          if (token.length === 4) {
+            const yearNum = Number(token);
+            if (yearNum >= 1990 && yearNum <= 2099 && years.indexOf(token) === -1) years.push(token);
+          }
+        });
+        years.sort();
 
-        const years = uniqueSorted(
-          (String(rawText || '').match(/\b(?:19|20)\d{2}\b/g) || []).filter(function (year) {
-            const n = Number(year);
-            return n >= 1990 && n <= 2099;
-          })
-        );
-
-        const taxPeriods = uniqueSorted(lines.map(function (line) {
-          const match = line.match(/(?:tax\s+period|period(?:\s+ending)?|tax\s+year)\s*[:\-]?\s*((?:19|20)\d{2}(?:[-/]\d{2}[-/]\d{2})?)/i);
-          return match ? match[1] : '';
-        }));
-
-        const balances = lines
-          .filter(function (line) { return /balance|amount due|accrued|interest|penalty/i.test(line); })
-          .slice(0, 12)
-          .map(function (line) {
-            const amountMatch = line.match(/-?\$?\d{1,3}(?:,\d{3})*(?:\.\d{2})?|\(\$?\d{1,3}(?:,\d{3})*(?:\.\d{2})?\)/g);
-            return {
-              amount: amountMatch && amountMatch.length ? amountMatch[amountMatch.length - 1] : '',
-              label: line.slice(0, 160)
-            };
-          });
-
-        const notices = uniqueSorted(
-          lines.filter(function (line) {
-            return /notice|lien|levy|intent to levy|cp\d+/i.test(line);
-          }).slice(0, 12)
-        );
-
-        const transactions = lines
-          .filter(function (line) {
-            return /\b(?:transaction|code|posted|notice issued|return filed|assessment|payment|penalty|interest)\b/i.test(line);
-          })
-          .slice(0, 24)
-          .map(function (line) {
-            const amountMatch = line.match(/-?\$?\d{1,3}(?:,\d{3})*(?:\.\d{2})?|\(\$?\d{1,3}(?:,\d{3})*(?:\.\d{2})?\)/g);
-            const codeMatch = line.match(/\b\d{3}\b/);
-            const dateMatch = line.match(/\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b|\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\s+\d{1,2},\s+\d{4}\b/i);
-
-            return {
-              amount: amountMatch && amountMatch.length ? amountMatch[amountMatch.length - 1] : '',
-              code: codeMatch ? codeMatch[0] : '',
-              date: dateMatch ? dateMatch[0] : '',
-              text: line.slice(0, 220)
-            };
-          });
-
-        const ssnMatch = String(rawText || '').match(/\b\d{3}-\d{2}-(\d{4})\b|\*{3}-\*{2}-(\d{4})\b|X{3}-X{2}-(\d{4})\b/i);
+        const transcriptTypes = [];
+        if (lower.indexOf('account transcript') !== -1) transcriptTypes.push('Account Transcript');
+        if (lower.indexOf('record of account') !== -1) transcriptTypes.push('Record of Account');
+        if (lower.indexOf('return transcript') !== -1) transcriptTypes.push('Return Transcript');
+        if (lower.indexOf('wage and income transcript') !== -1 || lower.indexOf('wage & income transcript') !== -1) transcriptTypes.push('Wage & Income Transcript');
 
         return {
           fileName: fileName || '',
-          financials: { balances: balances },
           generatedAt: new Date().toISOString(),
-          notices: notices,
-          rawTextLength: String(rawText || '').length,
+          rawTextLength: text.length,
           summary: {
-            taxPeriodCount: taxPeriods.length,
-            transactionCount: transactions.length,
             yearCount: years.length
           },
           taxpayer: {
-            ssnLast4: ssnMatch ? (ssnMatch[1] || ssnMatch[2] || ssnMatch[3] || '') : '',
-            transcriptType: detectTranscriptType(rawText)
+            transcriptType: transcriptTypes.length ? transcriptTypes.join(' + ') : 'IRS Transcript'
           },
           transcript: {
-            taxPeriods: taxPeriods,
             yearsMentioned: years
-          },
-          transactions: transactions
+          }
         };
       }
 
-      function buildPreviewPayload() {
-        const savedLogo = getSavedLogo();
+      async function handleExtractRawText() {
+        if (!parserState.file) {
+          showToast('Please choose a PDF file.');
+          return;
+        }
 
-        return {
-          brandLogo: savedLogo ? {
-            dataUrl: savedLogo.dataUrl || '',
-            name: savedLogo.name || '',
-            type: savedLogo.type || ''
-          } : null,
-          file: {
-            name: parserState.file && parserState.file.name ? parserState.file.name : '',
-            size: parserState.file && parserState.file.size ? parserState.file.size : 0
-          },
-          meta: {
-            extractedAt: parserState.extractedAt || new Date().toISOString(),
-            generatedBy: 'app-dashboard',
-            generatedFrom: 'local-pdfjs',
-            previewTitle: parserState.json && parserState.json.taxpayer ? parserState.json.taxpayer.transcriptType : 'IRS Transcript Report'
-          },
-          rawText: parserState.rawText,
-          structured: parserState.json
-        };
-      }
-
-      async function handleExtract() {
-        if (!parserState.file) return;
-
-        const btn = document.getElementById('extract-raw-btn');
-        const original = btn ? btn.textContent : '';
+        const button = document.getElementById('extract-raw-btn');
+        const originalText = button ? button.textContent : '';
 
         try {
-          if (btn) {
-            btn.disabled = true;
-            btn.textContent = 'Extracting...';
+          if (button) {
+            button.disabled = true;
+            button.textContent = 'Extracting...';
           }
-
-          setStatus('Extracting raw text locally from your PDF...');
+          setText('preview-action-status', 'Extracting raw text locally from your PDF...');
           parserState.rawText = await extractPdfText(parserState.file);
           parserState.extractedAt = new Date().toISOString();
-
-          setOutput('raw-output', parserState.rawText || '(no text yet)');
-          setStatus('Raw text extracted locally. Nothing was uploaded.');
+          setText('raw-output', parserState.rawText || '(no text yet)');
+          setText('preview-action-status', 'Raw text extracted locally. Nothing was uploaded.');
         } catch (error) {
-          setStatus('Raw text extraction failed.');
-          alert(String(error && error.message || error || 'Extraction failed.'));
+          setText('preview-action-status', 'Raw text extraction failed.');
+          showToast(String(error && error.message || error || 'Extraction failed.'));
         } finally {
-          if (btn) {
-            btn.disabled = false;
-            btn.textContent = original;
+          if (button) {
+            button.disabled = false;
+            button.textContent = originalText;
           }
-          updateControls();
+          updateParserControls();
         }
       }
 
-      async function handleParse() {
-        if (!parserState.file) return;
+      async function handleParseStructuredJson() {
+        if (!parserState.file) {
+          showToast('Please choose a PDF file.');
+          return;
+        }
 
-        const btn = document.getElementById('parse-structured-btn');
-        const original = btn ? btn.textContent : '';
+        const button = document.getElementById('parse-structured-btn');
+        const originalText = button ? button.textContent : '';
 
         try {
-          if (btn) {
-            btn.disabled = true;
-            btn.textContent = 'Parsing...';
+          if (button) {
+            button.disabled = true;
+            button.textContent = 'Parsing...';
           }
-
           if (!parserState.rawText) {
-            setStatus('Extracting raw text locally from your PDF...');
             parserState.rawText = await extractPdfText(parserState.file);
             parserState.extractedAt = new Date().toISOString();
-            setOutput('raw-output', parserState.rawText || '(no text yet)');
+            setText('raw-output', parserState.rawText || '(no text yet)');
           }
-
           parserState.json = parseStructuredTranscript(parserState.rawText, parserState.file && parserState.file.name || '');
-          setOutput('json-output', JSON.stringify(parserState.json, null, 2));
-          setOutput('report-email-status', 'Ready after preview save.');
-          setStatus('Structured JSON created locally. Preview save will use 1 credit.');
+          setText('json-output', JSON.stringify(parserState.json, null, 2));
+          setText('report-email-status', 'Ready after preview save.');
+          setText('preview-action-status', 'Structured JSON created locally. Preview save will use 1 credit.');
         } catch (error) {
-          setStatus('Structured parsing failed.');
-          alert(String(error && error.message || error || 'Structured parsing failed.'));
+          setText('preview-action-status', 'Structured parsing failed.');
+          showToast(String(error && error.message || error || 'Structured parsing failed.'));
         } finally {
-          if (btn) {
-            btn.disabled = false;
-            btn.textContent = original;
+          if (button) {
+            button.disabled = false;
+            button.textContent = originalText;
           }
-          updateControls();
+          updateParserControls();
         }
       }
 
       async function handlePreview(event) {
         if (event) event.preventDefault();
-
         if (!parserState.json) {
-          alert('Parse the transcript before saving a preview report.');
+          showToast('Parse the transcript before saving a preview report.');
           return;
         }
 
-        const btn = document.getElementById('preview-report-btn');
-        const original = btn ? btn.textContent : '';
+        const button = document.getElementById('preview-report-btn');
+        const originalText = button ? button.textContent : '';
 
         try {
-          if (btn) {
-            btn.textContent = 'Saving...';
-            btn.classList.add('pointer-events-none');
+          if (button) {
+            button.textContent = 'Saving...';
+            button.classList.add('pointer-events-none');
           }
 
-          setStatus('Saving preview report and consuming 1 credit...');
-
+          setText('preview-action-status', 'Saving preview report and consuming 1 credit...');
           const response = await fetchJsonLocal('/api/transcripts/preview', {
-            body: JSON.stringify({ reportData: buildPreviewPayload() }),
+            method: 'POST',
             headers: { 'content-type': 'application/json' },
-            method: 'POST'
+            body: JSON.stringify({ reportData: {
+              brandLogo: savedBrandLogo ? {
+                dataUrl: savedBrandLogo.dataUrl || '',
+                name: savedBrandLogo.name || '',
+                type: savedBrandLogo.type || ''
+              } : null,
+              file: {
+                name: parserState.file && parserState.file.name ? parserState.file.name : '',
+                size: parserState.file && parserState.file.size ? parserState.file.size : 0
+              },
+              meta: {
+                extractedAt: parserState.extractedAt || new Date().toISOString(),
+                generatedBy: 'app-dashboard',
+                generatedFrom: 'local-pdfjs',
+                previewTitle: parserState.json && parserState.json.taxpayer ? parserState.json.taxpayer.transcriptType : 'IRS Transcript Report'
+              },
+              rawText: parserState.rawText,
+              structured: parserState.json
+            } })
           });
 
           parserState.lastEmailEventId = String(response && response.eventId || '').trim();
           parserState.previewReportId = String(response && response.reportId || '').trim();
-          parserState.resolvedPreviewUrl = buildResolvedPreviewUrl(buildPreviewPayload());
+          parserState.resolvedPreviewUrl = await resolvePreviewUrlFromReportId(parserState.previewReportId);
 
-          setOutput('report-email-status', 'Preview saved. Email delivery ready.');
-          setStatus('Preview saved. Your secure report link is ready.');
+          setText('report-email-status', 'Preview saved. Email delivery ready.');
+          setText('preview-action-status', 'Preview saved. Your secure report link is ready.');
+          updateParserControls();
 
-          if (typeof renderReports === 'function') {
-            renderReports(await fetchJsonLocal('/api/transcripts/reports'));
-          }
-
-          if (typeof fetchJson === 'function' && typeof setAccountState === 'function') {
-            const me = await fetchJson('/api/transcripts/me');
-            const tokenId = getTokenId();
-            const ledger = tokenId ? await fetchJsonLocal('/transcript/tokens?tokenId=' + encodeURIComponent(tokenId)) : null;
-            setAccountState(me || {}, ledger && typeof ledger.balance !== 'undefined' ? ledger.balance : null);
-          }
-
-          updateControls();
+          const reports = await fetchJson('/api/transcripts/reports');
+          renderReports(reports);
 
           if (parserState.resolvedPreviewUrl) {
             window.open(parserState.resolvedPreviewUrl, '_blank', 'noopener');
           }
         } catch (error) {
-          setStatus('Preview save failed. ' + String(error && error.message || error || 'preview_failed'));
-          alert('Preview save failed. ' + String(error && error.message || error || 'preview_failed'));
+          setText('preview-action-status', 'Preview save failed. ' + String(error && error.message || error || 'preview_failed'));
+          showToast('Preview save failed. ' + String(error && error.message || error || 'preview_failed'));
         } finally {
-          if (btn) {
-            btn.textContent = original;
-            btn.classList.remove('pointer-events-none');
+          if (button) {
+            button.textContent = originalText;
+            button.classList.remove('pointer-events-none');
           }
-          updateControls();
+          updateParserControls();
         }
       }
 
-      async function handleEmail() {
-        const emailInput = document.getElementById('report-email');
-        const email = String(emailInput && emailInput.value || '').trim();
-        const tokenId = getTokenId();
+      async function handleEmailReport() {
+        const email = String(document.getElementById('report-email') && document.getElementById('report-email').value || '').trim();
+        const tokenId = getMeTokenId(latestMe || {});
+        const button = document.getElementById('report-email-btn');
+        const originalText = button ? button.textContent : '';
 
         if (!email) {
-          alert('Enter an email address first.');
+          showToast('Please enter an email address.');
           return;
         }
-
-        if (!parserState.previewReportId || !parserState.lastEmailEventId || !parserState.resolvedPreviewUrl) {
-          alert('Save the preview report first so the secure preview link can be generated.');
+        if (!parserState.lastEmailEventId || !parserState.resolvedPreviewUrl) {
+          showToast('Save the preview report first.');
           return;
         }
-
-        const btn = document.getElementById('report-email-btn');
-        const original = btn ? btn.textContent : '';
 
         try {
-          if (btn) {
-            btn.disabled = true;
-            btn.textContent = 'Sending...';
+          if (button) {
+            button.disabled = true;
+            button.textContent = 'Sending...';
           }
 
-          setOutput('report-email-status', 'Sending...');
-          setStatus('Emailing secure report link...');
-
+          setText('report-email-status', 'Sending...');
+          setText('preview-action-status', 'Emailing secure report link...');
           await fetchJsonLocal('/forms/transcript/report-email', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
             body: JSON.stringify({
               email: email,
               eventId: parserState.lastEmailEventId,
-              reportId: parserState.previewReportId,
               reportUrl: parserState.resolvedPreviewUrl,
               tokenId: tokenId
-            }),
-            headers: { 'content-type': 'application/json' },
-            method: 'POST'
+            })
           });
 
-          setOutput('report-email-status', 'Email sent.');
-          setStatus('Email sent with a secure report link.');
+          setText('report-email-status', 'Email sent.');
+          setText('preview-action-status', 'Email sent with a secure report link.');
         } catch (error) {
-          setOutput('report-email-status', 'Send failed.');
-          setStatus('Email failed. ' + String(error && error.message || error || 'email_failed'));
-          alert('Email failed. ' + String(error && error.message || error || 'email_failed'));
+          setText('report-email-status', 'Send failed.');
+          setText('preview-action-status', 'Email failed. ' + String(error && error.message || error || 'email_failed'));
+          showToast('Email failed. ' + String(error && error.message || error || 'email_failed'));
         } finally {
-          if (btn) {
-            btn.disabled = false;
-            btn.textContent = original;
+          if (button) {
+            button.disabled = false;
+            button.textContent = originalText;
           }
-          updateControls();
+          updateParserControls();
         }
       }
 
-      async function handleCheckout(event) {
+      async function handleBuyCredits(event) {
         if (event) event.preventDefault();
 
-        const btn = document.getElementById('parser-buy-credits');
+        const button = document.getElementById('parser-buy-credits');
         const status = document.getElementById('parser-checkout-status');
-        const original = btn ? btn.textContent : '';
+        const originalText = button ? button.textContent : '';
 
         try {
-          if (btn) {
-            btn.textContent = 'Loading...';
-            btn.classList.add('pointer-events-none');
+          if (button) {
+            button.textContent = 'Loading...';
+            button.classList.add('pointer-events-none');
           }
           if (status) status.textContent = 'Loading checkout...';
 
@@ -2343,89 +2192,46 @@
           if (!selected || !selected.priceId) throw new Error('No valid credit pack was returned.');
 
           const checkout = await fetchJsonLocal('/transcript/checkout', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
             body: JSON.stringify({
               priceId: selected.priceId,
               returnUrlBase: window.location.origin,
-              successPath: '/assets/payment-success.html',
-              tokenId: getTokenId()
-            }),
-            headers: { 'content-type': 'application/json' },
-            method: 'POST'
+              successPath: '/assets/payment-success.html'
+            })
           });
 
           if (!checkout || !checkout.url) throw new Error('Checkout URL was not returned.');
-
           if (status) status.textContent = 'Redirecting to checkout...';
           window.location.href = checkout.url;
         } catch (error) {
           if (status) status.textContent = 'Unable to load checkout.';
-          alert('Checkout failed. ' + String(error && error.message || error || 'checkout_failed'));
+          showToast('Checkout failed. ' + String(error && error.message || error || 'checkout_failed'));
         } finally {
-          if (btn) {
-            btn.textContent = original;
-            btn.classList.remove('pointer-events-none');
+          if (button) {
+            button.textContent = originalText;
+            button.classList.remove('pointer-events-none');
           }
         }
       }
 
-      function bindFileSelection() {
-        const input = document.getElementById('pdf-upload');
-        const dropZone = document.getElementById('pdf-drop-zone');
+      const emailInput = document.getElementById('report-email');
+      const emailBtn = document.getElementById('report-email-btn');
+      const extractBtn = document.getElementById('extract-raw-btn');
+      const parseBtn = document.getElementById('parse-structured-btn');
+      const previewBtn = document.getElementById('preview-report-btn');
+      const buyBtn = document.getElementById('parser-buy-credits');
+      const pdfInput = document.getElementById('pdf-upload');
 
-        if (input) {
-          input.addEventListener('change', function () {
-            const file = input.files && input.files[0] ? input.files[0] : null;
-            resetParserForFile(file);
-          });
-        }
+      if (pdfInput) pdfInput.addEventListener('change', readSelectedPdf);
+      if (emailInput) emailInput.addEventListener('input', updateParserControls);
+      if (emailBtn) emailBtn.addEventListener('click', handleEmailReport);
+      if (extractBtn) extractBtn.addEventListener('click', handleExtractRawText);
+      if (parseBtn) parseBtn.addEventListener('click', handleParseStructuredJson);
+      if (previewBtn) previewBtn.addEventListener('click', handlePreview);
+      if (buyBtn) buyBtn.addEventListener('click', handleBuyCredits);
 
-        if (dropZone) {
-          dropZone.addEventListener('drop', function () {
-            setTimeout(function () {
-              const file = input && input.files && input.files[0] ? input.files[0] : null;
-              resetParserForFile(file);
-            }, 0);
-          });
-        }
-      }
-
-      function bindActions() {
-        const buyBtn = document.getElementById('parser-buy-credits');
-        const copyJson = document.getElementById('copy-json');
-        const copyRaw = document.getElementById('copy-raw');
-        const emailBtn = document.getElementById('report-email-btn');
-        const emailInput = document.getElementById('report-email');
-        const extractBtn = document.getElementById('extract-raw-btn');
-        const parseBtn = document.getElementById('parse-structured-btn');
-        const previewBtn = document.getElementById('preview-report-btn');
-
-        if (buyBtn) buyBtn.addEventListener('click', handleCheckout);
-        if (emailBtn) emailBtn.addEventListener('click', handleEmail);
-        if (emailInput) emailInput.addEventListener('input', updateControls);
-        if (extractBtn) extractBtn.addEventListener('click', handleExtract);
-        if (parseBtn) parseBtn.addEventListener('click', handleParse);
-        if (previewBtn) previewBtn.addEventListener('click', handlePreview);
-
-        if (copyJson) {
-          copyJson.addEventListener('click', function () {
-            navigator.clipboard.writeText(String(document.getElementById('json-output') && document.getElementById('json-output').textContent || ''))
-              .then(function () { alert('Structured JSON copied.'); })
-              .catch(function () { alert('Copy failed.'); });
-          });
-        }
-
-        if (copyRaw) {
-          copyRaw.addEventListener('click', function () {
-            navigator.clipboard.writeText(String(document.getElementById('raw-output') && document.getElementById('raw-output').textContent || ''))
-              .then(function () { alert('Raw text copied.'); })
-              .catch(function () { alert('Copy failed.'); });
-          });
-        }
-      }
-
-      bindFileSelection();
-      bindActions();
-      updateControls();
+      updateParserControls();
     })();
   </script>
 </body>
