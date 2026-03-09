@@ -1911,6 +1911,7 @@
       function readSelectedPdf() {
         const input = document.getElementById('pdf-upload');
         parserState.file = input && input.files && input.files[0] ? input.files[0] : null;
+        parserState.extractedAt = '';
         parserState.json = null;
         parserState.lastEmailEventId = '';
         parserState.previewReportId = '';
@@ -1919,6 +1920,12 @@
         setText('json-output', '(no json yet)');
         setText('raw-output', '(no text yet)');
         setText('report-email-status', 'Not ready.');
+        setText(
+          'preview-action-status',
+          parserState.file
+            ? 'PDF selected: ' + (parserState.file.name || 'transcript.pdf') + '. Ready for local parsing.'
+            : 'Runs in your browser. Your PDF is not uploaded or stored.'
+        );
         updateParserControls();
       }
 
@@ -1926,6 +1933,28 @@
         if (!window.pdfjsLib || typeof window.pdfjsLib.getDocument !== 'function') {
           throw new Error('PDF parser library did not load.');
         }
+
+        const buffer = await file.arrayBuffer();
+        const pdf = await window.pdfjsLib.getDocument({ data: buffer }).promise;
+        const pages = [];
+
+        for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+          const page = await pdf.getPage(pageNumber);
+          const text = await page.getTextContent();
+          const parts = [];
+
+          text.items.forEach(function (item) {
+            const str = String(item && item.str || '').trim();
+            if (str) parts.push(str);
+          });
+
+          pages.push(parts.join(' '));
+        }
+
+        return pages.join('
+
+').trim();
+      }
 
         const buffer = await file.arrayBuffer();
         const pdf = await window.pdfjsLib.getDocument({ data: buffer }).promise;
