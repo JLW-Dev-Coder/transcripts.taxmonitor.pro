@@ -10,9 +10,9 @@
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>
-    window.pdfjsLib = window.pdfjsLib || window["pdfjs-dist/build/pdf"];
+    window.pdfjsLib = window.pdfjsLib || window['pdfjs-dist/build/pdf'];
     if (window.pdfjsLib) {
-      window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     }
   </script>
   <script>
@@ -54,6 +54,7 @@
 
     * { box-sizing: border-box; }
     html, body { height: 100%; }
+
     body {
       margin: 0;
       color: var(--tm-text);
@@ -65,16 +66,108 @@
     }
 
     .app-shell {
-      min-height: 100vh;
       display: flex;
+      min-height: 100vh;
     }
 
     .button-row {
       padding-top: 10px;
     }
 
+    .detail-list {
+      display: grid;
+      gap: 0;
+    }
+
+    .detail-label {
+      color: var(--tm-text-muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
     .detail-row {
-      padding-top: 10px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+      display: grid;
+      gap: 6px;
+      padding: 12px 0;
+    }
+
+    .detail-row:last-child {
+      border-bottom: 0;
+    }
+
+    .detail-value {
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .empty-state {
+      color: var(--tm-text-muted);
+      font-size: 14px;
+      padding: 12px 0 0;
+    }
+
+    .pill {
+      align-items: center;
+      border-radius: 999px;
+      display: inline-flex;
+      font-size: 12px;
+      font-weight: 700;
+      min-height: 28px;
+      padding: 0 10px;
+    }
+
+    .pill-pending {
+      background: rgba(245, 158, 11, 0.14);
+      border: 1px solid rgba(245, 158, 11, 0.24);
+      color: #fde68a;
+    }
+
+    .pill-printed {
+      background: rgba(16, 185, 129, 0.14);
+      border: 1px solid rgba(16, 185, 129, 0.24);
+      color: #86efac;
+    }
+
+    .section-header {
+      align-items: flex-start;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .table-wrap {
+      margin-top: 16px;
+      overflow-x: auto;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    thead th {
+      color: var(--tm-text-muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      padding: 12px;
+      text-align: left;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    tbody td {
+      border-top: 1px solid rgba(148, 163, 184, 0.12);
+      color: #e2e8f0;
+      font-size: 14px;
+      padding: 12px;
+      vertical-align: middle;
+      white-space: nowrap;
     }
 
     .sidebar {
@@ -83,11 +176,11 @@
       border-right: 1px solid var(--tm-line);
       display: flex;
       flex-direction: column;
+      height: 100vh;
+      overflow-y: auto;
       padding: 22px 0;
       position: sticky;
       top: 0;
-      height: 100vh;
-      overflow-y: auto;
     }
 
     .sidebar-inner {
@@ -319,12 +412,6 @@
     .page { display: none; }
     .page.active { display: block; }
 
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.85fr);
-      gap: 24px;
-    }
-
     .stack {
       display: grid;
       gap: 24px;
@@ -390,11 +477,6 @@
       line-height: 1;
     }
 
-    .hero-card {
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.16) 0%, rgba(59, 130, 246, 0.10) 100%);
-      border-color: rgba(139, 92, 246, 0.22);
-    }
-
     .parser-card-shell {
       position: relative;
       overflow: hidden;
@@ -405,7 +487,7 @@
     }
 
     .parser-card-shell::before {
-      content: "";
+      content: '';
       position: absolute;
       inset: 0;
       background:
@@ -498,9 +580,9 @@
     }
 
     .parser-section {
-      padding: 0 0 28px;
-      margin-bottom: 28px;
       border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 28px;
+      padding: 0 0 28px;
     }
 
     .parser-section:last-of-type {
@@ -604,50 +686,24 @@
 
     .parser-balance-row,
     .parser-email-grid {
+      align-items: end;
       display: grid;
       gap: 14px;
-      align-items: end;
       grid-template-columns: minmax(0, 1fr) auto;
     }
 
     .parser-status-box,
     .parser-info-box,
-    .parser-output-box,
-    .unauthorized-box {
-      border-radius: 18px;
-      border: 1px solid rgba(148, 163, 184, 0.16);
+    .parser-output-box {
       background: rgba(15, 23, 42, 0.58);
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      border-radius: 18px;
       padding: 16px 18px;
     }
 
     .parser-info-box {
       border-color: rgba(168, 85, 247, 0.18);
       background: linear-gradient(135deg, rgba(15, 23, 42, 0.84) 0%, rgba(76, 29, 149, 0.14) 100%);
-    }
-
-    .unauthorized-box {
-      background: rgba(127, 29, 29, 0.18);
-      border-color: rgba(248, 113, 113, 0.22);
-      margin-bottom: 20px;
-    }
-
-    .unauthorized-box h2 {
-      color: white;
-      font-size: 22px;
-      font-weight: 700;
-      margin: 0 0 10px;
-    }
-
-    .unauthorized-box p {
-      color: #fecaca;
-      line-height: 1.7;
-      margin: 0 0 14px;
-    }
-
-    .unauthorized-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
     }
 
     .parser-balance-value {
@@ -661,9 +717,9 @@
       border: 2px dashed rgba(168, 85, 247, 0.34);
       border-radius: 22px;
       background: rgba(139, 92, 246, 0.06);
+      cursor: pointer;
       padding: 34px 24px;
       text-align: center;
-      cursor: pointer;
       transition: 180ms ease;
     }
 
@@ -674,12 +730,12 @@
     }
 
     .parser-upload-zone svg {
-      display: block;
-      width: 56px;
-      height: 56px;
       color: #d8b4fe;
+      display: block;
+      height: 56px;
       margin: 0 auto 14px;
       opacity: 0.86;
+      width: 56px;
     }
 
     .parser-upload-title {
@@ -698,24 +754,24 @@
 
     .parser-action-row {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .parser-output-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 16px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .parser-output-head {
-      display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding-bottom: 12px;
-      margin-bottom: 12px;
       border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
     }
 
     .parser-output-title {
@@ -740,8 +796,8 @@
       font-size: 12px;
       line-height: 1.7;
       margin: 0;
-      min-height: 160px;
       max-height: 320px;
+      min-height: 160px;
       overflow: auto;
       white-space: pre-wrap;
       word-break: break-word;
@@ -757,7 +813,7 @@
     .hidden { display: none !important; }
 
     @media (max-width: 1180px) {
-      .dashboard-grid {
+      .parser-output-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -780,8 +836,6 @@
     }
 
     @media (max-width: 720px) {
-      .workflow-grid,
-      .metrics-grid,
       .parser-action-row,
       .parser-email-grid,
       .parser-output-grid {
@@ -791,8 +845,8 @@
       .topbar-inner,
       .section-header,
       .footer-inner {
-        flex-direction: column;
         align-items: flex-start;
+        flex-direction: column;
       }
 
       .workspace,
@@ -824,15 +878,6 @@
       </header>
 
       <main class="workspace">
-        <div id="unauthorizedNotice" class="unauthorized-box hidden">
-          <h2>Sign-in required</h2>
-          <p>Your session is missing or expired. The dashboard will stay here instead of throwing you at the sign-in page like a shopping cart with bad wheels.</p>
-          <div class="unauthorized-actions">
-            <a href="/sign-in.html?redirect=/app-dashboard.html" class="btn btn-primary">Sign In</a>
-            <a href="/index.html" class="btn btn-secondary">Back to Home</a>
-          </div>
-        </div>
-
         <section id="dashboardPage" class="page active">
           <div class="stack">
             <div class="parser-card-shell">
@@ -1169,9 +1214,8 @@
     let latestPurchases = [];
     let latestReports = [];
     let savedBrandLogo = null;
-    let isUnauthorized = false;
 
-    const BRAND_LOGO_STORAGE_KEY = "tm_brand_logo_v1";
+    const BRAND_LOGO_STORAGE_KEY = 'tm_brand_logo_v1';
 
     function escapeHtml(value) {
       return String(value == null ? '' : value)
@@ -1183,7 +1227,7 @@
     }
 
     function firstDefined() {
-      for (let i = 0; i < arguments.length; i++) {
+      for (let i = 0; i < arguments.length; i += 1) {
         const value = arguments[i];
         if (value !== undefined && value !== null && String(value).trim() !== '') return value;
       }
@@ -1220,6 +1264,20 @@
       if (size < 1024) return size + ' B';
       if (size < 1024 * 1024) return (size / 1024).toFixed(1).replace(/\.0$/, '') + ' KB';
       return (size / (1024 * 1024)).toFixed(1).replace(/\.0$/, '') + ' MB';
+    }
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = String(value == null ? '' : value);
+    }
+
+    function setValue(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.value = String(value == null ? '' : value);
+    }
+
+    function redirectToSignIn() {
+      window.location.href = '/sign-in.html?redirect=/app-dashboard.html';
     }
 
     function updateBrandLogoUi() {
@@ -1445,58 +1503,6 @@
       });
     }
 
-    function disableProtectedUi() {
-      [
-        'brand-logo',
-        'extract-raw-btn',
-        'parse-structured-btn',
-        'parser-save-token',
-        'report-email',
-        'report-email-btn',
-        'pdf-upload',
-        'preview-report-btn',
-        'remove-brand-logo'
-      ].sort().forEach(function (id) {
-        const el = document.getElementById(id);
-        if (!el) return;
-
-        if ('disabled' in el) el.disabled = true;
-        if (el.tagName === 'A') {
-          el.setAttribute('aria-disabled', 'true');
-          el.classList.add('opacity-50', 'pointer-events-none', 'cursor-not-allowed');
-        }
-      });
-
-      const dropZone = document.getElementById('pdf-drop-zone');
-      if (dropZone) {
-        dropZone.setAttribute('aria-disabled', 'true');
-        dropZone.style.opacity = '0.55';
-        dropZone.style.pointerEvents = 'none';
-      }
-    }
-
-    function showUnauthorizedState() {
-      isUnauthorized = true;
-
-      const box = document.getElementById('unauthorizedNotice');
-      if (box) box.classList.remove('hidden');
-
-      setText('accountEmail', 'Not signed in');
-      setText('accountTokens', '—');
-      setText('parser-token-available', '—');
-      setText('receiptSummaryEmail', 'Not signed in');
-      setText('receiptSummaryStatus', '—');
-      setText('receiptSummaryTokens', '—');
-      setText('sidebarEmail', 'Not signed in');
-      setText('sidebarTokens', '—');
-      setValue('parser-token-id', '');
-
-      const statusEl = document.getElementById('preview-action-status');
-      if (statusEl) statusEl.textContent = 'Sign in to use saved reports, credits, and email delivery.';
-
-      disableProtectedUi();
-    }
-
     async function fetchJson(url, options) {
       const response = await fetch(url, Object.assign({
         credentials: 'include',
@@ -1504,11 +1510,11 @@
       }, options || {}));
 
       if (response.status === 401) {
-        showUnauthorizedState();
+        redirectToSignIn();
         throw new Error('unauthorized');
       }
 
-      const text = await response.text().catch(() => '');
+      const text = await response.text().catch(function () { return ''; });
       let data = null;
       try {
         data = text ? JSON.parse(text) : null;
@@ -1517,23 +1523,31 @@
       }
 
       if (!response.ok) {
-        const message = data && (data.error || data.message) ? String(data.error || data.message) : (text || response.statusText || 'request_failed');
-        throw new Error(message);
+        const err = new Error(
+          data && (data.error || data.message)
+            ? String(data.error || data.message)
+            : (text || response.statusText || 'request_failed')
+        );
+        err.status = response.status;
+        err.code = data && data.error ? String(data.error) : '';
+        err.details = data && Object.prototype.hasOwnProperty.call(data, 'details') ? data.details : null;
+        err.payload = data;
+        throw err;
       }
 
       return data;
     }
 
-    function normalizeReports(data) {
+    function normalizePurchases(data) {
       if (Array.isArray(data)) return data;
-      if (data && Array.isArray(data.reports)) return data.reports;
+      if (data && Array.isArray(data.purchases)) return data.purchases;
       if (data && Array.isArray(data.items)) return data.items;
       return [];
     }
 
-    function normalizePurchases(data) {
+    function normalizeReports(data) {
       if (Array.isArray(data)) return data;
-      if (data && Array.isArray(data.purchases)) return data.purchases;
+      if (data && Array.isArray(data.reports)) return data.reports;
       if (data && Array.isArray(data.items)) return data.items;
       return [];
     }
@@ -1550,10 +1564,10 @@
         me && me.user && me.user.tokenId,
         me && me.user && me.user.transcriptTokenId,
         me && me.user && me.user.ledgerTokenId,
-        window.localStorage && window.localStorage.getItem('transcriptTokenId'),
         window.localStorage && window.localStorage.getItem('tokenId'),
-        window.sessionStorage && window.sessionStorage.getItem('transcriptTokenId'),
+        window.localStorage && window.localStorage.getItem('transcriptTokenId'),
         window.sessionStorage && window.sessionStorage.getItem('tokenId'),
+        window.sessionStorage && window.sessionStorage.getItem('transcriptTokenId'),
         ''
       );
       return String(raw || '').trim();
@@ -1561,10 +1575,10 @@
 
     function getMeTokens(me) {
       const raw = firstDefined(
+        me && me.availableTokens,
+        me && me.balance,
         me && me.tokenBalance,
         me && me.tokens,
-        me && me.balance,
-        me && me.availableTokens,
         me && me.user && me.user.balance,
         me && me.user && me.user.tokenBalance,
         '0'
@@ -1578,18 +1592,7 @@
 
       const data = await fetchJson('/transcript/tokens?tokenId=' + encodeURIComponent(cleanTokenId));
       if (!data || typeof data.balance === 'undefined' || data.balance === null) return null;
-
       return String(data.balance);
-    }
-
-    function setText(id, value) {
-      const el = document.getElementById(id);
-      if (el) el.textContent = String(value == null ? '' : value);
-    }
-
-    function setValue(id, value) {
-      const el = document.getElementById(id);
-      if (el) el.value = String(value == null ? '' : value);
     }
 
     function setAccountState(me, tokenBalanceOverride) {
@@ -1624,9 +1627,7 @@
         const createdAt = firstDefined(item.createdAt, item.created_at, item.insertedAt);
         const printedAt = firstDefined(item.printedAt, item.printed_at);
         const reportId = firstDefined(item.reportId, item.report_id, item.id);
-        const reportUrl = reportId
-          ? buildReportHistoryUrl(reportId)
-          : firstDefined(item.reportUrl, item.report_url, '');
+        const reportUrl = reportId ? buildReportHistoryUrl(reportId) : firstDefined(item.reportUrl, item.report_url, '');
         const status = firstDefined(item.status, printedAt ? 'printed' : 'pending');
 
         return '' +
@@ -1663,57 +1664,41 @@
     function renderReports(data) {
       latestReports = normalizeReports(data);
       const hasReports = latestReports.length > 0;
+      const empty = document.getElementById('reportsPageEmpty');
+      const wrap = document.getElementById('reportsPageTableWrap');
 
-      const pairs = [
-        ['reportsEmpty', 'reportsTableWrap', 'reportsTbody'],
-        ['reportsPageEmpty', 'reportsPageTableWrap', 'reportsPageTbody']
-      ];
+      if (!empty || !wrap) return;
 
-      pairs.forEach(function (pair) {
-        const empty = document.getElementById(pair[0]);
-        const wrap = document.getElementById(pair[1]);
-        if (!empty || !wrap) return;
+      if (!hasReports) {
+        empty.classList.remove('hidden');
+        wrap.classList.add('hidden');
+        setText('reportsPageTbody', '');
+        return;
+      }
 
-        if (!hasReports) {
-          empty.classList.remove('hidden');
-          wrap.classList.add('hidden');
-          const tbody = document.getElementById(pair[2]);
-          if (tbody) tbody.innerHTML = '';
-          return;
-        }
-
-        empty.classList.add('hidden');
-        wrap.classList.remove('hidden');
-        renderReportRows(pair[2], latestReports);
-      });
+      empty.classList.add('hidden');
+      wrap.classList.remove('hidden');
+      renderReportRows('reportsPageTbody', latestReports);
     }
 
     function renderPurchases(data) {
       latestPurchases = normalizePurchases(data);
       const hasPurchases = latestPurchases.length > 0;
+      const empty = document.getElementById('receiptsPageEmpty');
+      const wrap = document.getElementById('receiptsPageTableWrap');
 
-      const pairs = [
-        ['purchasesEmpty', 'purchasesTableWrap', 'purchasesTbody'],
-        ['receiptsPageEmpty', 'receiptsPageTableWrap', 'receiptsPageTbody']
-      ];
-
-      pairs.forEach(function (pair) {
-        const empty = document.getElementById(pair[0]);
-        const wrap = document.getElementById(pair[1]);
-        if (!empty || !wrap) return;
-
+      if (empty && wrap) {
         if (!hasPurchases) {
           empty.classList.remove('hidden');
           wrap.classList.add('hidden');
-          const tbody = document.getElementById(pair[2]);
+          const tbody = document.getElementById('receiptsPageTbody');
           if (tbody) tbody.innerHTML = '';
-          return;
+        } else {
+          empty.classList.add('hidden');
+          wrap.classList.remove('hidden');
+          renderPurchaseRows('receiptsPageTbody', latestPurchases);
         }
-
-        empty.classList.add('hidden');
-        wrap.classList.remove('hidden');
-        renderPurchaseRows(pair[2], latestPurchases);
-      });
+      }
 
       const latest = latestPurchases[0] || null;
       const latestStatus = latest ? firstDefined(latest.status, latest.paymentStatus, 'completed') : '—';
@@ -1748,9 +1733,7 @@
       latestMe = null;
       latestPurchases = [];
       latestReports = [];
-      showUnauthorizedState();
-      switchPage('dashboard');
-      showToast('You are signed out.');
+      window.location.href = '/sign-in.html?redirect=/app-dashboard.html';
     }
 
     function wireNavigation() {
@@ -1834,6 +1817,49 @@
       }
     }
 
+    function runDashboardSelfTests() {
+      const tests = [
+        {
+          name: 'buildReportHistoryUrl returns encoded route',
+          run: function () {
+            return buildReportHistoryUrl('abc 123') === '/transcript/report?r=abc%20123';
+          }
+        },
+        {
+          name: 'bytesToReadable formats KB',
+          run: function () {
+            return bytesToReadable(1536) === '1.5 KB';
+          }
+        },
+        {
+          name: 'firstDefined returns first non-empty value',
+          run: function () {
+            return firstDefined('', null, 'x', 'y') === 'x';
+          }
+        },
+        {
+          name: 'normalizePurchases handles purchases wrapper',
+          run: function () {
+            return normalizePurchases({ purchases: [1, 2] }).length === 2;
+          }
+        },
+        {
+          name: 'normalizeReports handles array',
+          run: function () {
+            return normalizeReports([1]).length === 1;
+          }
+        }
+      ];
+
+      tests.sort(function (a, b) {
+        return a.name.localeCompare(b.name);
+      }).forEach(function (test) {
+        if (!test.run()) {
+          throw new Error('Self-test failed: ' + test.name);
+        }
+      });
+    }
+
     boot().catch(function (error) {
       if (String(error && error.message || error) === 'unauthorized') {
         return;
@@ -1841,7 +1867,7 @@
 
       const message = 'Dashboard failed to load. ' + String(error && error.message || error || 'unknown_error');
 
-      ['purchasesEmpty', 'receiptsPageEmpty', 'reportsEmpty', 'reportsPageEmpty'].sort().forEach(function (id) {
+      ['receiptsPageEmpty', 'reportsPageEmpty'].sort().forEach(function (id) {
         const el = document.getElementById(id);
         if (el) {
           el.classList.remove('hidden');
@@ -1849,11 +1875,13 @@
         }
       });
 
-      ['purchasesTableWrap', 'receiptsPageTableWrap', 'reportsTableWrap', 'reportsPageTableWrap'].sort().forEach(function (id) {
+      ['receiptsPageTableWrap', 'reportsPageTableWrap'].sort().forEach(function (id) {
         const el = document.getElementById(id);
         if (el) el.classList.add('hidden');
       });
     });
+
+    runDashboardSelfTests();
   </script>
   <script>
     (function () {
@@ -1881,7 +1909,6 @@
         const clean = String(reportId || '').trim();
         return clean ? (window.location.origin + '/transcript/report?r=' + encodeURIComponent(clean)) : '';
       }
-
 
       function getSavedLogo() {
         try {
@@ -1973,15 +2000,34 @@
       }
 
       async function fetchJsonLocal(url, options) {
-        if (typeof fetchJson === 'function') return await fetchJson(url, options);
+        if (typeof fetchJson === 'function') return fetchJson(url, options);
 
         const response = await fetch(url, Object.assign({
           credentials: 'include',
           method: 'GET'
         }, options || {}));
 
-        const data = await response.json().catch(() => null);
-        if (!response.ok) throw new Error(data && (data.error || data.message) || 'request_failed');
+        const text = await response.text().catch(function () { return ''; });
+        let data = null;
+        try {
+          data = text ? JSON.parse(text) : null;
+        } catch (_) {
+          data = null;
+        }
+
+        if (!response.ok) {
+          const err = new Error(
+            data && (data.error || data.message)
+              ? String(data.error || data.message)
+              : (text || response.statusText || 'request_failed')
+          );
+          err.status = response.status;
+          err.code = data && data.error ? String(data.error) : '';
+          err.details = data && Object.prototype.hasOwnProperty.call(data, 'details') ? data.details : null;
+          err.payload = data;
+          throw err;
+        }
+
         return data;
       }
 
@@ -2370,6 +2416,32 @@
           if (status) status.textContent = 'Redirecting to checkout...';
           window.location.href = checkout.url;
         } catch (error) {
+          const code = String(error && error.code || error && error.message || '').trim();
+          const details = error && error.details;
+          const missing = details && Array.isArray(details.missing)
+            ? details.missing.slice().sort().join(', ')
+            : '';
+
+          if (code === 'pricing_temporarily_unavailable') {
+            if (status) {
+              status.textContent = missing
+                ? ('App checkout is temporarily unavailable. Missing pricing config: ' + missing + '.')
+                : 'App checkout is temporarily unavailable right now.';
+            }
+            window.location.href = '/index.html#pricing';
+            return;
+          }
+
+          if (code === 'checkout_temporarily_unavailable') {
+            if (status) {
+              status.textContent = missing
+                ? ('Checkout is temporarily unavailable. Missing checkout config: ' + missing + '.')
+                : 'Checkout is temporarily unavailable right now.';
+            }
+            alert('Checkout is temporarily unavailable.');
+            return;
+          }
+
           if (status) status.textContent = 'Unable to load checkout.';
           alert('Checkout failed. ' + String(error && error.message || error || 'checkout_failed'));
         } finally {
@@ -2435,9 +2507,43 @@
         }
       }
 
+      function runParserSelfTests() {
+        const tests = [
+          {
+            name: 'detectTranscriptType detects account transcript',
+            run: function () {
+              return detectTranscriptType('This is an Account Transcript') === 'Account Transcript';
+            }
+          },
+          {
+            name: 'parseStructuredTranscript extracts year',
+            run: function () {
+              const parsed = parseStructuredTranscript('Tax Year 2022\nBalance Due $123.45', 'sample.pdf');
+              return parsed.summary.yearCount === 1 && parsed.transcript.yearsMentioned[0] === '2022';
+            }
+          },
+          {
+            name: 'uniqueSorted removes duplicates',
+            run: function () {
+              const values = uniqueSorted(['2023', '2022', '2023']);
+              return values.length === 2 && values[0] === '2022' && values[1] === '2023';
+            }
+          }
+        ];
+
+        tests.sort(function (a, b) {
+          return a.name.localeCompare(b.name);
+        }).forEach(function (test) {
+          if (!test.run()) {
+            throw new Error('Parser self-test failed: ' + test.name);
+          }
+        });
+      }
+
       bindFileSelection();
       bindActions();
       updateControls();
+      runParserSelfTests();
     })();
   </script>
 </body>
