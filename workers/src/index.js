@@ -6,7 +6,7 @@
  * Routes (alphabetical by path):
  * - GET  /dev/login?email=
  * - GET  /dev/mint?amount=
-$1 * - GET  /transcript/report?r=...
+ * - GET  /transcript/report?r=...
  * - GET  /transcript/report-data?reportId=...
  * - GET  /transcript/report-link?reportId=...
  * - POST /transcript/report-link
@@ -1723,7 +1723,7 @@ async function handleShortReportLookup(request, env) {
   return Response.redirect(link.reportUrl, 302);
 }
 
-$1
+
 async function handleAuthStart(request, env) {
   if (request.method !== "POST") return methodNotAllowed(request, env);
 
@@ -1945,7 +1945,7 @@ export default {
       if (path === "/dev/login") return handleDevLogin(request, env);
       if (path === "/dev/mint") return handleDevMint(request, env);
 
-$1      if (path === "/transcript/report") return handleShortReportLookup(request, env);
+      if (path === "/transcript/report") return handleShortReportLookup(request, env);
       if (path === "/transcript/report-data") return handleGetTranscriptReportData(request, env);
       if (path === "/transcript/report-link" && request.method === "GET") return handleGetTranscriptReportLink(request, env);
       if (path === "/transcript/report-link" && request.method === "POST") return handlePostTranscriptReportLink(request, env);
