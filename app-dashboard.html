@@ -1198,6 +1198,11 @@
       return d.toLocaleString();
     }
 
+    function buildReportHistoryUrl(reportId) {
+      const clean = String(reportId || '').trim();
+      return clean ? ('/transcript/report?r=' + encodeURIComponent(clean)) : '';
+    }
+
     function getStatusBadge(status) {
       const text = String(status || '').trim() || 'pending';
       const lower = text.toLowerCase();
@@ -1877,10 +1882,6 @@
         return clean ? (window.location.origin + '/transcript/report?r=' + encodeURIComponent(clean)) : '';
       }
 
-      function buildReportHistoryUrl(reportId) {
-        const clean = String(reportId || '').trim();
-        return clean ? ('/transcript/report?r=' + encodeURIComponent(clean)) : '';
-      }
 
       function getSavedLogo() {
         try {
