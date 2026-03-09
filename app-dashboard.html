@@ -1802,7 +1802,6 @@
             '<td>' + (reportUrl ? '<a class="btn btn-secondary" style="min-height:36px; padding:0 12px;" href="' + escapeHtml(reportUrl) + '">Open report</a>' : '—') + '</td>' +
           '</tr>';
       }).join('');
-    }).join('');
     }
 
     function renderPurchaseRows(tbodyId, purchases) {
@@ -1903,9 +1902,6 @@
 
         return haystack.includes(filter);
       }).slice().sort(function (a, b) {
-        return compareValues(getComparableValue(a, sortField), getComparableValue(b, sortField)) * sortDirection;
-      });
-    }).slice().sort(function (a, b) {
         return compareValues(getComparableValue(a, sortField), getComparableValue(b, sortField)) * sortDirection;
       });
     }
@@ -2051,26 +2047,6 @@
         el.addEventListener('input', function () {
           renderPurchases(latestPurchases);
         });
-        el.addEventListener('change', function () {
-          renderPurchases(latestPurchases);
-        });
-      });
-
-      [
-        'reportsFilterInput',
-        'reportsSortDirection',
-        'reportsSortField'
-      ].sort().forEach(function (id) {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.addEventListener('input', function () {
-          renderReports(latestReports);
-        });
-        el.addEventListener('change', function () {
-          renderReports(latestReports);
-        });
-      });
-    });
         el.addEventListener('change', function () {
           renderPurchases(latestPurchases);
         });
@@ -2255,7 +2231,6 @@
             filterEl.value = '';
             return result;
           }
-        }
         }
       ];
 
