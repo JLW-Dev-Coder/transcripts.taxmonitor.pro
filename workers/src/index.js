@@ -1,183 +1,1465 @@
 /**
- * Transcript Tax Monitor Pro — Cloudflare Worker
+ * TaxTools Tax Monitor Pro — Cloudflare Worker (v1 API)
  *
- * Routes:
- * - GET  /api/health
- * - GET  /transcript/prices
- * - POST /transcript/checkout
- * - GET  /transcript/tokens?tokenId=...
- * - POST /transcript/credit
- * - POST /transcript/consume
- * - POST /transcript/stripe/webhook
- * - GET  /transcript/report?r=...
- * - POST /forms/transcript/report-email
+ * Checkout provider: PayPal
+ *
+ * Routes (alphabetical by path):
+ * - GET  /dev/login?email=
+ * - GET  /dev/mint?amount=
+$1 * - GET  /transcript/report?r=...
+ * - GET  /transcript/report-data?reportId=...
  * - GET  /transcript/report-link?reportId=...
- * - GET  /transcript/report?r=...
- * - GET  /api/transcripts/checkout/status?session_id=...
- * - GET  /api/transcripts/me
- * - GET  /api/transcripts/purchases
- * - POST /api/transcripts/preview
- * - GET  /api/transcripts/reports
- * - POST /api/transcripts/report/:reportId/print-complete
- * - POST /api/transcripts/sign-out
- * - GET  /v1/help/status?ticket_id=...
+ * - POST /transcript/report-link
+ * - GET  /v1/auth/complete?token=
+ * - GET  /v1/auth/me
+ * - POST /v1/auth/logout
+ * - POST /v1/auth/start
+ * - GET  /v1/checkout/status?session_id=
+ * - POST /v1/checkout/sessions
+ * - GET  /v1/games/access?slug=
+ * - POST /v1/games/end
+ * - GET  /v1/help/status?ticket_id=
  * - POST /v1/help/tickets
- * - POST /v1/clickup/webhook
+ * - GET  /v1/tokens/balance (alias: /v1/arcade/tokens)
+ * - POST /v1/tokens/spend
+ * - POST /v1/webhooks/paypal
  *
  * Notes:
- * - Extracted from the mixed Tax Monitor Pro Worker.
- * - Keeps existing Stripe, Durable Object, Gmail, and transcript receipt behavior.
- * - Non-transcript routes intentionally removed.
+ * - Balances are stored in D1 (accounts.balance).
+ * - Idempotency is enforced by token_ledger.id primary key.
+ * - Game access windows are stored in D1 (play_grants).
+ * - PayPal order->account mapping is stored in R2 (orders/<orderId>.json).
+ * - PayPal webhooks are authoritative for crediting (PAYMENT.CAPTURE.COMPLETED).
  */
 
+const COOKIE_NAMES = Object.freeze({
+  accountId: "tm_account_id",
+  email: "tm_email",
+  session: "tm_session",
+});
+
+const CORS_ALLOWED_HEADERS = "Content-Type,Idempotency-Key";
+const CORS_ALLOWED_METHODS = "GET,POST,OPTIONS";
+const CORS_MAX_AGE_SECONDS = "86400";
+
+const LOGIN_TOKEN_TTL_MS = 15 * 60 * 1000;
+const SESSION_TTL_MS = 14 * 24 * 60 * 60 * 1000;
+
+const PLAY_GRANT_WINDOW_MS = 30 * 60 * 1000; // legacy time-window gating (kept for backward compatibility)
+const PLAY_GRANT_ABANDONED_CUTOFF_MS = 7 * 24 * 60 * 60 * 1000; // run-to-completion safety cutoff
+
+const VALID_GAME_SLUGS = new Set([
+  "circular-230-quest",
+  "irs-notice-jackpot",
+  "irs-notice-showdown",
+  "irs-tax-detective",
+  "match-the-tax-notice",
+  "tax-deadline-master",
+  "tax-deduction-quest",
+  "tax-document-hunter",
+  "tax-jargon-game",
+  "tax-strategy-adventures",
+  "tax-tips-refund-boost",
+]);
+
+const SKU_TOKEN_COUNTS = {
+  token_pack_large_200: 200,
+  token_pack_medium_80: 80,
+  token_pack_small_30: 30,
+};
+
+const SKU_USD_AMOUNTS = {
+  token_pack_large_200: "39.00",
+  token_pack_medium_80: "19.00",
+  token_pack_small_30: "9.00",
+};
+
+const state = {
+  helpTickets: new Map(),
+};
+
 /* ------------------------------------------
- * Shared Utilities
+ * CORS + response helpers
  * ------------------------------------------ */
 
-function tryParseJson(raw) {
-  try {
-    return { ok: true, value: JSON.parse(raw) };
-  } catch (error) {
-    return { ok: false, error };
-  }
+function withCors(request, env, extra = {}) {
+  const origin = request.headers.get("Origin") || "";
+
+  const allowlist = String(env.ALLOWED_ORIGINS || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  const defaultAllow = "https://taxtools.taxmonitor.pro";
+
+  const allowOrigin = allowlist.length
+    ? (allowlist.includes(origin) ? origin : "")
+    : (origin === defaultAllow ? origin : defaultAllow);
+
+  const base = {
+    "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Allow-Headers": CORS_ALLOWED_HEADERS,
+    "Access-Control-Allow-Methods": CORS_ALLOWED_METHODS,
+    "Access-Control-Max-Age": CORS_MAX_AGE_SECONDS,
+    Vary: "Origin",
+    ...extra,
+  };
+
+  if (allowOrigin) base["Access-Control-Allow-Origin"] = allowOrigin;
+  return base;
 }
 
-function jsonResponse(data, init = {}) {
-  const headers = new Headers(init.headers || {});
-  headers.set("content-type", "application/json; charset=utf-8");
-  return new Response(JSON.stringify(data, null, 2), { ...init, headers });
-}
-
-function json(data, status = 200, headers = {}) {
-  return new Response(JSON.stringify(data), {
+function json(request, env, body, status = 200, extraHeaders = {}) {
+  return new Response(JSON.stringify(body, null, 2), {
     status,
     headers: {
-      "cache-control": "no-store",
-      "content-type": "application/json; charset=utf-8",
-      ...headers,
+      "Content-Type": "application/json; charset=utf-8",
+      ...withCors(request, env),
+      ...extraHeaders,
     },
   });
 }
 
-function requireMethod(request, allowed) {
-  const method = request.method.toUpperCase();
-  return allowed.includes(method);
+function badRequest(request, env, message) {
+  return json(request, env, { error: "bad_request", message }, 400);
 }
 
-function isPath(url, pathname) {
-  return url.pathname === pathname;
+function forbidden(request, env, message) {
+  return json(request, env, { error: "forbidden", message }, 403);
 }
 
-function withCors(request, headers = {}) {
-  const origin = request.headers.get("origin") || "";
-  const allowed = new Set(["https://taxmonitor.pro", "https://transcript.taxmonitor.pro"]);
-
-  return {
-    "access-control-allow-headers": "content-type, stripe-signature",
-    "access-control-allow-methods": "GET, POST, OPTIONS",
-    "access-control-allow-origin": allowed.has(origin) ? origin : "https://transcript.taxmonitor.pro",
-    "access-control-max-age": "86400",
-    ...headers,
-  };
+function unauthorized(request, env, message = "Authentication required") {
+  return json(request, env, { error: "unauthorized", message }, 401);
 }
 
-function handleCorsPreflight(request) {
-  if (request.method !== "OPTIONS") return null;
-  return new Response(null, { status: 204, headers: withCors(request) });
+function notFound(request, env) {
+  return json(request, env, { error: "not_found", message: "Not found" }, 404);
+}
+
+function methodNotAllowed(request, env) {
+  return json(request, env, { error: "method_not_allowed", message: "Method not allowed" }, 405);
 }
 
 /* ------------------------------------------
- * Transcript: Report Email helpers (CORS + Gmail)
+ * Generic helpers
  * ------------------------------------------ */
 
-function corsHeadersForRequest(req) {
-  const origin = req.headers.get("Origin") || "";
-  const allowed = ["https://transcript.taxmonitor.pro"];
+function asIso(ms) {
+  return new Date(ms).toISOString();
+}
 
-  if (!origin) return {};
-  const ok = allowed.includes(origin);
+function nowIso() {
+  return new Date().toISOString();
+}
+
+function parseCookies(request) {
+  const cookie = request.headers.get("Cookie") || "";
+  const out = {};
+  for (const part of cookie.split(";")) {
+    const [rawKey, ...rest] = part.trim().split("=");
+    if (!rawKey) continue;
+    out[rawKey] = decodeURIComponent(rest.join("=") || "");
+  }
+  return out;
+}
+
+function getCookie(request, name) {
+  const cookies = parseCookies(request);
+  return (cookies[name] || "").trim();
+}
+
+function randomId(prefix) {
+  if (globalThis.crypto && typeof globalThis.crypto.randomUUID === "function") return `${prefix}_${crypto.randomUUID()}`;
+  return `${prefix}_${Math.random().toString(16).slice(2)}_${Date.now()}`;
+}
+
+function isDevEnabled(env) {
+  return String(env.DEV_LOGIN_ENABLED || "").trim().toLowerCase() === "true";
+}
+
+function isSafeRedirect(redirect) {
+  const r = String(redirect || "").trim();
+  return !!r && r.startsWith("/");
+}
+
+function isValidEmail(email) {
+  const e = String(email || "").trim().toLowerCase();
+  return e.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+}
+
+async function parseJson(request) {
+  return request.json().catch(() => null);
+}
+
+async function parseRawJson(request) {
+  const raw = await request.text().catch(() => "");
+  if (!raw) return { raw: "", parsed: null };
+  const parsed = (() => {
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return null;
+    }
+  })();
+  return { raw, parsed };
+}
+
+/* ------------------------------------------
+ * Cookie helpers
+ * ------------------------------------------ */
+
+function cookieDomain(env) {
+  const d = String(env?.COOKIE_DOMAIN || ".taxmonitor.pro").trim();
+  return d || ".taxmonitor.pro";
+}
+
+function buildCookie(name, value, { domain = null, httpOnly = true, maxAgeSec = null } = {}) {
+  const parts = [];
+  parts.push(`${name}=${encodeURIComponent(value)}`);
+  parts.push("Path=/");
+  if (domain) parts.push(`Domain=${domain}`);
+  parts.push("Secure");
+  parts.push("SameSite=Lax");
+  if (httpOnly) parts.push("HttpOnly");
+  if (typeof maxAgeSec === "number") parts.push(`Max-Age=${maxAgeSec}`);
+  return parts.join("; ");
+}
+
+function buildSessionCookies({ accountId, cookieDomain: domain = null, email, sessionId }) {
+  const maxAgeSec = Math.floor(SESSION_TTL_MS / 1000);
+  return [
+    buildCookie(COOKIE_NAMES.session, sessionId, { domain, httpOnly: true, maxAgeSec }),
+    buildCookie(COOKIE_NAMES.accountId, accountId, { domain, httpOnly: false, maxAgeSec }),
+    buildCookie(COOKIE_NAMES.email, email, { domain, httpOnly: false, maxAgeSec }),
+  ];
+}
+
+function clearCookies(domain = null) {
+  return [
+    buildCookie(COOKIE_NAMES.session, "", { domain, httpOnly: true, maxAgeSec: 0 }),
+    buildCookie(COOKIE_NAMES.accountId, "", { domain, httpOnly: false, maxAgeSec: 0 }),
+    buildCookie(COOKIE_NAMES.email, "", { domain, httpOnly: false, maxAgeSec: 0 }),
+  ];
+}
+
+/* ------------------------------------------
+ * R2 keys
+ * ------------------------------------------ */
+
+function keyLoginToken(token) {
+  return `auth/login_tokens/${token}.json`;
+}
+
+function keySession(sessionId) {
+  return `auth/sessions/${sessionId}.json`;
+}
+
+function keyOrder(orderId) {
+  return `orders/${orderId}.json`;
+}
+
+function keyReceiptApproved(orderId) {
+  return `receipts/paypal/${orderId}/approved.json`;
+}
+
+function keyReceiptCaptureCompleted(orderId) {
+  return `receipts/paypal/${orderId}/capture.completed.json`;
+}
+
+function keyReceiptCaptureFailed(orderId) {
+  return `receipts/paypal/${orderId}/capture.failed.json`;
+}
+
+function keyReceiptSignatureFailed(orderId) {
+  return `receipts/paypal/${orderId}/signature.failed.json`;
+}
+
+function keyReceiptUnmapped(orderId) {
+  return `receipts/paypal/${orderId}/unmapped.json`;
+}
+
+function keySupportTicket(ticketId) {
+  return `support/tickets/${ticketId}.json`;
+}
+
+async function r2Exists(env, key) {
+  const obj = await env.R2_TAXTOOLS.head(key);
+  return !!obj;
+}
+
+async function r2GetJson(env, key) {
+  const obj = await env.R2_TAXTOOLS.get(key);
+  if (!obj) return null;
+  return await obj.json().catch(() => null);
+}
+
+async function r2PutJson(env, key, value) {
+  await env.R2_TAXTOOLS.put(key, JSON.stringify(value), {
+    httpMetadata: { contentType: "application/json" },
+  });
+}
+
+/* ------------------------------------------
+ * D1 helpers
+ * ------------------------------------------ */
+
+function requireDb(env) {
+  if (!env.DB) throw new Error("Missing D1 binding DB");
+}
+
+async function dbAccountEnsure(env, { accountId, email }) {
+  requireDb(env);
+  const now = nowIso();
+  await env.DB.prepare(
+    "INSERT INTO accounts (account_id, email, balance, created_at, updated_at) VALUES (?, ?, 0, ?, ?) " +
+      "ON CONFLICT(account_id) DO UPDATE SET email=excluded.email, updated_at=excluded.updated_at"
+  )
+    .bind(accountId, email || null, now, now)
+    .run();
+}
+
+async function dbAccountGetBalance(env, accountId) {
+  requireDb(env);
+  const row = await env.DB.prepare("SELECT balance FROM accounts WHERE account_id = ?")
+    .bind(accountId)
+    .first();
+  const bal = Number(row?.balance);
+  return Number.isFinite(bal) ? bal : 0;
+}
+
+async function dbPlayGrantsColumns(env) {
+  requireDb(env);
+
+  if (state.playGrantsColumns && state.playGrantsColumns.size) return state.playGrantsColumns;
+
+  const cols = new Set();
+  const res = await env.DB.prepare("PRAGMA table_info(play_grants)").all();
+  const rows = Array.isArray(res?.results) ? res.results : [];
+  for (const r of rows) {
+    const name = r?.name ? String(r.name) : "";
+    if (name) cols.add(name);
+  }
+
+  state.playGrantsColumns = cols;
+  return cols;
+}
+
+async function dbGrantGetActive(env, { accountId, nowMs, slug }) {
+  requireDb(env);
+
+  const cols = await dbPlayGrantsColumns(env);
+
+  if (cols.has("ended_at")) {
+    const cutoffIso = asIso(nowMs - PLAY_GRANT_ABANDONED_CUTOFF_MS);
+
+    const row = await env.DB.prepare(
+      "SELECT grant_id, created_at, ended_at, result, slug, spent " +
+        "FROM play_grants " +
+        "WHERE account_id = ? AND slug = ? AND ended_at IS NULL AND created_at >= ? " +
+        "ORDER BY created_at DESC LIMIT 1"
+    )
+      .bind(accountId, slug, cutoffIso)
+      .first();
+
+    if (!row) return null;
+
+    return {
+      createdAt: row?.created_at ? String(row.created_at) : null,
+      endedAt: row?.ended_at ? String(row.ended_at) : null,
+      grantId: row?.grant_id ? String(row.grant_id) : null,
+      result: row?.result ? String(row.result) : null,
+      slug,
+      spent: Number(row?.spent) || 0,
+    };
+  }
+
+  const row = await env.DB.prepare(
+    "SELECT grant_id, expires_at, expires_at_ms, slug, spent " +
+      "FROM play_grants " +
+      "WHERE account_id = ? AND slug = ? AND expires_at_ms > ? " +
+      "ORDER BY expires_at_ms DESC LIMIT 1"
+  )
+    .bind(accountId, slug, nowMs)
+    .first();
+
+  if (!row) return null;
 
   return {
-    "Access-Control-Allow-Credentials": "false",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Allow-Methods": "OPTIONS, POST",
-    "Access-Control-Allow-Origin": ok ? origin : "null",
-    "Access-Control-Max-Age": "86400",
-    Vary: "Origin",
+    expiresAt: row?.expires_at ? String(row.expires_at) : null,
+    expiresAtMs: Number(row?.expires_at_ms) || null,
+    grantId: row?.grant_id ? String(row.grant_id) : null,
+    slug,
+    spent: Number(row?.spent) || 0,
   };
 }
 
-function isLikelyEmail(v) {
-  const s = String(v || "").trim().toLowerCase();
-  if (!s || s.length > 254) return false;
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+/* ------------------------------------------
+ * Google (Gmail API) sender (magic link)
+ * ------------------------------------------ */
+
+function b64UrlEncodeBytes(bytes) {
+  let bin = "";
+  const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) bin += String.fromCharCode(...bytes.subarray(i, i + chunk));
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
 }
 
-function isTokenIdFormat(v) {
-  const s = String(v || "").trim();
-  return /^[A-Za-z0-9_-]{8,128}$/.test(s);
+function b64UrlEncodeString(s) {
+  return b64UrlEncodeBytes(new TextEncoder().encode(s));
 }
 
-function isSafeReportUrl(v) {
-  const s = String(v || "").trim();
-  if (!s) return false;
+function pemToPkcs8Bytes(pem) {
+  const normalized = String(pem || "").replace(/\\n/g, "\n").trim();
+  const m = normalized.match(/-----BEGIN PRIVATE KEY-----([\s\S]+?)-----END PRIVATE KEY-----/);
+  if (!m) throw new Error("Invalid GOOGLE_PRIVATE_KEY PEM.");
+  const b64 = m[1].replace(/\s+/g, "");
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes;
+}
 
-  let url;
-  try {
-    url = new URL(s);
-  } catch {
-    return false;
+async function importGooglePrivateKey(pem) {
+  const pkcs8 = pemToPkcs8Bytes(pem);
+  return crypto.subtle.importKey(
+    "pkcs8",
+    pkcs8.buffer,
+    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+}
+
+async function googleGetAccessToken(env) {
+  const clientEmail = env.GOOGLE_CLIENT_EMAIL;
+  const privateKey = env.GOOGLE_PRIVATE_KEY;
+  const tokenUri = env.GOOGLE_TOKEN_URI;
+  const sender = env.GOOGLE_WORKSPACE_USER_NO_REPLY;
+
+  if (!clientEmail) throw new Error("Missing GOOGLE_CLIENT_EMAIL.");
+  if (!privateKey) throw new Error("Missing GOOGLE_PRIVATE_KEY.");
+  if (!tokenUri) throw new Error("Missing GOOGLE_TOKEN_URI.");
+  if (!sender) throw new Error("Missing GOOGLE_WORKSPACE_USER_NO_REPLY.");
+
+  const iat = Math.floor(Date.now() / 1000);
+  const exp = iat + 10 * 60;
+
+  const header = { alg: "RS256", typ: "JWT" };
+  const payload = {
+    aud: tokenUri,
+    exp,
+    iat,
+    iss: clientEmail,
+    scope: "https://www.googleapis.com/auth/gmail.send",
+    sub: sender,
+  };
+
+  const signingInput = `${b64UrlEncodeString(JSON.stringify(header))}.${b64UrlEncodeString(JSON.stringify(payload))}`;
+
+  const key = await importGooglePrivateKey(privateKey);
+  const sig = new Uint8Array(await crypto.subtle.sign("RSASSA-PKCS1-v1_5", key, new TextEncoder().encode(signingInput)));
+
+  const jwt = `${signingInput}.${b64UrlEncodeBytes(sig)}`;
+
+  const form = new URLSearchParams();
+  form.set("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
+  form.set("assertion", jwt);
+
+  const res = await fetch(tokenUri, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: form.toString(),
+  });
+
+  const data = await res.json().catch(() => null);
+  if (!res.ok) {
+    const msg = data && (data.error_description || data.error) ? String(data.error_description || data.error) : "unknown";
+    throw new Error(`Google token error: ${msg}`);
   }
 
-  if (url.origin !== "https://transcript.taxmonitor.pro") return false;
+  const token = String(data.access_token || "");
+  if (!token) throw new Error("Google token missing access_token.");
+  return token;
+}
 
-  const allowedPaths = new Set([
-    "/assets/report",
-    "/assets/report.html",
-    "/assets/report-preview.html",
-    "/transcript/report",
-  ]);
+function buildRawEmail({ from, to, subject, text }) {
+  const raw = [
+    `From: ${from}`,
+    `To: ${to}`,
+    `Subject: ${subject}`,
+    `MIME-Version: 1.0`,
+    `Content-Type: text/plain; charset="UTF-8"`,
+    ``,
+    text,
+  ].join("\r\n");
+  return b64UrlEncodeString(raw);
+}
 
-  if (!allowedPaths.has(url.pathname)) return false;
+async function gmailSendMagicLink(env, { to, link }) {
+  const accessToken = await googleGetAccessToken(env);
+  const from = env.GOOGLE_WORKSPACE_USER_NO_REPLY;
 
-  const hasShortId = !!url.searchParams.get("r");
-  const hasHash = !!(url.hash && url.hash.slice(1).trim());
-  const hasPayloadQuery = !!(
-    (url.searchParams.get("data") || "").trim() ||
-    (url.searchParams.get("payload") || "").trim()
+  const subject = "Your TaxTools sign-in link";
+  const text =
+`Sign in to TaxTools
+
+Click this link to finish signing in:
+${link}
+
+This link expires in 15 minutes.
+
+If you didn’t request this, ignore this email.
+`;
+
+  const raw = buildRawEmail({ from, to, subject, text });
+
+  const res = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages/send", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ raw }),
+  });
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(`Gmail send failed: ${body || res.status}`);
+  }
+}
+
+/* ------------------------------------------
+ * ClickUp (Support task projection)
+ * ------------------------------------------ */
+
+async function clickupCreateSupportTask(env, { description, subject }) {
+  const token = String(env.CLICKUP_API_TOKEN || "").trim();
+  const listId = String(env.CLICKUP_SUPPORT_LIST_ID || "").trim();
+
+  if (!token || !listId) return null;
+
+  const res = await fetch(`https://api.clickup.com/api/v2/list/${encodeURIComponent(listId)}/task`, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      description: description || "",
+      name: subject || "Support ticket",
+    }),
+  });
+
+  const data = await res.json().catch(() => null);
+  if (!res.ok) return null;
+
+  const taskId = data?.id ? String(data.id) : null;
+  const url = data?.url ? String(data.url) : null;
+
+  return taskId ? { taskId, url } : null;
+}
+
+/* ------------------------------------------
+ * Auth context
+ * ------------------------------------------ */
+
+async function getAuthContext(request, env) {
+  const sessionId = getCookie(request, COOKIE_NAMES.session);
+  if (!sessionId) return { isAuthenticated: false, accountId: null, email: null };
+
+  const obj = await env.R2_TAXTOOLS.get(keySession(sessionId));
+  if (!obj) return { isAuthenticated: false, accountId: null, email: null };
+
+  const sess = await obj.json().catch(() => null);
+  if (!sess || !sess.email || !sess.expiresAt || !sess.accountId) return { isAuthenticated: false, accountId: null, email: null };
+
+  const exp = Date.parse(sess.expiresAt);
+  if (!Number.isFinite(exp) || exp <= Date.now()) {
+    await env.R2_TAXTOOLS.delete(keySession(sessionId));
+    return { isAuthenticated: false, accountId: null, email: null };
+  }
+
+  return {
+    isAuthenticated: true,
+    accountId: String(sess.accountId || "").trim() || null,
+    email: String(sess.email || "").toLowerCase(),
+  };
+}
+
+/* ------------------------------------------
+ * PayPal helpers (create order + webhook verify)
+ * ------------------------------------------ */
+
+function paypalApiBase(env) {
+  const mode = String(env.PAYPAL_ENV || "sandbox").trim().toLowerCase();
+  return mode === "live" ? "https://api-m.paypal.com" : "https://api-m.sandbox.paypal.com";
+}
+
+function paypalCheckoutBase(env) {
+  const mode = String(env.PAYPAL_ENV || "sandbox").trim().toLowerCase();
+  return mode === "live" ? "https://www.paypal.com" : "https://www.sandbox.paypal.com";
+}
+
+async function paypalGetAccessToken(env) {
+  const clientId = String(env.PAYPAL_CLIENT_ID || "").trim();
+  const secret = String(env.PAYPAL_CLIENT_SECRET || "").trim();
+  if (!clientId) throw new Error("Missing PAYPAL_CLIENT_ID");
+  if (!secret) throw new Error("Missing PAYPAL_CLIENT_SECRET");
+
+  const basic = btoa(`${clientId}:${secret}`);
+  const res = await fetch(`${paypalApiBase(env)}/v1/oauth2/token`, {
+    method: "POST",
+    headers: {
+      Authorization: `Basic ${basic}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: "grant_type=client_credentials",
+  });
+
+  const data = await res.json().catch(() => null);
+  if (!res.ok) {
+    const msg = data?.error_description || data?.error || `PayPal token error (${res.status})`;
+    throw new Error(String(msg));
+  }
+
+  const token = String(data?.access_token || "").trim();
+  if (!token) throw new Error("PayPal token missing access_token");
+  return token;
+}
+
+async function paypalCaptureOrder(env, orderId) {
+  const accessToken = await paypalGetAccessToken(env);
+
+  const res = await fetch(
+    `${paypalApiBase(env)}/v2/checkout/orders/${encodeURIComponent(orderId)}/capture`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    }
   );
 
-  return hasShortId || hasHash || hasPayloadQuery;
+  const data = await res.json().catch(() => null);
+  return { ok: res.ok, status: res.status, data };
 }
 
+function buildCheckoutReturnUrls(request) {
+  const defaultAllow = "https://taxtools.taxmonitor.pro";
 
+  const origin = String(request.headers.get("Origin") || "").trim();
+  const base = origin || defaultAllow;
 
-async function getShortReportLink(env, reportId) {
-  const stored = await resolveShortReportPayload(env, reportId);
-  if (!stored || !stored.payload) return null;
+  const referer = String(request.headers.get("Referer") || "").trim();
 
-  const target = new URL("https://transcript.taxmonitor.pro/assets/report");
-
-  if (String(stored.payloadTransport || "hash") === "query") {
-    target.searchParams.set("data", String(stored.payload));
-  } else {
-    target.hash = String(stored.payload);
+  let returnUrl;
+  try {
+    returnUrl = referer ? new URL(referer) : new URL(`${base}/index.html`);
+  } catch {
+    returnUrl = new URL(`${base}/index.html`);
   }
 
+  const baseUrl = new URL(base);
+  if (returnUrl.origin !== baseUrl.origin) returnUrl = new URL(`${base}/index.html`);
+
+  const cancelUrl = new URL(returnUrl.toString());
+  cancelUrl.searchParams.set("paypal", "cancel");
+
+  const successUrl = new URL(returnUrl.toString());
+  successUrl.searchParams.set("paypal", "success");
+
   return {
-    reportId: String(reportId || "").trim(),
-    reportUrl: target.toString(),
+    cancel_url: cancelUrl.toString(),
+    success_url: successUrl.toString(),
   };
+}
+
+async function paypalCreateOrder({ accessToken, amountUsd, cancel_url, success_url, env, metadata }) {
+  const body = {
+    application_context: {
+      cancel_url,
+      return_url: success_url,
+      user_action: "PAY_NOW",
+    },
+    intent: "CAPTURE",
+    purchase_units: [
+      {
+        amount: {
+          currency_code: "USD",
+          value: String(amountUsd),
+        },
+        custom_id: metadata?.accountId || undefined,
+        description: metadata?.description || undefined,
+        invoice_id: metadata?.idempotencyKey || undefined,
+      },
+    ],
+  };
+
+  const res = await fetch(`${paypalApiBase(env)}/v2/checkout/orders`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+
+  const data = await res.json().catch(() => null);
+  if (!res.ok) {
+    const msg = data?.message || `PayPal order create error (${res.status})`;
+    throw new Error(String(msg));
+  }
+
+  const orderId = String(data?.id || "").trim();
+  if (!orderId) throw new Error("PayPal order missing id");
+
+  const links = Array.isArray(data?.links) ? data.links : [];
+  const approve = links.find((l) => l && l.rel === "approve")?.href;
+  const checkoutUrl = approve || `${paypalCheckoutBase(env)}/checkoutnow?token=${encodeURIComponent(orderId)}`;
+
+  return { checkoutUrl, orderId };
+}
+
+function extractPayPalOrderId(event) {
+  const r = event?.resource;
+  return (
+    (r?.id ? String(r.id).trim() : "") ||
+    (r?.supplementary_data?.related_ids?.order_id ? String(r.supplementary_data.related_ids.order_id).trim() : "") ||
+    null
+  );
+}
+
+function getPayPalWebhookHeaders(request) {
+  return {
+    auth_algo: request.headers.get("PAYPAL-AUTH-ALGO"),
+    cert_url: request.headers.get("PAYPAL-CERT-URL"),
+    transmission_id: request.headers.get("PAYPAL-TRANSMISSION-ID"),
+    transmission_sig: request.headers.get("PAYPAL-TRANSMISSION-SIG"),
+    transmission_time: request.headers.get("PAYPAL-TRANSMISSION-TIME"),
+  };
+}
+
+function missingWebhookHeaderKeys(h) {
+  return Object.entries(h)
+    .filter(([, v]) => !v)
+    .map(([k]) => k);
+}
+
+async function paypalVerifyWebhookSignature(env, request, webhookEvent) {
+  const webhookId = String(env.PAYPAL_WEBHOOK_ID || "").trim();
+  if (!webhookId) return { ok: false, reason: "missing_env", detail: ["PAYPAL_WEBHOOK_ID"] };
+
+  const headers = getPayPalWebhookHeaders(request);
+  const missingHeaders = missingWebhookHeaderKeys(headers);
+  if (missingHeaders.length) return { ok: false, reason: "missing_headers", detail: missingHeaders };
+
+  let accessToken;
+  try {
+    accessToken = await paypalGetAccessToken(env);
+  } catch (err) {
+    return { ok: false, reason: "paypal_token_error", detail: String(err?.message || err || "PayPal token error") };
+  }
+
+  const body = {
+    auth_algo: headers.auth_algo,
+    cert_url: headers.cert_url,
+    transmission_id: headers.transmission_id,
+    transmission_sig: headers.transmission_sig,
+    transmission_time: headers.transmission_time,
+    webhook_event: webhookEvent,
+    webhook_id: webhookId,
+  };
+
+  const base = String(env.PAYPAL_ENV || "").trim().toLowerCase() === "live"
+    ? "https://api-m.paypal.com"
+    : "https://api-m.sandbox.paypal.com";
+
+  let res;
+  try {
+    res = await fetch(`${base}/v1/notifications/verify-webhook-signature`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+  } catch (err) {
+    return { ok: false, reason: "paypal_verify_fetch_error", detail: String(err?.message || err || "Fetch failed") };
+  }
+
+  const data = await res.json().catch(() => null);
+  if (!res.ok) {
+    return { ok: false, reason: "paypal_verify_http_error", detail: { data, status: res.status } };
+  }
+
+  const status = String(data?.verification_status || "").toUpperCase();
+  if (status === "SUCCESS") return { ok: true };
+
+  return { ok: false, reason: "verification_failed", detail: data || null };
+}
+
+async function paypalApplyCaptureCompleted(env, { event, eventType, orderId }) {
+  if (orderId === "unknown") {
+    await r2PutJson(env, keyReceiptUnmapped(orderId), { at: nowIso(), event, reason: "missing_order_id" });
+    return { ok: true, ignored: true, reason: "missing_order_id" };
+  }
+
+  const receiptKey = keyReceiptCaptureCompleted(orderId);
+  if (await r2Exists(env, receiptKey)) return { ok: true, deduped: true };
+
+  const order = await r2GetJson(env, keyOrder(orderId));
+  if (!order?.accountId || !Number.isInteger(order?.tokens) || order.tokens <= 0) {
+    await r2PutJson(env, keyReceiptUnmapped(orderId), {
+      at: nowIso(),
+      event,
+      order: order || null,
+      reason: "missing_order_mapping_or_tokens",
+    });
+    return { ok: true, ignored: true, reason: "missing_order_mapping_or_tokens" };
+  }
+
+  const accountId = String(order.accountId);
+  const tokens = Number(order.tokens);
+  const sku = String(order.sku || "");
+  const now = nowIso();
+
+  await dbAccountEnsure(env, { accountId, email: null });
+
+  const ledgerId = `paypal:capture:${orderId}`;
+
+  const inserted = await env.DB.prepare(
+    "INSERT INTO token_ledger (id, account_id, delta, reason, metadata_json, created_at) VALUES (?, ?, ?, ?, ?, ?) " +
+      "ON CONFLICT(id) DO NOTHING"
+  )
+    .bind(ledgerId, accountId, tokens, "paypal_capture_completed", JSON.stringify({ orderId, sku, tokens }), now)
+    .run();
+
+  const changes = inserted?.meta?.changes || 0;
+
+  if (changes > 0) {
+    await env.DB.prepare("UPDATE accounts SET balance = balance + ?, updated_at = ? WHERE account_id = ?")
+      .bind(tokens, now, accountId)
+      .run();
+  }
+
+  const balanceAfter = await dbAccountGetBalance(env, accountId);
+
+  await r2PutJson(env, receiptKey, {
+    accountId,
+    at: nowIso(),
+    balanceAfter,
+    event,
+    eventType,
+    orderId,
+    sku,
+    tokens,
+  });
+
+  return { balanceAfter, credited: changes > 0, ok: true };
+}
+
+async function handleCheckoutSessions(request, env) {
+  if (request.method !== "POST") return methodNotAllowed(request, env);
+
+  const auth = await getAuthContext(request, env);
+  if (!auth.isAuthenticated || !auth.accountId) return unauthorized(request, env);
+
+  const body = await parseJson(request);
+  if (!body || typeof body !== "object") return badRequest(request, env, "Invalid JSON body");
+
+  const item = typeof body.item === "string" ? body.item.trim() : "";
+  const quantity = body.quantity == null ? 1 : Number(body.quantity);
+
+  if (!item) return badRequest(request, env, "item is required");
+  if (item.startsWith("price_")) return badRequest(request, env, "Frontend must send internal item SKU, not provider ID");
+  if (!(item in SKU_TOKEN_COUNTS)) return badRequest(request, env, "Unknown item");
+  if (!Number.isInteger(quantity) || quantity < 1) return badRequest(request, env, "quantity must be a positive integer");
+  if (quantity > 1) return badRequest(request, env, "quantity > 1 is not allowed");
+
+  const amountUsd = SKU_USD_AMOUNTS[item];
+  if (!amountUsd) return json(request, env, { error: "server_misconfigured", message: "Missing PayPal amount configuration" }, 500);
+
+  await dbAccountEnsure(env, { accountId: auth.accountId, email: auth.email });
+
+  let accessToken;
+  try {
+    accessToken = await paypalGetAccessToken(env);
+  } catch (err) {
+    return json(request, env, { error: "server_misconfigured", message: String(err?.message || err) }, 500);
+  }
+
+  const { cancel_url, success_url } = buildCheckoutReturnUrls(request);
+  const idempotencyKey = String(request.headers.get("Idempotency-Key") || "").trim() || `checkout:${auth.accountId}:${item}`;
+
+  let created;
+  try {
+    created = await paypalCreateOrder({
+      accessToken,
+      amountUsd,
+      cancel_url,
+      env,
+      metadata: {
+        accountId: auth.accountId,
+        description: `TaxTools token pack: ${item}`,
+        idempotencyKey,
+      },
+      success_url,
+    });
+  } catch (err) {
+    return json(request, env, { error: "paypal_error", message: String(err?.message || err) }, 502);
+  }
+
+  const { checkoutUrl, orderId } = created;
+  const sessionId = orderId;
+  const tokens = SKU_TOKEN_COUNTS[item];
+
+  await r2PutJson(env, keyOrder(sessionId), {
+    accountId: auth.accountId,
+    amountUsd,
+    createdAt: nowIso(),
+    provider: "paypal",
+    sku: item,
+    tokens,
+  });
+
+  return json(request, env, { checkoutUrl, sessionId }, 201);
+}
+
+async function handleCheckoutStatus(request, env) {
+  if (request.method !== "GET") return methodNotAllowed(request, env);
+
+  const auth = await getAuthContext(request, env);
+  if (!auth.isAuthenticated || !auth.accountId) return unauthorized(request, env);
+
+  const url = new URL(request.url);
+  const sessionId = (url.searchParams.get("session_id") || url.searchParams.get("token") || "").trim();
+  if (!sessionId) return badRequest(request, env, "session_id is required");
+
+  const order = await r2GetJson(env, keyOrder(sessionId));
+  if (order?.accountId && String(order.accountId) !== String(auth.accountId)) {
+    return forbidden(request, env, "This checkout session does not belong to the authenticated account");
+  }
+
+  const completed = await r2Exists(env, keyReceiptCaptureCompleted(sessionId));
+  const approved = !completed && (await r2Exists(env, keyReceiptApproved(sessionId)));
+
+  const paymentStatus = completed ? "paid" : approved ? "approved" : "unpaid";
+  const status = completed ? "complete" : "open";
+
+  const balance = await dbAccountGetBalance(env, auth.accountId);
+
+  return json(request, env, { balance, paymentStatus, sessionId, status }, 200);
+}
+
+async function handleGamesAccess(request, env) {
+  if (request.method !== "GET") return methodNotAllowed(request, env);
+
+  const auth = await getAuthContext(request, env);
+  if (!auth.isAuthenticated || !auth.accountId) return unauthorized(request, env);
+
+  const url = new URL(request.url);
+  const slug = (url.searchParams.get("slug") || "").trim();
+  if (!slug || !VALID_GAME_SLUGS.has(slug)) return badRequest(request, env, "slug is invalid");
+
+  const grant = await dbGrantGetActive(env, { accountId: auth.accountId, nowMs: Date.now(), slug });
+  if (!grant) return json(request, env, { allowed: false, grant: null, slug }, 200);
+
+  return json(
+    request,
+    env,
+    {
+      allowed: true,
+      grant: {
+        createdAt: grant.createdAt || null,
+        endedAt: grant.endedAt || null,
+        expiresAt: grant.expiresAt || null,
+        grantId: grant.grantId || null,
+        result: grant.result || null,
+        slug: grant.slug,
+        spent: grant.spent,
+      },
+      slug,
+    },
+    200
+  );
+}
+
+async function handleGamesEnd(request, env) {
+  if (request.method !== "POST") return methodNotAllowed(request, env);
+
+  const auth = await getAuthContext(request, env);
+  if (!auth.isAuthenticated || !auth.accountId) return unauthorized(request, env);
+
+  const body = await parseJson(request);
+  if (!body || typeof body !== "object") return badRequest(request, env, "Invalid JSON body");
+
+  const slug = typeof body.slug === "string" ? body.slug.trim() : "";
+  const result = typeof body.result === "string" ? body.result.trim().toLowerCase() : "";
+
+  if (!slug || !VALID_GAME_SLUGS.has(slug)) return badRequest(request, env, "slug is invalid");
+  if (!(result === "completed" || result === "lost")) return badRequest(request, env, "result must be completed|lost");
+
+  const cols = await dbPlayGrantsColumns(env);
+  if (!cols.has("ended_at")) {
+    return json(
+      request,
+      env,
+      {
+        error: "server_misconfigured",
+        message: "play_grants table is missing ended_at/result columns (run-to-completion gating requires a schema migration)",
+      },
+      500
+    );
+  }
+
+  const now = nowIso();
+  const cutoffIso = asIso(Date.now() - PLAY_GRANT_ABANDONED_CUTOFF_MS);
+
+  const upd = await env.DB.prepare(
+    "UPDATE play_grants SET ended_at = ?, result = ? " +
+      "WHERE grant_id = (" +
+      "  SELECT grant_id FROM play_grants " +
+      "  WHERE account_id = ? AND slug = ? AND ended_at IS NULL AND created_at >= ? " +
+      "  ORDER BY created_at DESC LIMIT 1" +
+      ")"
+  )
+    .bind(now, result, auth.accountId, slug, cutoffIso)
+    .run();
+
+  const changes = upd?.meta?.changes || 0;
+  return json(request, env, { ok: true, updated: changes > 0 }, 200);
+}
+
+async function handleHealth(request, env) {
+  if (request.method !== "GET") return methodNotAllowed(request, env);
+  return json(request, env, { status: "ok" }, 200);
+}
+
+async function handleHelpStatus(request, env) {
+  if (request.method !== "GET") return methodNotAllowed(request, env);
+
+  const url = new URL(request.url);
+  const ticketId = (url.searchParams.get("ticket_id") || url.searchParams.get("supportId") || url.searchParams.get("support_id") || "").trim();
+  if (!ticketId) return badRequest(request, env, "ticket_id is required");
+
+  const obj = await env.R2_TAXTOOLS.get(keySupportTicket(ticketId));
+  if (!obj) {
+    return json(request, env, {
+      latestUpdate: null,
+      latest_update: null,
+      status: "unknown",
+      ticket_id: ticketId,
+      updatedAt: null,
+      updated_at: null,
+    });
+  }
+
+  const ticket = await obj.json().catch(() => null);
+  if (!ticket || typeof ticket !== "object") {
+    return json(request, env, {
+      latestUpdate: null,
+      latest_update: null,
+      status: "unknown",
+      ticket_id: ticketId,
+      updatedAt: null,
+      updated_at: null,
+    });
+  }
+
+  const latestUpdate = ticket.latestUpdate || ticket.updatedAt || ticket.createdAt || null;
+  const updatedAt = ticket.updatedAt || ticket.createdAt || null;
+
+  return json(request, env, {
+    clickupTaskId: ticket.clickupTaskId || null,
+    clickupUrl: ticket.clickupUrl || null,
+    latestUpdate,
+    latest_update: latestUpdate,
+    status: ticket.status || "open",
+    ticket_id: ticketId,
+    updatedAt,
+    updated_at: updatedAt,
+  });
+}
+
+async function handleHelpTickets(request, env) {
+  if (request.method !== "POST") return methodNotAllowed(request, env);
+
+  const body = await parseJson(request);
+  if (!body || typeof body !== "object") return badRequest(request, env, "Invalid JSON body");
+
+  const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+  const message = typeof body.message === "string" ? body.message.trim() : "";
+  const subject = typeof body.subject === "string" ? body.subject.trim() : "";
+
+  if (!email) return badRequest(request, env, "email is required");
+  if (!subject) return badRequest(request, env, "subject is required");
+  if (!message) return badRequest(request, env, "message is required");
+  if (!isValidEmail(email)) return badRequest(request, env, "Invalid email");
+
+  const category = typeof body.category === "string" ? body.category.trim() : "";
+  const eventId = typeof body.eventId === "string" ? body.eventId.trim() : "";
+  const issueType = typeof body.issueType === "string" ? body.issueType.trim() : "";
+  const name = typeof body.name === "string" ? body.name.trim() : "";
+  const priority = typeof body.priority === "string" ? body.priority.trim() : "";
+  const urgency = typeof body.urgency === "string" ? body.urgency.trim() : "";
+  const tokenId = typeof body.tokenId === "string" ? body.tokenId.trim() : "";
+  const relatedOrderId = typeof body.relatedOrderId === "string" ? body.relatedOrderId.trim() : "";
+
+  const utm_campaign = typeof body.utm_campaign === "string" ? body.utm_campaign.trim() : "";
+  const utm_content = typeof body.utm_content === "string" ? body.utm_content.trim() : "";
+  const utm_medium = typeof body.utm_medium === "string" ? body.utm_medium.trim() : "";
+  const utm_source = typeof body.utm_source === "string" ? body.utm_source.trim() : "";
+  const utm_term = typeof body.utm_term === "string" ? body.utm_term.trim() : "";
+
+  const supportId = `sup_${crypto.randomUUID()}`;
+  const createdAt = nowIso();
+  const updatedAt = createdAt;
+
+  const ticket = {
+    category,
+    clickupTaskId: null,
+    clickupUrl: null,
+    createdAt,
+    email,
+    eventId,
+    issueType,
+    latestUpdate: createdAt,
+    message,
+    name,
+    priority,
+    relatedOrderId,
+    status: "open",
+    subject,
+    supportId,
+    ticket_id: supportId,
+    tokenId,
+    updatedAt,
+    urgency,
+    utm_campaign,
+    utm_content,
+    utm_medium,
+    utm_source,
+    utm_term,
+  };
+
+  await env.R2_TAXTOOLS.put(keySupportTicket(supportId), JSON.stringify(ticket), {
+    httpMetadata: { contentType: "application/json" },
+  });
+
+  try {
+    const descriptionLines = [
+      `Support ID: ${supportId}`,
+      `From: ${email}`,
+      `Name: ${name || "(not provided)"}`,
+      `Created: ${createdAt}`,
+      ``,
+      `Category: ${category || "(none)"}`,
+      `Issue Type: ${issueType || "(none)"}`,
+      `Priority: ${priority || "(none)"}`,
+      `Urgency: ${urgency || "(none)"}`,
+      `Event ID: ${eventId || "(none)"}`,
+      `Token ID: ${tokenId || "(none)"}`,
+      `Related Order ID: ${relatedOrderId || "(none)"}`,
+      ``,
+      `UTM Source: ${utm_source || "(none)"}`,
+      `UTM Medium: ${utm_medium || "(none)"}`,
+      `UTM Campaign: ${utm_campaign || "(none)"}`,
+      `UTM Term: ${utm_term || "(none)"}`,
+      `UTM Content: ${utm_content || "(none)"}`,
+      ``,
+      `Subject: ${subject}`,
+      ``,
+      message,
+    ];
+
+    const created = await clickupCreateSupportTask(env, {
+      description: descriptionLines.join("\n"),
+      subject,
+    });
+
+    if (created?.taskId) {
+      ticket.clickupTaskId = created.taskId;
+      ticket.clickupUrl = created.url;
+      ticket.updatedAt = nowIso();
+      ticket.latestUpdate = `Created ClickUp task ${created.taskId}`;
+
+      await env.R2_TAXTOOLS.put(keySupportTicket(supportId), JSON.stringify(ticket), {
+        httpMetadata: { contentType: "application/json" },
+      });
+    }
+  } catch (_) {
+    // swallow on purpose
+  }
+
+  return json(request, env, { supportId, support_id: supportId, ticket_id: supportId }, 201);
+}
+
+async function handleTokensBalance(request, env) {
+  if (request.method !== "GET") return methodNotAllowed(request, env);
+
+  const auth = await getAuthContext(request, env);
+  if (!auth.isAuthenticated || !auth.accountId) return unauthorized(request, env);
+
+  await dbAccountEnsure(env, { accountId: auth.accountId, email: auth.email });
+  const balance = await dbAccountGetBalance(env, auth.accountId);
+
+  return json(request, env, { balance }, 200);
+}
+
+async function handleTokensSpend(request, env) {
+  if (request.method !== "POST") return methodNotAllowed(request, env);
+
+  const auth = await getAuthContext(request, env);
+  if (!auth.isAuthenticated || !auth.accountId) return unauthorized(request, env);
+
+  const body = await parseJson(request);
+  if (!body || typeof body !== "object") return badRequest(request, env, "Invalid JSON body");
+
+  const amount = Number(body.amount);
+  const idempotencyKey = typeof body.idempotencyKey === "string" ? body.idempotencyKey.trim() : "";
+  const reason = typeof body.reason === "string" ? body.reason.trim() : "";
+  const slug = typeof body.slug === "string" ? body.slug.trim() : "";
+
+  if (!Number.isInteger(amount) || amount <= 0) return badRequest(request, env, "amount must be a positive integer");
+  if (!idempotencyKey) return badRequest(request, env, "idempotencyKey is required");
+  if (!reason) return badRequest(request, env, "reason is required");
+  if (!slug || !VALID_GAME_SLUGS.has(slug)) return badRequest(request, env, "slug is invalid");
+
+  await dbAccountEnsure(env, { accountId: auth.accountId, email: auth.email });
+
+  const ledgerId = `spend:${auth.accountId}:${idempotencyKey}`;
+  const now = nowIso();
+
+  const existing = await env.DB.prepare("SELECT metadata_json FROM token_ledger WHERE id = ?")
+    .bind(ledgerId)
+    .first();
+
+  if (existing?.metadata_json) {
+    const parsed = (() => {
+      try {
+        return JSON.parse(String(existing.metadata_json));
+      } catch {
+        return null;
+      }
+    })();
+    if (parsed) return json(request, env, parsed, 200);
+  }
+
+  const grantId = crypto.randomUUID();
+  const nowMs = Date.now();
+  const expiresAtMs = nowMs + PLAY_GRANT_ABANDONED_CUTOFF_MS;
+
+  const grant = {
+    createdAt: asIso(nowMs),
+    endedAt: null,
+    expiresAt: asIso(expiresAtMs),
+    expiresAtMs,
+    grantId,
+    result: null,
+    slug,
+    spent: amount,
+  };
+
+  const response = {
+    balance: 0,
+    grant: {
+      createdAt: grant.createdAt,
+      endedAt: grant.endedAt,
+      expiresAt: grant.expiresAt,
+      grantId: grant.grantId,
+      result: grant.result,
+      slug: grant.slug,
+      spent: grant.spent,
+    },
+  };
+
+  const insertLedger = await env.DB.prepare(
+    "INSERT INTO token_ledger (id, account_id, delta, reason, metadata_json, created_at) VALUES (?, ?, ?, ?, ?, ?) " +
+      "ON CONFLICT(id) DO NOTHING"
+  )
+    .bind(ledgerId, auth.accountId, -amount, reason, null, now)
+    .run();
+
+  const insertedLedgerChanges = insertLedger?.meta?.changes || 0;
+
+  if (insertedLedgerChanges === 0) {
+    const again = await env.DB.prepare("SELECT metadata_json FROM token_ledger WHERE id = ?").bind(ledgerId).first();
+    const parsed = (() => {
+      try {
+        return JSON.parse(String(again?.metadata_json || ""));
+      } catch {
+        return null;
+      }
+    })();
+    if (parsed) return json(request, env, parsed, 200);
+    return json(request, env, { error: "idempotency_conflict", message: "Spend already processed" }, 409);
+  }
+
+  const balanceUpdate = await env.DB.prepare(
+    "UPDATE accounts SET balance = balance - ?, updated_at = ? WHERE account_id = ? AND balance >= ?"
+  )
+    .bind(amount, now, auth.accountId, amount)
+    .run();
+
+  const balanceChanges = balanceUpdate?.meta?.changes || 0;
+
+  if (balanceChanges === 0) {
+    await env.DB.prepare("DELETE FROM token_ledger WHERE id = ?").bind(ledgerId).run();
+    const balance = await dbAccountGetBalance(env, auth.accountId);
+    return json(request, env, { balance, error: "insufficient_balance" }, 402);
+  }
+
+  try {
+    const cols = await dbPlayGrantsColumns(env);
+
+    if (cols.has("ended_at")) {
+      await env.DB.prepare(
+        "INSERT INTO play_grants (grant_id, account_id, slug, created_at, ended_at, result, expires_at, expires_at_ms, spent) " +
+          "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+      )
+        .bind(grantId, auth.accountId, slug, grant.createdAt, null, null, grant.expiresAt, grant.expiresAtMs, amount)
+        .run();
+    } else {
+      await env.DB.prepare(
+        "INSERT INTO play_grants (grant_id, account_id, slug, expires_at, expires_at_ms, spent, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)"
+      )
+        .bind(grantId, auth.accountId, slug, grant.expiresAt, grant.expiresAtMs, amount, now)
+        .run();
+    }
+  } catch (err) {
+    await env.DB.prepare("UPDATE accounts SET balance = balance + ?, updated_at = ? WHERE account_id = ?")
+      .bind(amount, now, auth.accountId)
+      .run();
+    await env.DB.prepare("DELETE FROM token_ledger WHERE id = ?").bind(ledgerId).run();
+
+    return json(
+      request,
+      env,
+      { error: "grant_insert_failed", message: String(err?.message || err || "Failed to create grant") },
+      500
+    );
+  }
+
+  const balance = await dbAccountGetBalance(env, auth.accountId);
+  response.balance = balance;
+
+  await env.DB.prepare("UPDATE token_ledger SET metadata_json = ? WHERE id = ?")
+    .bind(JSON.stringify(response), ledgerId)
+    .run();
+
+  return json(request, env, response, 200);
+}
+
+async function handlePayPalWebhook(request, env) {
+  if (request.method !== "POST") return methodNotAllowed(request, env);
+
+  const enabled = String(env.PAYPAL_WEBHOOKS_ENABLED || "").trim().toLowerCase() === "true";
+  if (!enabled) return json(request, env, { ok: true, reason: "webhooks_disabled", skipped: true }, 200);
+
+  const { raw, parsed } = await parseRawJson(request);
+  if (!parsed) return badRequest(request, env, "Invalid JSON body");
+
+  const orderId = extractPayPalOrderId(parsed) || "unknown";
+  const eventType = String(parsed.event_type || "").trim();
+
+  const verified = await paypalVerifyWebhookSignature(env, request, parsed);
+  if (!verified.ok) {
+    await r2PutJson(env, keyReceiptSignatureFailed(orderId), {
+      at: nowIso(),
+      detail: verified.detail,
+      eventType: eventType || null,
+      raw: raw || null,
+      reason: verified.reason,
+    });
+    return json(request, env, { error: "signature_verification_failed", ok: false }, 401);
+  }
+
+  if (!eventType) {
+    await r2PutJson(env, keyReceiptUnmapped(orderId), { at: nowIso(), event: parsed, reason: "missing_event_type" });
+    return json(request, env, { ignored: true, ok: true }, 200);
+  }
+
+  if (eventType === "CHECKOUT.ORDER.APPROVED") {
+    if (orderId !== "unknown") {
+      await r2PutJson(env, keyReceiptApproved(orderId), { at: nowIso(), event: parsed, eventType, orderId });
+    } else {
+      await r2PutJson(env, keyReceiptUnmapped(orderId), { at: nowIso(), event: parsed, reason: "missing_order_id" });
+      return json(request, env, { ignored: true, ok: true }, 200);
+    }
+
+    let capture;
+    try {
+      capture = await paypalCaptureOrder(env, orderId);
+    } catch (err) {
+      await r2PutJson(env, keyReceiptCaptureFailed(orderId), {
+        at: nowIso(),
+        error: String(err?.message || err || "capture_error"),
+        eventType,
+        orderId,
+      });
+      return json(request, env, { capture: "failed", ok: true }, 200);
+    }
+
+    const captureStatus = String(capture?.data?.status || "").toUpperCase();
+    if (!capture.ok || captureStatus !== "COMPLETED") {
+      await r2PutJson(env, keyReceiptCaptureFailed(orderId), {
+        at: nowIso(),
+        capture: { data: capture.data, ok: capture.ok, status: capture.status },
+        eventType,
+        orderId,
+        reason: !capture.ok ? "capture_http_error" : "capture_not_completed",
+      });
+      return json(request, env, { capture: captureStatus || "unknown", ok: true }, 200);
+    }
+
+    await paypalApplyCaptureCompleted(env, {
+      event: {
+        approvedEvent: parsed,
+        capture: capture.data,
+        source: "paypal_capture_api",
+      },
+      eventType: "PAYMENT.CAPTURE.COMPLETED",
+      orderId,
+    });
+
+    return json(request, env, { capture: "COMPLETED", ok: true }, 200);
+  }
+
+  if (eventType === "PAYMENT.CAPTURE.COMPLETED") {
+    await paypalApplyCaptureCompleted(env, { event: parsed, eventType, orderId });
+    return json(request, env, { ok: true }, 200);
+  }
+
+  return json(request, env, { ignored: true, ok: true }, 200);
+}
+
+/* ------------------------------------------
+ * Transcript short-link helpers
+ * ------------------------------------------ */
+
+function b64UrlEncode(bytes) {
+  let bin = "";
+  const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) bin += String.fromCharCode(...bytes.subarray(i, i + chunk));
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+}
+
+function tryParseJson(value) {
+  try {
+    return { ok: true, value: JSON.parse(String(value || "")) };
+  } catch {
+    return { ok: false, value: null };
+  }
 }
 
 function getReportKv(env) {
-  // Canonical KV binding for permanent report links
   return env.KV_TRANSCRIPT || null;
 }
 
-// TTL removed intentionally — report links are permanent unless manually deleted from KV
-function getReportLinkTtlSeconds(env) {
-  return null;
+function getShortReportKey(reportId) {
+  return `report:${String(reportId || "").trim()}`;
 }
 
 function randomShortId(bytes = 18) {
@@ -186,12 +1468,20 @@ function randomShortId(bytes = 18) {
   return b64UrlEncode(arr);
 }
 
-function getShortReportKey(reportId) {
-  return `report:${String(reportId || "").trim()}`;
+function buildAssetReportUrl(payload, transport = "hash") {
+  const target = new URL("https://transcript.taxmonitor.pro/assets/report");
+
+  if (String(transport || "hash") === "query") {
+    target.searchParams.set("data", String(payload || ""));
+  } else {
+    target.hash = String(payload || "");
+  }
+
+  return target.toString();
 }
 
-function getReportUnlockKey(eventId) {
-  return `report-unlock:${String(eventId || "").trim()}`;
+function buildShortReportUrl(reportId) {
+  return `https://transcript.taxmonitor.pro/transcript/report?r=${encodeURIComponent(reportId)}`;
 }
 
 function extractStoredReportPayload(reportUrl) {
@@ -212,18 +1502,6 @@ function extractStoredReportPayload(reportUrl) {
   }
 
   return { ok: false, error: "missing_report_payload" };
-}
-
-function buildAssetReportUrl(payload, transport = "hash") {
-  const target = new URL("https://transcript.taxmonitor.pro/assets/report");
-
-  if (String(transport || "hash") === "query") {
-    target.searchParams.set("data", String(payload || ""));
-  } else {
-    target.hash = String(payload || "");
-  }
-
-  return target.toString();
 }
 
 function extractInboundReportPayload(input = {}) {
@@ -266,7 +1544,7 @@ async function storeShortReportPayload(env, payload, meta = {}) {
           createdAt: now,
           payload: String(payload || ""),
           payloadTransport: meta.payloadTransport || "hash",
-          sourcePath: meta.sourcePath || "/assets/report"
+          sourcePath: meta.sourcePath || "/assets/report",
         },
         null,
         2
@@ -275,15 +1553,11 @@ async function storeShortReportPayload(env, payload, meta = {}) {
 
     return {
       reportId,
-      shortUrl: buildShortReportUrl(reportId)
+      shortUrl: buildShortReportUrl(reportId),
     };
   }
 
   throw new Error("Failed to allocate a unique reportId");
-}
-
-function buildShortReportUrl(reportId) {
-  return `https://transcript.taxmonitor.pro/transcript/report?r=${encodeURIComponent(reportId)}`;
 }
 
 async function resolveShortReportPayload(env, reportId) {
@@ -299,1730 +1573,26 @@ async function resolveShortReportPayload(env, reportId) {
   return parsed.value;
 }
 
-function pemToArrayBuffer(pem) {
-  const clean = String(pem || "")
-    .replace(/-----BEGIN[\s\S]*?-----/g, "")
-    .replace(/-----END[\s\S]*?-----/g, "")
-    .replace(/\s+/g, "");
-  const bin = atob(clean);
-  const bytes = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-  return bytes.buffer;
-}
-
-function b64UrlEncode(bytes) {
-  const u8 = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes || []);
-  let bin = "";
-  for (let i = 0; i < u8.length; i++) bin += String.fromCharCode(u8[i]);
-  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
-}
-
-async function googleServiceAccountAccessToken(env, subjectUser, scopes) {
-  const now = Math.floor(Date.now() / 1000);
-  const iat = now - 5;
-  const exp = now + 55 * 60;
-
-  const tokenUri = env.GOOGLE_TOKEN_URI;
-  const clientEmail = env.GOOGLE_CLIENT_EMAIL;
-  const privateKeyPem = env.GOOGLE_PRIVATE_KEY;
-
-  if (!tokenUri || !clientEmail || !privateKeyPem) {
-    throw new Error("Missing Google env vars: GOOGLE_CLIENT_EMAIL, GOOGLE_PRIVATE_KEY, GOOGLE_TOKEN_URI.");
-  }
-  if (!subjectUser) {
-    throw new Error("Missing Workspace user env var: GOOGLE_WORKSPACE_USER_*.");
-  }
-
-  const header = { alg: "RS256", typ: "JWT" };
-  const claim = {
-    aud: tokenUri,
-    exp,
-    iat,
-    iss: clientEmail,
-    scope: (Array.isArray(scopes) ? scopes : [String(scopes)]).join(" "),
-    sub: subjectUser,
-  };
-
-  const enc = (obj) => b64UrlEncode(new TextEncoder().encode(JSON.stringify(obj)));
-  const signingInput = enc(header) + "." + enc(claim);
-
-  const key = await crypto.subtle.importKey(
-    "pkcs8",
-    pemToArrayBuffer(privateKeyPem),
-    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
-    false,
-    ["sign"]
-  );
-
-  const sig = await crypto.subtle.sign(
-    { name: "RSASSA-PKCS1-v1_5" },
-    key,
-    new TextEncoder().encode(signingInput)
-  );
-
-  const jwt = signingInput + "." + b64UrlEncode(new Uint8Array(sig));
-
-  const body = new URLSearchParams();
-  body.set("assertion", jwt);
-  body.set("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
-
-  const res = await fetch(tokenUri, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body,
-  });
-
-  if (!res.ok) {
-    const t = await res.text().catch(() => "");
-    throw new Error("Google token exchange failed (" + String(res.status) + "): " + (t || res.statusText));
-  }
-
-  const parsed = await res.json();
-  const accessToken = parsed && parsed.access_token ? String(parsed.access_token) : "";
-  if (!accessToken) throw new Error("Google token exchange returned no access_token.");
-  return accessToken;
-}
-
-function makeRfc2822({ from, to, subject, text }) {
-  const safeSubject = String(subject || "").replace(/[\r\n]+/g, " ").trim();
-  const safeFrom = String(from || "").replace(/[\r\n]+/g, "").trim();
-  const safeTo = String(to || "").replace(/[\r\n]+/g, "").trim();
-  const safeText = String(text || "").replace(/\r\n/g, "\n");
-
-  return [
-    "From: " + safeFrom,
-    "To: " + safeTo,
-    "Subject: " + safeSubject,
-    "MIME-Version: 1.0",
-    "Content-Type: text/plain; charset=UTF-8",
-    "Content-Transfer-Encoding: 7bit",
-    "",
-    safeText,
-    "",
-  ].join("\n");
-}
-
-async function gmailSendMessage(env, { from, to, subject, text }) {
-  const workspaceUser =
-    env.GOOGLE_WORKSPACE_USER_SUPPORT ||
-    env.GOOGLE_WORKSPACE_USER_NOREPLY ||
-    env.GOOGLE_WORKSPACE_USER_DEFAULT;
-
-  const token = await googleServiceAccountAccessToken(env, workspaceUser, [
-    "https://www.googleapis.com/auth/gmail.send",
-  ]);
-
-  const rfc = makeRfc2822({ from, to, subject, text });
-  const raw = b64UrlEncode(new TextEncoder().encode(rfc));
-
-  const res = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages/send", {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + token,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ raw }),
-  });
-
-  if (!res.ok) {
-    const t = await res.text().catch(() => "");
-    throw new Error("Gmail send failed (" + String(res.status) + "): " + (t || res.statusText));
-  }
-
-  return await res.json().catch(() => ({}));
-}
-
-function assertEnv(env, keys) {
-  const missing = keys.filter((k) => !env[k]);
-  if (missing.length) throw new Error(`Missing env vars: ${missing.join(", ")}`);
-}
-
-function envMissing(env, keys) {
-  return keys.filter((k) => !env[k]);
-}
-
-function jsonError(request, status, error, details = null) {
-  const payload = { error };
-  if (details) payload.details = details;
-
-  const pathname = new URL(request.url).pathname;
-  const isTranscriptRequest =
-    pathname.startsWith("/transcript/") || pathname === "/forms/transcript/report-email";
-
-  return json(payload, status, isTranscriptRequest ? withCors(request) : undefined);
-}
-
-/* ------------------------------------------
- * Transcript: Return origin allowlist (strict)
- * ------------------------------------------ */
-
-function normalizeOrigin(value) {
-  const raw = String(value || "").trim();
-  if (!raw) return "";
-  try {
-    return new URL(raw).origin;
-  } catch {
-    return "";
-  }
-}
-
-function getAllowedReturnOrigins(env) {
-  const fallback = ["https://transcript.taxmonitor.pro"];
-
-  const raw = String(env.TRANSCRIPT_RETURN_ORIGINS_JSON || "").trim();
-  if (!raw) return new Set(fallback);
-
-  try {
-    const arr = JSON.parse(raw);
-    if (!Array.isArray(arr)) return new Set(fallback);
-
-    const normalized = arr.map(normalizeOrigin).filter(Boolean);
-    return new Set(normalized.length ? normalized : fallback);
-  } catch {
-    return new Set(fallback);
-  }
-}
-
-/* ------------------------------------------
- * Body Parsing (Forms + JSON)
- * ------------------------------------------ */
-
-async function parseInboundBody(request) {
-  const contentType = (request.headers.get("content-type") || "").toLowerCase();
-
-  if (contentType.includes("application/json")) {
-    const raw = await request.text();
-    const parsed = tryParseJson(raw);
-    if (!parsed.ok) {
-      return {
-        ok: false,
-        error: "Invalid JSON",
-        details: String(parsed.error?.message || parsed.error),
-      };
-    }
-    return { ok: true, data: parsed.value, type: "json" };
-  }
-
-  try {
-    const fd = await request.formData();
-    const data = {};
-    for (const [k, v] of fd.entries()) {
-      data[k] = typeof v === "string" ? v : v?.name || "uploaded_file";
-    }
-    return { ok: true, data, type: "form" };
-  } catch (error) {
-    return {
-      ok: false,
-      error: "Unsupported body type",
-      details: String(error?.message || error),
-    };
-  }
-}
-
-/* ------------------------------------------
- * Ids
- * ------------------------------------------ */
-
-function isUuidLike(v) {
-  return (
-    typeof v === "string" &&
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v.trim())
-  );
-}
-
-/* ------------------------------------------
- * Transcript: Stripe helpers
- * ------------------------------------------ */
-
-async function stripeFetch(env, method, path, bodyObj = null, extraHeaders = {}) {
-  assertEnv(env, ["STRIPE_SECRET_KEY"]);
-  const res = await fetch(`https://api.stripe.com/v1${path}`, {
-    method,
-    headers: {
-      authorization: `Bearer ${env.STRIPE_SECRET_KEY}`,
-      "content-type": "application/x-www-form-urlencoded",
-      ...extraHeaders,
-    },
-    body: bodyObj ? new URLSearchParams(bodyObj).toString() : null,
-  });
-
-  const text = await res.text();
-  let data;
-  try {
-    data = JSON.parse(text);
-  } catch {
-    data = { raw: text };
-  }
-
-  if (!res.ok) throw new Error(`Stripe error (${res.status}): ${data?.error?.message || text}`);
-  return data;
-}
-
-function getTranscriptCreditMap(env) {
-  const raw = String(env.CREDIT_MAP_JSON || "").trim();
-  if (!raw) throw new Error("Missing CREDIT_MAP_JSON");
-
-  const parsed = JSON.parse(raw);
-  if (!parsed || typeof parsed !== "object") {
-    throw new Error("Invalid CREDIT_MAP_JSON");
-  }
-
-  return parsed;
-}
-
-function getCreditsForPriceId(env, priceId) {
-  const creditMap = getTranscriptCreditMap(env);
-  const credits = creditMap[String(priceId || "").trim()];
-  return typeof credits === "number" && Number.isFinite(credits) ? credits : null;
-}
-
-function buildPaymentMethodLabel(paymentMethod) {
-  const card = paymentMethod && paymentMethod.card ? paymentMethod.card : null;
-  if (!card) return "Not available";
-
-  const brandRaw = String(card.brand || "").trim();
-  const brand = brandRaw ? brandRaw.charAt(0).toUpperCase() + brandRaw.slice(1) : "Card";
-  const last4 = String(card.last4 || "").trim();
-
-  return last4 ? `${brand} • ${last4}` : brand;
-}
-
-async function verifyStripeSignature(env, sigHeader, rawBodyText) {
-  const parts = sigHeader.split(",").map((p) => p.trim());
-  const tPart = parts.find((p) => p.startsWith("t="));
-  const v1Part = parts.find((p) => p.startsWith("v1="));
-
-  if (!tPart || !v1Part) throw new Error("Invalid Stripe signature header");
-
-  const timestamp = tPart.slice(2);
-  const signature = v1Part.slice(3);
-
-  const signedPayload = `${timestamp}.${rawBodyText}`;
-  const key = await crypto.subtle.importKey(
-    "raw",
-    new TextEncoder().encode(env.STRIPE_WEBHOOK_SECRET),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"]
-  );
-  const mac = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(signedPayload));
-  const expected = [...new Uint8Array(mac)].map((b) => b.toString(16).padStart(2, "0")).join("");
-
-  if (!timingSafeEqualHex(expected, signature)) throw new Error("Stripe signature verification failed");
-  return JSON.parse(rawBodyText);
-}
-
-function timingSafeEqualHex(a, b) {
-  if (a.length !== b.length) return false;
-  let out = 0;
-  for (let i = 0; i < a.length; i++) out |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return out === 0;
-}
-
-/* ------------------------------------------
- * Transcript: Durable Object authoritative ledger
- * ------------------------------------------ */
-
-export class TokenLedger {
-  constructor(state, env) {
-    this.state = state;
-    this.env = env;
-  }
-
-  async fetch(request) {
-    const url = new URL(request.url);
-
-    if (request.method === "GET" && url.pathname === "/balance") {
-      const balance = (await this.state.storage.get("balance")) ?? 0;
-      return json({ balance }, 200);
-    }
-
-    if (request.method === "POST" && url.pathname === "/credit") {
-      const body = await request.json().catch(() => ({}));
-      const amount = Number(body?.amount ?? 0);
-      const requestId = typeof body?.requestId === "string" ? body.requestId.trim() : "";
-
-      if (!Number.isFinite(amount) || amount <= 0) return json({ error: "invalid_amount" }, 400);
-      if (!requestId) return json({ error: "missing_requestId" }, 400);
-
-      const idemKey = `credit:${requestId}`;
-      const already = await this.state.storage.get(idemKey);
-      if (already !== undefined) return json({ balance: already, idempotent: true }, 200);
-
-      const current = (await this.state.storage.get("balance")) ?? 0;
-      const next = Number(current) + amount;
-
-      await this.state.storage.put("balance", next);
-      await this.state.storage.put(idemKey, next);
-
-      return json({ balance: next }, 200);
-    }
-
-    if (request.method === "POST" && url.pathname === "/consume") {
-      const body = await request.json().catch(() => ({}));
-      const amount = Number(body?.amount ?? 1);
-      const requestId = typeof body?.requestId === "string" ? body.requestId.trim() : "";
-
-      if (!Number.isFinite(amount) || amount <= 0) return json({ error: "invalid_amount" }, 400);
-      if (!requestId) return json({ error: "missing_requestId" }, 400);
-
-      const idemKey = `consume:${requestId}`;
-      const already = await this.state.storage.get(idemKey);
-      if (already !== undefined) return json({ balance: already, idempotent: true }, 200);
-
-      const current = (await this.state.storage.get("balance")) ?? 0;
-      if (Number(current) < amount) return json({ balance: current, error: "insufficient_balance", needed: amount }, 402);
-
-      const next = Number(current) - amount;
-      await this.state.storage.put("balance", next);
-      await this.state.storage.put(idemKey, next);
-
-      return json({ balance: next }, 200);
-    }
-
-    return json({ error: "not_found" }, 404);
-  }
-}
-
-function getLedgerStub(env, tokenId) {
-  if (!env.TOKEN_LEDGER) throw new Error("Missing Durable Object binding: TOKEN_LEDGER");
-  const id = env.TOKEN_LEDGER.idFromName(tokenId);
-  return env.TOKEN_LEDGER.get(id);
-}
-
-const TRANSCRIPT_SESSION_COOKIE = "tm_transcript_session";
-
-/* ------------------------------------------
- * Transcript: ClickUp projection config
- * ------------------------------------------ */
-
-const CLICKUP_TRANSCRIPT = {
-  ACCOUNTS_LIST_ID: "901710909567",
-  SUPPORT_LIST_ID: "901710818377",
-  ACCOUNT_FIELDS: {
-    ACCOUNT_ID: "e5f176ba-82c8-47d8-b3b1-0716d075f43f",
-    PRIMARY_EMAIL: "a105f99e-b33d-4d12-bb24-f7c827ec761a",
-    SUPPORT_STATUS: "bbdf5418-8be0-452d-8bd0-b9f46643375e",
-    SUPPORT_TASK_LINK: "9e14a458-96fd-4109-a276-034d8270e15b",
-    TRANSCRIPT_CREDITS: "f938260c-600d-405a-bee7-a8db5d09bf6d",
-  },
-  SUPPORT_FIELDS: {
-    ACTION_REQUIRED: "aac0816d-0e05-4c57-8196-6098929f35ac",
-    EMAIL: "7f547901-690d-4f39-8851-d19e19f87bf8",
-    EVENT_ID: "8e8b453e-01f3-40fe-8156-2e9d9633ebd6",
-    LATEST_UPDATE: "03ebc8ba-714e-4f7c-9748-eb1b62e657f7",
-    PRIORITY: "b96403c7-028a-48eb-b6b1-349f295244b5",
-    RELATED_ORDER_ID: "423fda3b-f7c0-471e-aaa2-464d78db0a31",
-    SUPPORT_ID: "30fda9ea-12cd-4dc1-a89f-4633f4d06b27",
-    TYPE: "e09d9f53-4f03-49fe-8c5f-abe3b160b167",
-  },
-  WEBHOOK_ROUTE: "/v1/clickup/webhook",
-};
-
-function getClickUpApiToken(env) {
-  return String(env.CLICKUP_API_TOKEN || env.CLICKUP_TOKEN || "").trim();
-}
-
-function clickupHeaders(env) {
-  const token = getClickUpApiToken(env);
-  if (!token) throw new Error("Missing ClickUp API token");
-  return {
-    authorization: token,
-    "content-type": "application/json",
-  };
-}
-
-async function clickupFetchJson(env, path, init = {}) {
-  const response = await fetch(`https://api.clickup.com/api/v2${path}`, {
-    ...init,
-    headers: {
-      ...clickupHeaders(env),
-      ...(init.headers || {}),
-    },
-  });
-
-  const text = await response.text().catch(() => "");
-  let data = null;
-  try {
-    data = text ? JSON.parse(text) : null;
-  } catch {
-    data = null;
-  }
-
-  if (!response.ok) {
-    const message =
-      (data && (data.err || data.error || data.message) ? String(data.err || data.error || data.message) : "") ||
-      text ||
-      response.statusText ||
-      "clickup_request_failed";
-    throw new Error(`ClickUp error (${response.status}): ${message}`);
-  }
-
-  return data;
-}
-
-function getSupportStatusKey(supportId) {
-  return `support-status:${String(supportId || "").trim()}`;
-}
-
-function getSupportTaskKey(taskId) {
-  return `support-task:${String(taskId || "").trim()}`;
-}
-
-function getSupportEmailIndexKey(email, supportId) {
-  return `support-email-index:${normalizeEmail(email)}:${String(supportId || "").trim()}`;
-}
-
-function buildCanonicalSupportId() {
-  return `SUP-${randomShortId(9).replace(/[^A-Za-z0-9]/g, "").toUpperCase()}`;
-}
-
-function normalizeSupportId(value) {
-  return String(value || "").trim();
-}
-
-function normalizeSupportStatus(value) {
-  return String(value || "").trim() || "open / new";
-}
-
-function getTaskCustomField(task, fieldId) {
-  const fields = Array.isArray(task && task.custom_fields) ? task.custom_fields : [];
-  return fields.find((field) => String(field && field.id || "") === String(fieldId || "")) || null;
-}
-
-function getTaskCustomFieldValue(task, fieldId) {
-  const field = getTaskCustomField(task, fieldId);
-  if (!field) return "";
-
-  if (field.value === undefined || field.value === null) return "";
-
-  if (typeof field.value === "string") return field.value.trim();
-
-  if (typeof field.value === "number" || typeof field.value === "boolean") return String(field.value);
-
-  if (typeof field.value === "object") {
-    if (typeof field.value.name === "string") return field.value.name.trim();
-    if (typeof field.value.label === "string") return field.value.label.trim();
-    if (typeof field.value.text === "string") return field.value.text.trim();
-  }
-
-  return String(field.value || "").trim();
-}
-
-function buildSupportLatestUpdateFromTask(task, fallbackHistoryItem) {
-  const explicit = getTaskCustomFieldValue(task, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.LATEST_UPDATE);
-  if (explicit) return explicit;
-
-  const status = normalizeSupportStatus(task && task.status && task.status.status);
-  const at = task && task.date_updated ? new Date(Number(task.date_updated)).toISOString() : new Date().toISOString();
-  const by = fallbackHistoryItem && fallbackHistoryItem.user && fallbackHistoryItem.user.username ? String(fallbackHistoryItem.user.username).trim() : "Staff";
-
-  return `${status} • ${by} • ${at}`;
-}
-
-function mapSupportStatusToAccountStatus(status) {
-  const normalized = String(status || "").trim().toLowerCase();
-  if (normalized === "blocked") return "Blocked";
-  if (normalized === "client feedback") return "Waiting on Client";
-  if (normalized === "complete") return "Complete";
-  if (normalized === "closed") return "Closed";
-  if (normalized === "in progress") return "In Progress";
-  if (normalized === "in review") return "Needs Review";
-  if (normalized === "open / new") return "New / Open";
-  if (normalized === "resolved") return "Complete";
-  if (normalized === "waiting on client") return "Waiting on Client";
-  return "New / Open";
-}
-
-function getDropdownOptionIdByName(options, name) {
-  const target = String(name || "").trim().toLowerCase();
-  const list = Array.isArray(options) ? options : [];
-  const found = list.find((option) => String(option && option.name || "").trim().toLowerCase() === target);
-  return found && found.id ? String(found.id) : "";
-}
-
-async function setClickUpCustomField(env, taskId, fieldId, value) {
-  await clickupFetchJson(env, `/task/${encodeURIComponent(taskId)}/field/${encodeURIComponent(fieldId)}`, {
-    method: "POST",
-    body: JSON.stringify({ value }),
-  });
-}
-
-async function createClickUpTask(env, listId, payload) {
-  return await clickupFetchJson(env, `/list/${encodeURIComponent(listId)}/task`, {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
-}
-
-async function linkClickUpTasks(env, taskId, linksTo) {
-  if (!taskId || !linksTo || String(taskId) === String(linksTo)) return null;
-  try {
-    return await clickupFetchJson(env, `/task/${encodeURIComponent(taskId)}/link/${encodeURIComponent(linksTo)}`, {
-      method: "POST",
-      body: JSON.stringify({}),
-    });
-  } catch (_) {
-    return null;
-  }
-}
-
-function getPriorityOptionName(priority) {
-  const normalized = String(priority || "").trim().toLowerCase();
-  if (normalized === "critical") return "🟥 Critical — Today";
-  if (normalized === "high") return "🟧 High — 48 Hours";
-  if (normalized === "low") return "🟦 Low — As Scheduled";
-  return "🟨 Normal — 3–5 Days";
-}
-
-function getSupportTypeOptionName(payload) {
-  const issueType = String(payload && payload.issueType || "").trim().toLowerCase();
-  if (issueType === "token" || issueType === "credits" || issueType === "billing") {
-    return "Ticket - Transcript Token";
-  }
-  return "Ticket - Transcript Token";
-}
-
-function buildInitialSupportLatestUpdate(payload) {
-  const subject = String(payload && payload.subject || "").trim();
-  if (subject) return `Ticket submitted: ${subject}`;
-  return "Ticket submitted.";
-}
-
-function buildSupportTaskDescription(payload, supportId) {
-  const lines = [
-    `Support ID: ${supportId}`,
-    `Name: ${String(payload && payload.name || "").trim()}`,
-    `Email: ${normalizeEmail(payload && payload.email)}`,
-    `Category: ${String(payload && payload.category || "").trim()}`,
-    `Issue Type: ${String(payload && payload.issueType || "").trim()}`,
-    `Priority: ${String(payload && payload.priority || "").trim()}`,
-    `Urgency: ${String(payload && payload.urgency || "").trim()}`,
-    `Event ID: ${String(payload && payload.eventId || "").trim()}`,
-  ];
-
-  const tokenId = String(payload && payload.tokenId || "").trim();
-  const relatedOrderId = String(payload && payload.relatedOrderId || "").trim();
-  if (tokenId) lines.push(`Token ID: ${tokenId}`);
-  if (relatedOrderId) lines.push(`Related Order ID: ${relatedOrderId}`);
-
-  lines.push("");
-  lines.push(`Subject: ${String(payload && payload.subject || "").trim()}`);
-  lines.push("");
-  lines.push("Message:");
-  lines.push(String(payload && payload.message || "").trim());
-
-  return lines.join("\n");
-}
-
-async function createCanonicalSupportTicket(env, payload) {
-  const kv = getReportKv(env);
-  if (!kv) throw new Error("Missing KV binding: KV_TRANSCRIPT");
-
-  const email = normalizeEmail(payload && payload.email);
-  const eventId = String(payload && payload.eventId || "").trim();
-  const latestUpdate = buildInitialSupportLatestUpdate(payload);
-  const priorityName = getPriorityOptionName(payload && payload.priority);
-  const supportTypeName = getSupportTypeOptionName(payload);
-  const supportStatus = "open / new";
-  const createdAt = new Date().toISOString();
-
-  let supportId = "";
-  let existing = null;
-
-  for (let i = 0; i < 5; i++) {
-    supportId = buildCanonicalSupportId();
-    existing = await kv.get(getSupportStatusKey(supportId));
-    if (!existing) break;
-    supportId = "";
-  }
-
-  if (!supportId) {
-    throw new Error("unable_to_allocate_support_id");
-  }
-
-  const canonicalRecord = {
-    accountEmail: email,
-    createdAt,
-    eventId,
-    latestUpdate,
-    relatedOrderId: String(payload && payload.relatedOrderId || "").trim(),
-    source: "worker",
-    status: supportStatus,
-    subject: String(payload && payload.subject || "").trim(),
-    supportId,
-    taskId: "",
-    taskName: "",
-    type: supportTypeName,
-    updatedAt: createdAt,
-  };
-
-  await kv.put(getSupportStatusKey(supportId), JSON.stringify(canonicalRecord, null, 2));
-  await kv.put(getSupportEmailIndexKey(email, supportId), JSON.stringify({ createdAt, supportId }, null, 2));
-
-  const supportTask = await createClickUpTask(env, CLICKUP_TRANSCRIPT.SUPPORT_LIST_ID, {
-    description: buildSupportTaskDescription(payload, supportId),
-    name: `Support ${supportId} - ${String(payload && payload.subject || "Transcript Support").trim() || "Transcript Support"}`,
-    priority: null,
-    status: "open / new",
-  });
-
-  const taskId = String(supportTask && supportTask.id || "").trim();
-  if (!taskId) {
-    throw new Error("clickup_support_task_not_created");
-  }
-
-  const fullSupportTask = await getClickUpTask(env, taskId);
-  const actionRequiredField = getTaskCustomField(fullSupportTask, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.ACTION_REQUIRED);
-  const priorityField = getTaskCustomField(fullSupportTask, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.PRIORITY);
-  const typeField = getTaskCustomField(fullSupportTask, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.TYPE);
-
-  const actionRequiredOptionId = getDropdownOptionIdByName(
-    actionRequiredField && actionRequiredField.type_config && actionRequiredField.type_config.options,
-    "Acknowledge"
-  );
-  const priorityOptionId = getDropdownOptionIdByName(
-    priorityField && priorityField.type_config && priorityField.type_config.options,
-    priorityName
-  );
-  const typeOptionId = getDropdownOptionIdByName(
-    typeField && typeField.type_config && typeField.type_config.options,
-    supportTypeName
-  );
-
-  await setClickUpCustomField(env, taskId, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.SUPPORT_ID, supportId);
-  await setClickUpCustomField(env, taskId, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.EMAIL, email);
-  await setClickUpCustomField(env, taskId, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.EVENT_ID, eventId);
-  await setClickUpCustomField(env, taskId, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.LATEST_UPDATE, latestUpdate);
-
-  if (String(payload && payload.relatedOrderId || "").trim()) {
-    await setClickUpCustomField(env, taskId, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.RELATED_ORDER_ID, String(payload.relatedOrderId).trim());
-  }
-
-  if (actionRequiredOptionId) {
-    await setClickUpCustomField(env, taskId, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.ACTION_REQUIRED, actionRequiredOptionId);
-  }
-
-  if (priorityOptionId) {
-    await setClickUpCustomField(env, taskId, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.PRIORITY, priorityOptionId);
-  }
-
-  if (typeOptionId) {
-    await setClickUpCustomField(env, taskId, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.TYPE, typeOptionId);
-  }
-
-  const refreshedRecord = {
-    ...canonicalRecord,
-    taskId,
-    taskName: String(fullSupportTask && fullSupportTask.name || supportTask && supportTask.name || "").trim(),
-    updatedAt: new Date().toISOString(),
-  };
-
-  await kv.put(getSupportStatusKey(supportId), JSON.stringify(refreshedRecord, null, 2));
-  await kv.put(getSupportTaskKey(taskId), JSON.stringify({ supportId }, null, 2));
-
-  try {
-    const accountTask = await findAccountTaskByEmail(env, email);
-    if (accountTask && accountTask.id) {
-      const accountSupportStatusField = getTaskCustomField(accountTask, CLICKUP_TRANSCRIPT.ACCOUNT_FIELDS.SUPPORT_STATUS);
-      const accountSupportStatusOptionId = getDropdownOptionIdByName(
-        accountSupportStatusField && accountSupportStatusField.type_config && accountSupportStatusField.type_config.options,
-        mapSupportStatusToAccountStatus(supportStatus)
-      );
-
-      if (accountSupportStatusOptionId) {
-        await setClickUpCustomField(env, accountTask.id, CLICKUP_TRANSCRIPT.ACCOUNT_FIELDS.SUPPORT_STATUS, accountSupportStatusOptionId);
-      }
-
-      await linkClickUpTasks(env, taskId, accountTask.id);
-      await linkClickUpTasks(env, accountTask.id, taskId);
-    }
-  } catch (_) {
-    // Projection only. Ticket creation should still succeed.
-  }
-
-  return refreshedRecord;
-}
-
-async function listClickUpTasksByList(env, listId, page = 0) {
-  const qs = new URLSearchParams();
-  qs.set("include_closed", "true");
-  qs.set("page", String(page));
-  qs.set("subtasks", "true");
-  return await clickupFetchJson(env, `/list/${encodeURIComponent(listId)}/task?${qs.toString()}`, {
-    method: "GET",
-    headers: { "content-type": "application/json" },
-  });
-}
-
-async function findSupportTaskBySupportId(env, supportId) {
-  const wanted = normalizeSupportId(supportId);
-  if (!wanted) return null;
-
-  for (let page = 0; page < 20; page++) {
-    const data = await listClickUpTasksByList(env, CLICKUP_TRANSCRIPT.SUPPORT_LIST_ID, page);
-    const tasks = Array.isArray(data && data.tasks) ? data.tasks : [];
-
-    for (const task of tasks) {
-      const value = normalizeSupportId(getTaskCustomFieldValue(task, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.SUPPORT_ID));
-      if (value && value === wanted) return task;
-    }
-
-    if (tasks.length < 100) break;
-  }
-
-  return null;
-}
-
-async function getClickUpTask(env, taskId) {
-  return await clickupFetchJson(env, `/task/${encodeURIComponent(taskId)}`, {
-    method: "GET",
-    headers: { "content-type": "application/json" },
-  });
-}
-
-async function findAccountTaskByEmail(env, email) {
-  const wanted = normalizeEmail(email);
-  if (!wanted) return null;
-
-  for (let page = 0; page < 20; page++) {
-    const data = await listClickUpTasksByList(env, CLICKUP_TRANSCRIPT.ACCOUNTS_LIST_ID, page);
-    const tasks = Array.isArray(data && data.tasks) ? data.tasks : [];
-
-    for (const task of tasks) {
-      const value = normalizeEmail(getTaskCustomFieldValue(task, CLICKUP_TRANSCRIPT.ACCOUNT_FIELDS.PRIMARY_EMAIL));
-      if (value && value === wanted) return task;
-    }
-
-    if (tasks.length < 100) break;
-  }
-
-  return null;
-}
-
-async function mirrorSupportStatusToAccount(env, supportTask, supportStatus) {
-  try {
-    const supportEmail = normalizeEmail(getTaskCustomFieldValue(supportTask, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.EMAIL));
-    if (!supportEmail) return;
-
-    const accountTask = await findAccountTaskByEmail(env, supportEmail);
-    if (!accountTask || !accountTask.id) return;
-
-    const accountField = getTaskCustomField(accountTask, CLICKUP_TRANSCRIPT.ACCOUNT_FIELDS.SUPPORT_STATUS);
-    const options = accountField && accountField.type_config && Array.isArray(accountField.type_config.options)
-      ? accountField.type_config.options
-      : [];
-    const mappedName = mapSupportStatusToAccountStatus(supportStatus);
-    const optionId = getDropdownOptionIdByName(options, mappedName);
-    if (!optionId) return;
-
-    await setClickUpCustomField(env, accountTask.id, CLICKUP_TRANSCRIPT.ACCOUNT_FIELDS.SUPPORT_STATUS, optionId);
-  } catch (_) {
-    // Projection only. Canonical support state must still update even if this mirror write fails.
-  }
-}
-
-async function upsertCanonicalSupportFromTask(env, task, historyItem = null) {
-  const kv = getReportKv(env);
-  if (!kv) throw new Error("Missing KV binding: KV_TRANSCRIPT");
-
-  const supportId = normalizeSupportId(getTaskCustomFieldValue(task, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.SUPPORT_ID));
-  if (!supportId) {
-    return { ok: false, reason: "missing_support_id" };
-  }
-
-  const status = normalizeSupportStatus(task && task.status && task.status.status);
-  const latestUpdate = buildSupportLatestUpdateFromTask(task, historyItem);
-  const updatedAt = task && task.date_updated ? new Date(Number(task.date_updated)).toISOString() : new Date().toISOString();
-  const supportEmail = normalizeEmail(getTaskCustomFieldValue(task, CLICKUP_TRANSCRIPT.SUPPORT_FIELDS.EMAIL));
-
-  const record = {
-    latestUpdate,
-    source: "clickup_webhook",
-    status,
-    supportEmail,
-    supportId,
-    taskId: String(task && task.id || "").trim(),
-    taskName: String(task && task.name || "").trim(),
-    updatedAt,
-  };
-
-  await kv.put(getSupportStatusKey(supportId), JSON.stringify(record, null, 2));
-  if (record.taskId) {
-    await kv.put(getSupportTaskKey(record.taskId), JSON.stringify({ supportId }, null, 2));
-  }
-
-  await mirrorSupportStatusToAccount(env, task, status);
-
-  return { ok: true, record };
-}
-
-async function getCanonicalSupportRecord(env, supportId) {
-  const kv = getReportKv(env);
-  if (!kv) throw new Error("Missing KV binding: KV_TRANSCRIPT");
-
-  const raw = await kv.get(getSupportStatusKey(supportId));
-  if (!raw) return null;
-
-  const parsed = tryParseJson(raw);
-  if (!parsed.ok || !parsed.value) return null;
-  return parsed.value;
-}
-
-async function syncSupportRecordFromClickUp(env, supportId) {
-  const task = await findSupportTaskBySupportId(env, supportId);
-  if (!task) return null;
-
-  const fullTask = await getClickUpTask(env, task.id);
-  const synced = await upsertCanonicalSupportFromTask(env, fullTask, null);
-  return synced.ok ? synced.record : null;
-}
-
-async function verifyClickUpWebhookSignature(env, request, rawBody) {
-  const secret = String(env.CLICKUP_WEBHOOK_SECRET || "").trim();
-  if (!secret) throw new Error("Missing CLICKUP_WEBHOOK_SECRET");
-
-  const incoming = String(request.headers.get("x-signature") || request.headers.get("X-Signature") || "").trim().toLowerCase();
-  if (!incoming) return false;
-
-  const key = await crypto.subtle.importKey(
-    "raw",
-    new TextEncoder().encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"]
-  );
-
-  const mac = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(rawBody));
-  const expected = Array.from(new Uint8Array(mac)).map((b) => b.toString(16).padStart(2, "0")).join("");
-
-  return timingSafeEqualHex(expected, incoming);
-}
-
-function buildAppDashboardUrl() {
-  return "https://transcript.taxmonitor.pro/app-dashboard.html";
-}
-
-function buildMagicVerifyUrl(token) {
-  return `https://transcript.taxmonitor.pro/api/transcripts/magic-link/verify?token=${encodeURIComponent(token)}`;
-}
-
-function buildReportPageUrl(reportId) {
-  return `https://transcript.taxmonitor.pro/assets/report.html?reportId=${encodeURIComponent(reportId)}`;
-}
-
-function buildSessionCookie(sessionId, maxAgeSeconds = 60 * 60 * 24 * 30) {
-  return [
-    `${TRANSCRIPT_SESSION_COOKIE}=${encodeURIComponent(sessionId)}`,
-    "HttpOnly",
-    `Max-Age=${maxAgeSeconds}`,
-    "Path=/",
-    "SameSite=Lax",
-    "Secure",
-  ].join("; ");
-}
-
-function buildSessionCookieClear() {
-  return [
-    `${TRANSCRIPT_SESSION_COOKIE}=`,
-    "HttpOnly",
-    "Max-Age=0",
-    "Path=/",
-    "SameSite=Lax",
-    "Secure",
-  ].join("; ");
-}
-
-function getCookieValue(request, name) {
-  const raw = String(request.headers.get("cookie") || "");
-  if (!raw) return "";
-  const parts = raw.split(";").map((x) => x.trim());
-  for (const part of parts) {
-    const idx = part.indexOf("=");
-    if (idx === -1) continue;
-    const key = part.slice(0, idx).trim();
-    const value = part.slice(idx + 1).trim();
-    if (key === name) return decodeURIComponent(value);
-  }
-  return "";
-}
-
-function getMagicLinkKey(token) {
-  return `magic-link:${String(token || "").trim()}`;
-}
-
-function getSessionKey(sessionId) {
-  return `session:${String(sessionId || "").trim()}`;
-}
-
-function getUserAccountKey(email) {
-  return `user-account:${String(email || "").trim().toLowerCase()}`;
-}
-
-function getReportIndexKey(email, createdAt, reportId) {
-  return `report-index:${String(email || "").trim().toLowerCase()}:${String(createdAt || "").trim()}:${String(reportId || "").trim()}`;
-}
-
-function getReportMetaKey(reportId) {
-  return `report-meta:${String(reportId || "").trim()}`;
-}
-
-function normalizeEmail(value) {
-  return String(value || "").trim().toLowerCase();
-}
-
-async function sha256Hex(input) {
-  const bytes = new TextEncoder().encode(String(input || ""));
-  const digest = await crypto.subtle.digest("SHA-256", bytes);
-  return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, "0")).join("");
-}
-
-async function getOrCreateUserAccount(env, email) {
-  const kv = getReportKv(env);
-  if (!kv) throw new Error("Missing KV binding: KV_TRANSCRIPT");
-
-  const normalizedEmail = normalizeEmail(email);
-  const key = getUserAccountKey(normalizedEmail);
-  const raw = await kv.get(key);
-
-  if (raw) {
-    const parsed = tryParseJson(raw);
-    if (parsed.ok && parsed.value && parsed.value.email && parsed.value.tokenId) {
-      return parsed.value;
-    }
-  }
-
-  const tokenHash = await sha256Hex(`transcript-account:${normalizedEmail}`);
-  const tokenId = `acct_${tokenHash.slice(0, 24)}`;
-
-  const account = {
-    createdAt: new Date().toISOString(),
-    email: normalizedEmail,
-    tokenId,
-  };
-
-  await kv.put(key, JSON.stringify(account, null, 2));
-  return account;
-}
-
-async function createMagicLinkRecord(env, email, redirect) {
-  const kv = getReportKv(env);
-  if (!kv) throw new Error("Missing KV binding: KV_TRANSCRIPT");
-
-  const account = await getOrCreateUserAccount(env, email);
-  const token = randomShortId(24);
-
-  const record = {
-    accountEmail: account.email,
-    createdAt: new Date().toISOString(),
-    redirect: redirect || "/app-dashboard.html",
-    tokenId: account.tokenId,
-  };
-
-  await kv.put(getMagicLinkKey(token), JSON.stringify(record, null, 2), {
-    expirationTtl: 60 * 30,
-  });
-
-  return {
-    account,
-    token,
-  };
-}
-
-async function consumeMagicLinkRecord(env, token) {
-  const kv = getReportKv(env);
-  if (!kv) throw new Error("Missing KV binding: KV_TRANSCRIPT");
-
-  const key = getMagicLinkKey(token);
-  const raw = await kv.get(key);
-  if (!raw) return null;
-
-  await kv.delete(key);
-
-  const parsed = tryParseJson(raw);
-  if (!parsed.ok || !parsed.value) return null;
-  return parsed.value;
-}
-
-async function createSessionRecord(env, email, tokenId) {
-  const kv = getReportKv(env);
-  if (!kv) throw new Error("Missing KV binding: KV_TRANSCRIPT");
-
-  const sessionId = randomShortId(24);
-  const session = {
-    createdAt: new Date().toISOString(),
-    email: normalizeEmail(email),
-    tokenId: String(tokenId || "").trim(),
-  };
-
-  await kv.put(getSessionKey(sessionId), JSON.stringify(session, null, 2), {
-    expirationTtl: 60 * 60 * 24 * 30,
-  });
-
-  return {
-    session,
-    sessionId,
-  };
-}
-
-async function getSessionFromRequest(request, env) {
-  const kv = getReportKv(env);
-  if (!kv) throw new Error("Missing KV binding: KV_TRANSCRIPT");
-
-  const sessionId = getCookieValue(request, TRANSCRIPT_SESSION_COOKIE);
-  if (!sessionId) return null;
-
-  const raw = await kv.get(getSessionKey(sessionId));
-  if (!raw) return null;
-
-  const parsed = tryParseJson(raw);
-  if (!parsed.ok || !parsed.value) return null;
-
-  return {
-    session: parsed.value,
-    sessionId,
-  };
-}
-
-async function requireTranscriptSession(request, env) {
-  const current = await getSessionFromRequest(request, env);
-  if (!current || !current.session || !current.session.email || !current.session.tokenId) {
-    return null;
-  }
-  return current;
-}
-
-async function listUserReportRecords(env, email, limit = 50, cursor = undefined) {
-  const kv = getReportKv(env);
-  if (!kv) throw new Error("Missing KV binding: KV_TRANSCRIPT");
-
-  const prefix = `report-index:${normalizeEmail(email)}:`;
-  const listed = await kv.list({ cursor, limit, prefix });
-
-  const records = [];
-  for (const key of listed.keys || []) {
-    const raw = await kv.get(key.name);
-    const parsed = tryParseJson(raw || "");
-    if (!parsed.ok || !parsed.value || !parsed.value.reportId) continue;
-
-    const metaRaw = await kv.get(getReportMetaKey(parsed.value.reportId));
-    const metaParsed = tryParseJson(metaRaw || "");
-    if (!metaParsed.ok || !metaParsed.value) continue;
-
-    records.push(metaParsed.value);
-  }
-
-  records.sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
-
-  return {
-    cursor: listed.list_complete ? null : listed.cursor,
-    records,
-  };
-}
-
-async function listUserPurchaseRecords(env, tokenId) {
-  if (!env.R2_TRANSCRIPT) return [];
-
-  const out = [];
-  let cursor = undefined;
-
-  do {
-    const page = await env.R2_TRANSCRIPT.list({
-      cursor,
-      limit: 100,
-      prefix: "receipts/stripe/",
-    });
-
-    for (const obj of page.objects || []) {
-      const body = await env.R2_TRANSCRIPT.get(obj.key);
-      if (!body) continue;
-
-      const text = await body.text();
-      const parsed = tryParseJson(text);
-      if (!parsed.ok || !parsed.value) continue;
-
-      if (String(parsed.value.tokenId || "") !== String(tokenId || "")) continue;
-
-      out.push({
-        amount: null,
-        createdAt: parsed.value.at || null,
-        credits: parsed.value.credits || null,
-        priceId: parsed.value.priceId || "",
-        sessionId: parsed.value.sessionId || "",
-        status: "completed",
-        tokenId: parsed.value.tokenId || "",
-      });
-    }
-
-    cursor = page.truncated ? page.cursor : undefined;
-  } while (cursor);
-
-  out.sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
-  return out;
-}
-
-/* ------------------------------------------
- * Transcript: Handlers
- *
- * Projection plan now confirmed from ClickUp:
- * - Accounts list: 901710909567
- * - Support list: 901710818377
- * - Use Account Transcript Credits field for transcript balances, not Account Gaming Credits.
- * - Mirror support status onto Account Support Status.
- * - Support list now has a dedicated Support ID field: 30fda9ea-12cd-4dc1-a89f-4633f4d06b27.
- * - Canonical supportId should live in Worker state and be projected into that field.
- * - Public support lookup should read canonical Worker state, with ClickUp status and latest update projected back into it.
- * ------------------------------------------
- */
-
-/* ------------------------------------------
- * Transcript: Handlers
- * ------------------------------------------ */
-
-async function handleGetTranscriptPrices(request, env) {
-  const required = ["CREDIT_MAP_JSON", "PRICE_10", "PRICE_100", "PRICE_25", "STRIPE_SECRET_KEY"];
-  const missing = envMissing(env, required);
-  if (missing.length) return jsonError(request, 503, "pricing_temporarily_unavailable", { missing: missing.sort() });
-
-  let creditMap;
-  try {
-    creditMap = JSON.parse(env.CREDIT_MAP_JSON);
-  } catch (err) {
-    return jsonError(request, 500, "invalid_credit_map", String(err?.message || err));
-  }
-
-  const priceIds = [env.PRICE_10, env.PRICE_25, env.PRICE_100].filter(Boolean).sort();
-
-  try {
-    const out = [];
-    for (const priceId of priceIds) {
-      const price = await stripeFetch(env, "GET", `/prices/${encodeURIComponent(priceId)}`);
-      const credits = creditMap[priceId] ?? null;
-
-      out.push({
-        amount: price.unit_amount,
-        credits,
-        currency: (price.currency || "usd").toUpperCase(),
-        label: "Transcript.Tax Monitor Pro",
-        perks: ["Client-ready report preview", "Credits applied instantly", "Local PDF parsing (no uploads)"].sort(),
-        priceId,
-        recommended: credits === 25,
-      });
-    }
-
-    out.sort((a, b) => (a.credits || 0) - (b.credits || 0));
-    return json({ prices: out }, 200, withCors(request));
-  } catch (err) {
-    return jsonError(request, 502, "pricing_temporarily_unavailable", String(err?.message || err));
-  }
-}
-
-async function handleCreateTranscriptCheckout(request, env) {
-  const required = ["CREDIT_MAP_JSON", "PRICE_10", "PRICE_100", "PRICE_25", "STRIPE_SECRET_KEY"];
-  const missing = envMissing(env, required);
-  if (missing.length) return jsonError(request, 503, "checkout_temporarily_unavailable", { missing: missing.sort() });
-
-  const current = await requireTranscriptSession(request, env);
-  if (!current || !current.session) {
-    return json({ error: "unauthorized", ok: false }, 401, withCors(request));
-  }
-
-  const body = await request.json().catch(() => ({}));
-  const priceId = typeof body?.priceId === "string" ? body.priceId.trim() : "";
-  const returnUrlBaseRaw = typeof body?.returnUrlBase === "string" ? body.returnUrlBase.trim() : "";
-  const successPathRaw = typeof body?.successPath === "string" ? body.successPath.trim() : "";
-  const tokenId = String(current.session.tokenId || "").trim();
-
-  if (!priceId) return jsonError(request, 400, "missing_priceId");
-  if (!tokenId) return jsonError(request, 400, "missing_tokenId");
-
-  const allowedPrices = [env.PRICE_10, env.PRICE_25, env.PRICE_100].filter(Boolean);
-  if (!allowedPrices.includes(priceId)) return jsonError(request, 400, "invalid_priceId");
-
-  const allowedReturnOrigins = getAllowedReturnOrigins(env);
-  const returnOrigin = normalizeOrigin(returnUrlBaseRaw);
-
-  if (!returnOrigin) return jsonError(request, 400, "missing_or_invalid_returnUrlBase");
-
-  if (!allowedReturnOrigins.has(returnOrigin)) {
-    return jsonError(request, 400, "return_origin_not_allowed", {
-      allowed: Array.from(allowedReturnOrigins).sort(),
-      returnOrigin,
-    });
-  }
-
-  const successPath = successPathRaw === "/assets/payment-success.html"
-    ? "/assets/payment-success.html"
-    : "/assets/payment-success.html";
-
-  try {
-    const session = await stripeFetch(env, "POST", "/checkout/sessions", {
-      mode: "payment",
-      allow_promotion_codes: "true",
-      "line_items[0][price]": priceId,
-      "line_items[0][quantity]": "1",
-      cancel_url: `${returnOrigin}/index.html#pricing`,
-      success_url: `${returnOrigin}${successPath}?session_id={CHECKOUT_SESSION_ID}&tokenId=${encodeURIComponent(tokenId)}`,
-      "metadata[priceId]": priceId,
-      "metadata[tokenId]": tokenId,
-    });
-
-    return json({ id: session.id, tokenId, url: session.url }, 200, withCors(request));
-  } catch (err) {
-    return jsonError(request, 502, "checkout_temporarily_unavailable", String(err?.message || err));
-  }
-}
-
-async function handleGetTranscriptCheckoutStatus(request, url, env) {
-  const sessionId = String(url.searchParams.get("session_id") || "").trim();
-  const tokenIdFromQuery = String(url.searchParams.get("tokenId") || "").trim();
-
-  if (!sessionId) {
-    return json({ error: "missing_session_id", ok: false }, 400, withCors(request));
-  }
-
-  try {
-    const session = await stripeFetch(
-      env,
-      "GET",
-      `/checkout/sessions/${encodeURIComponent(sessionId)}?expand[]=payment_intent.payment_method&expand[]=line_items.data.price.product`
-    );
-
-    const metadata = session && session.metadata ? session.metadata : {};
-    const priceId = String(
-      metadata.priceId ||
-      (session && session.line_items && session.line_items.data && session.line_items.data[0] && session.line_items.data[0].price && session.line_items.data[0].price.id) ||
-      ""
-    ).trim();
-    const tokenId = String(metadata.tokenId || tokenIdFromQuery || "").trim();
-    const creditsAdded = priceId ? getCreditsForPriceId(env, priceId) : null;
-    const amountPaid = Number(session ? (session.amount_total ?? session.amount_subtotal ?? 0) : 0);
-    const currency = String(session && session.currency || "usd").trim();
-    const quantityRaw = session && session.line_items && session.line_items.data && session.line_items.data[0] ? session.line_items.data[0].quantity : 1;
-    const quantity = Number.isFinite(Number(quantityRaw)) ? Number(quantityRaw) : 1;
-    const productName = String(
-      metadata.productLabel ||
-      (session && session.line_items && session.line_items.data && session.line_items.data[0] && session.line_items.data[0].description) ||
-      (session && session.line_items && session.line_items.data && session.line_items.data[0] && session.line_items.data[0].price && session.line_items.data[0].price.product && session.line_items.data[0].price.product.name) ||
-      "Transcript credits"
-    ).trim();
-    const paymentMethod = session && session.payment_intent && session.payment_intent.payment_method
-      ? session.payment_intent.payment_method
-      : null;
-    const paymentMethodLabel = buildPaymentMethodLabel(paymentMethod);
-    const paymentStatus = String(session && session.payment_status || session && session.status || "unpaid").trim().toLowerCase();
-    const receiptNumber = String(session && (session.client_reference_id || session.id) || sessionId).trim();
-    const datePaidValue = session && (session.created ? Number(session.created) * 1000 : Date.now());
-    const datePaid = new Date(datePaidValue).toISOString();
-
-    let balance = null;
-    if (tokenId) {
-      try {
-        const stub = getLedgerStub(env, tokenId);
-        const balanceRes = await stub.fetch("https://ledger/balance", { method: "GET" });
-        const balanceOut = await balanceRes.json().catch(() => ({}));
-        if (typeof balanceOut.balance === "number") {
-          balance = balanceOut.balance;
-        }
-      } catch (_) {
-        balance = null;
-      }
-    }
-
-    return json(
-      {
-        amountPaid,
-        balance,
-        creditsAdded,
-        currency,
-        datePaid,
-        ok: true,
-        paymentMethodLabel,
-        paymentStatus,
-        productLabel: productName,
-        quantity,
-        receiptNumber,
-        sessionId: String(session && session.id || sessionId),
-        tokenId,
-      },
-      200,
-      withCors(request)
-    );
-  } catch (err) {
-    return jsonError(request, 502, "checkout_status_unavailable", String(err?.message || err));
-  }
-}
-
-async function handleGetTranscriptTokens(request, url, env) {
-  const tokenId = (url.searchParams.get("tokenId") || "").trim();
-  if (!tokenId) return json({ error: "missing_tokenId" }, 400, withCors(request));
-
-  const stub = getLedgerStub(env, tokenId);
-  const res = await stub.fetch("https://ledger/balance", { method: "GET" });
-  const out = await res.json().catch(() => ({}));
-
-  return json({ balance: out.balance ?? 0, tokenId }, 200, withCors(request));
-}
-
-async function handleCreditTranscriptTokens(request, env, ctx) {
-  const body = await request.json().catch(() => ({}));
-  const tokenId = typeof body?.tokenId === "string" ? body.tokenId.trim() : "";
-  const amount = Number(body?.amount ?? 0);
-
-  const requestIdRaw = typeof body?.requestId === "string" ? body.requestId.trim() : "";
-  const requestId = requestIdRaw || crypto.randomUUID();
-
-  if (!tokenId) {
-    return json({ error: "missing_tokenId" }, 400, withCors(request));
-  }
-
-  if (!Number.isFinite(amount) || amount <= 0) {
-    return json({ error: "invalid_amount" }, 400, withCors(request));
-  }
-
-  const stub = getLedgerStub(env, tokenId);
-
-  const res = await stub.fetch("https://ledger/credit", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ amount, requestId }),
-  });
-
-  const out = await res.json().catch(() => ({}));
-
-  if (env.R2_TRANSCRIPT) {
-    const key = `receipts/manual-credit/${requestId}.json`;
-    ctx.waitUntil(
-      env.R2_TRANSCRIPT.put(
-        key,
-        JSON.stringify(
-          {
-            amount,
-            at: new Date().toISOString(),
-            balance: out.balance ?? null,
-            requestId,
-            tokenId,
-            type: "manual_credit",
-          },
-          null,
-          2
-        ),
-        { httpMetadata: { contentType: "application/json" } }
-      )
-    );
-  }
-
-  return json({ ...out, requestId, tokenId }, res.status, withCors(request));
-}
-
-async function handleConsumeTranscriptTokens(request, env, ctx) {
-  const body = await request.json().catch(() => ({}));
-  const tokenId = typeof body?.tokenId === "string" ? body.tokenId.trim() : "";
-  const amount = Number(body?.amount ?? 1);
-
-  if (!tokenId) return json({ error: "missing_tokenId" }, 400, withCors(request));
-  if (!Number.isFinite(amount) || amount <= 0) return json({ error: "invalid_amount" }, 400, withCors(request));
-
-  const requestIdRaw = typeof body?.requestId === "string" ? body.requestId.trim() : "";
-  const requestId = isUuidLike(requestIdRaw) ? requestIdRaw : crypto.randomUUID();
-  const stub = getLedgerStub(env, tokenId);
-
-  const res = await stub.fetch("https://ledger/consume", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ amount, requestId }),
-  });
-
-  const out = await res.json().catch(() => ({}));
-
-  if (res.ok) {
-    const kv = getReportKv(env);
-    if (kv) {
-      ctx.waitUntil(
-        kv.put(
-          getReportUnlockKey(requestId),
-          JSON.stringify(
-            {
-              amount,
-              balanceAfter: out.balance ?? null,
-              createdAt: new Date().toISOString(),
-              tokenId,
-              type: "preview_unlock",
-            },
-            null,
-            2
-          )
-        )
-      );
-    }
-  }
-
-  if (env.R2_TRANSCRIPT) {
-    const key = `receipts/consume/${requestId}.json`;
-    ctx.waitUntil(
-      env.R2_TRANSCRIPT.put(
-        key,
-        JSON.stringify({ amount, at: new Date().toISOString(), balance: out.balance, tokenId }, null, 2),
-        { httpMetadata: { contentType: "application/json" } }
-      )
-    );
-  }
-
-  return json({ ...out, requestId, tokenId }, res.status, withCors(request));
-}
-
-async function handleTranscriptStripeWebhook(request, env, ctx) {
-  assertEnv(env, ["CREDIT_MAP_JSON", "STRIPE_WEBHOOK_SECRET"]);
-
-  const sig = request.headers.get("stripe-signature");
-  if (!sig) return json({ error: "missing_signature" }, 400);
-
-  const rawBody = await request.arrayBuffer();
-  const rawText = new TextDecoder().decode(rawBody);
-  const event = await verifyStripeSignature(env, sig, rawText);
-
-  if (event.type === "checkout.session.completed") {
-    const session = event.data.object;
-    const tokenId = session?.metadata?.tokenId;
-    const priceId = session?.metadata?.priceId;
-
-    if (tokenId && priceId) {
-      const creditMap = JSON.parse(env.CREDIT_MAP_JSON);
-      const credits = creditMap[priceId];
-
-      if (typeof credits === "number" && credits > 0) {
-        const requestId = `stripe:${session.id}`;
-        const stub = getLedgerStub(env, tokenId);
-
-        await stub.fetch("https://ledger/credit", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ amount: credits, requestId }),
-        });
-
-        if (env.R2_TRANSCRIPT) {
-          const key = `receipts/stripe/${session.id}.json`;
-          ctx.waitUntil(
-            env.R2_TRANSCRIPT.put(
-              key,
-              JSON.stringify(
-                {
-                  at: new Date().toISOString(),
-                  credits,
-                  priceId,
-                  sessionId: session.id,
-                  tokenId,
-                  type: event.type,
-                },
-                null,
-                2
-              ),
-              { httpMetadata: { contentType: "application/json" } }
-            )
-          );
-        }
-      }
-    }
-  }
-
-  return json({ received: true }, 200);
-}
-
-/* ------------------------------------------
- * FORMS: Transcript Report Email
- * ------------------------------------------ */
-
-async function handleShortReportLookup(request, env, url) {
-  if (!requireMethod(request, ["GET"])) {
-    return new Response("Method not allowed", { status: 405 });
-  }
-
-  const reportId = String(url.searchParams.get("r") || "").trim();
-  if (!reportId || !/^[A-Za-z0-9_-]{8,128}$/.test(reportId)) {
-    return new Response("Invalid report link.", {
-      status: 400,
-      headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" },
-    });
-  }
-
+async function getShortReportLink(env, reportId) {
   const stored = await resolveShortReportPayload(env, reportId);
-  if (!stored || !stored.payload) {
-    return new Response("This report link was not found.", {
-      status: 404,
-      headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" },
-    });
-  }
+  if (!stored || !stored.payload) return null;
 
   const target = new URL("https://transcript.taxmonitor.pro/assets/report");
+
   if (String(stored.payloadTransport || "hash") === "query") {
     target.searchParams.set("data", String(stored.payload));
   } else {
     target.hash = String(stored.payload);
   }
 
-  return Response.redirect(target.toString(), 302);
+  return {
+    reportId: String(reportId || "").trim(),
+    reportUrl: target.toString(),
+  };
 }
 
-async function handleFormsTranscriptReportEmail(request, env, ctx) {
-  if (!requireMethod(request, ["POST"])) {
-    return new Response(JSON.stringify({ ok: false, error: "Method not allowed" }), {
-      status: 405,
-      headers: { ...corsHeadersForRequest(request), "Content-Type": "application/json; charset=utf-8" },
-    });
-  }
-
-  const parsed = await parseInboundBody(request);
-  if (!parsed.ok) {
-    return new Response(JSON.stringify({ ok: false, error: parsed.error, details: parsed.details }), {
-      status: 400,
-      headers: { ...corsHeadersForRequest(request), "Content-Type": "application/json; charset=utf-8" },
-    });
-  }
-
-  const email = String(parsed.data?.email || "").trim();
-  const eventId = String(parsed.data?.eventId || "").trim();
-  const reportUrl = String(parsed.data?.reportUrl || "").trim();
-  const tokenId = String(parsed.data?.tokenId || "").trim();
-
-  const missing = [];
-  if (!email) missing.push("email");
-  if (!eventId) missing.push("eventId");
-  if (!reportUrl) missing.push("reportUrl");
-  if (!tokenId) missing.push("tokenId");
-
-  if (missing.length) {
-    return new Response(JSON.stringify({ ok: false, error: "Missing required fields", missing }), {
-      status: 400,
-      headers: { ...corsHeadersForRequest(request), "Content-Type": "application/json; charset=utf-8" },
-    });
-  }
-
-  if (!isLikelyEmail(email)) {
-    return new Response(JSON.stringify({ ok: false, error: "Invalid email" }), {
-      status: 400,
-      headers: { ...corsHeadersForRequest(request), "Content-Type": "application/json; charset=utf-8" },
-    });
-  }
-
-  if (!isTokenIdFormat(tokenId)) {
-    return new Response(JSON.stringify({ ok: false, error: "Invalid tokenId format" }), {
-      status: 400,
-      headers: { ...corsHeadersForRequest(request), "Content-Type": "application/json; charset=utf-8" },
-    });
-  }
-
-  if (!isUuidLike(eventId)) {
-    return new Response(JSON.stringify({ ok: false, error: "Invalid eventId format" }), {
-      status: 400,
-      headers: { ...corsHeadersForRequest(request), "Content-Type": "application/json; charset=utf-8" },
-    });
-  }
-
-  if (!isSafeReportUrl(reportUrl)) {
-    return new Response(JSON.stringify({ ok: false, error: "Invalid reportUrl" }), {
-      status: 400,
-      headers: { ...corsHeadersForRequest(request), "Content-Type": "application/json; charset=utf-8" },
-    });
-  }
-
-  const kv = getReportKv(env);
-  if (!kv) {
-    return new Response(JSON.stringify({ ok: false, error: "Missing KV binding: KV_TRANSCRIPT" }), {
-      status: 500,
-      headers: { ...corsHeadersForRequest(request), "Content-Type": "application/json; charset=utf-8" },
-    });
-  }
-
-  const unlockRaw = await kv.get(getReportUnlockKey(eventId));
-  if (!unlockRaw) {
-    return new Response(JSON.stringify({ ok: false, error: "report_not_unlocked" }), {
-      status: 403,
-      headers: { ...corsHeadersForRequest(request), "Content-Type": "application/json; charset=utf-8" },
-    });
-  }
-
-  const unlockParsed = tryParseJson(unlockRaw);
-  const unlock = unlockParsed.ok ? unlockParsed.value : null;
-  if (!unlock || String(unlock.tokenId || "") !== tokenId) {
-    return new Response(JSON.stringify({ ok: false, error: "report_unlock_token_mismatch" }), {
-      status: 403,
-      headers: { ...corsHeadersForRequest(request), "Content-Type": "application/json; charset=utf-8" },
-    });
-  }
-
-  const stub = getLedgerStub(env, tokenId);
-  const balanceRes = await stub.fetch("https://ledger/balance", { method: "GET" });
-  const balanceOut = await balanceRes.json().catch(() => ({}));
-
-  const extracted = extractStoredReportPayload(reportUrl);
-  if (!extracted.ok) {
-    return new Response(JSON.stringify({ ok: false, error: extracted.error }), {
-      status: 400,
-      headers: { ...corsHeadersForRequest(request), "Content-Type": "application/json; charset=utf-8" },
-    });
-  }
-
-  const shortLink = await storeShortReportPayload(env, extracted.payload, {
-    payloadTransport: extracted.transport,
-    sourcePath: "/assets/report",
-  });
-
-  const fromUser =
-    env.GOOGLE_WORKSPACE_USER_SUPPORT ||
-    env.GOOGLE_WORKSPACE_USER_NOREPLY ||
-    env.GOOGLE_WORKSPACE_USER_DEFAULT;
-
-  const from = "Transcript Tax Monitor Pro <" + String(fromUser || "support@taxmonitor.pro") + ">";
-  const subject = "Your Transcript Tax Report";
-  const text = `Your transcript report is ready.
-
-Open report:
-${shortLink.shortUrl}
-
-Important:
-- Save this email if you may need the report again.
-- This link is intended for your use only.
-- This report link does not expire unless you remove it from KV.
-
-If you did not request this report, you can ignore this email.
-
-Transcript Tax Monitor Pro`;
-
-  await gmailSendMessage(env, { from, to: email, subject, text });
-
-  if (env.R2_TRANSCRIPT) {
-    const key = `receipts/report-email/${shortLink.reportId}.json`;
-    ctx.waitUntil(
-      env.R2_TRANSCRIPT.put(
-        key,
-        JSON.stringify(
-          {
-            at: new Date().toISOString(),
-            email,
-            eventId,
-            remainingBalance: balanceOut?.balance ?? null,
-            reportId: shortLink.reportId,
-            shortUrl: shortLink.shortUrl,
-            tokenId,
-          },
-          null,
-          2
-        ),
-        { httpMetadata: { contentType: "application/json" } }
-      )
-    );
-  }
-
-  return new Response(JSON.stringify({ ok: true, reportId: shortLink.reportId, reportUrl: shortLink.shortUrl, remainingBalance: balanceOut?.balance ?? null }), {
-    status: 200,
-    headers: {
-      ...corsHeadersForRequest(request),
-      "Content-Type": "application/json; charset=utf-8",
-    },
-  });
-}
-
-async function handleGetTranscriptReportLink(request, url, env) {
+async function handleGetTranscriptReportLink(request, env) {
+  const url = new URL(request.url);
   const payload = (url.searchParams.get("payload") || url.searchParams.get("data") || "").trim();
   const reportId = (url.searchParams.get("reportId") || url.searchParams.get("r") || "").trim();
   const reportUrl = (url.searchParams.get("reportUrl") || "").trim();
@@ -2033,14 +1603,14 @@ async function handleGetTranscriptReportLink(request, url, env) {
 
   if (reportId) {
     const link = await getShortReportLink(env, reportId);
-    if (!link) return json({ ok: false, error: "report_not_found" }, 404, withCors(request));
+    if (!link) return json(request, env, { ok: false, error: "report_not_found" }, 404);
 
-    return json({ ok: true, reportId: link.reportId, reportUrl: link.reportUrl }, 200, withCors(request));
+    return json(request, env, { ok: true, reportId: link.reportId, reportUrl: link.reportUrl }, 200);
   }
 
   const extracted = extractInboundReportPayload({ payload, reportUrl, transport });
   if (!extracted.ok) {
-    return json({ ok: false, error: extracted.error }, 400, withCors(request));
+    return json(request, env, { ok: false, error: extracted.error }, 400);
   }
 
   if (shouldShorten) {
@@ -2050,32 +1620,36 @@ async function handleGetTranscriptReportLink(request, url, env) {
     });
 
     return json(
+      request,
+      env,
       {
         ok: true,
         reportId: shortLink.reportId,
         reportUrl: shortLink.shortUrl,
       },
-      200,
-      withCors(request)
+      200
     );
   }
 
   return json(
+    request,
+    env,
     {
       ok: true,
       reportUrl: buildAssetReportUrl(extracted.payload, extracted.transport),
       transport: extracted.transport,
     },
-    200,
-    withCors(request)
+    200
   );
 }
 
 async function handlePostTranscriptReportLink(request, env) {
+  if (request.method !== "POST") return methodNotAllowed(request, env);
+
   const body = await request.json().catch(() => ({}));
   const extracted = extractInboundReportPayload(body || {});
   if (!extracted.ok) {
-    return json({ ok: false, error: extracted.error }, 400, withCors(request));
+    return json(request, env, { ok: false, error: extracted.error }, 400);
   }
 
   const shouldShorten = Boolean(body?.short);
@@ -2087,41 +1661,46 @@ async function handlePostTranscriptReportLink(request, env) {
     });
 
     return json(
+      request,
+      env,
       {
         ok: true,
         reportId: shortLink.reportId,
         reportUrl: shortLink.shortUrl,
       },
-      200,
-      withCors(request)
+      200
     );
   }
 
   return json(
+    request,
+    env,
     {
       ok: true,
       reportUrl: buildAssetReportUrl(extracted.payload, extracted.transport),
       transport: extracted.transport,
     },
-    200,
-    withCors(request)
+    200
   );
 }
 
-async function handleGetTranscriptReportData(request, url, env) {
+async function handleGetTranscriptReportData(request, env) {
+  const url = new URL(request.url);
   const reportId = (url.searchParams.get("reportId") || "").trim();
 
   if (!reportId) {
-    return json({ error: "missing_reportId" }, 400, withCors(request));
+    return json(request, env, { error: "missing_reportId" }, 400);
   }
 
   const stored = await resolveShortReportPayload(env, reportId);
 
   if (!stored || !stored.payload) {
-    return json({ error: "report_not_found" }, 404, withCors(request));
+    return json(request, env, { error: "report_not_found" }, 404);
   }
 
   return json(
+    request,
+    env,
     {
       ok: true,
       reportId,
@@ -2129,670 +1708,269 @@ async function handleGetTranscriptReportData(request, url, env) {
       transport: stored.payloadTransport || "hash",
       createdAt: stored.createdAt || null,
     },
-    200,
-    withCors(request)
+    200
   );
 }
 
-async function handleTranscriptMagicLinkRequest(request, env) {
-  const body = await request.json().catch(() => ({}));
-  const email = normalizeEmail(body?.email);
-  const redirectRaw = String(body?.redirect || "").trim();
-  const redirect = redirectRaw && redirectRaw.startsWith("/") ? redirectRaw : "/app-dashboard.html";
+async function handleShortReportLookup(request, env) {
+  const url = new URL(request.url);
+  const reportId = (url.searchParams.get("r") || "").trim();
+  if (!reportId) return json(request, env, { error: "missing_reportId" }, 400);
 
-  if (!isLikelyEmail(email)) {
-    return json({ error: "invalid_email" }, 400, withCors(request));
-  }
+  const link = await getShortReportLink(env, reportId);
+  if (!link) return json(request, env, { error: "report_not_found" }, 404);
 
-  const created = await createMagicLinkRecord(env, email, redirect);
-  const verifyUrl = buildMagicVerifyUrl(created.token);
-
-  const fromUser =
-    env.GOOGLE_WORKSPACE_USER_SUPPORT ||
-    env.GOOGLE_WORKSPACE_USER_NOREPLY ||
-    env.GOOGLE_WORKSPACE_USER_DEFAULT;
-
-  const from = "Transcript Tax Monitor Pro <" + String(fromUser || "support@taxmonitor.pro") + ">";
-  const subject = "Your Transcript Tax Monitor sign-in link";
-  const text = `Use this secure sign-in link to open your Transcript Tax Monitor account.
-
-Sign in:
-${verifyUrl}
-
-This link expires in 30 minutes.
-
-Transcript Tax Monitor Pro`;
-
-  await gmailSendMessage(env, { from, subject, text, to: email });
-
-  return json({ ok: true }, 200, withCors(request));
+  return Response.redirect(link.reportUrl, 302);
 }
 
-async function handleTranscriptMagicLinkVerify(request, url, env) {
-  const token = String(url.searchParams.get("token") || "").trim();
-  if (!token) {
-    return new Response("Missing magic link token.", {
-      headers: { "content-type": "text/plain; charset=utf-8" },
-      status: 400,
-    });
-  }
+$1
+async function handleAuthStart(request, env) {
+  if (request.method !== "POST") return methodNotAllowed(request, env);
 
-  const record = await consumeMagicLinkRecord(env, token);
-  if (!record || !record.accountEmail || !record.tokenId) {
-    return new Response("This magic link is invalid or expired.", {
-      headers: { "content-type": "text/plain; charset=utf-8" },
-      status: 400,
-    });
-  }
+  const body = await parseJson(request);
+  if (!body || typeof body !== "object") return badRequest(request, env, "Invalid JSON body");
 
-  const created = await createSessionRecord(env, record.accountEmail, record.tokenId);
-  const redirect = String(record.redirect || "/app-dashboard.html").trim();
-  const target = new URL(redirect.startsWith("/") ? `https://transcript.taxmonitor.pro${redirect}` : buildAppDashboardUrl());
+  const email = String(body.email || "").trim().toLowerCase();
+  const redirect = String(body.redirect || "").trim();
 
-  return new Response(null, {
-    headers: {
-      "cache-control": "no-store",
-      Location: target.toString(),
-      "Set-Cookie": buildSessionCookie(created.sessionId),
-    },
-    status: 302,
-  });
-}
+  if (!isValidEmail(email)) return badRequest(request, env, "Invalid email");
+  if (!isSafeRedirect(redirect)) return badRequest(request, env, "Invalid redirect (must be a relative path)");
 
-async function handleGetTranscriptMe(request, env) {
-  const headerEmail = normalizeEmail(
-    request.headers.get("x-user-email") ||
-    request.headers.get("cf-access-authenticated-user-email") ||
-    ""
-  );
-  const headerTokenId = String(
-    request.headers.get("x-user-token") ||
-    request.headers.get("x-token-id") ||
-    ""
-  ).trim();
-
-  let email = "";
-  let tokenId = "";
-
-  const current = await requireTranscriptSession(request, env);
-  if (current && current.session) {
-    email = normalizeEmail(current.session.email);
-    tokenId = String(current.session.tokenId || "").trim();
-  }
-
-  if (!email && headerEmail) {
-    email = headerEmail;
-  }
-
-  if (!tokenId && headerTokenId) {
-    tokenId = headerTokenId;
-  }
-
-  if (!tokenId && email) {
-    const account = await getOrCreateUserAccount(env, email);
-    tokenId = String(account && account.tokenId || "").trim();
-    email = normalizeEmail(account && account.email || email);
-  }
-
-  if (!email && !tokenId) {
-    return json({ error: "unauthorized", ok: false }, 401, withCors(request));
-  }
-
-  let balance = 0;
-
-  if (tokenId) {
-    try {
-      const stub = getLedgerStub(env, tokenId);
-      const res = await stub.fetch("https://ledger/balance", { method: "GET" });
-      const out = await res.json().catch(() => ({}));
-      balance = Number(out.balance ?? 0) || 0;
-    } catch (_) {
-      balance = 0;
-    }
-  }
-
-  return json(
-    {
-      ok: true,
-      user: {
-        balance,
-        email: email || null,
-        tokenId: tokenId || null,
-      },
-    },
-    200,
-    withCors(request)
-  );
-}
-
-async function handleGetTranscriptPurchases(request, url, env) {
-  const current = await requireTranscriptSession(request, env);
-  if (!current) {
-    return json({ error: "unauthorized" }, 401, withCors(request));
-  }
-
-  const limitRaw = Number(url.searchParams.get("limit") || 25);
-  const limit = Number.isFinite(limitRaw) && limitRaw > 0 ? Math.min(limitRaw, 100) : 25;
-
-  const purchases = await listUserPurchaseRecords(env, current.session.tokenId);
-
-  return json(
-    {
-      ok: true,
-      purchases: purchases.slice(0, limit),
-    },
-    200,
-    withCors(request)
-  );
-}
-
-async function handleGetTranscriptReports(request, url, env) {
-  const current = await requireTranscriptSession(request, env);
-  if (!current) {
-    return json({ error: "unauthorized" }, 401, withCors(request));
-  }
-
-  const cursor = String(url.searchParams.get("cursor") || "").trim() || undefined;
-  const limitRaw = Number(url.searchParams.get("limit") || 25);
-  const limit = Number.isFinite(limitRaw) && limitRaw > 0 ? Math.min(limitRaw, 100) : 25;
-
-  const listed = await listUserReportRecords(env, current.session.email, limit, cursor);
-
-  return json(
-    {
-      cursor: listed.cursor,
-      ok: true,
-      reports: listed.records,
-    },
-    200,
-    withCors(request)
-  );
-}
-
-async function handleCreateTranscriptPreview(request, env, ctx) {
-  const current = await requireTranscriptSession(request, env);
-  if (!current) {
-    return json({ error: "unauthorized" }, 401, withCors(request));
-  }
-
-  const body = await request.json().catch(() => ({}));
-  const reportData = body?.reportData;
-
-  if (!reportData || typeof reportData !== "object") {
-    return json({ error: "missing_reportData" }, 400, withCors(request));
-  }
-
-  const requestId = crypto.randomUUID();
-  const consumeRes = await getLedgerStub(env, current.session.tokenId).fetch("https://ledger/consume", {
-    body: JSON.stringify({ amount: 1, requestId }),
-    headers: { "content-type": "application/json" },
-    method: "POST",
-  });
-
-  const consumeOut = await consumeRes.json().catch(() => ({}));
-  if (!consumeRes.ok) {
-    return json(
-      {
-        balance: consumeOut.balance ?? 0,
-        error: consumeOut.error || "token_consume_failed",
-        needed: consumeOut.needed ?? 1,
-      },
-      consumeRes.status,
-      withCors(request)
-    );
-  }
-
-  const payload = JSON.stringify(reportData);
-  const shortLink = await storeShortReportPayload(env, payload, {
-    payloadTransport: "query",
-    sourcePath: "/assets/report.html",
-  });
-
-  const createdAt = new Date().toISOString();
-  const reportMeta = {
-    accountEmail: current.session.email,
-    balanceAfter: consumeOut.balance ?? 0,
-    createdAt,
-    printedAt: null,
-    reportId: shortLink.reportId,
-    reportUrl: buildReportPageUrl(shortLink.reportId),
-    status: "pending",
-    tokenId: current.session.tokenId,
+  const token = randomId("ml");
+  const rec = {
+    createdAt: nowIso(),
+    email,
+    expiresAt: asIso(Date.now() + LOGIN_TOKEN_TTL_MS),
+    redirect,
   };
 
-  const kv = getReportKv(env);
-  await kv.put(getReportMetaKey(shortLink.reportId), JSON.stringify(reportMeta, null, 2));
-  await kv.put(
-    getReportIndexKey(current.session.email, createdAt, shortLink.reportId),
-    JSON.stringify({ createdAt, reportId: shortLink.reportId }, null, 2)
-  );
-  await kv.put(
-    getReportUnlockKey(requestId),
-    JSON.stringify(
-      {
-        amount: 1,
-        balanceAfter: consumeOut.balance ?? 0,
-        createdAt,
-        reportId: shortLink.reportId,
-        tokenId: current.session.tokenId,
-        type: "preview_unlock",
-      },
-      null,
-      2
-    )
-  );
+  await env.R2_TAXTOOLS.put(keyLoginToken(token), JSON.stringify(rec), {
+    httpMetadata: { contentType: "application/json" },
+  });
 
-  if (env.R2_TRANSCRIPT) {
-    ctx.waitUntil(
-      env.R2_TRANSCRIPT.put(
-        `receipts/consume/${requestId}.json`,
-        JSON.stringify(
-          {
-            amount: 1,
-            at: createdAt,
-            balance: consumeOut.balance ?? 0,
-            reportId: shortLink.reportId,
-            tokenId: current.session.tokenId,
-            type: "preview",
-          },
-          null,
-          2
-        ),
-        { httpMetadata: { contentType: "application/json" } }
-      )
+  const baseUrl = String(env.TAXTOOLS_AUTH_BASE_URL || "https://tools-api.taxmonitor.pro").replace(/\/+$/g, "");
+  const link = `${baseUrl}/v1/auth/complete?token=${encodeURIComponent(token)}`;
+
+  try {
+    await gmailSendMagicLink(env, { link, to: email });
+  } catch (err) {
+    await env.R2_TAXTOOLS.delete(keyLoginToken(token));
+    return json(
+      request,
+      env,
+      { error: "email_send_failed", message: String(err?.message || err || "Email send failed") },
+      500
     );
   }
 
-  return json(
-    {
-      ok: true,
-      balance: consumeOut.balance ?? 0,
-      eventId: requestId,
-      reportId: shortLink.reportId,
-      reportUrl: buildReportPageUrl(shortLink.reportId),
-    },
-    200,
-    withCors(request)
-  );
+  return json(request, env, { ok: true }, 200);
 }
 
-async function handleTranscriptPrintComplete(request, url, env) {
-  const current = await requireTranscriptSession(request, env);
-  if (!current) {
-    return json({ error: "unauthorized" }, 401, withCors(request));
+async function handleAuthComplete(request, env) {
+  if (request.method !== "GET") return methodNotAllowed(request, env);
+
+  const url = new URL(request.url);
+  const token = String(url.searchParams.get("token") || "").trim();
+  if (!token) return badRequest(request, env, "token is required");
+
+  const rec = await r2GetJson(env, keyLoginToken(token));
+  if (!rec) return json(request, env, { error: "invalid_or_expired", message: "Login link is invalid or expired" }, 400);
+
+  const expMs = Date.parse(String(rec.expiresAt || ""));
+  if (!Number.isFinite(expMs) || expMs <= Date.now()) {
+    await env.R2_TAXTOOLS.delete(keyLoginToken(token));
+    return json(request, env, { error: "invalid_or_expired", message: "Login link is invalid or expired" }, 400);
   }
 
-  const match = url.pathname.match(/^\/api\/transcripts\/report\/([^/]+)\/print-complete$/);
-  const reportId = String(match && match[1] ? match[1] : "").trim();
-  if (!reportId) {
-    return json({ error: "missing_reportId" }, 400, withCors(request));
+  const email = String(rec.email || "").trim().toLowerCase();
+  if (!isValidEmail(email)) {
+    await env.R2_TAXTOOLS.delete(keyLoginToken(token));
+    return json(request, env, { error: "invalid_or_expired", message: "Login link is invalid or expired" }, 400);
   }
 
-  const kv = getReportKv(env);
-  const raw = await kv.get(getReportMetaKey(reportId));
-  if (!raw) {
-    return json({ error: "report_not_found" }, 404, withCors(request));
+  const redirect = isSafeRedirect(rec.redirect) ? String(rec.redirect).trim() : "/";
+  const existingAccountId = getCookie(request, COOKIE_NAMES.accountId);
+  const accountId = String(existingAccountId || "").trim() || `acct_${crypto.randomUUID()}`;
+
+  await dbAccountEnsure(env, { accountId, email });
+
+  const sessionId = randomId("sess");
+  const session = {
+    accountId,
+    createdAt: nowIso(),
+    email,
+    expiresAt: asIso(Date.now() + SESSION_TTL_MS),
+    sessionId,
+  };
+
+  await r2PutJson(env, keySession(sessionId), session);
+  await env.R2_TAXTOOLS.delete(keyLoginToken(token));
+
+  const appOrigin = String(env.TAXTOOLS_APP_ORIGIN || "https://taxtools.taxmonitor.pro").replace(/\/+$/g, "");
+  const location = `${appOrigin}${redirect}`;
+
+  const headers = new Headers({ Location: location });
+  for (const c of buildSessionCookies({ accountId, cookieDomain: cookieDomain(env), email, sessionId })) {
+    headers.append("Set-Cookie", c);
   }
 
-  const parsed = tryParseJson(raw);
-  if (!parsed.ok || !parsed.value) {
-    return json({ error: "invalid_report_meta" }, 500, withCors(request));
-  }
-
-  const meta = parsed.value;
-  if (String(meta.accountEmail || "") !== String(current.session.email || "")) {
-    return json({ error: "forbidden" }, 403, withCors(request));
-  }
-
-  meta.printedAt = new Date().toISOString();
-  meta.status = "printed";
-
-  await kv.put(getReportMetaKey(reportId), JSON.stringify(meta, null, 2));
-
-  return json(
-    {
-      ok: true,
-      printedAt: meta.printedAt,
-      reportId,
-      status: meta.status,
-    },
-    200,
-    withCors(request)
-  );
+  return new Response(null, { headers, status: 302 });
 }
 
-async function handleTranscriptSignOut(request) {
-  return new Response(JSON.stringify({ ok: true }), {
-    headers: {
-      ...withCors(request),
-      "cache-control": "no-store",
-      "content-type": "application/json; charset=utf-8",
-      "Set-Cookie": buildSessionCookieClear(),
-    },
-    status: 200,
-  });
+async function handleAuthMe(request, env) {
+  if (request.method !== "GET") return methodNotAllowed(request, env);
+
+  const auth = await getAuthContext(request, env);
+  if (!auth.isAuthenticated || !auth.accountId) return unauthorized(request, env);
+
+  return json(request, env, { accountId: auth.accountId, email: auth.email }, 200);
 }
 
-async function handlePostHelpTickets(request, env) {
-  const parsed = await parseInboundBody(request);
-  if (!parsed.ok) {
-    return json({ error: parsed.error, details: parsed.details }, 400, withCors(request));
-  }
+async function handleAuthLogout(request, env) {
+  if (request.method !== "POST") return methodNotAllowed(request, env);
 
-  const payload = parsed.data || {};
-  const required = ["category", "email", "eventId", "issueType", "message", "name", "priority", "subject", "urgency"];
-  const missing = required.filter((key) => !String(payload[key] || "").trim()).sort();
+  const sessionId = getCookie(request, COOKIE_NAMES.session);
+  if (sessionId) await env.R2_TAXTOOLS.delete(keySession(sessionId));
 
-  if (missing.length) {
-    return json({ error: "missing_required_fields", missing }, 400, withCors(request));
-  }
-
-  const email = normalizeEmail(payload.email);
-  const eventId = String(payload.eventId || "").trim();
-
-  if (!isLikelyEmail(email)) {
-    return json({ error: "invalid_email" }, 400, withCors(request));
-  }
-
-  if (!isUuidLike(eventId)) {
-    return json({ error: "invalid_eventId" }, 400, withCors(request));
-  }
-
-  const record = await createCanonicalSupportTicket(env, payload);
-
-  return json(
-    {
-      latestUpdate: record.latestUpdate,
-      ok: true,
-      status: record.status,
-      supportId: record.supportId,
-      taskId: record.taskId,
-      updatedAt: record.updatedAt,
-    },
-    200,
-    withCors(request)
-  );
+  const res = json(request, env, { ok: true }, 200);
+  for (const c of clearCookies(cookieDomain(env))) res.headers.append("Set-Cookie", c);
+  return res;
 }
-
-async function handleGetHelpStatus(request, url, env) {
-  const supportId = normalizeSupportId(
-    url.searchParams.get("ticket_id") || url.searchParams.get("supportId") || url.searchParams.get("support_id") || ""
-  );
-
-  if (!supportId) {
-    return json({ error: "missing_ticket_id" }, 400, withCors(request));
-  }
-
-  let record = await getCanonicalSupportRecord(env, supportId);
-  if (!record) {
-    try {
-      record = await syncSupportRecordFromClickUp(env, supportId);
-    } catch (_) {
-      record = null;
-    }
-  }
-
-  if (!record) {
-    return json({ error: "ticket_not_found" }, 404, withCors(request));
-  }
-
-  return json(
-    {
-      latestUpdate: record.latestUpdate || "",
-      ok: true,
-      status: record.status || "open / new",
-      supportId: record.supportId || supportId,
-      taskId: record.taskId || "",
-      updatedAt: record.updatedAt || null,
-    },
-    200,
-    withCors(request)
-  );
-}
-
-async function handleClickUpWebhook(request, env) {
-  const rawBody = await request.text();
-  const verified = await verifyClickUpWebhookSignature(env, request, rawBody);
-  if (!verified) {
-    return json({ error: "invalid_signature" }, 401, withCors(request));
-  }
-
-  const parsed = tryParseJson(rawBody);
-  if (!parsed.ok || !parsed.value) {
-    return json({ error: "invalid_json" }, 400, withCors(request));
-  }
-
-  const payload = parsed.value;
-  const event = String(payload && payload.event || "").trim();
-  const taskId = String(payload && payload.task_id || "").trim();
-  const listId = String(payload && payload.list_id || "").trim();
-
-  if (event !== "taskUpdated") {
-    return json({ ignored: true, ok: true, reason: "unsupported_event" }, 200, withCors(request));
-  }
-
-  if (!taskId) {
-    return json({ ignored: true, ok: true, reason: "missing_task_id" }, 200, withCors(request));
-  }
-
-  if (listId && listId !== CLICKUP_TRANSCRIPT.SUPPORT_LIST_ID) {
-    return json({ ignored: true, ok: true, reason: "wrong_list" }, 200, withCors(request));
-  }
-
-  const fullTask = await getClickUpTask(env, taskId);
-  const taskListId = String(fullTask && fullTask.list && fullTask.list.id || "").trim();
-  if (taskListId && taskListId !== CLICKUP_TRANSCRIPT.SUPPORT_LIST_ID) {
-    return json({ ignored: true, ok: true, reason: "wrong_task_list" }, 200, withCors(request));
-  }
-
-  const historyItem = Array.isArray(payload && payload.history_items) && payload.history_items.length ? payload.history_items[0] : null;
-  const synced = await upsertCanonicalSupportFromTask(env, fullTask, historyItem);
-
-  if (!synced.ok) {
-    return json({ ignored: true, ok: true, reason: synced.reason || "not_projectable" }, 200, withCors(request));
-  }
-
-  return json({ ok: true, supportId: synced.record.supportId, status: synced.record.status }, 200, withCors(request));
-}
-
-async function handleAssetReportRedirect(request, url, env) {
-  const reportId = (url.searchParams.get("r") || "").trim();
-  if (!reportId) return null;
-
-  return await handleShortReportLookup(request, env, url);
-}
-
-/*
- * Preview integration note:
- *
- * The blank preview happens when the UI opens /assets/report with no payload.
- * Normalize every preview URL through /transcript/report-link first so the
- * iframe always receives either a hash payload, query payload, or short link.
- */
 
 /* ------------------------------------------
- * Worker Entry
+ * Dev handlers
+ * ------------------------------------------ */
+
+async function handleDevLogin(request, env) {
+  if (request.method !== "GET") return methodNotAllowed(request, env);
+  if (!isDevEnabled(env)) return forbidden(request, env, "Dev routes are disabled");
+
+  const url = new URL(request.url);
+  const email = String(url.searchParams.get("email") || "").trim().toLowerCase();
+  const redirect = String(url.searchParams.get("redirect") || "/").trim();
+
+  if (!isValidEmail(email)) return badRequest(request, env, "email is required");
+  if (!isSafeRedirect(redirect)) return badRequest(request, env, "Invalid redirect (must be a relative path)");
+
+  const existingAccountId = getCookie(request, COOKIE_NAMES.accountId);
+  const accountId = String(existingAccountId || "").trim() || `acct_${crypto.randomUUID()}`;
+
+  await dbAccountEnsure(env, { accountId, email });
+
+  const sessionId = randomId("sess");
+  const session = {
+    accountId,
+    createdAt: nowIso(),
+    email,
+    expiresAt: asIso(Date.now() + SESSION_TTL_MS),
+    sessionId,
+  };
+
+  await r2PutJson(env, keySession(sessionId), session);
+
+  const appOrigin = String(env.TAXTOOLS_APP_ORIGIN || "https://taxtools.taxmonitor.pro").replace(/\/+$/g, "");
+  const location = `${appOrigin}${redirect}`;
+
+  const headers = new Headers({ Location: location });
+  for (const c of buildSessionCookies({ accountId, cookieDomain: cookieDomain(env), email, sessionId })) {
+    headers.append("Set-Cookie", c);
+  }
+
+  return new Response(null, { headers, status: 302 });
+}
+
+async function handleDevMint(request, env) {
+  if (request.method !== "GET") return methodNotAllowed(request, env);
+  if (!isDevEnabled(env)) return forbidden(request, env, "Dev routes are disabled");
+
+  const auth = await getAuthContext(request, env);
+  if (!auth.isAuthenticated || !auth.accountId) return unauthorized(request, env);
+
+  const url = new URL(request.url);
+  const amount = Number(url.searchParams.get("amount"));
+
+  if (!Number.isInteger(amount) || amount <= 0) {
+    return badRequest(request, env, "amount must be a positive integer");
+  }
+
+  await dbAccountEnsure(env, { accountId: auth.accountId, email: auth.email });
+
+  const now = nowIso();
+  const ledgerId = `dev:mint:${auth.accountId}:${crypto.randomUUID()}`;
+
+  await env.DB.prepare(
+    "INSERT INTO token_ledger (id, account_id, delta, reason, metadata_json, created_at) VALUES (?, ?, ?, ?, ?, ?)"
+  )
+    .bind(
+      ledgerId,
+      auth.accountId,
+      amount,
+      "dev_mint",
+      JSON.stringify({ amount, mintedAt: now }),
+      now
+    )
+    .run();
+
+  await env.DB.prepare("UPDATE accounts SET balance = balance + ?, updated_at = ? WHERE account_id = ?")
+    .bind(amount, now, auth.accountId)
+    .run();
+
+  const balance = await dbAccountGetBalance(env, auth.accountId);
+
+  return json(request, env, {
+    accountId: auth.accountId,
+    amount,
+    balance,
+    email: auth.email,
+    ledgerId,
+    ok: true,
+  }, 200);
+}
+
+/* ------------------------------------------
+ * Router
  * ------------------------------------------ */
 
 export default {
-  async fetch(request, env, ctx) {
-    const url = new URL(request.url);
+  async fetch(request, env) {
+    try {
+      const url = new URL(request.url);
 
-    if (url.pathname.startsWith("/api/transcripts/")) {
-      const pre = handleCorsPreflight(request);
-      if (pre) return pre;
+      if (request.method === "OPTIONS") return new Response(null, { headers: withCors(request, env), status: 204 });
+      if (!env.R2_TAXTOOLS) return json(request, env, { error: "server_misconfigured", message: "Missing R2_TAXTOOLS binding" }, 500);
+      if (!env.DB) return json(request, env, { error: "server_misconfigured", message: "Missing D1 binding DB" }, 500);
 
-      try {
-        if (request.method === "POST" && isPath(url, "/api/transcripts/magic-link/request")) {
-          return await handleTranscriptMagicLinkRequest(request, env);
-        }
+      const path = url.pathname === "/v1/arcade/tokens" ? "/v1/tokens/balance" : url.pathname;
 
-        if (request.method === "GET" && isPath(url, "/api/transcripts/magic-link/verify")) {
-          return await handleTranscriptMagicLinkVerify(request, url, env);
-        }
+      if (path === "/dev/login") return handleDevLogin(request, env);
+      if (path === "/dev/mint") return handleDevMint(request, env);
 
-        if (request.method === "GET" && isPath(url, "/api/transcripts/checkout/status")) {
-          return await handleGetTranscriptCheckoutStatus(request, url, env);
-        }
+$1      if (path === "/transcript/report") return handleShortReportLookup(request, env);
+      if (path === "/transcript/report-data") return handleGetTranscriptReportData(request, env);
+      if (path === "/transcript/report-link" && request.method === "GET") return handleGetTranscriptReportLink(request, env);
+      if (path === "/transcript/report-link" && request.method === "POST") return handlePostTranscriptReportLink(request, env);
+      if (path === "/v1/auth/complete") return handleAuthComplete(request, env);
+      if (path === "/v1/auth/me") return handleAuthMe(request, env);
+      if (path === "/v1/auth/logout") return handleAuthLogout(request, env);
+      if (path === "/v1/auth/start") return handleAuthStart(request, env);
+      if (path === "/v1/checkout/sessions") return handleCheckoutSessions(request, env);
+      if (path === "/v1/checkout/status") return handleCheckoutStatus(request, env);
+      if (path === "/v1/games/access") return handleGamesAccess(request, env);
+      if (path === "/v1/games/end") return handleGamesEnd(request, env);
+      if (path === "/v1/help/status") return handleHelpStatus(request, env);
+      if (path === "/v1/help/tickets") return handleHelpTickets(request, env);
+      if (path === "/v1/tokens/balance") return handleTokensBalance(request, env);
+      if (path === "/v1/tokens/spend") return handleTokensSpend(request, env);
+      if (path === "/v1/webhooks/paypal") return handlePayPalWebhook(request, env);
 
-        if (request.method === "GET" && isPath(url, "/api/transcripts/me")) {
-          return await handleGetTranscriptMe(request, env);
-        }
-
-        if (request.method === "GET" && isPath(url, "/api/transcripts/purchases")) {
-          return await handleGetTranscriptPurchases(request, url, env);
-        }
-
-        if (request.method === "POST" && isPath(url, "/api/transcripts/preview")) {
-          return await handleCreateTranscriptPreview(request, env, ctx);
-        }
-
-        if (request.method === "GET" && isPath(url, "/api/transcripts/reports")) {
-          return await handleGetTranscriptReports(request, url, env);
-        }
-
-        if (
-          request.method === "POST" &&
-          /^\/api\/transcripts\/report\/[^/]+\/print-complete$/.test(url.pathname)
-        ) {
-          return await handleTranscriptPrintComplete(request, url, env);
-        }
-
-        if (request.method === "POST" && isPath(url, "/api/transcripts/sign-out")) {
-          return await handleTranscriptSignOut(request);
-        }
-
-        return jsonError(request, 404, "not_found");
-      } catch (err) {
-        return jsonError(request, 500, "internal_error", String(err?.message || err));
-      }
+      return notFound(request, env);
+    } catch (err) {
+      return json(
+        request,
+        env,
+        { error: "internal_error", message: String(err?.message || err || "Unknown error") },
+        500
+      );
     }
-
-    if (url.pathname.startsWith("/transcript/")) {
-      const pre = handleCorsPreflight(request);
-      if (pre) return pre;
-
-      try {
-        if (request.method === "GET" && isPath(url, "/transcript/prices")) {
-          return await handleGetTranscriptPrices(request, env);
-        }
-
-        if (request.method === "POST" && isPath(url, "/transcript/checkout")) {
-          return await handleCreateTranscriptCheckout(request, env);
-        }
-
-        if (request.method === "GET" && isPath(url, "/transcript/tokens")) {
-          return await handleGetTranscriptTokens(request, url, env);
-        }
-
-        if (request.method === "POST" && isPath(url, "/transcript/credit")) {
-          return await handleCreditTranscriptTokens(request, env, ctx);
-        }
-
-        if (request.method === "POST" && isPath(url, "/transcript/consume")) {
-          return await handleConsumeTranscriptTokens(request, env, ctx);
-        }
-
-        if (request.method === "POST" && isPath(url, "/transcript/stripe/webhook")) {
-          return await handleTranscriptStripeWebhook(request, env, ctx);
-        }
-
-        if (request.method === "GET" && isPath(url, "/transcript/report-data")) {
-          return await handleGetTranscriptReportData(request, url, env);
-        }
-
-        return jsonError(request, 404, "not_found");
-      } catch (err) {
-        return jsonError(request, 500, "internal_error", String(err?.message || err));
-      }
-    }
-
-    if (isPath(url, "/transcript/report-link")) {
-      try {
-        if (request.method === "GET") {
-          return await handleGetTranscriptReportLink(request, url, env);
-        }
-
-        if (request.method === "POST") {
-          return await handlePostTranscriptReportLink(request, env);
-        }
-
-        return jsonError(request, 405, "method_not_allowed");
-      } catch (err) {
-        return jsonError(request, 500, "internal_error", String(err?.message || err));
-      }
-    }
-
-    if (request.method === "GET" && isPath(url, "/transcript/report")) {
-      try {
-        const redirectRes = await handleAssetReportRedirect(request, url, env);
-        if (redirectRes) return redirectRes;
-
-        return new Response("Invalid report link.", {
-          status: 400,
-          headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" },
-        });
-      } catch (err) {
-        return new Response("Unable to open this report link.", {
-          status: 500,
-          headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" },
-        });
-      }
-    }
-
-    if (request.method === "GET" && isPath(url, "/api/health")) {
-      return jsonResponse({ ok: true, service: "transcript-tax-monitor-pro-api" }, { status: 200 });
-    }
-
-    if (request.method === "GET" && isPath(url, "/v1/help/status")) {
-      try {
-        return await handleGetHelpStatus(request, url, env);
-      } catch (err) {
-        return jsonError(request, 500, "internal_error", String(err?.message || err));
-      }
-    }
-
-    if (request.method === "POST" && isPath(url, "/v1/help/tickets")) {
-      try {
-        return await handlePostHelpTickets(request, env);
-      } catch (err) {
-        return jsonError(request, 500, "internal_error", String(err?.message || err));
-      }
-    }
-
-    if (request.method === "OPTIONS" && isPath(url, CLICKUP_TRANSCRIPT.WEBHOOK_ROUTE)) {
-      return new Response(null, { status: 204, headers: withCors(request) });
-    }
-
-    if (request.method === "POST" && isPath(url, CLICKUP_TRANSCRIPT.WEBHOOK_ROUTE)) {
-      try {
-        return await handleClickUpWebhook(request, env);
-      } catch (err) {
-        return jsonError(request, 500, "internal_error", String(err?.message || err));
-      }
-    }
-
-    if (request.method === "OPTIONS" && isPath(url, "/forms/transcript/report-email")) {
-      return new Response("", { status: 204, headers: corsHeadersForRequest(request) });
-    }
-
-    if (isPath(url, "/forms/transcript/report-email")) {
-      try {
-        return await handleFormsTranscriptReportEmail(request, env, ctx);
-      } catch (err) {
-        return new Response(
-          JSON.stringify({ ok: false, error: "internal_error", details: String(err?.message || err) }),
-          {
-            status: 500,
-            headers: {
-              ...corsHeadersForRequest(request),
-              "Content-Type": "application/json; charset=utf-8",
-            },
-          }
-        );
-      }
-    }
-
-    return jsonResponse({ ok: false, error: "Not found" }, { status: 404 });
   },
 };
