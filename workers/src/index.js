@@ -156,17 +156,9 @@ async function getShortReportLink(env, reportId) {
   const stored = await resolveShortReportPayload(env, reportId);
   if (!stored || !stored.payload) return null;
 
-  const target = new URL("https://transcript.taxmonitor.pro/assets/report");
-
-  if (String(stored.payloadTransport || "hash") === "query") {
-    target.searchParams.set("data", String(stored.payload));
-  } else {
-    target.hash = String(stored.payload);
-  }
-
   return {
     reportId: String(reportId || "").trim(),
-    reportUrl: target.toString(),
+    reportUrl: `https://transcript.taxmonitor.pro/assets/report.html?reportId=${encodeURIComponent(String(reportId || "").trim())}`,
   };
 }
 
@@ -1853,12 +1845,8 @@ async function handleShortReportLookup(request, env, url) {
     });
   }
 
-  const target = new URL("https://transcript.taxmonitor.pro/assets/report");
-  if (String(stored.payloadTransport || "hash") === "query") {
-    target.searchParams.set("data", String(stored.payload));
-  } else {
-    target.hash = String(stored.payload);
-  }
+  const target = new URL("https://transcript.taxmonitor.pro/assets/report.html");
+  target.searchParams.set("reportId", reportId);
 
   return Response.redirect(target.toString(), 302);
 }
