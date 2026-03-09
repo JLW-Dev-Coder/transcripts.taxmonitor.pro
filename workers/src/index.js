@@ -2701,44 +2701,30 @@ export default {
           return await handleGetTranscriptReportData(request, url, env);
         }
 
+        if (request.method === "GET" && isPath(url, "/transcript/report-link")) {
+          return await handleGetTranscriptReportLink(request, url, env);
+        }
+
+        if (request.method === "POST" && isPath(url, "/transcript/report-link")) {
+          return await handlePostTranscriptReportLink(request, env);
+        }
+
+        if (request.method === "GET" && isPath(url, "/transcript/report")) {
+          const redirectRes = await handleAssetReportRedirect(request, url, env);
+          if (redirectRes) return redirectRes;
+
+          return new Response("Invalid report link.", {
+            status: 400,
+            headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" },
+          });
+        }
+
         return jsonError(request, 404, "not_found");
       } catch (err) {
         return jsonError(request, 500, "internal_error", String(err?.message || err));
       }
     }
 
-    if (isPath(url, "/transcript/report-link")) {
-      try {
-        if (request.method === "GET") {
-          return await handleGetTranscriptReportLink(request, url, env);
-        }
-
-        if (request.method === "POST") {
-          return await handlePostTranscriptReportLink(request, env);
-        }
-
-        return jsonError(request, 405, "method_not_allowed");
-      } catch (err) {
-        return jsonError(request, 500, "internal_error", String(err?.message || err));
-      }
-    }
-
-    if (request.method === "GET" && isPath(url, "/transcript/report")) {
-      try {
-        const redirectRes = await handleAssetReportRedirect(request, url, env);
-        if (redirectRes) return redirectRes;
-
-        return new Response("Invalid report link.", {
-          status: 400,
-          headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" },
-        });
-      } catch (err) {
-        return new Response("Unable to open this report link.", {
-          status: 500,
-          headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" },
-        });
-      }
-    }
 
     if (request.method === "GET" && isPath(url, "/api/health")) {
       return jsonResponse({ ok: true, service: "transcript-tax-monitor-pro-api" }, { status: 200 });
