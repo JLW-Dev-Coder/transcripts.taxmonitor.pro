@@ -1956,28 +1956,6 @@
 ').trim();
       }
 
-        const buffer = await file.arrayBuffer();
-        const pdf = await window.pdfjsLib.getDocument({ data: buffer }).promise;
-        const pages = [];
-
-        for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
-          const page = await pdf.getPage(pageNumber);
-          const text = await page.getTextContent();
-          const parts = [];
-
-          text.items.forEach(function (item) {
-            const str = String(item && item.str || '').trim();
-            if (str) parts.push(str);
-          });
-
-          pages.push(parts.join(' '));
-        }
-
-        return pages.join('
-
-').trim();
-      }
-
       function parseStructuredTranscript(rawText, fileName) {
         const text = String(rawText || '');
         const lower = text.toLowerCase();
