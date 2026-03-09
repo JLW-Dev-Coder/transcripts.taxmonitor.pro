@@ -1943,7 +1943,6 @@ export class TokenLedger {
   }
 }
 
-$1
 export default {
   async fetch(request, env) {
     try {
