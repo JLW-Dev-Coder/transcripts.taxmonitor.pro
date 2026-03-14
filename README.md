@@ -1,54 +1,56 @@
-# Transcript Tax Monitor (TTM)
+# Transcript Tax Monitor
 
 ## Table of Contents
 
-* Overview
-* Key Features
-* Architecture Overview
-* Ecosystem Integration
-* Repository Structure
-* Environment Setup
-* Deployment
-* Contracts or Data Model
-* Development Standards
-* Integrations
-* Security and Secrets
-* Contribution Guidelines
-* License
+* [Overview](#1-overview)
+* [Key Features](#2-key-features)
+* [Architecture Overview](#3-architecture-overview)
+* [Ecosystem Overview](#4-ecosystem-overview)
+* [Repository Structure](#5-repository-structure)
+* [Environment Setup](#6-environment-setup)
+* [Deployment](#7-deployment)
+* [Contracts or Data Model](#8-contracts-or-data-model)
+* [Development Standards](#9-development-standards)
+* [Integrations](#10-integrations)
+* [Security and Secrets](#11-security-and-secrets)
+* [Contribution Guidelines](#12-contribution-guidelines)
+* [License](#13-license)
 
 ---
 
 # Transcript Tax Monitor
 
-Transcript Tax Monitor (TTM) provides **automated IRS transcript diagnostics and analysis services** within the Tax Monitor ecosystem.
+Transcript Tax Monitor (TTM) is the **transcript diagnostics and analysis platform** within the Tax Monitor ecosystem.
 
-The system allows taxpayers and tax professionals to run structured analysis against IRS transcript data to detect patterns such as:
+It provides automated tools that analyze IRS transcript data to identify potential compliance issues, historical activity patterns, and tax resolution signals.
 
-* collection activity indicators
-* filing gaps
-* account balance signals
-* enforcement risk patterns
+The platform is designed for:
 
-The platform is built using a **contract-driven architecture** and operates through **Cloudflare Workers with R2 as canonical storage**, consistent with the architecture used across the ecosystem infrastructure. 
+* taxpayers reviewing their IRS activity
+* tax professionals diagnosing client transcript data
+* professionals providing proactive monitoring services
 
-Transcript processing is executed through **token-based access**, ensuring that analysis resources are allocated through controlled execution.
+TTM operates as a **diagnostic engine**, not a tax preparation system.
+
+The system is built using a **contract-driven architecture running on Cloudflare Workers**, with **R2 storage as the canonical data layer**.
 
 ---
 
 # 1. Overview
 
-Transcript Tax Monitor exists to provide **structured transcript interpretation and diagnostics**.
+Transcript Tax Monitor enables automated analysis of IRS transcript information.
 
-Many taxpayers and professionals can obtain transcripts but lack tooling to interpret them effectively. This system bridges that gap by transforming transcript data into structured diagnostic insights.
+The platform allows users to:
 
-The system supports:
+* upload or submit transcript data
+* run automated diagnostic analysis
+* retrieve structured analysis results
+* detect common compliance issues
+* identify potential resolution paths
 
-* transcript job creation
-* automated transcript analysis
-* result retrieval and reporting
-* token-verified execution
+Rather than replacing professional tax advice, the platform provides **structured diagnostic insight** that helps professionals and taxpayers better understand IRS account activity.
 
-Transcript analysis acts as a **technical diagnostic layer** that often precedes professional engagement through the ecosystem directory.
+The system focuses on **analysis, monitoring signals, and structured interpretation of transcript data**.
 
 ---
 
@@ -57,72 +59,70 @@ Transcript analysis acts as a **technical diagnostic layer** that often precedes
 Major capabilities include:
 
 * automated transcript analysis
-* contract-validated API requests
-* transcript job processing
-* structured analysis results
-* token-based transcript execution
-* R2-based canonical storage
-* Worker-based execution pipeline
+* contract-driven API validation
+* transcript diagnostic reports
+* token-based transcript processing
+* job-based processing pipeline
+* R2 canonical storage for analysis results
+* integration with professional infrastructure through Virtual Launch Pro
+* integration with Tax Monitor professional discovery
 
-The system focuses on diagnostics and insight rather than tax advice or representation.
+The system allows transcript analysis to operate **independently while integrating with the broader ecosystem**.
 
 ---
 
 # 3. Architecture Overview
 
-Transcript Tax Monitor follows the **worker-centric architecture model used across the ecosystem**.
+Transcript Tax Monitor uses a **worker-based architecture** where all API logic runs on Cloudflare Workers.
 
-Core architectural principles include:
+Core architecture principles include:
 
-* contract-driven APIs
-* stateless Worker execution
-* canonical data storage in R2
-* token-verified tool execution
-* deny-by-default routing
+* canonical storage in R2
+* contract-driven request validation
+* stateless worker execution
+* deny-by-default API routing
+* job-based processing for transcript analysis
 
-Primary system components:
+Primary system components include:
 
-| Component            | Role                                             |
-| -------------------- | ------------------------------------------------ |
-| Cloudflare Workers   | execute transcript analysis API logic            |
-| R2 Storage           | canonical storage of transcript jobs and results |
-| Token APIs           | verify transcript tokens before execution        |
-| Static Web Interface | transcript submission and result viewing         |
+* Cloudflare Workers for API execution
+* R2 for canonical storage
+* D1 database for query indexes
+* static web interfaces for tool access
+* token verification via Virtual Launch Pro APIs
 
-All write operations are validated through API contracts before canonical storage updates occur.
+All analysis requests follow a **validated processing pipeline** before results are generated.
 
 ---
 
-# 4. Ecosystem Integration
+# 4. Ecosystem Overview
 
-Transcript Tax Monitor is one of four interconnected platforms that form the broader ecosystem.
+Transcript Tax Monitor is part of the **four-platform tax infrastructure ecosystem**.
 
-| Platform               | Role                                          |
-| ---------------------- | --------------------------------------------- |
-| Tax Monitor Pro        | taxpayer discovery and professional directory |
-| Tax Tools Arcade       | interactive tax education tools               |
-| Transcript Tax Monitor | transcript diagnostics and analysis           |
-| Virtual Launch Pro     | professional infrastructure and memberships   |
+Each platform performs a specific role.
 
-These platforms interact through Cloudflare Worker APIs while maintaining separate responsibilities.
+| Platform               | Role                                           |
+| ---------------------- | ---------------------------------------------- |
+| Tax Monitor Pro        | professional discovery and monitoring services |
+| Tax Tools Arcade       | taxpayer education and discovery tools         |
+| Transcript Tax Monitor | transcript diagnostics                         |
+| Virtual Launch Pro     | professional infrastructure platform           |
 
-Typical ecosystem flow:
+The ecosystem functions as a discovery and service pipeline.
 
 ```
 Tax Tools Arcade
-→ attracts discovery traffic
-
-Transcript Tax Monitor
-→ performs transcript diagnostics
-
-Tax Monitor Pro
-→ connects taxpayers with professionals
-
-Virtual Launch Pro
-→ manages professional infrastructure
+→ Transcript Tax Monitor
+→ Tax Monitor Pro
+→ Virtual Launch Pro
 ```
 
-Virtual Launch Pro acts as the **infrastructure layer for membership systems and professional services across the ecosystem**. 
+This flow allows taxpayers to:
+
+1. learn about tax issues
+2. analyze transcript data
+3. discover professionals
+4. connect with infrastructure supporting those professionals
 
 ---
 
@@ -145,14 +145,14 @@ Directory descriptions:
 | Directory    | Purpose                              |
 | ------------ | ------------------------------------ |
 | `/app`       | authenticated application interfaces |
-| `/assets`    | shared media and visual assets       |
+| `/assets`    | shared design assets and scripts     |
 | `/contracts` | JSON API contracts                   |
-| `/pages`     | onboarding and workflow pages        |
+| `/pages`     | workflow and tool execution pages    |
 | `/partials`  | reusable UI components               |
 | `/site`      | public marketing pages               |
 | `/workers`   | Cloudflare Worker APIs               |
 
-Worker APIs implement transcript job processing and results retrieval.
+This structure separates **UI layers, contracts, and API logic**.
 
 ---
 
@@ -164,21 +164,26 @@ Required software:
 * Node.js
 * Wrangler CLI
 
-Typical setup process:
+Setup process:
+
+1. clone the repository
+2. install dependencies
+3. configure environment variables
+4. run the worker locally
+
+Example local development command:
 
 ```
-git clone <repository>
-npm install
 wrangler dev
 ```
 
-Development environments should mirror production configuration where possible.
+This launches the Worker environment for testing API routes locally.
 
 ---
 
 # 7. Deployment
 
-Deployment is performed using **Cloudflare Workers**.
+Deployment is handled using **Cloudflare Workers**.
 
 Deployment command:
 
@@ -186,160 +191,148 @@ Deployment command:
 wrangler deploy
 ```
 
-Worker configuration is defined in `wrangler.toml` and includes:
+Configuration is defined in:
+
+```
+wrangler.toml
+```
+
+Typical configuration includes:
 
 * compatibility date
 * R2 bucket bindings
+* D1 database bindings
 * environment variables
-* Worker route mappings
+
+Workers deploy globally through Cloudflare's edge network.
 
 ---
 
 # 8. Contracts or Data Model
 
-Transcript Tax Monitor uses **contract-driven API validation**.
+Transcript Tax Monitor uses **contract-driven APIs**.
 
-Each request must match a defined contract before execution.
+Contracts define the relationship between:
+
+* UI pages
+* API routes
+* R2 storage objects
+* D1 query indexes
 
 Typical request pipeline:
 
-```
 1 request received
-2 contract validation
-3 transcript job created
-4 canonical record stored in R2
-5 analysis executed
+2 request validated against contract
+3 analysis job created
+4 canonical job record written to R2
+5 transcript processed
 6 result stored in R2
-7 response returned
-```
+7 result returned to client
 
 ---
 
-## Canonical Storage (R2)
+## Canonical Storage
 
-Transcript canonical objects are stored using structured paths.
+Example R2 storage structure:
 
 ```
 /r2/transcript_jobs/{job_id}.json
 /r2/transcript_results/{result_id}.json
 ```
 
----
-
-## Example Transcript Job
+Example job record:
 
 ```
 {
-  "job_id": "job_39284",
-  "account_id": "acct_1042",
+  "job_id": "job_87231",
+  "account_id": "acct_43822",
   "status": "processing",
-  "created_at": "2026-03-13T18:00:00Z"
+  "created_at": "2026-03-12T18:10:00Z"
 }
 ```
 
----
-
-## Example Transcript Result
+Example result record:
 
 ```
 {
-  "result_id": "res_9821",
-  "job_id": "job_39284",
-  "analysis_complete": true,
-  "issues_detected": [
-    "collection_activity",
-    "potential_unfiled_return"
+  "result_id": "result_87231",
+  "job_id": "job_87231",
+  "analysis_summary": "...",
+  "flags": [
+    "unfiled_year",
+    "collection_activity"
   ]
 }
 ```
 
----
-
-# Worker Routes
-
-### Transcript Jobs
-
-```
-GET  /v1/transcripts/jobs/{job_id}
-POST /v1/transcripts/analyze
-```
-
-Purpose:
-
-* create transcript analysis jobs
-* retrieve job status
-
----
-
-### Transcript Results
-
-```
-GET /v1/transcripts/results/{result_id}
-```
-
-Purpose:
-
-* retrieve transcript analysis results
-
----
-
-### Token Verification
-
-Transcript analysis requires tokens.
-
-```
-GET /vlp/v1/tokens/{account_id}/transcripts
-```
-
-Purpose:
-
-* verify transcript token balances
-* authorize analysis execution
+R2 records act as the **authoritative source of transcript analysis results**.
 
 ---
 
 # 9. Development Standards
 
-Development standards include:
+Development standards ensure consistency across all ecosystem services.
 
-* alphabetical route documentation
+Standards include:
+
+* alphabetical API route documentation
 * contract-first API design
-* canonical Worker header comments
+* canonical Worker comment headers
 * deny-by-default routing
+* R2 as authoritative storage layer
 
-These standards maintain consistency across Workers and services within the ecosystem.
+Workers should follow the **canonical Worker header format** used across repositories. 
+
+This standard ensures developers can quickly understand:
+
+* available routes
+* storage rules
+* integration constraints
 
 ---
 
 # 10. Integrations
 
-External integrations include:
+Transcript Tax Monitor integrates with several ecosystem services.
 
-* Cloudflare Workers
-* Cloudflare R2
-* Virtual Launch Pro token APIs
+Primary integrations:
 
-Token verification must occur before transcript analysis begins.
+* Cloudflare Workers infrastructure
+* Cloudflare R2 storage
+* Cloudflare D1 database
+* Virtual Launch Pro token verification APIs
+* Tax Monitor Pro discovery platform
+
+Token verification is required before transcript analysis can run.
+
+Example verification request:
+
+```
+GET /vlp/v1/tokens/{account_id}/transcripts
+```
 
 ---
 
 # 11. Security and Secrets
 
-Secrets must be managed using Wrangler.
+Secrets must never be committed to the repository.
 
-Example:
+Sensitive values are stored using **Wrangler secret management**.
+
+Typical secrets include:
+
+* API tokens
+* OAuth secrets
+* webhook signing secrets
+* service credentials
+
+Example secret command:
 
 ```
-wrangler secret put SECRET_NAME
+wrangler secret put API_KEY
 ```
 
-Secrets include:
-
-* API keys
-* service tokens
-* webhook secrets
-
-Secrets must never be committed to source control.
+Secrets are injected at runtime through the Worker environment.
 
 ---
 
@@ -347,21 +340,23 @@ Secrets must never be committed to source control.
 
 Recommended workflow:
 
-1. create a feature branch
-2. implement changes
-3. test locally
-4. submit pull request
+1 create a branch
+2 implement changes
+3 test locally
+4 open a pull request
 
-Changes should preserve:
+All contributions should:
 
-* contract compatibility
-* API route stability
-* canonical storage structure
+* follow contract-driven architecture
+* avoid breaking API contracts
+* preserve canonical storage rules
+
+Changes affecting Worker routes should update documentation accordingly.
 
 ---
 
 # 13. License
 
-This repository is proprietary software maintained as part of the Tax Monitor ecosystem.
+This repository is proprietary software owned and maintained by Virtual Launch Pro.
 
-Unauthorized redistribution is not permitted.
+Unauthorized redistribution or modification is not permitted.
