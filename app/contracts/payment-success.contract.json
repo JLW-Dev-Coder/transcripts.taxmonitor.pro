@@ -26,7 +26,7 @@
     "endpoint": "/api/transcripts/checkout/status",
     "method": "GET",
     "query": [
-      "sessionId",
+      "session_id",
       "tokenId"
     ]
   },
@@ -36,7 +36,7 @@
   "request": {
     "additionalProperties": false,
     "properties": {
-      "sessionId": {
+      "session_id": {
         "minLength": 1,
         "type": "string"
       },
@@ -46,7 +46,7 @@
       }
     },
     "required": [
-      "sessionId"
+      "session_id"
     ],
     "type": "object"
   },
@@ -66,7 +66,7 @@
       "productLabel": "Transcript credits",
       "quantity": 1,
       "receiptNumber": "rcpt_123",
-      "sessionId": "{query.sessionId}",
+      "sessionId": "{query.session_id}",
       "tokenId": "{query.tokenId}"
     }
   },

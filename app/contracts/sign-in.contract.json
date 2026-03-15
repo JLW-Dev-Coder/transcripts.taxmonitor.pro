@@ -24,18 +24,9 @@
   },
   "delivery": {
     "endpoint": "/api/transcripts/magic-link/request",
-    "method": "POST",
-    "receiptKeyPattern": "receipts/ttmp/auth/magic-links/{eventId}.json",
-    "receiptSource": "ttmp_magic_link_request"
+    "method": "POST"
   },
   "effects": {
-    "eventIdFrom": "payload.eventId",
-    "receiptAppend": {
-      "to": "receipts/ttmp/auth/magic-links/{eventId}.json"
-    },
-    "writeOrder": [
-      "receiptAppend"
-    ],
     "writes": [
       "auth_requests"
     ]
@@ -47,10 +38,6 @@
         "format": "email",
         "type": "string"
       },
-      "eventId": {
-        "minLength": 1,
-        "type": "string"
-      },
       "redirect": {
         "minLength": 1,
         "type": "string"
@@ -58,7 +45,6 @@
     },
     "required": [
       "email",
-      "eventId",
       "redirect"
     ],
     "type": "object"
@@ -69,9 +55,7 @@
       "ok": false
     },
     "success": {
-      "eventId": "{payload.eventId}",
-      "ok": true,
-      "status": "sent"
+      "ok": true
     }
   },
   "schema": {
