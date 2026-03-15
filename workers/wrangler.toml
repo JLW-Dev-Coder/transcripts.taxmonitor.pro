@@ -12,14 +12,6 @@ routes = [
 [observability.logs]
 enabled = true
 
-[[durable_objects.bindings]]
-class_name = "TokenLedger"
-name = "TOKEN_LEDGER"
-
-[[migrations]]
-tag = "v1"
-new_sqlite_classes = ["TokenLedger"]
-
 [[kv_namespaces]]
 binding = "KV_TRANSCRIPT"
 id = "cf03ea6f9e934bd59d301192352f0489"
