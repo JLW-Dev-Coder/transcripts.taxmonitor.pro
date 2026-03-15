@@ -1,8 +1,4 @@
 /* styles\site.css */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 :root {
   --color-midnight: #0b0a14;
   --color-gold: #a855f7;
