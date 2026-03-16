@@ -1,11 +1,9 @@
-<!-- app/dashboard.html -->
-<!doctype html>
+﻿<!doctype html>
 <html lang="en" class="h-full">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Transcript.Tax Monitor Pro — App Dashboard</title>
-
+  <title>Transcript.Tax Monitor Pro — Dashboard</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -15,1016 +13,235 @@
       window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     }
   </script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['DM Sans', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial']
-          }
-        }
-      }
-    };
-  </script>
-
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles/site.css?v=1" />
-  <link rel="apple-touch-icon" href="/assets/favicon.ico" />
-  <link rel="icon" href="/assets/favicon.ico" sizes="any" />
-  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg" />
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
-  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
-
   <style>
     :root {
       --tm-bg: #020617;
-      --tm-bg-soft: #0f172a;
       --tm-card: linear-gradient(180deg, rgba(9, 14, 32, 0.96) 0%, rgba(17, 24, 39, 0.98) 52%, rgba(30, 41, 59, 0.98) 100%);
-      --tm-card-strong: linear-gradient(180deg, rgba(2, 6, 23, 0.98) 0%, rgba(15, 23, 42, 1) 100%);
-      --tm-line: rgba(255, 255, 255, 0.07);
-      --tm-line-strong: rgba(139, 92, 246, 0.24);
-      --tm-gold: #d4a017;
-      --tm-gold-soft: #f5d76e;
-      --tm-navy: #020617;
-      --tm-sage: #6b8e6f;
-      --tm-cream: #f8f4e9;
+      --tm-shadow: 0 28px 72px rgba(2, 8, 23, 0.52);
       --tm-text: #f8fafc;
-      --tm-text-soft: #dbe4f0;
       --tm-text-muted: #94a3b8;
+      --tm-text-soft: #dbe4f0;
       --tm-purple: #8b5cf6;
       --tm-purple-soft: #c4b5fd;
-      --tm-indigo: #6366f1;
-      --tm-shadow: 0 28px 72px rgba(2, 8, 23, 0.52);
-      --tm-glow: 0 20px 54px rgba(99, 102, 241, 0.16);
-      --tm-radius: 18px;
     }
-
-    * { box-sizing: border-box; }
+    * { box-sizing:border-box; }
     html, body {
-      margin: 0;
-      color: var(--tm-text);
-      font-family: 'Sora', 'DM Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      margin:0;
+      min-height:100%;
       background:
         radial-gradient(circle at 14% 16%, rgba(139, 92, 246, 0.16), transparent 22%),
         radial-gradient(circle at 82% 10%, rgba(99, 102, 241, 0.16), transparent 20%),
         radial-gradient(circle at 50% 120%, rgba(76, 29, 149, 0.18), transparent 34%),
         linear-gradient(180deg, #020617 0%, #081121 34%, #0f172a 68%, #172554 100%);
+      color:var(--tm-text);
+      font-family:'Sora','DM Sans',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
     }
-
-    .app-shell {
-      display: flex;
-      min-height: 100vh;
-      position: relative;
-    }
-
-    .button-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      padding-top: 10px;
-    }
-
-    .detail-list {
-      display: grid;
-      gap: 0;
-    }
-
-    .detail-label {
-      color: var(--tm-text-muted);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .detail-row {
-      border-bottom: 1px solid rgba(148, 163, 184, 0.10);
-      display: grid;
-      gap: 6px;
-      padding: 12px 0;
-    }
-
-    .detail-row:last-child {
-      border-bottom: 0;
-    }
-
-    .detail-value {
-      color: var(--tm-text);
-      font-size: 14px;
-      font-weight: 700;
-      word-break: break-word;
-    }
-
-    .empty-state {
-      color: var(--tm-text-muted);
-      font-size: 14px;
-      padding: 12px 0 0;
-    }
-
-    .pill {
-      align-items: center;
-      backdrop-filter: blur(10px);
-      border-radius: 999px;
-      display: inline-flex;
-      font-size: 12px;
-      font-weight: 700;
-      min-height: 28px;
-      padding: 0 10px;
-    }
-
-    .pill-pending {
-      background: rgba(168, 85, 247, 0.14);
-      border: 1px solid rgba(168, 85, 247, 0.24);
-      color: #e9d5ff;
-    }
-
-    .pill-printed {
-      background: rgba(107, 142, 111, 0.18);
-      border: 1px solid rgba(107, 142, 111, 0.26);
-      color: #dcfce7;
-    }
-
-    .section-header {
-      align-items: flex-start;
-      display: flex;
-      gap: 16px;
-      justify-content: space-between;
-    }
-
-    .table-controls {
-      align-items: end;
-      display: grid;
-      gap: 12px;
-      grid-template-columns: minmax(0, 1fr) repeat(2, minmax(180px, 220px));
-      margin-top: 18px;
-    }
-
-    .table-filter-label {
-      color: var(--tm-text-muted);
-      display: block;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-    }
-
-    .table-wrap {
-      margin-top: 16px;
-      overflow-x: auto;
-    }
-
-    .report-label-input {
-      background: rgba(15, 23, 42, 0.88);
-      border: 1px solid rgba(168, 85, 247, 0.18);
-      border-radius: 10px;
-      color: var(--tm-text);
-      font-family: inherit;
-      font-size: 12px;
-      min-width: 160px;
-      outline: none;
-      padding: 8px 10px;
-    }
-
-    .report-label-input:focus,
-    .parser-input:focus {
-      border-color: var(--tm-purple);
-      box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.10), 0 0 22px rgba(168, 85, 247, 0.16);
-    }
-
-    .table-meta-row {
-      align-items: center;
-      color: var(--tm-text-muted);
-      display: flex;
-      font-size: 12px;
-      gap: 12px;
-      justify-content: space-between;
-      margin-top: 12px;
-    }
-
-    table {
-      border-collapse: collapse;
-      width: 100%;
-    }
-
-    thead th {
-      color: var(--tm-text-muted);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      padding: 12px;
-      text-align: left;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-
-    tbody td {
-      border-top: 1px solid rgba(148, 163, 184, 0.10);
-      color: var(--tm-text-soft);
-      font-size: 14px;
-      padding: 12px;
-      vertical-align: middle;
-      white-space: nowrap;
-    }
-
+    .app-shell { display:flex; min-height:100vh; }
     .sidebar {
       backdrop-filter: blur(20px);
       background: linear-gradient(180deg, rgba(2, 6, 23, 0.98) 0%, rgba(15, 23, 42, 0.98) 46%, rgba(49, 46, 129, 0.94) 100%);
-      border-right: 1px solid rgba(255, 255, 255, 0.08);
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow-y: auto;
-      padding: 22px 0;
-      position: sticky;
-      top: 0;
-      width: 270px;
-      z-index: 2;
+      border-right:1px solid rgba(255,255,255,0.08);
+      display:flex;
+      flex-direction:column;
+      height:100vh;
+      overflow-y:auto;
+      padding:22px 0;
+      position:sticky;
+      top:0;
+      width:270px;
     }
-
-    .main-shell {
-      display: flex;
-      flex: 1;
-      flex-direction: column;
-      min-width: 0;
-      position: relative;
-      z-index: 1;
-    }
-
+    .main-shell { display:flex; flex:1; flex-direction:column; min-width:0; }
     .topbar {
       backdrop-filter: blur(20px);
       background:
         radial-gradient(circle at top left, rgba(139, 92, 246, 0.14), transparent 32%),
         radial-gradient(circle at top right, rgba(99, 102, 241, 0.10), transparent 28%),
         linear-gradient(180deg, rgba(2, 6, 23, 0.94) 0%, rgba(15, 23, 42, 0.90) 100%);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      display: block;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      position:sticky;
+      top:0;
+      z-index:10;
     }
-
-    .topbar-inner,
-    .workspace-content,
-    .footer-inner {
-      margin: 0 auto;
-      max-width: 1440px;
-      width: 100%;
+    .workspace-content { margin:0 auto; max-width:1440px; padding:28px; width:100%; }
+    .parser-card-shell { margin:0 auto; max-width:1265px; width:100%; }
+    .parser-card-body { padding:28px; }
+    .parser-hero { margin:0 auto 26px; max-width:720px; text-align:center; }
+    .parser-hero h2 { font-size:32px; font-weight:800; letter-spacing:-0.03em; line-height:1.1; margin:0 0 12px; }
+    .parser-hero p { color:var(--tm-text-soft); font-size:15px; line-height:1.75; margin:0; }
+    .parser-steps { display:flex; gap:0; margin-bottom:28px; overflow-x:auto; width:100%; }
+    .parser-step {
+      align-items:center;
+      background:transparent;
+      border:0;
+      border-bottom:3px solid transparent;
+      color:var(--tm-text-soft);
+      cursor:pointer;
+      display:flex;
+      flex:1;
+      font-family:inherit;
+      font-size:14px;
+      font-weight:600;
+      gap:12px;
+      justify-content:center;
+      padding:18px 24px;
+      white-space:nowrap;
     }
-
-    .topbar-inner {
-      align-items: center;
-      display: flex;
-      gap: 16px;
-      justify-content: space-between;
-      padding: 20px 28px;
+    .parser-step.active { border-bottom-color:var(--tm-purple); color:var(--tm-text); }
+    .parser-step-badge {
+      align-items:center;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.20) 0%, rgba(99, 102, 241, 0.14) 100%);
+      border:1px solid rgba(139, 92, 246, 0.24);
+      border-radius:999px;
+      color:#f3e8ff;
+      display:inline-flex;
+      flex-shrink:0;
+      font-size:14px;
+      font-weight:800;
+      height:36px;
+      justify-content:center;
+      width:36px;
     }
-
-    .topbar-title {
-      color: var(--tm-text);
-      font-size: 24px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin: 0 0 4px;
+    .parser-step-title { font-size:16px; font-weight:700; margin:0 0 4px; }
+    .parser-step-copy, .parser-note { color:var(--tm-text-muted); font-size:12px; line-height:1.6; margin:0; }
+    .parser-section { border-bottom:1px solid rgba(255,255,255,0.08); display:none; margin-bottom:28px; padding:0 0 28px; }
+    .parser-section.active { display:block; }
+    .parser-form-label { color:var(--tm-text-soft); display:block; font-size:13px; font-weight:600; margin-bottom:10px; }
+    .parser-input {
+      width:100%;
+      background: rgba(9, 14, 32, 0.82);
+      border:1px solid rgba(255,255,255,0.09);
+      border-radius:14px;
+      color:var(--tm-text);
+      font-family:inherit;
+      font-size:14px;
+      line-height:1.5;
+      outline:none;
+      padding:14px 16px;
     }
-
-    .topbar-desc {
-      color: var(--tm-text-muted);
-      font-size: 13px;
-      margin: 0;
+    .parser-balance-row, .parser-email-grid {
+      align-items:end;
+      display:grid;
+      gap:14px;
+      grid-template-columns:minmax(0, 1fr) auto;
     }
-
-    .topbar-actions {
-      align-items: center;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+    .parser-status-box, .parser-info-box, .parser-output-box {
+      background: rgba(9, 14, 32, 0.78);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:18px;
+      padding:16px 18px;
     }
-
+    .parser-balance-value { color:#f5d0fe; font-size:18px; font-weight:800; margin-left:8px; }
+    .logo-preview.hidden, .hidden { display:none !important; }
+    .logo-actions, .button-row { display:flex; flex-wrap:wrap; gap:10px; }
+    .logo-preview {
+      align-items:center;
+      background: rgba(9, 14, 32, 0.74);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:16px;
+      display:flex;
+      gap:14px;
+      margin-top:14px;
+      min-height:88px;
+      padding:12px 14px;
+    }
+    .logo-preview-image {
+      background: rgba(255,255,255,0.04);
+      border:1px solid rgba(148, 163, 184, 0.16);
+      border-radius:14px;
+      flex-shrink:0;
+      height:60px;
+      object-fit:contain;
+      padding:6px;
+      width:60px;
+    }
+    .parser-upload-zone {
+      background: rgba(9, 14, 32, 0.66);
+      border:2px dashed rgba(139, 92, 246, 0.36);
+      border-radius:22px;
+      cursor:pointer;
+      padding:34px 24px;
+      text-align:center;
+    }
     .btn {
-      align-items: center;
-      border: 1px solid transparent;
-      border-radius: 12px;
-      cursor: pointer;
-      display: inline-flex;
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: 700;
-      gap: 8px;
-      justify-content: center;
-      min-height: 42px;
-      padding: 0 16px;
-      text-decoration: none;
-      transition: all 180ms ease;
-      white-space: nowrap;
+      align-items:center;
+      border:1px solid transparent;
+      border-radius:12px;
+      cursor:pointer;
+      display:inline-flex;
+      font-family:inherit;
+      font-size:13px;
+      font-weight:700;
+      gap:8px;
+      justify-content:center;
+      min-height:42px;
+      padding:0 16px;
+      text-decoration:none;
+      white-space:nowrap;
     }
-
-    .btn:hover {
-      transform: translateY(-1px);
-    }
-
     .btn-primary {
       background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 46%, #4338ca 100%);
       box-shadow: 0 16px 34px rgba(76, 29, 149, 0.34);
       color: white;
     }
-
-    .btn-primary:hover {
-      box-shadow: 0 20px 44px rgba(67, 56, 202, 0.36);
-    }
-
     .btn-secondary {
       background: rgba(9, 14, 32, 0.84);
       border-color: rgba(139, 92, 246, 0.18);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
       color: var(--tm-text);
     }
-
-    .btn-secondary:hover {
-      background: rgba(17, 24, 39, 0.94);
-      border-color: rgba(139, 92, 246, 0.30);
-    }
-
     .btn-danger {
       background: rgba(127, 29, 29, 0.22);
       border-color: rgba(248, 113, 113, 0.22);
       color: #fecaca;
     }
-
-    .workspace {
-      display: flex;
-      flex: 1;
-      flex-direction: column;
-      min-width: 0;
-    }
-
-    .workspace-tabs {
-      backdrop-filter: blur(16px);
-      background: rgba(2, 6, 23, 0.74);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      display: flex;
-      gap: 0;
-      padding: 0;
-      position: sticky;
-      top: 81px;
-      width: 100%;
-      z-index: 9;
-    }
-
-    .workspace-tab {
-      align-items: center;
-      background: transparent;
-      border: 0;
-      border-bottom: 3px solid transparent;
-      color: var(--tm-text-soft);
-      cursor: pointer;
-      display: flex;
-      flex: 1;
-      font-family: inherit;
-      font-size: 14px;
-      font-weight: 600;
-      gap: 8px;
-      justify-content: center;
-      padding: 16px 24px;
-      text-decoration: none;
-      transition: 180ms ease;
-      white-space: nowrap;
-    }
-
-    .workspace-tab:hover {
-      background: rgba(139, 92, 246, 0.10);
-      color: var(--tm-text);
-    }
-
-    .workspace-tab.active {
-      border-bottom-color: var(--tm-purple);
-      color: white;
-    }
-
-    .workspace-tab svg {
-      flex-shrink: 0;
-      height: 18px;
-      width: 18px;
-    }
-
-    .workspace-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 28px;
-    }
-
-    .page {
-      display: none;
-    }
-
-    .page.active {
-      display: block;
-    }
-
-    .stack {
-      display: grid;
-      gap: 24px;
-    }
-
-    .account-grid {
-      align-items: start;
-      display: grid;
-      gap: 24px;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .account-grid-column {
-      display: grid;
-      gap: 24px;
-    }
-
-    .account-icon {
-      align-items: center;
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.18) 0%, rgba(99, 102, 241, 0.14) 100%);
-      border: 1px solid rgba(139, 92, 246, 0.24);
-      border-radius: 16px;
-      color: var(--tm-purple-soft);
-      display: inline-flex;
-      height: 52px;
-      justify-content: center;
-      margin-bottom: 16px;
-      width: 52px;
-    }
-
-    .account-icon svg {
-      height: 24px;
-      width: 24px;
-    }
-
-    .account-membership-list {
-      display: grid;
-      gap: 14px;
-      margin-top: 18px;
-    }
-
-    .account-membership-item {
-      background: rgba(15, 23, 42, 0.56);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 16px;
-      display: grid;
-      gap: 8px;
-      padding: 16px;
-    }
-
-    .account-membership-top {
-      align-items: center;
-      display: flex;
-      gap: 12px;
-      justify-content: space-between;
-    }
-
-    .account-membership-title {
-      color: var(--tm-text);
-      font-size: 15px;
-      font-weight: 700;
-      margin: 0;
-    }
-
-    .account-membership-meta {
-      color: var(--tm-text-muted);
-      display: grid;
-      gap: 6px;
-      font-size: 13px;
-    }
-
-    .account-action-copy {
-      color: var(--tm-text-soft);
-      font-size: 14px;
-      line-height: 1.7;
-      margin: 0 0 18px;
-    }
-
-    .card {
-      background: var(--tm-card);
-      backdrop-filter: blur(18px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: var(--tm-radius);
-      box-shadow: var(--tm-shadow);
-      overflow: hidden;
-      position: relative;
-    }
-
-    .card::before {
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.76), rgba(67, 56, 202, 0.70), rgba(255, 255, 255, 0.10));
-      border-radius: inherit;
-      content: '';
-      inset: 0;
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      mask-composite: exclude;
-      opacity: 0.32;
-      padding: 1px;
-      pointer-events: none;
-      position: absolute;
-    }
-
-    .card-body {
-      padding: 24px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .card-title {
-      color: var(--tm-text);
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin: 0 0 8px;
-    }
-
-    .card-desc {
-      color: var(--tm-text-muted);
-      font-size: 13px;
-      line-height: 1.7;
-      margin: 0;
-    }
-
-    .support-links {
-      display: grid;
-      gap: 12px;
-      margin-top: 18px;
-    }
-
-    .support-link {
-      align-items: center;
-      background: rgba(9, 14, 32, 0.78);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      color: var(--tm-text-soft);
-      display: flex;
-      justify-content: space-between;
-      padding: 14px 16px;
-      text-decoration: none;
-      transition: 180ms ease;
-    }
-
-    .support-link:hover {
-      background: rgba(17, 24, 39, 0.94);
-      border-color: rgba(139, 92, 246, 0.28);
-      color: var(--tm-text);
-      transform: translateY(-1px);
-    }
-
-    .support-link span:last-child {
-      color: var(--tm-purple-soft);
-      font-size: 16px;
-      font-weight: 700;
-      line-height: 1;
-    }
-
-    .parser-card-shell {
-      margin: 0 auto;
-      max-width: 1265px;
-      width: 100%;
-      position: relative;
-    }
-
-    .parser-card-body {
-      padding: 28px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .parser-hero {
-      margin: 0 auto 26px;
-      max-width: 720px;
-      text-align: center;
-    }
-
-    .parser-hero h2 {
-      color: var(--tm-text);
-      font-size: 32px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-      margin: 0 0 12px;
-    }
-
-    .parser-hero p {
-      color: var(--tm-text-soft);
-      font-size: 15px;
-      line-height: 1.75;
-      margin: 0;
-    }
-
-    .parser-hero p + p {
-      color: var(--tm-text-muted);
-      font-size: 13px;
-      margin-top: 12px;
-    }
-
-    .parser-steps {
-      border-bottom: 1px solid rgba(15, 23, 42, 0.08);
-      display: flex;
-      gap: 0;
-      margin-bottom: 28px;
-      overflow-x: auto;
-      padding-bottom: 0;
-      width: 100%;
-    }
-
-    .parser-step {
-      align-items: center;
-      background: transparent;
-      border: 0;
-      border-bottom: 3px solid transparent;
-      color: var(--tm-text-soft);
-      cursor: pointer;
-      display: flex;
-      flex: 1;
-      font-family: inherit;
-      font-size: 14px;
-      font-weight: 600;
-      gap: 12px;
-      justify-content: center;
-      padding: 18px 24px;
-      text-decoration: none;
-      transition: 180ms ease;
-      white-space: nowrap;
-    }
-
-    .parser-step:hover {
-      background: rgba(139, 92, 246, 0.08);
-      color: var(--tm-text);
-    }
-
-    .parser-step.active {
-      border-bottom-color: var(--tm-purple);
-      color: var(--tm-text);
-    }
-
-    .parser-step-badge,
-    .section-badge {
-      align-items: center;
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.20) 0%, rgba(99, 102, 241, 0.14) 100%);
-      border: 1px solid rgba(139, 92, 246, 0.24);
-      border-radius: 999px;
-      color: #f3e8ff;
-      display: inline-flex;
-      flex-shrink: 0;
-      font-size: 14px;
-      font-weight: 800;
-      height: 36px;
-      justify-content: center;
-      width: 36px;
-    }
-
-    .parser-step-title,
-    .parser-section-title {
-      color: var(--tm-text);
-      font-size: 16px;
-      font-weight: 700;
-      margin: 0 0 4px;
-    }
-
-    .parser-step-copy,
-    .parser-section-copy {
-      color: var(--tm-text-muted);
-      font-size: 12px;
-      line-height: 1.6;
-      margin: 0;
-    }
-
-    .parser-section {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      display: none;
-      margin-bottom: 28px;
-      padding: 0 0 28px;
-    }
-
-    .parser-section.active {
-      display: block;
-    }
-
-    .parser-section:last-of-type {
-      border-bottom: 0;
-      margin-bottom: 0;
-      padding-bottom: 0;
-    }
-
-    .parser-section-head {
-      align-items: center;
-      display: flex;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .parser-input {
-      width: 100%;
-      background: rgba(9, 14, 32, 0.82);
-      border: 1px solid rgba(255, 255, 255, 0.09);
-      border-radius: 14px;
-      color: var(--tm-text);
-      font-family: inherit;
-      font-size: 14px;
-      line-height: 1.5;
-      outline: none;
-      padding: 14px 16px;
-      transition: all 180ms ease;
-    }
-
-    .parser-input::placeholder {
-      color: rgba(100, 116, 139, 0.72);
-    }
-
-    .parser-form-label {
-      color: var(--tm-text-soft);
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-
-    .parser-note {
-      color: var(--tm-text-muted);
-      font-size: 12px;
-      line-height: 1.7;
-      margin-top: 10px;
-    }
-
-    .logo-actions {
-      align-items: center;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .logo-preview {
-      align-items: center;
-      background: rgba(9, 14, 32, 0.74);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 16px;
-      display: flex;
-      gap: 14px;
-      margin-top: 14px;
-      min-height: 88px;
-      padding: 12px 14px;
-    }
-
-    .logo-preview.hidden {
-      display: none !important;
-    }
-
-    .logo-preview-image {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(148, 163, 184, 0.16);
-      border-radius: 14px;
-      flex-shrink: 0;
-      height: 60px;
-      object-fit: contain;
-      padding: 6px;
-      width: 60px;
-    }
-
-    .logo-preview-copy {
-      min-width: 0;
-    }
-
-    .logo-preview-title {
-      color: var(--tm-text);
-      font-size: 13px;
-      font-weight: 700;
-      margin: 0 0 4px;
-    }
-
-    .logo-preview-meta {
-      color: var(--tm-text-muted);
-      font-size: 12px;
-      line-height: 1.6;
-      margin: 0;
-      word-break: break-word;
-    }
-
-    .parser-balance-row,
-    .parser-email-grid {
-      align-items: end;
-      display: grid;
-      gap: 14px;
-      grid-template-columns: minmax(0, 1fr) auto;
-    }
-
-    .parser-status-box,
-    .parser-info-box,
-    .parser-output-box {
-      background: rgba(9, 14, 32, 0.78);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 18px;
-      padding: 16px 18px;
-    }
-
-    .parser-info-box {
-      background: linear-gradient(135deg, rgba(76, 29, 149, 0.28) 0%, rgba(9, 14, 32, 0.92) 48%, rgba(67, 56, 202, 0.20) 100%);
-      border-color: rgba(168, 85, 247, 0.20);
-    }
-
-    .parser-balance-value {
-      color: #f5d0fe;
-      font-size: 18px;
-      font-weight: 800;
-      margin-left: 8px;
-    }
-
-    .parser-upload-zone {
-      background: rgba(9, 14, 32, 0.66);
-      border: 2px dashed rgba(139, 92, 246, 0.36);
-      border-radius: 22px;
-      cursor: pointer;
-      padding: 34px 24px;
-      text-align: center;
-      transition: 180ms ease;
-    }
-
-    .parser-upload-zone:hover,
-    .parser-upload-zone.is-dragover {
-      background: rgba(76, 29, 149, 0.26);
-      border-color: rgba(139, 92, 246, 0.56);
-      box-shadow: 0 18px 34px rgba(67, 56, 202, 0.16);
-    }
-
-    .parser-upload-zone svg {
-      color: var(--tm-purple-soft);
-      display: block;
-      height: 56px;
-      margin: 0 auto 14px;
-      opacity: 0.90;
-      width: 56px;
-    }
-
-    .parser-upload-title {
-      color: var(--tm-text);
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .parser-upload-copy {
-      color: var(--tm-text-muted);
-      font-size: 13px;
-      line-height: 1.7;
-      margin: 0;
-    }
-
-    .parser-action-row {
-      display: grid;
-      gap: 12px;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .parser-output-grid {
-      display: grid;
-      gap: 16px;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
+    .parser-action-row, .parser-output-grid {
+      display:grid;
+      gap:12px;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+    }
+    .parser-output-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); }
     .parser-output-head {
-      align-items: center;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      display: flex;
-      gap: 12px;
-      justify-content: space-between;
-      margin-bottom: 12px;
-      padding-bottom: 12px;
+      align-items:center;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      display:flex;
+      gap:12px;
+      justify-content:space-between;
+      margin-bottom:12px;
+      padding-bottom:12px;
     }
-
-    .parser-output-title {
-      color: var(--tm-text);
-      font-size: 13px;
-      font-weight: 700;
-    }
-
+    .parser-output-title { font-size:13px; font-weight:700; }
     .parser-copy-btn {
-      background: transparent;
-      border: 0;
-      color: var(--tm-purple-soft);
-      cursor: pointer;
-      font-family: inherit;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 0;
+      background:transparent;
+      border:0;
+      color:var(--tm-purple-soft);
+      cursor:pointer;
+      font-family:inherit;
+      font-size:12px;
+      font-weight:700;
+      padding:0;
     }
-
     .parser-output-pre {
-      color: var(--tm-text-soft);
-      font-size: 12px;
-      line-height: 1.7;
-      margin: 0;
-      max-height: 320px;
-      min-height: 160px;
-      overflow: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
+      color:var(--tm-text-soft);
+      font-size:12px;
+      line-height:1.7;
+      margin:0;
+      max-height:320px;
+      min-height:160px;
+      overflow:auto;
+      white-space:pre-wrap;
+      word-break:break-word;
     }
-
-    .footer-inner p,
-    .footer-inner a {
-      color: #a5b4fc;
-      font-size: 14px;
-      text-decoration: none;
+    @media (max-width:980px) {
+      .app-shell { flex-direction:column; }
+      .sidebar { height:auto; position:relative; width:100%; }
     }
-
-    .hidden {
-      display: none !important;
-    }
-
-    @media (max-width: 1180px) {
-      .parser-output-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 980px) {
-      .app-shell {
-        flex-direction: column;
-      }
-
-      .sidebar {
-        height: auto;
-        padding-bottom: 16px;
-        position: relative;
-        width: 100%;
-      }
-    }
-
-    @media (max-width: 900px) {
-      .account-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .account-grid-column {
-        gap: 24px;
-      }
-
-      .table-controls {
-        grid-template-columns: 1fr;
-      }
-
-      .workspace-tab {
-        font-size: 13px;
-        padding: 12px 16px;
-      }
-    }
-
-    @media (max-width: 720px) {
-      .button-row,
-      .parser-action-row,
-      .parser-email-grid,
-      .parser-output-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .topbar-inner,
-      .section-header,
-      .footer-inner {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .workspace-content,
-      .topbar-inner,
-      .footer-inner {
-        padding-left: 16px;
-        padding-right: 16px;
-      }
-
-      .workspace-content {
-        padding-bottom: 16px;
-        padding-top: 16px;
-      }
-
-      .topbar-actions {
-        width: 100%;
-      }
-
-      .topbar-actions .btn,
-      .button-row .btn {
-        width: 100%;
-      }
-
-      .workspace-tab {
-        font-size: 12px;
-        padding: 12px 14px;
-      }
-
-      .workspace-tabs {
-        overflow-x: auto;
-      }
-    }
-  </style>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Sora', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    @media (max-width:720px) {
+      .parser-action-row, .parser-email-grid, .parser-output-grid { grid-template-columns:1fr; }
+      .workspace-content { padding:16px; }
     }
   </style>
 </head>
@@ -1039,2542 +256,155 @@
         <!-- PARTIAL:app-topbar -->
       </header>
 
-      <div class="workspace">
-        
-
-        <main class="workspace-content">
-          <section id="dashboardPage" class="page active">
-            <div class="stack">
-              <div class="parser-card-shell">
-                <div class="parser-card-body">
-                  <div class="parser-hero">
-                    <h2>Ready to use the Transcript Parser?</h2>
-                    <p>Upload a transcript PDF. Parsing runs locally in your browser, and the PDF file itself is never uploaded.</p>
-                    <p></p>
-                  </div>
-
-                  <div class="parser-steps">
-                    <button class="parser-step active" data-parser-step="1">
-                      <span class="parser-step-badge">1</span>
-                      <div>
-                        <div class="parser-step-title">Check App Balance</div>
-                        <p class="parser-step-copy">Check your available credits</p>
-                      </div>
-                    </button>
-                    <button class="parser-step" data-parser-step="2">
-                      <span class="parser-step-badge">2</span>
-                      <div>
-                        <div class="parser-step-title">Upload Transcript PDF</div>
-                        <p class="parser-step-copy">Choose your transcript</p>
-                      </div>
-                    </button>
-                    <button class="parser-step" data-parser-step="3">
-                      <span class="parser-step-badge">3</span>
-                      <div>
-                        <div class="parser-step-title">Outputs</div>
-                        <p class="parser-step-copy">Preview and email</p>
-                      </div>
-                    </button>
-                  </div>
-
-                  <div class="parser-section active" data-parser-panel="1">
-                    
-
-                    <div style="display:grid; gap:14px;">
-                      <div>
-                        <label for="parser-token-id" class="parser-form-label">Signed-in Account</label>
-                        <input id="parser-token-id" type="text" placeholder="Signed in session required" class="parser-input" autocomplete="off" disabled />
-                        <p class="parser-note">Saving a preview consumes 1 credit from your balance.</p>
-                      </div>
-
-                      <div class="parser-balance-row">
-                        <div class="parser-status-box">
-                          <span style="color: var(--tm-text-soft); font-size: 13px;">Available balance:</span>
-                          <span id="parser-token-available" class="parser-balance-value">-</span>
-                        </div>
-                        <button id="parser-save-token" type="button" class="btn btn-secondary">Refresh Balance</button>
-                      </div>
-
-                      <div class="parser-info-box">
-                        <div class="parser-balance-row" style="align-items:center;">
-                          <div>
-                            <div class="parser-form-label" style="margin-bottom:8px;">Need more credits?</div>
-                            <div class="parser-status-box" style="margin:0;">Purchase more credits if your balance is low.</div>
-                            <p class="parser-note">Preview reports are saved to your account.</p>
-                          </div>
-                          <div style="display:grid; gap:8px;">
-                            <a id="parser-buy-credits" href="/app/dashboard.html" class="btn btn-primary">Buy Credits</a>
-                            <div id="parser-checkout-status" class="parser-note" style="margin-top:0; text-align:center;">Purchase credits to continue using the parser.</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="parser-section" data-parser-panel="2">
-                    
-
-                    <div style="margin-bottom:20px;">
-                      <label class="parser-form-label">Firm Logo (Optional)</label>
-
-                      <div class="logo-actions">
-                        <label for="brand-logo" class="btn btn-secondary" style="display:inline-flex;">
-                          <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                          </svg>
-                          <span>Choose File</span>
-                        </label>
-                        <button id="remove-brand-logo" type="button" class="btn btn-danger hidden">Remove Logo</button>
-                      </div>
-
-                      <input id="brand-logo" type="file" accept="image/*" class="hidden" />
-                      <span id="brand-logo-file-name" class="parser-note" style="display:inline-block; margin-top:10px;">No file chosen</span>
-
-                      <div id="brand-logo-preview" class="logo-preview hidden">
-                        <img id="brand-logo-preview-image" class="logo-preview-image" alt="Saved firm logo preview" />
-                        <div class="logo-preview-copy">
-                          <div class="logo-preview-title">Saved logo</div>
-                          <p id="brand-logo-preview-meta" class="logo-preview-meta">This logo will stay available on this device until you remove it.</p>
-                        </div>
-                      </div>
-
-                      <p class="parser-note">For best results upload a 600×600 PNG (SVG/JPG ok). Your logo can stay saved on this device until you remove it.</p>
-                    </div>
-
-                    <div id="pdf-drop-zone" class="parser-upload-zone" role="button" tabindex="0" aria-label="Upload transcript PDF">
-                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
-                      </svg>
-                      <div class="parser-upload-title">Drop PDF here or click to browse</div>
-                      <p class="parser-upload-copy">Accepts IRS transcripts (Account, Return, Wage &amp; Income)</p>
-                    </div>
-
-                    <input id="pdf-upload" type="file" accept="application/pdf,.pdf" class="hidden" />
-                  </div>
-
-                  <div class="parser-section" data-parser-panel="3">
-                    
-
-                    <div class="parser-action-row" style="margin-bottom:16px;">
-                      <button id="extract-raw-btn" type="button" class="btn btn-secondary opacity-50 cursor-not-allowed" disabled>Extract Raw Text</button>
-                      <button id="parse-structured-btn" type="button" class="btn btn-primary opacity-50 cursor-not-allowed" disabled>Parse Structured JSON</button>
-                      <a id="preview-report-btn" href="#" class="btn btn-secondary opacity-50 cursor-not-allowed pointer-events-none" aria-disabled="true">Save Preview Report</a>
-                    </div>
-
-                    <div id="preview-action-status" class="parser-status-box" style="margin-bottom:16px;">Runs in your browser. Your PDF is not uploaded or stored.</div>
-
-                    <div class="parser-output-grid" style="margin-bottom:16px;">
-                      <div class="parser-output-box">
-                        <div class="parser-output-head">
-                          <div class="parser-output-title">Raw Text Output</div>
-                          <button id="copy-raw" type="button" class="parser-copy-btn">Copy</button>
-                        </div>
-                        <pre id="raw-output" class="parser-output-pre">(no text yet)</pre>
-                      </div>
-
-                      <div class="parser-output-box">
-                        <div class="parser-output-head">
-                          <div class="parser-output-title">Structured JSON Output</div>
-                          <button id="copy-json" type="button" class="parser-copy-btn">Copy</button>
-                        </div>
-                        <pre id="json-output" class="parser-output-pre">(no json yet)</pre>
-                      </div>
-                    </div>
-
-                    <div class="parser-output-box">
-                      <div class="parser-output-head" style="align-items:flex-start; flex-direction:column;">
-                        <div class="parser-output-title">Email report link</div>
-                        <div class="parser-note" style="margin-top:0;">A short secure report link is generated for email delivery.</div>
-                      </div>
-
-                      <div class="parser-email-grid">
-                        <div>
-                          <label for="report-email" class="parser-form-label">Email</label>
-                          <input id="report-email" type="email" placeholder="client@firm.com" class="parser-input" autocomplete="email" />
-                          <p class="parser-note">Requires parsed JSON and a saved preview report.</p>
-                        </div>
-                        <div style="display:grid; gap:8px;">
-                          <button id="report-email-btn" type="button" class="btn btn-primary opacity-50 cursor-not-allowed" disabled>Email report link</button>
-                          <div id="report-email-status" class="parser-note" style="margin-top:0; text-align:center;">Not ready.</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+      <main class="workspace-content">
+        <section id="dashboardPage">
+          <div class="parser-card-shell">
+            <div class="parser-card-body">
+              <div class="parser-hero">
+                <h2>Ready to use the Transcript Parser?</h2>
+                <p>Upload a transcript PDF. Parsing runs locally in your browser, and the PDF file itself is never uploaded.</p>
               </div>
-            </div>
-          </section>
 
-          <section id="reportsPage" class="page">
-            <div class="card">
-              <div class="card-body">
-                <div class="section-header">
+              <div class="parser-steps">
+                <button class="parser-step active" data-parser-step="1">
+                  <span class="parser-step-badge">1</span>
                   <div>
-                    <h2 class="card-title">Reports history</h2>
-                    <p class="card-desc">Review saved reports, reopen prior work, and confirm whether each report has been printed and finalized.</p>
+                    <div class="parser-step-title">Check App Balance</div>
+                    <p class="parser-step-copy">Check your available credits</p>
                   </div>
-                </div>
-
-                <div id="reportsPageEmpty" class="empty-state hidden">No reports found yet.</div>
-
-                <div class="table-controls">
+                </button>
+                <button class="parser-step" data-parser-step="2">
+                  <span class="parser-step-badge">2</span>
                   <div>
-                    <label for="reportsFilterInput" class="table-filter-label">Filter reports</label>
-                    <input id="reportsFilterInput" type="text" class="parser-input" placeholder="Search by report ID, label, status, credits, or date" autocomplete="off" />
+                    <div class="parser-step-title">Upload Transcript PDF</div>
+                    <p class="parser-step-copy">Choose your transcript</p>
                   </div>
+                </button>
+                <button class="parser-step" data-parser-step="3">
+                  <span class="parser-step-badge">3</span>
                   <div>
-                    <label for="reportsSortField" class="table-filter-label">Sort by</label>
-                    <select id="reportsSortField" class="parser-input">
-                      <option value="createdAt" selected>Newest Created</option>
-                      <option value="printedAt">Newest Printed</option>
-                      <option value="creditsUsed">Credits Used</option>
-                      <option value="label">Label</option>
-                      <option value="reportId">Report ID</option>
-                      <option value="status">Status</option>
-                    </select>
+                    <div class="parser-step-title">Outputs</div>
+                    <p class="parser-step-copy">Preview and email</p>
                   </div>
+                </button>
+              </div>
+
+              <div class="parser-section active" data-parser-panel="1">
+                <div style="display:grid; gap:14px;">
                   <div>
-                    <label for="reportsSortDirection" class="table-filter-label">Direction</label>
-                    <select id="reportsSortDirection" class="parser-input">
-                      <option value="desc">Descending</option>
-                      <option value="asc">Ascending</option>
-                    </select>
+                    <label for="parser-token-id" class="parser-form-label">Signed-in Account</label>
+                    <input id="parser-token-id" type="text" placeholder="Signed in session required" class="parser-input" autocomplete="off" disabled />
+                    <p class="parser-note">Saving a preview consumes 1 credit from your balance.</p>
                   </div>
-                </div>
 
-                <div class="table-meta-row">
-                  <div id="reportsSummaryText">Search, sort, and label saved reports.</div>
-                </div>
-
-                <div id="reportsPageTableWrap" class="table-wrap hidden">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Report ID</th>
-                        <th>Created</th>
-                        <th>Printed</th>
-                        <th>Status</th>
-                        <th>Credits Used</th>
-                        <th>Label</th>
-                        <th>Quick Open</th>
-                      </tr>
-                    </thead>
-                    <tbody id="reportsPageTbody">
-                      <tr>
-                        <td colspan="7">Loading reports...</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section id="receiptsPage" class="page">
-            <div class="stack">
-              <div class="card">
-                <div class="card-body">
-                  <h2 class="card-title">Receipt summary</h2>
-                  <p class="card-desc">See your latest purchase state at a glance, including current tokens and most recent payment status.</p>
-                  <div class="detail-list">
-                    <div class="detail-row">
-                      <div class="detail-label">Signed-in email</div>
-                      <div id="receiptSummaryEmail" class="detail-value">Loading...</div>
+                  <div class="parser-balance-row">
+                    <div class="parser-status-box">
+                      <span style="color: var(--tm-text-soft); font-size: 13px;">Available balance:</span>
+                      <span id="parser-token-available" class="parser-balance-value">-</span>
                     </div>
-                    <div class="detail-row">
-                      <div class="detail-label">Current tokens</div>
-                      <div id="receiptSummaryTokens" class="detail-value">—</div>
-                    </div>
-                    <div class="detail-row">
-                      <div class="detail-label">Latest purchase status</div>
-                      <div id="receiptSummaryStatus" class="detail-value">—</div>
+                    <button id="parser-save-token" type="button" class="btn btn-secondary">Refresh Balance</button>
+                  </div>
+
+                  <div class="parser-info-box">
+                    <div class="parser-balance-row" style="align-items:center;">
+                      <div>
+                        <div class="parser-form-label" style="margin-bottom:8px;">Need more credits?</div>
+                        <div class="parser-status-box" style="margin:0;">Purchase more credits if your balance is low.</div>
+                        <p class="parser-note">Preview reports are saved to your account.</p>
+                      </div>
+                      <div style="display:grid; gap:8px;">
+                        <a id="parser-buy-credits" href="/app/dashboard.html" class="btn btn-primary">Buy Credits</a>
+                        <div id="parser-checkout-status" class="parser-note" style="margin-top:0; text-align:center;">Purchase credits to continue using the parser.</div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="card">
-                <div class="card-body">
-                  <h2 class="card-title">Purchase history</h2>
-                  <p class="card-desc">Review your receipt history and verify completed credit purchases tied to this account.</p>
+              <div class="parser-section" data-parser-panel="2">
+                <div style="margin-bottom:20px;">
+                  <label class="parser-form-label">Firm Logo (Optional)</label>
 
-                  <div id="receiptsPageEmpty" class="empty-state hidden">No purchases found yet.</div>
+                  <div class="logo-actions">
+                    <label for="brand-logo" class="btn btn-secondary" style="display:inline-flex;">
+                      <span>Choose File</span>
+                    </label>
+                    <button id="remove-brand-logo" type="button" class="btn btn-danger hidden">Remove Logo</button>
+                  </div>
 
-                  <div class="table-controls">
+                  <input id="brand-logo" type="file" accept="image/*" class="hidden" />
+                  <span id="brand-logo-file-name" class="parser-note" style="display:inline-block; margin-top:10px;">No file chosen</span>
+
+                  <div id="brand-logo-preview" class="logo-preview hidden">
+                    <img id="brand-logo-preview-image" class="logo-preview-image" alt="Saved firm logo preview" />
                     <div>
-                      <label for="receiptsFilterInput" class="table-filter-label">Filter receipts</label>
-                      <input id="receiptsFilterInput" type="text" class="parser-input" placeholder="Search by credits, price ID, or status" autocomplete="off" />
+                      <div style="font-size:13px; font-weight:700; margin:0 0 4px;">Saved logo</div>
+                      <p id="brand-logo-preview-meta" class="parser-note">This logo will stay available on this device until you remove it.</p>
                     </div>
+                  </div>
+
+                  <p class="parser-note">For best results upload a 600×600 PNG (SVG/JPG ok). Your logo can stay saved on this device until you remove it.</p>
+                </div>
+
+                <div id="pdf-drop-zone" class="parser-upload-zone" role="button" tabindex="0" aria-label="Upload transcript PDF">
+                  <div style="font-size:15px; font-weight:700; margin-bottom:8px;">Drop PDF here or click to browse</div>
+                  <p class="parser-note">Accepts IRS transcripts (Account, Return, Wage &amp; Income)</p>
+                </div>
+
+                <input id="pdf-upload" type="file" accept="application/pdf,.pdf" class="hidden" />
+              </div>
+
+              <div class="parser-section" data-parser-panel="3">
+                <div class="parser-action-row" style="margin-bottom:16px;">
+                  <button id="extract-raw-btn" type="button" class="btn btn-secondary opacity-50 cursor-not-allowed" disabled>Extract Raw Text</button>
+                  <button id="parse-structured-btn" type="button" class="btn btn-primary opacity-50 cursor-not-allowed" disabled>Parse Structured JSON</button>
+                  <a id="preview-report-btn" href="#" class="btn btn-secondary opacity-50 cursor-not-allowed pointer-events-none" aria-disabled="true">Save Preview Report</a>
+                </div>
+
+                <div id="preview-action-status" class="parser-status-box" style="margin-bottom:16px;">Runs in your browser. Your PDF is not uploaded or stored.</div>
+
+                <div class="parser-output-grid" style="margin-bottom:16px;">
+                  <div class="parser-output-box">
+                    <div class="parser-output-head">
+                      <div class="parser-output-title">Raw Text Output</div>
+                      <button id="copy-raw" type="button" class="parser-copy-btn">Copy</button>
+                    </div>
+                    <pre id="raw-output" class="parser-output-pre">(no text yet)</pre>
+                  </div>
+
+                  <div class="parser-output-box">
+                    <div class="parser-output-head">
+                      <div class="parser-output-title">Structured JSON Output</div>
+                      <button id="copy-json" type="button" class="parser-copy-btn">Copy</button>
+                    </div>
+                    <pre id="json-output" class="parser-output-pre">(no json yet)</pre>
+                  </div>
+                </div>
+
+                <div class="parser-output-box">
+                  <div class="parser-output-head" style="align-items:flex-start; flex-direction:column;">
+                    <div class="parser-output-title">Email report link</div>
+                    <div class="parser-note" style="margin-top:0;">A short secure report link is generated for email delivery.</div>
+                  </div>
+
+                  <div class="parser-email-grid">
                     <div>
-                      <label for="receiptsSortField" class="table-filter-label">Sort by</label>
-                      <select id="receiptsSortField" class="parser-input">
-                        <option value="createdAt">Created At</option>
-                        <option value="credits">Credits</option>
-                        <option value="priceId">Price ID</option>
-                        <option value="status">Status</option>
-                      </select>
+                      <label for="report-email" class="parser-form-label">Email</label>
+                      <input id="report-email" type="email" placeholder="client@firm.com" class="parser-input" autocomplete="email" />
+                      <p class="parser-note">Requires parsed JSON and a saved preview report.</p>
                     </div>
-                    <div>
-                      <label for="receiptsSortDirection" class="table-filter-label">Direction</label>
-                      <select id="receiptsSortDirection" class="parser-input">
-                        <option value="desc">Descending</option>
-                        <option value="asc">Ascending</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div id="receiptsPageTableWrap" class="table-wrap hidden">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Created At</th>
-                          <th>Credits</th>
-                          <th>Price ID</th>
-                          <th>Status</th>
-                        </tr>
-                      </thead>
-                      <tbody id="receiptsPageTbody">
-                        <tr>
-                          <td colspan="4">Loading receipts...</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section id="supportPage" class="page">
-            <div class="stack">
-              <div class="card">
-                <div class="card-body">
-                  <h2 class="card-title">Support</h2>
-                  <p class="card-desc">Create and track support tickets tied to your authenticated account.</p>
-
-                  <div style="display:grid; gap:16px; margin-top:18px;">
-                    <div>
-                      <label for="supportSubject" class="parser-form-label">Subject</label>
-                      <input id="supportSubject" type="text" class="parser-input" placeholder="Brief summary of the issue" autocomplete="off" />
-                    </div>
-                    <div>
-                      <label for="supportMessage" class="parser-form-label">Message</label>
-                      <textarea id="supportMessage" class="parser-input" rows="5" placeholder="Describe the issue, report ID, or payment problem."></textarea>
-                    </div>
-                    <div class="button-row" style="padding-top:0;">
-                      <button id="supportCreateBtn" type="button" class="btn btn-primary">Create Ticket</button>
-                    </div>
-                    <div id="supportCreateStatus" class="parser-note" style="margin-top:0;">Ready.</div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="card">
-                <div class="card-body">
-                  <h2 class="card-title">Ticket history</h2>
-                  <p class="card-desc">Review tickets synced from the support Worker surface.</p>
-                  <div id="supportPageEmpty" class="empty-state hidden">No support tickets found for this account.</div>
-                  <div id="supportPageTableWrap" class="table-wrap hidden">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Ticket ID</th>
-                          <th>Subject</th>
-                          <th>Status</th>
-                          <th>Created</th>
-                          <th>Updated</th>
-                        </tr>
-                      </thead>
-                      <tbody id="supportPageTbody">
-                        <tr>
-                          <td colspan="5">Loading tickets...</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section id="calendarPage" class="page">
-            <div class="stack">
-              <div class="card">
-                <div class="card-body">
-                  <h2 class="card-title">Calendar</h2>
-                  <p class="card-desc">Bookings synced from the calendar Worker surface for this authenticated account.</p>
-                  <div id="calendarPageEmpty" class="empty-state hidden">No bookings found for this account.</div>
-                  <div id="calendarPageTableWrap" class="table-wrap hidden">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Booking ID</th>
-                          <th>Professional</th>
-                          <th>Event Type</th>
-                          <th>Scheduled For</th>
-                          <th>Status</th>
-                        </tr>
-                      </thead>
-                      <tbody id="calendarPageTbody">
-                        <tr>
-                          <td colspan="5">Loading bookings...</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section id="token-usagePage" class="page">
-            <div class="stack">
-              <div class="card">
-                <div class="card-body">
-                  <h2 class="card-title">Token usage</h2>
-                  <p class="card-desc">Detailed token ledger and usage history pulled from the transcript ledger Worker route.</p>
-                  <div id="tokenUsageSummary" class="detail-list">
-                    <div class="detail-row">
-                      <div class="detail-label">Token ID</div>
-                      <div id="tokenUsageTokenId" class="detail-value">—</div>
-                    </div>
-                    <div class="detail-row">
-                      <div class="detail-label">Current balance</div>
-                      <div id="tokenUsageBalance" class="detail-value">—</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="card">
-                <div class="card-body">
-                  <h2 class="card-title">Ledger history</h2>
-                  <p class="card-desc">Usage and purchase events ordered from newest to oldest.</p>
-                  <div id="tokenUsagePageEmpty" class="empty-state hidden">No token ledger entries found.</div>
-                  <div id="tokenUsagePageTableWrap" class="table-wrap hidden">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>When</th>
-                          <th>Type</th>
-                          <th>Amount</th>
-                          <th>Balance After</th>
-                          <th>Reference</th>
-                        </tr>
-                      </thead>
-                      <tbody id="tokenUsagePageTbody">
-                        <tr>
-                          <td colspan="5">Loading token ledger...</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section id="accountPage" class="page">
-            <div class="account-grid">
-              <div class="account-grid-column">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="account-icon" aria-hidden="true">
-                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 20a8 8 0 0 1 16 0" />
-                      </svg>
-                    </div>
-                    <h2 class="card-title">Account summary</h2>
-                    <p class="card-desc">Your signed-in account details, available credits, and current membership status.</p>
-                    <div class="detail-list">
-                      <div class="detail-row">
-                        <div class="detail-label">Email</div>
-                        <div id="accountEmail" class="detail-value">Loading...</div>
-                      </div>
-                      <div class="detail-row">
-                        <div class="detail-label">Account ID</div>
-                        <div id="accountId" class="detail-value">—</div>
-                      </div>
-                      <div class="detail-row">
-                        <div class="detail-label">Sign-in method</div>
-                        <div class="detail-value">Magic link</div>
-                      </div>
-                      <div class="detail-row">
-                        <div class="detail-label">Available credits</div>
-                        <div id="accountTokens" class="detail-value">—</div>
-                      </div>
-                      <div class="detail-row">
-                        <div class="detail-label">Current membership</div>
-                        <div id="accountMembershipStatus" class="detail-value">Loading...</div>
-                      </div>
-                      <div class="detail-row">
-                        <div class="detail-label">Current plan</div>
-                        <div id="accountMembershipPlan" class="detail-value">—</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="account-grid-column">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="account-icon" aria-hidden="true">
-                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M5 7h14" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M5 12h14" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M5 17h9" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5Z" />
-                      </svg>
-                    </div>
-                    <h2 class="card-title">Memberships</h2>
-                    <p class="card-desc">Plans connected to this account, including current status and billing period details.</p>
-                    <div id="accountMembershipsEmpty" class="empty-state hidden">No memberships found for this account.</div>
-                    <div id="accountMembershipsTableWrap" class="account-membership-list hidden"></div>
-                  </div>
-                </div>
-
-                <div class="card">
-                  <div class="card-body">
-                    <div class="account-icon" aria-hidden="true">
-                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6v12" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 10H9.75a2.75 2.75 0 1 1 0-5.5H15" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 14h6.25a2.75 2.75 0 1 1 0 5.5H8" />
-                      </svg>
-                    </div>
-                    <h2 class="card-title">Account actions</h2>
-                    <p class="account-action-copy">Buy more credits when you need them, or sign out of your current session.</p>
-                    <div class="button-row">
-                      <a href="/index.html#pricing" class="btn btn-primary">Buy Credits</a>
-                      <button id="signOutBtnSecondary" type="button" class="btn btn-danger">Log Out</button>
+                    <div style="display:grid; gap:8px;">
+                      <button id="report-email-btn" type="button" class="btn btn-primary opacity-50 cursor-not-allowed" disabled>Email report link</button>
+                      <div id="report-email-status" class="parser-note" style="margin-top:0; text-align:center;">Not ready.</div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </section>
-        </main>
-      </div>
+          </div>
+        </section>
+      </main>
     </div>
   </div>
-
-  <script>
-    let latestMe = null;
-    let latestBookings = [];
-    let latestMemberships = [];
-    let latestPurchases = [];
-    let latestReports = [];
-    let latestSupportTickets = [];
-    let latestTokenLedger = null;
-    let savedBrandLogo = null;
-
-    const BRAND_LOGO_STORAGE_KEY = 'tm_brand_logo_v1';
-    const REPORT_LABELS_STORAGE_KEY = 'tm_report_labels_v1';
-    const APP_DASHBOARD_PATH = '/app/dashboard.html';
-
-    function escapeHtml(value) {
-      return String(value == null ? '' : value)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
-
-    function firstDefined() {
-      for (let i = 0; i < arguments.length; i += 1) {
-        const value = arguments[i];
-        if (value !== undefined && value !== null && String(value).trim() !== '') return value;
-      }
-      return '';
-    }
-
-    function formatDate(value) {
-      const raw = String(value || '').trim();
-      if (!raw) return '—';
-      const d = new Date(raw);
-      if (Number.isNaN(d.getTime())) return raw;
-      return d.toLocaleString();
-    }
-
-    function buildReportHistoryUrl(reportId) {
-      const clean = String(reportId || '').trim();
-      return clean ? ('/transcript/report?r=' + encodeURIComponent(clean)) : '';
-    }
-
-    function getCreditsUsed(item) {
-      const raw = firstDefined(
-        item && item.creditsUsed,
-        item && item.credits_used,
-        item && item.creditCost,
-        item && item.credit_cost,
-        item && item.tokensUsed,
-        item && item.tokens_used,
-        '1'
-      );
-      const value = Number(raw);
-      return Number.isFinite(value) && value > 0 ? String(value) : '1';
-    }
-
-    function loadReportLabels() {
-      try {
-        const raw = window.localStorage.getItem(REPORT_LABELS_STORAGE_KEY);
-        const parsed = raw ? JSON.parse(raw) : {};
-        return parsed && typeof parsed === 'object' ? parsed : {};
-      } catch (_) {
-        return {};
-      }
-    }
-
-    function getReportLabel(reportId) {
-      const clean = String(reportId || '').trim();
-      if (!clean) return '';
-      const labels = loadReportLabels();
-      return String(labels[clean] || '').trim();
-    }
-
-    function saveReportLabel(reportId, label) {
-      const cleanId = String(reportId || '').trim();
-      if (!cleanId) return;
-      const labels = loadReportLabels();
-      const cleanLabel = String(label || '').trim();
-      if (cleanLabel) {
-        labels[cleanId] = cleanLabel;
-      } else {
-        delete labels[cleanId];
-      }
-      try {
-        window.localStorage.setItem(REPORT_LABELS_STORAGE_KEY, JSON.stringify(labels));
-      } catch (_) {
-      }
-    }
-
-    function getStatusBadge(status) {
-      const text = String(status || '').trim() || 'pending';
-      const lower = text.toLowerCase();
-      const cls = lower === 'completed' || lower === 'printed' ? 'pill pill-printed' : 'pill pill-pending';
-      return '<span class="' + cls + '">' + escapeHtml(text) + '</span>';
-    }
-
-    function showToast(message) {
-      window.alert(String(message || 'Not wired yet.'));
-    }
-
-    function bytesToReadable(value) {
-      const size = Number(value || 0);
-      if (!Number.isFinite(size) || size <= 0) return '';
-      if (size < 1024) return size + ' B';
-      if (size < 1024 * 1024) return (size / 1024).toFixed(1).replace(/\.0$/, '') + ' KB';
-      return (size / (1024 * 1024)).toFixed(1).replace(/\.0$/, '') + ' MB';
-    }
-
-    function setText(id, value) {
-      const el = document.getElementById(id);
-      if (el) el.textContent = String(value == null ? '' : value);
-    }
-
-    function setValue(id, value) {
-      const el = document.getElementById(id);
-      if (el) el.value = String(value == null ? '' : value);
-    }
-
-    function redirectToSignIn() {
-      window.location.href = '/sign-in.html?redirect=' + encodeURIComponent(APP_DASHBOARD_PATH);
-    }
-
-    function updateBrandLogoUi() {
-      const fileNameEl = document.getElementById('brand-logo-file-name');
-      const previewEl = document.getElementById('brand-logo-preview');
-      const previewImageEl = document.getElementById('brand-logo-preview-image');
-      const previewMetaEl = document.getElementById('brand-logo-preview-meta');
-      const removeBtn = document.getElementById('remove-brand-logo');
-
-      if (!savedBrandLogo) {
-        if (fileNameEl) fileNameEl.textContent = 'No file chosen';
-        if (previewEl) previewEl.classList.add('hidden');
-        if (previewImageEl) previewImageEl.removeAttribute('src');
-        if (previewMetaEl) previewMetaEl.textContent = 'This logo will stay available on this device until you remove it.';
-        if (removeBtn) removeBtn.classList.add('hidden');
-        return;
-      }
-
-      const metaParts = [savedBrandLogo.name || 'Saved logo'];
-      if (savedBrandLogo.size) metaParts.push(bytesToReadable(savedBrandLogo.size));
-
-      if (fileNameEl) fileNameEl.textContent = savedBrandLogo.name || 'Saved logo';
-      if (previewImageEl) previewImageEl.src = savedBrandLogo.dataUrl || '';
-      if (previewMetaEl) previewMetaEl.textContent = metaParts.join(' • ');
-      if (previewEl) previewEl.classList.remove('hidden');
-      if (removeBtn) removeBtn.classList.remove('hidden');
-    }
-
-    function loadSavedBrandLogo() {
-      try {
-        const raw = window.localStorage.getItem(BRAND_LOGO_STORAGE_KEY);
-        if (!raw) {
-          savedBrandLogo = null;
-          return;
-        }
-
-        const parsed = JSON.parse(raw);
-        if (!parsed || typeof parsed.dataUrl !== 'string' || !parsed.dataUrl.trim()) {
-          savedBrandLogo = null;
-          window.localStorage.removeItem(BRAND_LOGO_STORAGE_KEY);
-          return;
-        }
-
-        savedBrandLogo = parsed;
-      } catch (_) {
-        savedBrandLogo = null;
-      }
-    }
-
-    function saveBrandLogo(payload) {
-      savedBrandLogo = payload;
-      try {
-        window.localStorage.setItem(BRAND_LOGO_STORAGE_KEY, JSON.stringify(payload));
-      } catch (_) {
-        showToast('Logo could not be saved on this device. The file may be too large.');
-      }
-      updateBrandLogoUi();
-    }
-
-    function removeBrandLogo() {
-      savedBrandLogo = null;
-      try {
-        window.localStorage.removeItem(BRAND_LOGO_STORAGE_KEY);
-      } catch (_) {
-      }
-
-      const input = document.getElementById('brand-logo');
-      if (input) input.value = '';
-      updateBrandLogoUi();
-    }
-
-    function readFileAsDataUrl(file) {
-      return new Promise(function (resolve, reject) {
-        const reader = new FileReader();
-        reader.onload = function () {
-          resolve(String(reader.result || ''));
-        };
-        reader.onerror = function () {
-          reject(new Error('Failed to read file.'));
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-
-    function wireBrandLogo() {
-      const input = document.getElementById('brand-logo');
-      const removeBtn = document.getElementById('remove-brand-logo');
-
-      loadSavedBrandLogo();
-      updateBrandLogoUi();
-
-      if (input) {
-        input.addEventListener('change', async function () {
-          const file = input.files && input.files[0] ? input.files[0] : null;
-          if (!file) return;
-
-          if (!String(file.type || '').startsWith('image/')) {
-            showToast('Please choose an image file for the logo.');
-            input.value = '';
-            return;
-          }
-
-          try {
-            const dataUrl = await readFileAsDataUrl(file);
-            saveBrandLogo({
-              dataUrl: dataUrl,
-              name: file.name || 'Saved logo',
-              size: Number(file.size || 0),
-              type: file.type || ''
-            });
-          } catch (error) {
-            showToast(String((error && error.message) || error || 'Failed to save logo.'));
-          }
-        });
-      }
-
-      if (removeBtn) {
-        removeBtn.addEventListener('click', function () {
-          removeBrandLogo();
-        });
-      }
-    }
-
-    function setPdfUploadState(file) {
-      const statusEl = document.getElementById('preview-action-status');
-      const uploadTitleEl = document.querySelector('#pdf-drop-zone .parser-upload-title');
-      const uploadCopyEl = document.querySelector('#pdf-drop-zone .parser-upload-copy');
-      const extractBtn = document.getElementById('extract-raw-btn');
-      const parseBtn = document.getElementById('parse-structured-btn');
-
-      if (!file) {
-        if (statusEl) statusEl.textContent = 'Runs in your browser. Your PDF is not uploaded or stored.';
-        if (uploadTitleEl) uploadTitleEl.textContent = 'Drop PDF here or click to browse';
-        if (uploadCopyEl) uploadCopyEl.textContent = 'Accepts IRS transcripts (Account, Return, Wage & Income)';
-        if (extractBtn) extractBtn.disabled = true;
-        if (parseBtn) parseBtn.disabled = true;
-        if (extractBtn) extractBtn.className = 'btn btn-secondary opacity-50 cursor-not-allowed';
-        if (parseBtn) parseBtn.className = 'btn btn-primary opacity-50 cursor-not-allowed';
-        return;
-      }
-
-      if (statusEl) statusEl.textContent = 'PDF selected: ' + (file.name || 'transcript.pdf') + '. Ready for local parsing.';
-      if (uploadTitleEl) uploadTitleEl.textContent = file.name || 'PDF selected';
-      if (uploadCopyEl) uploadCopyEl.textContent = 'File size: ' + (bytesToReadable(file.size) || 'Unknown size');
-      if (extractBtn) extractBtn.disabled = false;
-      if (parseBtn) parseBtn.disabled = false;
-      if (extractBtn) extractBtn.className = 'btn btn-secondary';
-      if (parseBtn) parseBtn.className = 'btn btn-primary';
-    }
-
-    function handlePdfSelection(file) {
-      const input = document.getElementById('pdf-upload');
-      if (!file) {
-        setPdfUploadState(null);
-        return;
-      }
-
-      const isPdf = String(file.type || '').toLowerCase() === 'application/pdf' || /\.pdf$/i.test(String(file.name || ''));
-      if (!isPdf) {
-        if (input) input.value = '';
-        setPdfUploadState(null);
-        showToast('Please choose a PDF file.');
-        return;
-      }
-
-      setPdfUploadState(file);
-    }
-
-    function wirePdfUpload() {
-      const dropZone = document.getElementById('pdf-drop-zone');
-      const input = document.getElementById('pdf-upload');
-      if (!dropZone || !input) return;
-
-      setPdfUploadState(null);
-
-      dropZone.addEventListener('click', function () {
-        input.click();
-      });
-
-      dropZone.addEventListener('keydown', function (event) {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          input.click();
-        }
-      });
-
-      input.addEventListener('change', function () {
-        const file = input.files && input.files[0] ? input.files[0] : null;
-        handlePdfSelection(file);
-      });
-
-      ['dragenter', 'dragover'].forEach(function (eventName) {
-        dropZone.addEventListener(eventName, function (event) {
-          event.preventDefault();
-          dropZone.classList.add('is-dragover');
-        });
-      });
-
-      ['dragleave', 'dragend'].forEach(function (eventName) {
-        dropZone.addEventListener(eventName, function () {
-          dropZone.classList.remove('is-dragover');
-        });
-      });
-
-      dropZone.addEventListener('drop', function (event) {
-        event.preventDefault();
-        dropZone.classList.remove('is-dragover');
-
-        const file = event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]
-          ? event.dataTransfer.files[0]
-          : null;
-
-        if (!file) return;
-
-        try {
-          const transfer = new DataTransfer();
-          transfer.items.add(file);
-          input.files = transfer.files;
-        } catch (_) {
-        }
-
-        handlePdfSelection(file);
-      });
-    }
-
-    async function fetchJson(url, options) {
-      const response = await fetch(url, Object.assign({
-        credentials: 'include',
-        method: 'GET'
-      }, options || {}));
-
-      if (response.status === 401) {
-        redirectToSignIn();
-        throw new Error('unauthorized');
-      }
-
-      const text = await response.text().catch(function () { return ''; });
-      let data = null;
-      try {
-        data = text ? JSON.parse(text) : null;
-      } catch (_) {
-        data = null;
-      }
-
-      if (!response.ok) {
-        const err = new Error(
-          data && (data.error || data.message)
-            ? String(data.error || data.message)
-            : (text || response.statusText || 'request_failed')
-        );
-        err.status = response.status;
-        err.code = data && data.error ? String(data.error) : '';
-        err.details = data && Object.prototype.hasOwnProperty.call(data, 'details') ? data.details : null;
-        err.payload = data;
-        throw err;
-      }
-
-      return data;
-    }
-
-    function normalizePurchases(data) {
-      if (Array.isArray(data)) return data;
-      if (data && Array.isArray(data.purchases)) return data.purchases;
-      if (data && Array.isArray(data.items)) return data.items;
-      return [];
-    }
-
-    function normalizeReports(data) {
-      if (Array.isArray(data)) return data;
-      if (data && Array.isArray(data.reports)) return data.reports;
-      if (data && Array.isArray(data.items)) return data.items;
-      return [];
-    }
-
-    function normalizeMemberships(data) {
-      if (Array.isArray(data)) return data;
-      if (data && Array.isArray(data.memberships)) return data.memberships;
-      if (data && Array.isArray(data.items)) return data.items;
-      return [];
-    }
-
-    function normalizeBookings(data) {
-      if (Array.isArray(data)) return data;
-      if (data && Array.isArray(data.bookings)) return data.bookings;
-      if (data && Array.isArray(data.items)) return data.items;
-      return [];
-    }
-
-    function normalizeSupportTickets(data) {
-      if (Array.isArray(data)) return data;
-      if (data && Array.isArray(data.tickets)) return data.tickets;
-      if (data && Array.isArray(data.items)) return data.items;
-      return [];
-    }
-
-    function normalizeTokenLedger(data) {
-      if (data && Array.isArray(data.ledger)) return data.ledger;
-      if (Array.isArray(data)) return data;
-      if (data && Array.isArray(data.items)) return data.items;
-      return [];
-    }
-
-    function getMeEmail(me) {
-      return firstDefined(me && me.email, me && me.user && me.user.email, 'Unknown');
-    }
-
-    function getMeAccountId(me) {
-      return String(firstDefined(
-        me && me.accountId,
-        me && me.account_id,
-        me && me.user && me.user.accountId,
-        me && me.user && me.user.account_id,
-        me && me.id,
-        me && me.user && me.user.id,
-        ''
-      ) || '').trim();
-    }
-
-    function getMeTokenId(me) {
-      const raw = firstDefined(
-        me && me.tokenId,
-        me && me.transcriptTokenId,
-        me && me.ledgerTokenId,
-        me && me.user && me.user.tokenId,
-        me && me.user && me.user.transcriptTokenId,
-        me && me.user && me.user.ledgerTokenId,
-        window.localStorage && window.localStorage.getItem('tokenId'),
-        window.localStorage && window.localStorage.getItem('transcriptTokenId'),
-        window.sessionStorage && window.sessionStorage.getItem('tokenId'),
-        window.sessionStorage && window.sessionStorage.getItem('transcriptTokenId'),
-        ''
-      );
-      return String(raw || '').trim();
-    }
-
-    function getMeTokens(me) {
-      const raw = firstDefined(
-        me && me.availableTokens,
-        me && me.balance,
-        me && me.tokenBalance,
-        me && me.tokens,
-        me && me.user && me.user.balance,
-        me && me.user && me.user.tokenBalance,
-        '0'
-      );
-      return String(raw);
-    }
-
-    async function fetchLedgerBalance(tokenId) {
-      const cleanTokenId = String(tokenId || '').trim();
-      if (!cleanTokenId) return null;
-
-      const data = await fetchJson('/transcript/tokens?tokenId=' + encodeURIComponent(cleanTokenId));
-      if (!data || typeof data.balance === 'undefined' || data.balance === null) return null;
-      return String(data.balance);
-    }
-
-    async function fetchMembershipsByAccount(accountId) {
-      const cleanAccountId = String(accountId || '').trim();
-      if (!cleanAccountId) return [];
-
-      const data = await fetchJson('/v1/memberships/by-account/' + encodeURIComponent(cleanAccountId));
-      return normalizeMemberships(data);
-    }
-
-    async function fetchBookingsByAccount(accountId) {
-      const cleanAccountId = String(accountId || '').trim();
-      if (!cleanAccountId) return [];
-
-      const data = await fetchJson('/v1/bookings/by-account/' + encodeURIComponent(cleanAccountId));
-      return normalizeBookings(data);
-    }
-
-    async function fetchSupportTicketsByAccount(accountId) {
-      const cleanAccountId = String(accountId || '').trim();
-      if (!cleanAccountId) return [];
-
-      const data = await fetchJson('/v1/support/tickets/by-account/' + encodeURIComponent(cleanAccountId));
-      return normalizeSupportTickets(data);
-    }
-
-    async function fetchTokenLedger(tokenId) {
-      const cleanTokenId = String(tokenId || '').trim();
-      if (!cleanTokenId) return null;
-
-      return await fetchJson('/transcript/tokens?tokenId=' + encodeURIComponent(cleanTokenId));
-    }
-
-    function getMembershipComparableDate(item) {
-      return Date.parse(firstDefined(
-        item && item.period_start_at,
-        item && item.periodStartAt,
-        item && item.createdAt,
-        item && item.created_at,
-        item && item.updatedAt,
-        item && item.updated_at,
-        ''
-      )) || 0;
-    }
-
-    function getRecordComparableDate(item) {
-      return Date.parse(firstDefined(
-        item && item.scheduled_for,
-        item && item.scheduledFor,
-        item && item.createdAt,
-        item && item.created_at,
-        item && item.updatedAt,
-        item && item.updated_at,
-        item && item.at,
-        ''
-      )) || 0;
-    }
-
-    function getMembershipPlan(item) {
-      return firstDefined(item && item.plan_code, item && item.planCode, item && item.plan_name, item && item.planName, '—');
-    }
-
-    function getMembershipStatus(item) {
-      return firstDefined(item && item.billing_status, item && item.billingStatus, item && item.status, 'unknown');
-    }
-
-    function renderMembershipRows(containerId, memberships) {
-      const container = document.getElementById(containerId);
-      if (!container) return;
-
-      container.innerHTML = memberships.map(function (item) {
-        const membershipId = firstDefined(item && item.membership_id, item && item.membershipId, item && item.id, '—');
-        const plan = getMembershipPlan(item);
-        const status = getMembershipStatus(item);
-        const start = firstDefined(item && item.period_start_at, item && item.periodStartAt, item && item.created_at, item && item.createdAt, '');
-        const end = firstDefined(item && item.period_end_at, item && item.periodEndAt, '');
-        const source = firstDefined(item && item.source, item && item.created_from, '—');
-
-        return '' +
-          '<div class="account-membership-item">' +
-            '<div class="account-membership-top">' +
-              '<p class="account-membership-title">' + escapeHtml(plan) + '</p>' +
-              getStatusBadge(status) +
-            '</div>' +
-            '<div class="account-membership-meta">' +
-              '<div><strong>Membership ID:</strong> ' + escapeHtml(membershipId) + '</div>' +
-              '<div><strong>Starts:</strong> ' + escapeHtml(formatDate(start)) + '</div>' +
-              '<div><strong>Ends:</strong> ' + escapeHtml(formatDate(end)) + '</div>' +
-              '<div><strong>Source:</strong> ' + escapeHtml(String(source)) + '</div>' +
-            '</div>' +
-          '</div>';
-      }).join('');
-    }
-
-    function renderMemberships(data) {
-      latestMemberships = normalizeMemberships(data).slice().sort(function (a, b) {
-        return getMembershipComparableDate(b) - getMembershipComparableDate(a);
-      });
-
-      const empty = document.getElementById('accountMembershipsEmpty');
-      const wrap = document.getElementById('accountMembershipsTableWrap');
-      const current = latestMemberships[0] || null;
-
-      setText('accountMembershipStatus', current ? getMembershipStatus(current) : 'No membership');
-      setText('accountMembershipPlan', current ? getMembershipPlan(current) : '—');
-
-      if (!empty || !wrap) return;
-
-      if (!latestMemberships.length) {
-        empty.classList.remove('hidden');
-        wrap.classList.add('hidden');
-        clearTableBody('accountMembershipsTbody');
-        return;
-      }
-
-      empty.classList.add('hidden');
-      wrap.classList.remove('hidden');
-      renderMembershipRows('accountMembershipsTbody', latestMemberships);
-    }
-
-    function renderBookings(data) {
-      latestBookings = normalizeBookings(data).slice().sort(function (a, b) {
-        return getRecordComparableDate(b) - getRecordComparableDate(a);
-      });
-
-      const empty = document.getElementById('calendarPageEmpty');
-      const wrap = document.getElementById('calendarPageTableWrap');
-      const tbody = document.getElementById('calendarPageTbody');
-      if (!empty || !wrap || !tbody) return;
-
-      if (!latestBookings.length) {
-        empty.classList.remove('hidden');
-        wrap.classList.add('hidden');
-        tbody.innerHTML = '';
-        return;
-      }
-
-      empty.classList.add('hidden');
-      wrap.classList.remove('hidden');
-      tbody.innerHTML = latestBookings.map(function (item) {
-        return '' +
-          '<tr>' +
-            '<td>' + escapeHtml(firstDefined(item && item.booking_id, item && item.bookingId, item && item.id, '—')) + '</td>' +
-            '<td>' + escapeHtml(firstDefined(item && item.professional_name, item && item.professional_id, item && item.professionalId, '—')) + '</td>' +
-            '<td>' + escapeHtml(firstDefined(item && item.event_type_slug, item && item.eventTypeSlug, '—')) + '</td>' +
-            '<td>' + escapeHtml(formatDate(firstDefined(item && item.scheduled_for, item && item.scheduledFor, ''))) + '</td>' +
-            '<td>' + getStatusBadge(firstDefined(item && item.status, 'scheduled')) + '</td>' +
-          '</tr>';
-      }).join('');
-    }
-
-    function renderSupportTickets(data) {
-      latestSupportTickets = normalizeSupportTickets(data).slice().sort(function (a, b) {
-        return getRecordComparableDate(b) - getRecordComparableDate(a);
-      });
-
-      const empty = document.getElementById('supportPageEmpty');
-      const wrap = document.getElementById('supportPageTableWrap');
-      const tbody = document.getElementById('supportPageTbody');
-      if (!empty || !wrap || !tbody) return;
-
-      if (!latestSupportTickets.length) {
-        empty.classList.remove('hidden');
-        wrap.classList.add('hidden');
-        tbody.innerHTML = '';
-        return;
-      }
-
-      empty.classList.add('hidden');
-      wrap.classList.remove('hidden');
-      tbody.innerHTML = latestSupportTickets.map(function (item) {
-        return '' +
-          '<tr>' +
-            '<td>' + escapeHtml(firstDefined(item && item.ticket_id, item && item.ticketId, item && item.id, '—')) + '</td>' +
-            '<td>' + escapeHtml(firstDefined(item && item.subject, '—')) + '</td>' +
-            '<td>' + getStatusBadge(firstDefined(item && item.status, 'open')) + '</td>' +
-            '<td>' + escapeHtml(formatDate(firstDefined(item && item.created_at, item && item.createdAt, ''))) + '</td>' +
-            '<td>' + escapeHtml(formatDate(firstDefined(item && item.updated_at, item && item.updatedAt, ''))) + '</td>' +
-          '</tr>';
-      }).join('');
-    }
-
-    function renderTokenUsage(data, tokenId) {
-      latestTokenLedger = data || null;
-      const ledger = normalizeTokenLedger(data).slice().sort(function (a, b) {
-        return getRecordComparableDate(b) - getRecordComparableDate(a);
-      });
-      const empty = document.getElementById('tokenUsagePageEmpty');
-      const wrap = document.getElementById('tokenUsagePageTableWrap');
-      const tbody = document.getElementById('tokenUsagePageTbody');
-
-      setText('tokenUsageTokenId', tokenId || '—');
-      setText('tokenUsageBalance', data && typeof data.balance !== 'undefined' ? String(data.balance) : '—');
-
-      if (!empty || !wrap || !tbody) return;
-
-      if (!ledger.length) {
-        empty.classList.remove('hidden');
-        wrap.classList.add('hidden');
-        tbody.innerHTML = '';
-        return;
-      }
-
-      empty.classList.add('hidden');
-      wrap.classList.remove('hidden');
-      tbody.innerHTML = ledger.map(function (item) {
-        return '' +
-          '<tr>' +
-            '<td>' + escapeHtml(formatDate(firstDefined(item && item.at, item && item.created_at, item && item.createdAt, ''))) + '</td>' +
-            '<td>' + escapeHtml(firstDefined(item && item.type, item && item.event_type, '—')) + '</td>' +
-            '<td>' + escapeHtml(String(firstDefined(item && item.amount, item && item.delta, '—'))) + '</td>' +
-            '<td>' + escapeHtml(String(firstDefined(item && item.balance_after, item && item.balanceAfter, '—'))) + '</td>' +
-            '<td>' + escapeHtml(firstDefined(item && item.reference, item && item.report_id, item && item.reportId, item && item.id, '—')) + '</td>' +
-          '</tr>';
-      }).join('');
-    }
-
-    function setAccountState(me, tokenBalanceOverride) {
-      latestMe = me || {};
-
-      const accountId = getMeAccountId(latestMe);
-      const email = getMeEmail(latestMe);
-      const tokenId = getMeTokenId(latestMe);
-      const tokens = tokenBalanceOverride != null ? String(tokenBalanceOverride) : getMeTokens(latestMe);
-
-      [
-        ['accountEmail', email],
-        ['accountId', accountId || '—'],
-        ['accountTokens', tokens],
-        ['parser-token-available', tokens],
-        ['receiptSummaryEmail', email],
-        ['receiptSummaryTokens', tokens],
-        ['sidebarEmail', email],
-        ['sidebarTokens', tokens]
-      ].sort(function (a, b) {
-        return a[0].localeCompare(b[0]);
-      }).forEach(function (entry) {
-        setText(entry[0], entry[1]);
-      });
-
-      setValue('parser-token-id', tokenId || '');
-    }
-
-    function renderReportRows(tbodyId, reports) {
-      const tbody = document.getElementById(tbodyId);
-      if (!tbody) return;
-
-      tbody.innerHTML = reports.map(function (item) {
-        const createdAt = firstDefined(item.createdAt, item.created_at, item.insertedAt);
-        const printedAt = firstDefined(item.printedAt, item.printed_at);
-        const reportId = firstDefined(item.reportId, item.report_id, item.id);
-        const reportUrl = reportId ? buildReportHistoryUrl(reportId) : firstDefined(item.reportUrl, item.report_url, '');
-        const status = firstDefined(item.status, printedAt ? 'printed' : 'pending');
-        const creditsUsed = getCreditsUsed(item);
-        const label = getReportLabel(reportId);
-
-        return '' +
-          '<tr>' +
-            '<td>' + escapeHtml(reportId || '—') + '</td>' +
-            '<td>' + escapeHtml(formatDate(createdAt)) + '</td>' +
-            '<td>' + escapeHtml(formatDate(printedAt)) + '</td>' +
-            '<td>' + getStatusBadge(status) + '</td>' +
-            '<td>' + escapeHtml(creditsUsed) + '</td>' +
-            '<td><input class="report-label-input" type="text" data-report-label="' + escapeHtml(reportId || '') + '" value="' + escapeHtml(label) + '" placeholder="Add internal label" maxlength="80" /></td>' +
-            '<td>' + (reportUrl ? '<a class="btn btn-secondary" style="min-height:36px; padding:0 12px;" href="' + escapeHtml(reportUrl) + '">Open report</a>' : '—') + '</td>' +
-          '</tr>';
-      }).join('');
-    }
-
-    function renderPurchaseRows(tbodyId, purchases) {
-      const tbody = document.getElementById(tbodyId);
-      if (!tbody) return;
-
-      tbody.innerHTML = purchases.map(function (item) {
-        const createdAt = firstDefined(item.createdAt, item.created_at, item.at);
-        const credits = firstDefined(item.credits, item.creditAmount, item.amountCredits, '—');
-        const priceId = firstDefined(item.priceId, item.price_id, '—');
-        const status = firstDefined(item.status, item.paymentStatus, 'completed');
-
-        return '' +
-          '<tr>' +
-            '<td>' + escapeHtml(formatDate(createdAt)) + '</td>' +
-            '<td>' + escapeHtml(String(credits)) + '</td>' +
-            '<td>' + escapeHtml(String(priceId)) + '</td>' +
-            '<td>' + getStatusBadge(status) + '</td>' +
-          '</tr>';
-      }).join('');
-    }
-
-    function clearTableBody(id) {
-      const tbody = document.getElementById(id);
-      if (tbody) tbody.innerHTML = '';
-    }
-
-    function getFilterValue(id) {
-      const el = document.getElementById(id);
-      return String((el && el.value) || '').trim().toLowerCase();
-    }
-
-    function getSortDirection(id) {
-      const value = getFilterValue(id);
-      return value === 'asc' ? 1 : -1;
-    }
-
-    function getSortField(id, fallback) {
-      const el = document.getElementById(id);
-      return String((el && el.value) || fallback || '').trim();
-    }
-
-    function getComparableValue(item, field) {
-      if (field === 'createdAt') return Date.parse(firstDefined(item.createdAt, item.created_at, item.insertedAt)) || 0;
-      if (field === 'credits') return Number(firstDefined(item.credits, item.creditAmount, item.amountCredits, 0)) || 0;
-      if (field === 'creditsUsed') return Number(getCreditsUsed(item)) || 0;
-      if (field === 'label') return getReportLabel(firstDefined(item.reportId, item.report_id, item.id)).toLowerCase();
-      if (field === 'priceId') return String(firstDefined(item.priceId, item.price_id, '')).toLowerCase();
-      if (field === 'printedAt') return Date.parse(firstDefined(item.printedAt, item.printed_at)) || 0;
-      if (field === 'reportId') return String(firstDefined(item.reportId, item.report_id, item.id, '')).toLowerCase();
-      if (field === 'status') return String(firstDefined(item.status, item.paymentStatus, item.printedAt ? 'printed' : 'pending')).toLowerCase();
-      return String(firstDefined(item[field], '')).toLowerCase();
-    }
-
-    function compareValues(a, b) {
-      if (typeof a === 'number' && typeof b === 'number') return a - b;
-      return String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' });
-    }
-
-    function getVisiblePurchases() {
-      const filter = getFilterValue('receiptsFilterInput');
-      const sortDirection = getSortDirection('receiptsSortDirection');
-      const sortField = getSortField('receiptsSortField', 'createdAt');
-
-      return latestPurchases.filter(function (item) {
-        if (!filter) return true;
-
-        const haystack = [
-          firstDefined(item.createdAt, item.created_at, item.at),
-          firstDefined(item.credits, item.creditAmount, item.amountCredits, ''),
-          firstDefined(item.priceId, item.price_id, ''),
-          firstDefined(item.status, item.paymentStatus, 'completed')
-        ].join(' ').toLowerCase();
-
-        return haystack.includes(filter);
-      }).slice().sort(function (a, b) {
-        return compareValues(getComparableValue(a, sortField), getComparableValue(b, sortField)) * sortDirection;
-      });
-    }
-
-    function getVisibleReports() {
-      const filter = getFilterValue('reportsFilterInput');
-      const sortDirection = getSortDirection('reportsSortDirection');
-      const sortField = getSortField('reportsSortField', 'createdAt');
-
-      return latestReports.filter(function (item) {
-        if (!filter) return true;
-
-        const reportId = firstDefined(item.reportId, item.report_id, item.id);
-        const haystack = [
-          firstDefined(item.createdAt, item.created_at, item.insertedAt),
-          getCreditsUsed(item),
-          getReportLabel(reportId),
-          firstDefined(item.printedAt, item.printed_at),
-          reportId,
-          firstDefined(item.status, item.printedAt ? 'printed' : 'pending')
-        ].join(' ').toLowerCase();
-
-        return haystack.includes(filter);
-      }).slice().sort(function (a, b) {
-        return compareValues(getComparableValue(a, sortField), getComparableValue(b, sortField)) * sortDirection;
-      });
-    }
-
-    function updateReportsSummaryText(filteredCount, totalCount) {
-      const el = document.getElementById('reportsSummaryText');
-      if (!el) return;
-      el.textContent = String(filteredCount) + ' of ' + String(totalCount) + ' reports shown.';
-    }
-
-    function renderReports(data) {
-      latestReports = normalizeReports(data);
-      const filteredReports = getVisibleReports();
-      const hasReports = latestReports.length > 0;
-      const hasFilteredReports = filteredReports.length > 0;
-      const empty = document.getElementById('reportsPageEmpty');
-      const wrap = document.getElementById('reportsPageTableWrap');
-
-      updateReportsSummaryText(filteredReports.length, latestReports.length);
-      if (!empty || !wrap) return;
-
-      if (!hasReports) {
-        empty.classList.remove('hidden');
-        empty.textContent = 'No reports found yet.';
-        wrap.classList.add('hidden');
-        clearTableBody('reportsPageTbody');
-        return;
-      }
-
-      if (!hasFilteredReports) {
-        empty.classList.remove('hidden');
-        empty.textContent = 'No reports match the current search or sort view.';
-        wrap.classList.add('hidden');
-        clearTableBody('reportsPageTbody');
-        return;
-      }
-
-      empty.classList.add('hidden');
-      empty.textContent = 'No reports found yet.';
-      wrap.classList.remove('hidden');
-      renderReportRows('reportsPageTbody', filteredReports);
-    }
-
-    function renderPurchases(data) {
-      latestPurchases = normalizePurchases(data);
-      const filteredPurchases = getVisiblePurchases();
-      const hasPurchases = latestPurchases.length > 0;
-      const hasFilteredPurchases = filteredPurchases.length > 0;
-      const empty = document.getElementById('receiptsPageEmpty');
-      const wrap = document.getElementById('receiptsPageTableWrap');
-
-      if (empty && wrap) {
-        if (!hasPurchases) {
-          empty.classList.remove('hidden');
-          empty.textContent = 'No purchases found yet.';
-          wrap.classList.add('hidden');
-          clearTableBody('receiptsPageTbody');
-        } else if (!hasFilteredPurchases) {
-          empty.classList.remove('hidden');
-          empty.textContent = 'No receipts match the current filter.';
-          wrap.classList.add('hidden');
-          clearTableBody('receiptsPageTbody');
-        } else {
-          empty.classList.add('hidden');
-          empty.textContent = 'No purchases found yet.';
-          wrap.classList.remove('hidden');
-          renderPurchaseRows('receiptsPageTbody', filteredPurchases);
-        }
-      }
-
-      const latest = latestPurchases[0] || null;
-      const latestStatus = latest ? firstDefined(latest.status, latest.paymentStatus, 'completed') : '—';
-      setText('receiptSummaryStatus', latestStatus);
-    }
-
-    function switchPage(page) {
-      const key = String(page || 'dashboard').trim().toLowerCase();
-
-      document.querySelectorAll('.page').forEach(function (el) {
-        el.classList.toggle('active', el.id === key + 'Page');
-      });
-
-      document.querySelectorAll('.workspace-tab').forEach(function (el) {
-        el.classList.toggle('active', String(el.getAttribute('data-workspace-tab') || '').trim().toLowerCase() === key);
-      });
-
-      document.querySelectorAll('.nav-item').forEach(function (el) {
-        el.classList.toggle('active', String(el.getAttribute('data-page') || '').trim().toLowerCase() === key);
-      });
-
-      if (window.lucide && typeof window.lucide.createIcons === 'function') {
-        window.lucide.createIcons();
-      }
-    }
-
-    function switchParserStep(stepNum) {
-      const step = String(stepNum || '1').trim();
-
-      document.querySelectorAll('.parser-step').forEach(function (el) {
-        el.classList.toggle('active', String(el.getAttribute('data-parser-step') || '').trim() === step);
-      });
-
-      document.querySelectorAll('.parser-section').forEach(function (el) {
-        el.classList.toggle('active', String(el.getAttribute('data-parser-panel') || '').trim() === step);
-      });
-
-      if (window.lucide && typeof window.lucide.createIcons === 'function') {
-        window.lucide.createIcons();
-      }
-    }
-
-    async function signOut() {
-      try {
-        await fetch('/api/transcripts/sign-out', {
-          credentials: 'include',
-          method: 'POST'
-        });
-      } catch (_) {
-      }
-
-      latestMe = null;
-      latestBookings = [];
-      latestMemberships = [];
-      latestPurchases = [];
-      latestReports = [];
-      latestSupportTickets = [];
-      latestTokenLedger = null;
-      window.location.href = '/sign-in.html?redirect=' + encodeURIComponent(APP_DASHBOARD_PATH);
-    }
-
-    function wireNavigation() {
-      document.addEventListener('click', function (event) {
-        const parserStepBtn = event.target.closest('[data-parser-step]');
-        if (parserStepBtn) {
-          event.preventDefault();
-          switchParserStep(parserStepBtn.getAttribute('data-parser-step'));
-          return;
-        }
-
-        const tabButton = event.target.closest('[data-workspace-tab]');
-        if (tabButton) {
-          event.preventDefault();
-          switchPage(tabButton.getAttribute('data-workspace-tab'));
-          return;
-        }
-
-        const pageButton = event.target.closest('[data-page]');
-        if (pageButton) {
-          event.preventDefault();
-          switchPage(pageButton.getAttribute('data-page'));
-          return;
-        }
-
-        const jumpButton = event.target.closest('[data-page-jump]');
-        if (jumpButton) {
-          event.preventDefault();
-          switchPage(jumpButton.getAttribute('data-page-jump'));
-        }
-      });
-    }
-
-    function wireReportLabelControls() {
-      document.addEventListener('input', function (event) {
-        const input = event.target.closest('[data-report-label]');
-        if (!input) return;
-        const reportId = input.getAttribute('data-report-label');
-        saveReportLabel(reportId, input.value);
-        updateReportsSummaryText(getVisibleReports().length, latestReports.length);
-      });
-    }
-
-    function wireTableControls() {
-      ['receiptsFilterInput', 'receiptsSortDirection', 'receiptsSortField'].sort().forEach(function (id) {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.addEventListener('input', function () {
-          renderPurchases(latestPurchases);
-        });
-        el.addEventListener('change', function () {
-          renderPurchases(latestPurchases);
-        });
-      });
-
-      ['reportsFilterInput', 'reportsSortDirection', 'reportsSortField'].sort().forEach(function (id) {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.addEventListener('input', function () {
-          renderReports(latestReports);
-        });
-        el.addEventListener('change', function () {
-          renderReports(latestReports);
-        });
-      });
-    }
-
-    function wireStaticButtons() {
-      wireBrandLogo();
-      wirePdfUpload();
-      wireReportLabelControls();
-      wireTableControls();
-
-      document.querySelectorAll('[data-toast]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          showToast(btn.getAttribute('data-toast'));
-        });
-      });
-
-      const refreshBalanceBtn = document.getElementById('parser-save-token');
-      const signOutBtn = document.getElementById('signOutBtn');
-      const signOutBtnSecondary = document.getElementById('signOutBtnSecondary');
-      const supportCreateBtn = document.getElementById('supportCreateBtn');
-
-      if (refreshBalanceBtn) {
-        refreshBalanceBtn.addEventListener('click', async function () {
-          refreshBalanceBtn.disabled = true;
-          const originalText = refreshBalanceBtn.textContent;
-          refreshBalanceBtn.textContent = 'Refreshing...';
-
-          try {
-            const me = await fetchJson('/api/transcripts/me');
-            const tokenId = getMeTokenId(me || {});
-            const ledgerData = tokenId ? await fetchTokenLedger(tokenId) : null;
-            const ledgerBalance = ledgerData && typeof ledgerData.balance !== 'undefined' ? ledgerData.balance : null;
-            setAccountState(me || {}, ledgerBalance);
-            renderTokenUsage(ledgerData, tokenId);
-          } catch (error) {
-            if (String((error && error.message) || error) !== 'unauthorized') {
-              showToast('Failed to refresh balance. ' + String((error && error.message) || error || 'unknown_error'));
-            }
-          } finally {
-            refreshBalanceBtn.disabled = false;
-            refreshBalanceBtn.textContent = originalText;
-          }
-        });
-      }
-
-      if (supportCreateBtn) {
-        supportCreateBtn.addEventListener('click', async function () {
-          const accountId = getMeAccountId(latestMe || {});
-          const subject = String((document.getElementById('supportSubject') && document.getElementById('supportSubject').value) || '').trim();
-          const message = String((document.getElementById('supportMessage') && document.getElementById('supportMessage').value) || '').trim();
-          const statusEl = document.getElementById('supportCreateStatus');
-
-          if (!accountId) {
-            if (statusEl) statusEl.textContent = 'Missing authenticated account ID.';
-            return;
-          }
-          if (!subject || !message) {
-            if (statusEl) statusEl.textContent = 'Subject and message are required.';
-            return;
-          }
-
-          supportCreateBtn.disabled = true;
-          const original = supportCreateBtn.textContent;
-          supportCreateBtn.textContent = 'Creating...';
-          if (statusEl) statusEl.textContent = 'Creating ticket...';
-
-          try {
-            await fetchJson('/v1/support/tickets', {
-              method: 'POST',
-              headers: { 'content-type': 'application/json' },
-              body: JSON.stringify({ account_id: accountId, message: message, subject: subject })
-            });
-            if (document.getElementById('supportSubject')) document.getElementById('supportSubject').value = '';
-            if (document.getElementById('supportMessage')) document.getElementById('supportMessage').value = '';
-            renderSupportTickets(await fetchSupportTicketsByAccount(accountId));
-            if (statusEl) statusEl.textContent = 'Ticket created.';
-          } catch (error) {
-            if (statusEl) statusEl.textContent = 'Ticket create failed. ' + String((error && error.message) || error || 'unknown_error');
-          } finally {
-            supportCreateBtn.disabled = false;
-            supportCreateBtn.textContent = original;
-          }
-        });
-      }
-
-      if (signOutBtn) signOutBtn.addEventListener('click', signOut);
-      if (signOutBtnSecondary) signOutBtnSecondary.addEventListener('click', signOut);
-    }
-
-    async function boot() {
-      wireNavigation();
-      wireStaticButtons();
-      switchPage('dashboard');
-      switchParserStep('1');
-
-      const me = await fetchJson('/api/transcripts/me');
-      const accountId = getMeAccountId(me || {});
-      const tokenId = getMeTokenId(me || {});
-      const ledgerData = tokenId ? await fetchTokenLedger(tokenId) : null;
-      const ledgerBalance = ledgerData && typeof ledgerData.balance !== 'undefined' ? ledgerData.balance : null;
-      setAccountState(me || {}, ledgerBalance);
-      renderTokenUsage(ledgerData, tokenId);
-
-      const bookingsPromise = accountId ? fetchBookingsByAccount(accountId) : Promise.resolve([]);
-      const membershipsPromise = accountId ? fetchMembershipsByAccount(accountId) : Promise.resolve([]);
-      const purchasesPromise = fetchJson('/api/transcripts/purchases');
-      const reportsPromise = fetchJson('/api/transcripts/reports');
-      const supportTicketsPromise = accountId ? fetchSupportTicketsByAccount(accountId) : Promise.resolve([]);
-
-      const bookings = await bookingsPromise;
-      renderBookings(bookings);
-
-      const memberships = await membershipsPromise;
-      renderMemberships(memberships);
-
-      const purchases = await purchasesPromise;
-      renderPurchases(purchases);
-
-      const reports = await reportsPromise;
-      renderReports(reports);
-
-      const supportTickets = await supportTicketsPromise;
-      renderSupportTickets(supportTickets);
-
-      if (window.lucide && typeof window.lucide.createIcons === 'function') {
-        window.lucide.createIcons();
-      }
-    }
-
-    function runDashboardSelfTests() {
-      const tests = [
-        {
-          name: 'normalizeBookings handles bookings wrapper',
-          run: function () {
-            return normalizeBookings({ bookings: [1, 2] }).length === 2;
-          }
-        },
-        {
-          name: 'normalizeMemberships handles memberships wrapper',
-          run: function () {
-            return normalizeMemberships({ memberships: [1, 2] }).length === 2;
-          }
-        },
-        {
-          name: 'normalizeSupportTickets handles tickets wrapper',
-          run: function () {
-            return normalizeSupportTickets({ tickets: [1, 2] }).length === 2;
-          }
-        },
-        {
-          name: 'normalizeTokenLedger handles ledger wrapper',
-          run: function () {
-            return normalizeTokenLedger({ ledger: [1, 2] }).length === 2;
-          }
-        },
-        {
-          name: 'buildReportHistoryUrl returns encoded route',
-          run: function () {
-            return buildReportHistoryUrl('abc 123') === '/transcript/report?r=abc%20123';
-          }
-        },
-        {
-          name: 'bytesToReadable formats KB',
-          run: function () {
-            return bytesToReadable(1536) === '1.5 KB';
-          }
-        },
-        {
-          name: 'firstDefined returns first non-empty value',
-          run: function () {
-            return firstDefined('', null, 'x', 'y') === 'x';
-          }
-        },
-        {
-          name: 'normalizePurchases handles purchases wrapper',
-          run: function () {
-            return normalizePurchases({ purchases: [1, 2] }).length === 2;
-          }
-        },
-        {
-          name: 'normalizeReports handles array',
-          run: function () {
-            return normalizeReports([1]).length === 1;
-          }
-        },
-        {
-          name: 'purchase filtering matches price ID',
-          run: function () {
-            latestPurchases = [{ createdAt: '2026-03-01', credits: 25, priceId: 'price_abc', status: 'completed' }];
-            const filterEl = document.getElementById('receiptsFilterInput');
-            const sortFieldEl = document.getElementById('receiptsSortField');
-            const sortDirectionEl = document.getElementById('receiptsSortDirection');
-            if (!filterEl || !sortFieldEl || !sortDirectionEl) return true;
-            filterEl.value = 'abc';
-            sortFieldEl.value = 'createdAt';
-            sortDirectionEl.value = 'desc';
-            const result = getVisiblePurchases().length === 1;
-            filterEl.value = '';
-            return result;
-          }
-        },
-        {
-          name: 'redirectToSignIn uses new app dashboard path',
-          run: function () {
-            return APP_DASHBOARD_PATH === '/app/dashboard.html';
-          }
-        },
-        {
-          name: 'report sorting orders ascending by report ID',
-          run: function () {
-            latestReports = [{ reportId: 'B2' }, { reportId: 'A1' }];
-            const filterEl = document.getElementById('reportsFilterInput');
-            const sortFieldEl = document.getElementById('reportsSortField');
-            const sortDirectionEl = document.getElementById('reportsSortDirection');
-            if (!filterEl || !sortFieldEl || !sortDirectionEl) return true;
-            filterEl.value = '';
-            sortFieldEl.value = 'reportId';
-            sortDirectionEl.value = 'asc';
-            const result = getVisibleReports()[0].reportId === 'A1';
-            sortDirectionEl.value = 'desc';
-            return result;
-          }
-        },
-        {
-          name: 'renderReports clears tbody when filter removes all rows',
-          run: function () {
-            const filterEl = document.getElementById('reportsFilterInput');
-            if (!filterEl) return true;
-            latestReports = [{ createdAt: '2026-03-01', reportId: 'R1', status: 'printed' }];
-            filterEl.value = 'zzz';
-            renderReports(latestReports);
-            const tbody = document.getElementById('reportsPageTbody');
-            const result = tbody ? tbody.innerHTML === '' : true;
-            filterEl.value = '';
-            return result;
-          }
-        },
-        {
-          name: 'report labels persist by report ID',
-          run: function () {
-            saveReportLabel('R-123', 'Amended return');
-            return getReportLabel('R-123') === 'Amended return';
-          }
-        },
-        {
-          name: 'report filtering matches saved label',
-          run: function () {
-            const filterEl = document.getElementById('reportsFilterInput');
-            if (!filterEl) return true;
-            saveReportLabel('R-456', 'Urgent case');
-            latestReports = [{ createdAt: '2026-03-01', reportId: 'R-456', status: 'pending' }];
-            filterEl.value = 'urgent';
-            const result = getVisibleReports().length === 1;
-            filterEl.value = '';
-            return result;
-          }
-        },
-        {
-          name: 'switchParserStep makes first section active',
-          run: function () {
-            switchParserStep('1');
-            const panel1 = document.querySelector('.parser-section[data-parser-panel="1"]');
-            const panel2 = document.querySelector('.parser-section[data-parser-panel="2"]');
-            return !!panel1 && panel1.classList.contains('active') && !!panel2 && !panel2.classList.contains('active');
-          }
-        }
-      ];
-
-      tests.sort(function (a, b) {
-        return a.name.localeCompare(b.name);
-      }).forEach(function (test) {
-        if (!test.run()) {
-          throw new Error('Self-test failed: ' + test.name);
-        }
-      });
-    }
-
-    boot().catch(function (error) {
-      if (String((error && error.message) || error) === 'unauthorized') {
-        return;
-      }
-
-      const message = 'Dashboard failed to load. ' + String((error && error.message) || error || 'unknown_error');
-
-      ['receiptsPageEmpty', 'reportsPageEmpty'].sort().forEach(function (id) {
-        const el = document.getElementById(id);
-        if (el) {
-          el.classList.remove('hidden');
-          el.textContent = message;
-        }
-      });
-
-      ['receiptsPageTableWrap', 'reportsPageTableWrap'].sort().forEach(function (id) {
-        const el = document.getElementById(id);
-        if (el) el.classList.add('hidden');
-      });
-    });
-
-    runDashboardSelfTests();
-  </script>
-
-  <script>
-    (function () {
-      const parserState = {
-        extractedAt: '',
-        file: null,
-        json: null,
-        lastEmailEventId: '',
-        previewReportId: '',
-        rawText: '',
-        resolvedPreviewUrl: ''
-      };
-
-      function setStatus(message) {
-        const el = document.getElementById('preview-action-status');
-        if (el) el.textContent = String(message || '');
-      }
-
-      function setOutput(id, value) {
-        const el = document.getElementById(id);
-        if (el) el.textContent = String(value == null ? '' : value);
-      }
-
-      function buildShortPreviewRoute(reportId) {
-        const clean = String(reportId || '').trim();
-        return clean ? (window.location.origin + '/transcript/report?r=' + encodeURIComponent(clean)) : '';
-      }
-
-      function getSavedLogo() {
-        try {
-          const raw = localStorage.getItem('tm_brand_logo_v1');
-          return raw ? JSON.parse(raw) : null;
-        } catch (_) {
-          return null;
-        }
-      }
-
-      function getTokenId() {
-        const me = typeof latestMe !== 'undefined' ? latestMe : null;
-        if (typeof getMeTokenId === 'function') return String(getMeTokenId(me || {}) || '').trim();
-        return '';
-      }
-
-      function updateControls() {
-        const emailBtn = document.getElementById('report-email-btn');
-        const emailInput = document.getElementById('report-email');
-        const extractBtn = document.getElementById('extract-raw-btn');
-        const parseBtn = document.getElementById('parse-structured-btn');
-        const previewBtn = document.getElementById('preview-report-btn');
-
-        const hasEmail = !!String((emailInput && emailInput.value) || '').trim();
-        const hasFile = !!parserState.file;
-        const hasJson = !!parserState.json;
-        const hasPreview = !!parserState.previewReportId;
-        const hasResolvedPreview = !!parserState.resolvedPreviewUrl;
-        const hasToken = !!getTokenId();
-
-        if (extractBtn) {
-          extractBtn.disabled = !hasFile;
-          extractBtn.className = extractBtn.disabled ? 'btn btn-secondary opacity-50 cursor-not-allowed' : 'btn btn-secondary';
-        }
-
-        if (parseBtn) {
-          parseBtn.disabled = !hasFile;
-          parseBtn.className = parseBtn.disabled ? 'btn btn-primary opacity-50 cursor-not-allowed' : 'btn btn-primary';
-        }
-
-        if (previewBtn) {
-          const disabled = !hasJson;
-          previewBtn.className = disabled ? 'btn btn-secondary opacity-50 cursor-not-allowed pointer-events-none' : 'btn btn-secondary';
-          previewBtn.setAttribute('aria-disabled', disabled ? 'true' : 'false');
-          previewBtn.href = hasResolvedPreview ? parserState.resolvedPreviewUrl : '#';
-
-          if (hasResolvedPreview) {
-            previewBtn.target = '_blank';
-            previewBtn.rel = 'noopener';
-          } else {
-            previewBtn.removeAttribute('target');
-            previewBtn.removeAttribute('rel');
-          }
-        }
-
-        if (emailBtn) {
-          emailBtn.disabled = !(hasEmail && hasJson && hasPreview && hasResolvedPreview && hasToken);
-          emailBtn.className = emailBtn.disabled ? 'btn btn-primary opacity-50 cursor-not-allowed' : 'btn btn-primary';
-        }
-      }
-
-      function resetParserForFile(file) {
-        parserState.file = file || null;
-        parserState.extractedAt = '';
-        parserState.json = null;
-        parserState.lastEmailEventId = '';
-        parserState.previewReportId = '';
-        parserState.rawText = '';
-        parserState.resolvedPreviewUrl = '';
-
-        setOutput('json-output', '(no json yet)');
-        setOutput('raw-output', '(no text yet)');
-        setOutput('report-email-status', 'Not ready.');
-
-        const titleEl = document.querySelector('#pdf-drop-zone .parser-upload-title');
-        const copyEl = document.querySelector('#pdf-drop-zone .parser-upload-copy');
-
-        if (!file) {
-          if (titleEl) titleEl.textContent = 'Drop PDF here or click to browse';
-          if (copyEl) copyEl.textContent = 'Accepts IRS transcripts (Account, Return, Wage & Income)';
-          setStatus('Runs in your browser. Your PDF is not uploaded or stored.');
-        } else {
-          if (titleEl) titleEl.textContent = file.name || 'PDF selected';
-          if (copyEl) copyEl.textContent = 'File selected locally. Ready to parse.';
-          setStatus('PDF selected: ' + (file.name || 'transcript.pdf') + '. Ready for local parsing.');
-        }
-
-        updateControls();
-      }
-
-      async function fetchJsonLocal(url, options) {
-        if (typeof fetchJson === 'function') return fetchJson(url, options);
-
-        const response = await fetch(url, Object.assign({
-          credentials: 'include',
-          method: 'GET'
-        }, options || {}));
-
-        const text = await response.text().catch(function () { return ''; });
-        let data = null;
-        try {
-          data = text ? JSON.parse(text) : null;
-        } catch (_) {
-          data = null;
-        }
-
-        if (!response.ok) {
-          const err = new Error(
-            data && (data.error || data.message)
-              ? String(data.error || data.message)
-              : (text || response.statusText || 'request_failed')
-          );
-          err.status = response.status;
-          err.code = data && data.error ? String(data.error) : '';
-          err.details = data && Object.prototype.hasOwnProperty.call(data, 'details') ? data.details : null;
-          err.payload = data;
-          throw err;
-        }
-
-        return data;
-      }
-
-      async function extractPdfText(file) {
-        if (!window.pdfjsLib || typeof window.pdfjsLib.getDocument !== 'function') {
-          throw new Error('PDF parser library did not load.');
-        }
-
-        const buffer = await file.arrayBuffer();
-        const pdf = await window.pdfjsLib.getDocument({ data: buffer }).promise;
-        const pages = [];
-
-        for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
-          const page = await pdf.getPage(pageNumber);
-          const content = await page.getTextContent();
-
-          const rows = [];
-          let active = [];
-          let lastY = null;
-
-          content.items.forEach(function (item) {
-            const text = String((item && item.str) || '').replace(/\s+/g, ' ').trim();
-            if (!text) return;
-
-            const y = item && item.transform ? Number(item.transform[5]) : null;
-            if (lastY === null || y === null || Math.abs(y - lastY) <= 3) {
-              active.push(text);
-            } else {
-              if (active.length) rows.push(active.join(' '));
-              active = [text];
-            }
-            lastY = y;
-          });
-
-          if (active.length) rows.push(active.join('\n'));
-          pages.push(rows.join('\n'));
-        }
-
-        return pages.join('\n\n').replace(/\r/g, '').replace(/\n{3,}/g, '\n\n').trim();
-      }
-
-      function uniqueSorted(values) {
-        return Array.from(new Set(
-          values.map(function (value) { return String(value || '').trim(); }).filter(Boolean)
-        )).sort(function (a, b) {
-          return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
-        });
-      }
-
-      function detectTranscriptType(text) {
-        const lower = String(text || '').toLowerCase();
-        const found = [];
-
-        if (lower.includes('account transcript')) found.push('Account Transcript');
-        if (lower.includes('record of account')) found.push('Record of Account');
-        if (lower.includes('return transcript')) found.push('Return Transcript');
-        if (lower.includes('wage and income transcript') || lower.includes('wage & income transcript')) found.push('Wage & Income Transcript');
-
-        return found.length ? found.join(' + ') : 'IRS Transcript';
-      }
-
-      function parseStructuredTranscript(rawText, fileName) {
-        const lines = String(rawText || '')
-          .split('\n')
-          .map(function (line) { return line.replace(/\s+/g, ' ').trim(); })
-          .filter(Boolean);
-
-        const years = uniqueSorted(
-          (String(rawText || '').match(/\b(?:19|20)\d{2}\b/g) || []).filter(function (year) {
-            const n = Number(year);
-            return n >= 1990 && n <= 2099;
-          })
-        );
-
-        const taxPeriods = uniqueSorted(lines.map(function (line) {
-          const match = line.match(/(?:tax\s+period|period(?:\s+ending)?|tax\s+year)\s*[:\-]?\s*((?:19|20)\d{2}(?:[-/]\d{2}[-/]\d{2})?)/i);
-          return match ? match[1] : '';
-        }));
-
-        const balances = lines
-          .filter(function (line) { return /balance|amount due|accrued|interest|penalty/i.test(line); })
-          .slice(0, 12)
-          .map(function (line) {
-            const amountMatch = line.match(/-?\$?\d{1,3}(?:,\d{3})*(?:\.\d{2})?|\(\$?\d{1,3}(?:,\d{3})*(?:\.\d{2})?\)/g);
-            return {
-              amount: amountMatch && amountMatch.length ? amountMatch[amountMatch.length - 1] : '',
-              label: line.slice(0, 160)
-            };
-          });
-
-        const notices = uniqueSorted(
-          lines.filter(function (line) {
-            return /notice|lien|levy|intent to levy|cp\d+/i.test(line);
-          }).slice(0, 12)
-        );
-
-        const transactions = lines
-          .filter(function (line) {
-            return /\b(?:transaction|code|posted|notice issued|return filed|assessment|payment|penalty|interest)\b/i.test(line);
-          })
-          .slice(0, 24)
-          .map(function (line) {
-            const amountMatch = line.match(/-?\$?\d{1,3}(?:,\d{3})*(?:\.\d{2})?|\(\$?\d{1,3}(?:,\d{3})*(?:\.\d{2})?\)/g);
-            const codeMatch = line.match(/\b\d{3}\b/);
-            const dateMatch = line.match(/\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b|\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\s+\d{1,2},\s+\d{4}\b/i);
-
-            return {
-              amount: amountMatch && amountMatch.length ? amountMatch[amountMatch.length - 1] : '',
-              code: codeMatch ? codeMatch[0] : '',
-              date: dateMatch ? dateMatch[0] : '',
-              text: line.slice(0, 220)
-            };
-          });
-
-        const ssnMatch = String(rawText || '').match(/\b\d{3}-\d{2}-(\d{4})\b|\*{3}-\*{2}-(\d{4})\b|X{3}-X{2}-(\d{4})\b/i);
-
-        return {
-          fileName: fileName || '',
-          financials: { balances: balances },
-          generatedAt: new Date().toISOString(),
-          notices: notices,
-          rawTextLength: String(rawText || '').length,
-          summary: {
-            taxPeriodCount: taxPeriods.length,
-            transactionCount: transactions.length,
-            yearCount: years.length
-          },
-          taxpayer: {
-            ssnLast4: ssnMatch ? (ssnMatch[1] || ssnMatch[2] || ssnMatch[3] || '') : '',
-            transcriptType: detectTranscriptType(rawText)
-          },
-          transcript: {
-            taxPeriods: taxPeriods,
-            yearsMentioned: years
-          },
-          transactions: transactions
-        };
-      }
-
-      function buildPreviewPayload() {
-        const savedLogo = getSavedLogo();
-
-        return {
-          brandLogo: savedLogo ? {
-            dataUrl: savedLogo.dataUrl || '',
-            name: savedLogo.name || '',
-            type: savedLogo.type || ''
-          } : null,
-          file: {
-            name: parserState.file && parserState.file.name ? parserState.file.name : '',
-            size: parserState.file && parserState.file.size ? parserState.file.size : 0
-          },
-          meta: {
-            extractedAt: parserState.extractedAt || new Date().toISOString(),
-            generatedBy: 'app-dashboard',
-            generatedFrom: 'local-pdfjs',
-            previewTitle: parserState.json && parserState.json.taxpayer ? parserState.json.taxpayer.transcriptType : 'IRS Transcript Report'
-          },
-          rawText: parserState.rawText,
-          structured: parserState.json
-        };
-      }
-
-      async function handleExtract() {
-        if (!parserState.file) return;
-
-        const btn = document.getElementById('extract-raw-btn');
-        const original = btn ? btn.textContent : '';
-
-        try {
-          if (btn) {
-            btn.disabled = true;
-            btn.textContent = 'Extracting...';
-          }
-
-          setStatus('Extracting raw text locally from your PDF...');
-          parserState.rawText = await extractPdfText(parserState.file);
-          parserState.extractedAt = new Date().toISOString();
-
-          setOutput('raw-output', parserState.rawText || '(no text yet)');
-          setStatus('Raw text extracted locally. Nothing was uploaded.');
-        } catch (error) {
-          setStatus('Raw text extraction failed.');
-          alert(String((error && error.message) || error || 'Extraction failed.'));
-        } finally {
-          if (btn) {
-            btn.disabled = false;
-            btn.textContent = original;
-          }
-          updateControls();
-        }
-      }
-
-      async function handleParse() {
-        if (!parserState.file) return;
-
-        const btn = document.getElementById('parse-structured-btn');
-        const original = btn ? btn.textContent : '';
-
-        try {
-          if (btn) {
-            btn.disabled = true;
-            btn.textContent = 'Parsing...';
-          }
-
-          if (!parserState.rawText) {
-            setStatus('Extracting raw text locally from your PDF...');
-            parserState.rawText = await extractPdfText(parserState.file);
-            parserState.extractedAt = new Date().toISOString();
-            setOutput('raw-output', parserState.rawText || '(no text yet)');
-          }
-
-          parserState.json = parseStructuredTranscript(parserState.rawText, (parserState.file && parserState.file.name) || '');
-          setOutput('json-output', JSON.stringify(parserState.json, null, 2));
-          setOutput('report-email-status', 'Ready after preview save.');
-          setStatus('Structured JSON created locally. Preview save will use 1 credit.');
-        } catch (error) {
-          setStatus('Structured parsing failed.');
-          alert(String((error && error.message) || error || 'Structured parsing failed.'));
-        } finally {
-          if (btn) {
-            btn.disabled = false;
-            btn.textContent = original;
-          }
-          updateControls();
-        }
-      }
-
-      async function handlePreview(event) {
-        if (event) event.preventDefault();
-
-        if (!parserState.json) {
-          alert('Parse the transcript before saving a preview report.');
-          return;
-        }
-
-        const btn = document.getElementById('preview-report-btn');
-        const original = btn ? btn.textContent : '';
-
-        try {
-          if (btn) {
-            btn.textContent = 'Saving...';
-            btn.classList.add('pointer-events-none');
-          }
-
-          setStatus('Saving preview report and consuming 1 credit...');
-
-          const response = await fetchJsonLocal('/api/transcripts/preview', {
-            body: JSON.stringify({ reportData: buildPreviewPayload() }),
-            headers: { 'content-type': 'application/json' },
-            method: 'POST'
-          });
-
-          parserState.lastEmailEventId = String((response && response.eventId) || '').trim();
-          parserState.previewReportId = String((response && response.reportId) || '').trim();
-          parserState.resolvedPreviewUrl = buildShortPreviewRoute(parserState.previewReportId);
-
-          if (!parserState.resolvedPreviewUrl) {
-            throw new Error('preview_url_missing');
-          }
-
-          setOutput('report-email-status', 'Preview saved. Email delivery ready.');
-          setStatus('Preview saved. Your secure report link is ready.');
-
-          if (typeof renderReports === 'function') {
-            renderReports(await fetchJsonLocal('/api/transcripts/reports'));
-          }
-
-          if (typeof fetchJson === 'function' && typeof setAccountState === 'function') {
-            const me = await fetchJson('/api/transcripts/me');
-            const tokenId = getTokenId();
-            const ledger = tokenId ? await fetchJsonLocal('/transcript/tokens?tokenId=' + encodeURIComponent(tokenId)) : null;
-            setAccountState(me || {}, ledger && typeof ledger.balance !== 'undefined' ? ledger.balance : null);
-          }
-
-          updateControls();
-
-          if (parserState.resolvedPreviewUrl) {
-            window.open(parserState.resolvedPreviewUrl, '_blank', 'noopener');
-          }
-        } catch (error) {
-          setStatus('Preview save failed. ' + String((error && error.message) || error || 'preview_failed'));
-          alert('Preview save failed. ' + String((error && error.message) || error || 'preview_failed'));
-        } finally {
-          if (btn) {
-            btn.textContent = original;
-            btn.classList.remove('pointer-events-none');
-          }
-          updateControls();
-        }
-      }
-
-      async function handleEmail() {
-        const emailInput = document.getElementById('report-email');
-        const email = String((emailInput && emailInput.value) || '').trim();
-        const tokenId = getTokenId();
-
-        if (!email) {
-          alert('Enter an email address first.');
-          return;
-        }
-
-        if (!parserState.previewReportId || !parserState.lastEmailEventId || !parserState.resolvedPreviewUrl) {
-          alert('Save the preview report first so the secure preview link can be generated.');
-          return;
-        }
-
-        const btn = document.getElementById('report-email-btn');
-        const original = btn ? btn.textContent : '';
-
-        try {
-          if (btn) {
-            btn.disabled = true;
-            btn.textContent = 'Sending...';
-          }
-
-          setOutput('report-email-status', 'Sending...');
-          setStatus('Emailing secure report link...');
-
-          await fetchJsonLocal('/forms/transcript/report-email', {
-            body: JSON.stringify({
-              email: email,
-              eventId: parserState.lastEmailEventId,
-              reportId: parserState.previewReportId,
-              reportUrl: parserState.resolvedPreviewUrl,
-              tokenId: tokenId
-            }),
-            headers: { 'content-type': 'application/json' },
-            method: 'POST'
-          });
-
-          setOutput('report-email-status', 'Email sent.');
-          setStatus('Email sent with a secure report link.');
-        } catch (error) {
-          setOutput('report-email-status', 'Send failed.');
-          setStatus('Email failed. ' + String((error && error.message) || error || 'email_failed'));
-          alert('Email failed. ' + String((error && error.message) || error || 'email_failed'));
-        } finally {
-          if (btn) {
-            btn.disabled = false;
-            btn.textContent = original;
-          }
-          updateControls();
-        }
-      }
-
-      async function handleCheckout(event) {
-        if (event) event.preventDefault();
-
-        const btn = document.getElementById('parser-buy-credits');
-        const status = document.getElementById('parser-checkout-status');
-        const original = btn ? btn.textContent : '';
-
-        try {
-          if (btn) {
-            btn.textContent = 'Loading...';
-            btn.classList.add('pointer-events-none');
-          }
-          if (status) status.textContent = 'Loading checkout...';
-
-          const pricesResponse = await fetchJsonLocal('/transcript/prices');
-          const prices = Array.isArray(pricesResponse && pricesResponse.prices) ? pricesResponse.prices.slice() : [];
-          prices.sort(function (a, b) {
-            return Number((a && a.credits) || 0) - Number((b && b.credits) || 0);
-          });
-
-          const selected = prices.find(function (item) {
-            return !!item && !!item.priceId && Number((item && item.credits) || 0) > 0;
-          });
-
-          if (!selected || !selected.priceId) throw new Error('No valid credit pack was returned.');
-
-          const checkout = await fetchJsonLocal('/transcript/checkout', {
-            body: JSON.stringify({
-              priceId: selected.priceId,
-              returnUrlBase: window.location.origin,
-              successPath: '/assets/payment-success.html',
-              tokenId: getTokenId()
-            }),
-            headers: { 'content-type': 'application/json' },
-            method: 'POST'
-          });
-
-          if (!checkout || !checkout.url) throw new Error('Checkout URL was not returned.');
-
-          if (status) status.textContent = 'Redirecting to checkout...';
-          window.location.href = checkout.url;
-        } catch (error) {
-          const code = String((error && error.code) || (error && error.message) || '').trim();
-          const details = error && error.details;
-          const missing = details && Array.isArray(details.missing)
-            ? details.missing.slice().sort().join(', ')
-            : '';
-
-          if (code === 'pricing_temporarily_unavailable') {
-            if (status) {
-              status.textContent = missing
-                ? ('App checkout is temporarily unavailable. Missing pricing config: ' + missing + '.')
-                : 'App checkout is temporarily unavailable right now.';
-            }
-            window.location.href = '/index.html#pricing';
-            return;
-          }
-
-          if (code === 'checkout_temporarily_unavailable') {
-            if (status) {
-              status.textContent = missing
-                ? ('Checkout is temporarily unavailable. Missing checkout config: ' + missing + '.')
-                : 'Checkout is temporarily unavailable right now.';
-            }
-            alert('Checkout is temporarily unavailable.');
-            return;
-          }
-
-          if (status) status.textContent = 'Unable to load checkout.';
-          alert('Checkout failed. ' + String((error && error.message) || error || 'checkout_failed'));
-        } finally {
-          if (btn) {
-            btn.textContent = original;
-            btn.classList.remove('pointer-events-none');
-          }
-        }
-      }
-
-      function bindFileSelection() {
-        const input = document.getElementById('pdf-upload');
-        const dropZone = document.getElementById('pdf-drop-zone');
-
-        if (input) {
-          input.addEventListener('change', function () {
-            const file = input.files && input.files[0] ? input.files[0] : null;
-            resetParserForFile(file);
-          });
-        }
-
-        if (dropZone) {
-          dropZone.addEventListener('drop', function () {
-            setTimeout(function () {
-              const file = input && input.files && input.files[0] ? input.files[0] : null;
-              resetParserForFile(file);
-            }, 0);
-          });
-        }
-      }
-
-      function bindActions() {
-        const buyBtn = document.getElementById('parser-buy-credits');
-        const copyJson = document.getElementById('copy-json');
-        const copyRaw = document.getElementById('copy-raw');
-        const emailBtn = document.getElementById('report-email-btn');
-        const emailInput = document.getElementById('report-email');
-        const extractBtn = document.getElementById('extract-raw-btn');
-        const parseBtn = document.getElementById('parse-structured-btn');
-        const previewBtn = document.getElementById('preview-report-btn');
-
-        if (buyBtn) buyBtn.addEventListener('click', handleCheckout);
-        if (emailBtn) emailBtn.addEventListener('click', handleEmail);
-        if (emailInput) emailInput.addEventListener('input', updateControls);
-        if (extractBtn) extractBtn.addEventListener('click', handleExtract);
-        if (parseBtn) parseBtn.addEventListener('click', handleParse);
-        if (previewBtn) previewBtn.addEventListener('click', handlePreview);
-
-        if (copyJson) {
-          copyJson.addEventListener('click', function () {
-            navigator.clipboard.writeText(String((document.getElementById('json-output') && document.getElementById('json-output').textContent) || ''))
-              .then(function () { alert('Structured JSON copied.'); })
-              .catch(function () { alert('Copy failed.'); });
-          });
-        }
-
-        if (copyRaw) {
-          copyRaw.addEventListener('click', function () {
-            navigator.clipboard.writeText(String((document.getElementById('raw-output') && document.getElementById('raw-output').textContent) || ''))
-              .then(function () { alert('Raw text copied.'); })
-              .catch(function () { alert('Copy failed.'); });
-          });
-        }
-      }
-
-      function runParserSelfTests() {
-        const tests = [
-          {
-            name: 'detectTranscriptType detects account transcript',
-            run: function () {
-              return detectTranscriptType('This is an Account Transcript') === 'Account Transcript';
-            }
-          },
-          {
-            name: 'parseStructuredTranscript extracts year',
-            run: function () {
-              const parsed = parseStructuredTranscript('Tax Year 2022\nBalance Due $123.45', 'sample.pdf');
-              return parsed.summary.yearCount === 1 && parsed.transcript.yearsMentioned[0] === '2022';
-            }
-          },
-          {
-            name: 'resetParserForFile clears preview report state',
-            run: function () {
-              parserState.previewReportId = 'rpt_123';
-              parserState.resolvedPreviewUrl = 'https://example.com';
-              resetParserForFile(null);
-              return parserState.previewReportId === '' && parserState.resolvedPreviewUrl === '';
-            }
-          },
-          {
-            name: 'uniqueSorted removes duplicates',
-            run: function () {
-              const values = uniqueSorted(['2023', '2022', '2023']);
-              return values.length === 2 && values[0] === '2022' && values[1] === '2023';
-            }
-          }
-        ];
-
-        tests.sort(function (a, b) {
-          return a.name.localeCompare(b.name);
-        }).forEach(function (test) {
-          if (!test.run()) {
-            throw new Error('Parser self-test failed: ' + test.name);
-          }
-        });
-      }
-
-      bindFileSelection();
-      bindActions();
-      resetParserForFile(null);
-      if (typeof switchParserStep === 'function') {
-        switchParserStep('1');
-      }
-
-      try {
-        runParserSelfTests();
-      } catch (error) {
-        console.error('Parser self-test error:', error);
-      }
-    })();
-  </script>
 </body>
 </html>

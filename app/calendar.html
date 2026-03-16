@@ -1,0 +1,340 @@
+﻿<!doctype html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transcript.Tax Monitor Pro — Calendar</title>
+
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/site.css?v=1" />
+
+  <style>
+    :root {
+      --tm-bg: #020617;
+      --tm-card: linear-gradient(180deg, rgba(9, 14, 32, 0.96) 0%, rgba(17, 24, 39, 0.98) 52%, rgba(30, 41, 59, 0.98) 100%);
+      --tm-shadow: 0 28px 72px rgba(2, 8, 23, 0.52);
+      --tm-text: #f8fafc;
+      --tm-text-muted: #94a3b8;
+      --tm-text-soft: #dbe4f0;
+      --tm-purple-soft: #c4b5fd;
+    }
+
+    * { box-sizing:border-box; }
+    html, body {
+      margin:0;
+      min-height:100%;
+      background:
+        radial-gradient(circle at 14% 16%, rgba(139, 92, 246, 0.16), transparent 22%),
+        radial-gradient(circle at 82% 10%, rgba(99, 102, 241, 0.16), transparent 20%),
+        radial-gradient(circle at 50% 120%, rgba(76, 29, 149, 0.18), transparent 34%),
+        linear-gradient(180deg, #020617 0%, #081121 34%, #0f172a 68%, #172554 100%);
+      color:var(--tm-text);
+      font-family:'Sora','DM Sans',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    }
+
+    .app-shell { display:flex; min-height:100vh; }
+    .sidebar {
+      backdrop-filter: blur(20px);
+      background: linear-gradient(180deg, rgba(2, 6, 23, 0.98) 0%, rgba(15, 23, 42, 0.98) 46%, rgba(49, 46, 129, 0.94) 100%);
+      border-right:1px solid rgba(255,255,255,0.08);
+      display:flex;
+      flex-direction:column;
+      height:100vh;
+      overflow-y:auto;
+      padding:22px 0;
+      position:sticky;
+      top:0;
+      width:270px;
+    }
+
+    .main-shell { display:flex; flex:1; flex-direction:column; min-width:0; }
+    .topbar {
+      backdrop-filter: blur(20px);
+      background:
+        radial-gradient(circle at top left, rgba(139, 92, 246, 0.14), transparent 32%),
+        radial-gradient(circle at top right, rgba(99, 102, 241, 0.10), transparent 28%),
+        linear-gradient(180deg, rgba(2, 6, 23, 0.94) 0%, rgba(15, 23, 42, 0.90) 100%);
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
+
+    .workspace-content { margin:0 auto; max-width:1440px; padding:28px; width:100%; }
+    .calendar-shell { display:grid; gap:24px; }
+    .calendar-hero { margin:0 auto; max-width:760px; text-align:center; }
+    .calendar-hero-title { font-size:34px; font-weight:700; letter-spacing:-0.03em; margin:0 0 10px; }
+    .calendar-gradient-text {
+      background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+
+    .calendar-hero-copy { color:var(--tm-text-muted); font-size:15px; line-height:1.8; margin:0; }
+    .calendar-panel {
+      background: rgba(9, 14, 32, 0.72);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:24px;
+      box-shadow:var(--tm-shadow);
+      padding:24px;
+    }
+
+    .calendar-tabs {
+      display:grid;
+      gap:12px;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      margin-bottom:24px;
+    }
+
+    .calendar-tab {
+      align-items:center;
+      background:rgba(2, 6, 23, 0.34);
+      border:1px solid rgba(255,255,255,0.10);
+      border-radius:16px;
+      color:var(--tm-text-soft);
+      cursor:pointer;
+      display:flex;
+      font-family:inherit;
+      font-size:14px;
+      font-weight:600;
+      gap:10px;
+      justify-content:center;
+      min-height:64px;
+      padding:14px 18px;
+      text-align:center;
+    }
+
+    .calendar-tab.active {
+      background: rgba(139, 92, 246, 0.16);
+      border-color: rgba(139, 92, 246, 0.36);
+      color:#fff;
+    }
+
+    .calendar-layout {
+      display:grid;
+      gap:24px;
+      grid-template-columns:minmax(0, 1.9fr) minmax(300px, 1fr);
+    }
+
+    .calendar-board, .calendar-sidecard, .calendar-embed {
+      background: rgba(2, 6, 23, 0.34);
+      border:1px solid rgba(255,255,255,0.10);
+      border-radius:20px;
+      padding:18px;
+    }
+
+    .calendar-toolbar {
+      align-items:center;
+      display:flex;
+      gap:16px;
+      justify-content:space-between;
+      margin-bottom:16px;
+    }
+
+    .calendar-month-label { font-size:18px; font-weight:700; margin:0; text-align:center; }
+    .calendar-nav-btn {
+      align-items:center;
+      background: rgba(9, 14, 32, 0.84);
+      border:1px solid rgba(255,255,255,0.10);
+      border-radius:12px;
+      color:var(--tm-text-soft);
+      cursor:pointer;
+      display:inline-flex;
+      height:40px;
+      justify-content:center;
+      width:40px;
+    }
+
+    .calendar-weekdays, .calendar-grid {
+      display:grid;
+      gap:6px;
+      grid-template-columns:repeat(7, minmax(0, 1fr));
+    }
+
+    .calendar-weekday {
+      color:var(--tm-text-muted);
+      font-size:12px;
+      font-weight:700;
+      padding:10px 0;
+      text-align:center;
+      text-transform:uppercase;
+    }
+
+    .calendar-cell {
+      aspect-ratio: 1 / 1;
+      background: rgba(9, 14, 32, 0.42);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      color: var(--tm-text-soft);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      position: relative;
+    }
+
+    .calendar-events-list { display:grid; gap:12px; }
+    .calendar-panel-view { display:none; }
+    .calendar-panel-view.active { display:block; }
+    .calendar-embed-placeholder {
+      align-items:center;
+      color:var(--tm-text-soft);
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      justify-content:center;
+      min-height:560px;
+      text-align:center;
+    }
+
+    .card-title { font-size:18px; font-weight:700; margin:0 0 8px; }
+    .card-desc, .calendar-empty-copy, .calendar-event-meta, .calendar-event-time {
+      color:var(--tm-text-muted);
+      font-size:12px;
+      line-height:1.6;
+    }
+
+    .btn {
+      align-items:center;
+      border:1px solid transparent;
+      border-radius:12px;
+      cursor:pointer;
+      display:inline-flex;
+      font-family:inherit;
+      font-size:13px;
+      font-weight:700;
+      gap:8px;
+      justify-content:center;
+      min-height:42px;
+      padding:0 16px;
+      text-decoration:none;
+      white-space:nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 46%, #4338ca 100%);
+      box-shadow: 0 16px 34px rgba(76, 29, 149, 0.34);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: rgba(9, 14, 32, 0.84);
+      border-color: rgba(139, 92, 246, 0.18);
+      color: var(--tm-text);
+    }
+
+    .hidden { display:none !important; }
+
+    @media (max-width:980px) {
+      .app-shell { flex-direction:column; }
+      .sidebar { height:auto; position:relative; width:100%; }
+    }
+
+    @media (max-width:720px) {
+      .calendar-layout, .calendar-tabs { grid-template-columns:1fr; }
+      .workspace-content { padding:16px; }
+    }
+  </style>
+</head>
+<body class="h-full">
+  <div class="app-shell">
+    <aside class="sidebar">
+      <!-- PARTIAL:app-sidebar -->
+    </aside>
+
+    <div class="main-shell">
+      <header class="topbar">
+        <!-- PARTIAL:app-topbar -->
+      </header>
+
+      <main class="workspace-content">
+        <section id="calendarPage">
+          <div class="calendar-shell">
+            <div class="calendar-hero">
+              <h2 class="calendar-hero-title">Account <span class="calendar-gradient-text">Calendar</span></h2>
+              <p class="calendar-hero-copy">Manage and view appointments. Book onboarding or exit sessions as needed.</p>
+            </div>
+
+            <section class="calendar-panel">
+              <div class="calendar-tabs">
+                <button id="calendarTabCalendar" class="calendar-tab active" data-calendar-tab="calendar" type="button"><span>My Calendar</span></button>
+                <button id="calendarTabOnboarding" class="calendar-tab" data-calendar-tab="onboarding" type="button"><span>Book Onboarding</span></button>
+                <button id="calendarTabExit" class="calendar-tab" data-calendar-tab="exit" type="button"><span>Book Exit/Offboarding</span></button>
+              </div>
+
+              <div id="calendarPanelCalendar" class="calendar-panel-view active">
+                <div class="calendar-layout">
+                  <div class="calendar-board">
+                    <div class="calendar-toolbar">
+                      <button id="calendarPrevBtn" class="calendar-nav-btn" type="button" aria-label="Previous month">‹</button>
+                      <h3 id="calendarMonthLabel" class="calendar-month-label">Month Year</h3>
+                      <button id="calendarNextBtn" class="calendar-nav-btn" type="button" aria-label="Next month">›</button>
+                    </div>
+
+                    <div class="calendar-weekdays">
+                      <div class="calendar-weekday">Sun</div>
+                      <div class="calendar-weekday">Mon</div>
+                      <div class="calendar-weekday">Tue</div>
+                      <div class="calendar-weekday">Wed</div>
+                      <div class="calendar-weekday">Thu</div>
+                      <div class="calendar-weekday">Fri</div>
+                      <div class="calendar-weekday">Sat</div>
+                    </div>
+
+                    <div id="calendarGrid" class="calendar-grid"></div>
+                  </div>
+
+                  <div class="calendar-sidecard">
+                    <div style="margin-bottom:14px;">
+                      <h3 class="card-title" style="margin-bottom:4px;">Upcoming Events</h3>
+                      <p class="card-desc">Bookings synced from the canonical Worker account route.</p>
+                    </div>
+
+                    <div id="calendarEventsEmpty" class="calendar-empty-copy hidden">No bookings found for this account.</div>
+                    <div id="calendarEventsList" class="calendar-events-list"></div>
+
+                    <div style="display:grid; gap:12px; margin-top:16px;">
+                      <button id="calendarConnectBtn" class="btn btn-primary" type="button">Connect Google Calendar</button>
+                      <button id="calendarViewAllBtn" class="btn btn-secondary" type="button">View All Events</button>
+                      <button id="calendarSyncBtn" class="btn btn-secondary hidden" type="button">Sync Now</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="calendarPanelOnboarding" class="calendar-panel-view">
+                <div class="calendar-embed">
+                  <div id="calendarOnboardingEmbed" class="calendar-embed-placeholder">
+                    <div>
+                      <div class="card-title" style="margin-bottom:6px;">Onboarding booking panel</div>
+                      <p class="calendar-hero-copy">Embed your Cal.com onboarding flow here using the approved event link and account session.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="calendarPanelExit" class="calendar-panel-view">
+                <div class="calendar-embed">
+                  <div id="calendarExitEmbed" class="calendar-embed-placeholder">
+                    <div>
+                      <div class="card-title" style="margin-bottom:6px;">Exit booking panel</div>
+                      <p class="calendar-hero-copy">Embed your Cal.com exit or offboarding flow here using the approved event link and account session.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <p style="color:var(--tm-text-muted); font-size:12px; padding-top:18px; text-align:center;">Appointments are for onboarding and coordination only. IRS representation is a separate engagement.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

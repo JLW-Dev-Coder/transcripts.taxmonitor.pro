@@ -1,0 +1,226 @@
+﻿<!doctype html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transcript.Tax Monitor Pro — Receipts</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/site.css?v=1" />
+  <style>
+    :root {
+      --tm-card: linear-gradient(180deg, rgba(9, 14, 32, 0.96) 0%, rgba(17, 24, 39, 0.98) 52%, rgba(30, 41, 59, 0.98) 100%);
+      --tm-shadow: 0 28px 72px rgba(2, 8, 23, 0.52);
+      --tm-text: #f8fafc;
+      --tm-text-muted: #94a3b8;
+    }
+    * { box-sizing:border-box; }
+    html, body {
+      margin:0;
+      min-height:100%;
+      background:
+        radial-gradient(circle at 14% 16%, rgba(139, 92, 246, 0.16), transparent 22%),
+        radial-gradient(circle at 82% 10%, rgba(99, 102, 241, 0.16), transparent 20%),
+        radial-gradient(circle at 50% 120%, rgba(76, 29, 149, 0.18), transparent 34%),
+        linear-gradient(180deg, #020617 0%, #081121 34%, #0f172a 68%, #172554 100%);
+      color:var(--tm-text);
+      font-family:'Sora','DM Sans',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    }
+    .app-shell { display:flex; min-height:100vh; }
+    .sidebar {
+      backdrop-filter: blur(20px);
+      background: linear-gradient(180deg, rgba(2, 6, 23, 0.98) 0%, rgba(15, 23, 42, 0.98) 46%, rgba(49, 46, 129, 0.94) 100%);
+      border-right:1px solid rgba(255,255,255,0.08);
+      display:flex;
+      flex-direction:column;
+      height:100vh;
+      overflow-y:auto;
+      padding:22px 0;
+      position:sticky;
+      top:0;
+      width:270px;
+    }
+    .main-shell { display:flex; flex:1; flex-direction:column; min-width:0; }
+    .topbar {
+      backdrop-filter: blur(20px);
+      background:
+        radial-gradient(circle at top left, rgba(139, 92, 246, 0.14), transparent 32%),
+        radial-gradient(circle at top right, rgba(99, 102, 241, 0.10), transparent 28%),
+        linear-gradient(180deg, rgba(2, 6, 23, 0.94) 0%, rgba(15, 23, 42, 0.90) 100%);
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
+    .workspace-content { margin:0 auto; max-width:1440px; padding:28px; width:100%; }
+    .stack { display:grid; gap:24px; }
+    .card {
+      background: var(--tm-card);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:18px;
+      box-shadow:var(--tm-shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .card-body { padding:24px; }
+    .card-title { font-size:18px; font-weight:700; margin:0 0 8px; }
+    .card-desc { color:var(--tm-text-muted); font-size:13px; line-height:1.7; margin:0; }
+    .detail-list { display:grid; gap:0; }
+    .detail-row { border-bottom:1px solid rgba(148,163,184,0.10); display:grid; gap:6px; padding:12px 0; }
+    .detail-label { color:var(--tm-text-muted); font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; }
+    .detail-value { font-size:14px; font-weight:700; }
+    .table-controls {
+      align-items:end;
+      display:grid;
+      gap:12px;
+      grid-template-columns:minmax(0, 1fr) repeat(2, minmax(180px, 220px));
+      margin-top:18px;
+    }
+    .table-filter-label {
+      color:var(--tm-text-muted);
+      display:block;
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:0.08em;
+      margin-bottom:8px;
+      text-transform:uppercase;
+    }
+    .parser-input {
+      width:100%;
+      background: rgba(9, 14, 32, 0.82);
+      border:1px solid rgba(255,255,255,0.09);
+      border-radius:14px;
+      color:var(--tm-text);
+      font-family:inherit;
+      font-size:14px;
+      line-height:1.5;
+      outline:none;
+      padding:14px 16px;
+    }
+    .table-wrap { margin-top:16px; overflow-x:auto; }
+    table { border-collapse:collapse; width:100%; }
+    thead th {
+      color:var(--tm-text-muted);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:0.08em;
+      padding:12px;
+      text-align:left;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+    tbody td {
+      border-top:1px solid rgba(148,163,184,0.10);
+      font-size:14px;
+      padding:12px;
+      vertical-align:middle;
+      white-space:nowrap;
+    }
+    .empty-state { color:var(--tm-text-muted); font-size:14px; padding:12px 0 0; }
+    .hidden { display:none !important; }
+    @media (max-width:980px) {
+      .app-shell { flex-direction:column; }
+      .sidebar { height:auto; position:relative; width:100%; }
+    }
+    @media (max-width:900px) {
+      .table-controls { grid-template-columns:1fr; }
+    }
+    @media (max-width:720px) {
+      .workspace-content { padding:16px; }
+    }
+  </style>
+</head>
+<body class="h-full">
+  <div class="app-shell">
+    <aside class="sidebar">
+      <!-- PARTIAL:app-sidebar -->
+    </aside>
+
+    <div class="main-shell">
+      <header class="topbar">
+        <!-- PARTIAL:app-topbar -->
+      </header>
+
+      <main class="workspace-content">
+        <section id="receiptsPage">
+          <div class="stack">
+            <div class="card">
+              <div class="card-body">
+                <h2 class="card-title">Receipt summary</h2>
+                <p class="card-desc">See your latest purchase state at a glance, including current tokens and most recent payment status.</p>
+                <div class="detail-list">
+                  <div class="detail-row">
+                    <div class="detail-label">Signed-in email</div>
+                    <div id="receiptSummaryEmail" class="detail-value">Loading...</div>
+                  </div>
+                  <div class="detail-row">
+                    <div class="detail-label">Current tokens</div>
+                    <div id="receiptSummaryTokens" class="detail-value">—</div>
+                  </div>
+                  <div class="detail-row">
+                    <div class="detail-label">Latest purchase status</div>
+                    <div id="receiptSummaryStatus" class="detail-value">—</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-body">
+                <h2 class="card-title">Purchase history</h2>
+                <p class="card-desc">Review your receipt history and verify completed credit purchases tied to this account.</p>
+
+                <div id="receiptsPageEmpty" class="empty-state hidden">No purchases found yet.</div>
+
+                <div class="table-controls">
+                  <div>
+                    <label for="receiptsFilterInput" class="table-filter-label">Filter receipts</label>
+                    <input id="receiptsFilterInput" type="text" class="parser-input" placeholder="Search by credits, price ID, or status" autocomplete="off" />
+                  </div>
+                  <div>
+                    <label for="receiptsSortField" class="table-filter-label">Sort by</label>
+                    <select id="receiptsSortField" class="parser-input">
+                      <option value="createdAt">Created At</option>
+                      <option value="credits">Credits</option>
+                      <option value="priceId">Price ID</option>
+                      <option value="status">Status</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="receiptsSortDirection" class="table-filter-label">Direction</label>
+                    <select id="receiptsSortDirection" class="parser-input">
+                      <option value="desc">Descending</option>
+                      <option value="asc">Ascending</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div id="receiptsPageTableWrap" class="table-wrap hidden">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Created At</th>
+                        <th>Credits</th>
+                        <th>Price ID</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="receiptsPageTbody">
+                      <tr>
+                        <td colspan="4">Loading receipts...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
