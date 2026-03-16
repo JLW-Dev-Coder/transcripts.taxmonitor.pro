@@ -78,7 +78,11 @@
     }
 
     .app-shell::before {
+<<<<<<< HEAD
       background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 300'><g stroke='%2300d4aa' stroke-width='2' fill='none' opacity='0.15'><polygon points='600,40 500,90 700,90'/><rect x='520' y='90' width='20' height='120'/><rect x='560' y='90' width='20' height='120'/><rect x='600' y='90' width='20' height='120'/><rect x='640' y='90' width='20' height='120'/><rect x='680' y='90' width='20' height='120'/><line x1='480' y1='210' x2='720' y2='210'/></g></svg>");
+=======
+      background-image: none;
+>>>>>>> cc2a89c (Updated dashboard)
       background-size: 100% 100%;
       content: '';
       inset: 0;
@@ -1277,19 +1281,125 @@
               <div class="card">
                 <div class="card-body">
                   <h2 class="card-title">Support</h2>
-                  <p class="card-desc">Get help with transcript reports, account questions, and purchase issues from the appropriate support path.</p>
-                  <div class="support-links">
-                    <a href="/contact.html" class="support-link"><span>Contact support</span><span>→</span></a>
-                    <a href="/contact.html" class="support-link"><span>Open support page</span><span>→</span></a>
-                    <a href="/legal/terms.html" class="support-link"><span>Terms &amp; privacy</span><span>→</span></a>
+                  <p class="card-desc">Create and track support tickets tied to your authenticated account.</p>
+
+                  <div style="display:grid; gap:16px; margin-top:18px;">
+                    <div>
+                      <label for="supportSubject" class="parser-form-label">Subject</label>
+                      <input id="supportSubject" type="text" class="parser-input" placeholder="Brief summary of the issue" autocomplete="off" />
+                    </div>
+                    <div>
+                      <label for="supportMessage" class="parser-form-label">Message</label>
+                      <textarea id="supportMessage" class="parser-input" rows="5" placeholder="Describe the issue, report ID, or payment problem."></textarea>
+                    </div>
+                    <div class="button-row" style="padding-top:0;">
+                      <button id="supportCreateBtn" type="button" class="btn btn-primary">Create Ticket</button>
+                    </div>
+                    <div id="supportCreateStatus" class="parser-note" style="margin-top:0;">Ready.</div>
                   </div>
                 </div>
               </div>
 
               <div class="card">
                 <div class="card-body">
-                  <h2 class="card-title">Response expectations</h2>
-                  <p class="card-desc">For the fastest resolution, include the report ID, purchase date, or signed-in email when you contact support.</p>
+                  <h2 class="card-title">Ticket history</h2>
+                  <p class="card-desc">Review tickets synced from the support Worker surface.</p>
+                  <div id="supportPageEmpty" class="empty-state hidden">No support tickets found for this account.</div>
+                  <div id="supportPageTableWrap" class="table-wrap hidden">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Ticket ID</th>
+                          <th>Subject</th>
+                          <th>Status</th>
+                          <th>Created</th>
+                          <th>Updated</th>
+                        </tr>
+                      </thead>
+                      <tbody id="supportPageTbody">
+                        <tr>
+                          <td colspan="5">Loading tickets...</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="calendarPage" class="page">
+            <div class="stack">
+              <div class="card">
+                <div class="card-body">
+                  <h2 class="card-title">Calendar</h2>
+                  <p class="card-desc">Bookings synced from the calendar Worker surface for this authenticated account.</p>
+                  <div id="calendarPageEmpty" class="empty-state hidden">No bookings found for this account.</div>
+                  <div id="calendarPageTableWrap" class="table-wrap hidden">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Booking ID</th>
+                          <th>Professional</th>
+                          <th>Event Type</th>
+                          <th>Scheduled For</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody id="calendarPageTbody">
+                        <tr>
+                          <td colspan="5">Loading bookings...</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="token-usagePage" class="page">
+            <div class="stack">
+              <div class="card">
+                <div class="card-body">
+                  <h2 class="card-title">Token usage</h2>
+                  <p class="card-desc">Detailed token ledger and usage history pulled from the transcript ledger Worker route.</p>
+                  <div id="tokenUsageSummary" class="detail-list">
+                    <div class="detail-row">
+                      <div class="detail-label">Token ID</div>
+                      <div id="tokenUsageTokenId" class="detail-value">—</div>
+                    </div>
+                    <div class="detail-row">
+                      <div class="detail-label">Current balance</div>
+                      <div id="tokenUsageBalance" class="detail-value">—</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-body">
+                  <h2 class="card-title">Ledger history</h2>
+                  <p class="card-desc">Usage and purchase events ordered from newest to oldest.</p>
+                  <div id="tokenUsagePageEmpty" class="empty-state hidden">No token ledger entries found.</div>
+                  <div id="tokenUsagePageTableWrap" class="table-wrap hidden">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>When</th>
+                          <th>Type</th>
+                          <th>Amount</th>
+                          <th>Balance After</th>
+                          <th>Reference</th>
+                        </tr>
+                      </thead>
+                      <tbody id="tokenUsagePageTbody">
+                        <tr>
+                          <td colspan="5">Loading token ledger...</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1300,11 +1410,15 @@
               <div class="card">
                 <div class="card-body">
                   <h2 class="card-title">Account summary</h2>
-                  <p class="card-desc">Core session-backed account state.</p>
+                  <p class="card-desc">Core session-backed account state plus current membership hydration.</p>
                   <div class="detail-list">
                     <div class="detail-row">
                       <div class="detail-label">Email</div>
                       <div id="accountEmail" class="detail-value">Loading...</div>
+                    </div>
+                    <div class="detail-row">
+                      <div class="detail-label">Account ID</div>
+                      <div id="accountId" class="detail-value">—</div>
                     </div>
                     <div class="detail-row">
                       <div class="detail-label">Sign-in method</div>
@@ -1314,6 +1428,41 @@
                       <div class="detail-label">Token balance</div>
                       <div id="accountTokens" class="detail-value">—</div>
                     </div>
+                    <div class="detail-row">
+                      <div class="detail-label">Current membership</div>
+                      <div id="accountMembershipStatus" class="detail-value">Loading...</div>
+                    </div>
+                    <div class="detail-row">
+                      <div class="detail-label">Current plan</div>
+                      <div id="accountMembershipPlan" class="detail-value">—</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-body">
+                  <h2 class="card-title">Memberships</h2>
+                  <p class="card-desc">Canonical memberships synced from the Worker using the authenticated account ID.</p>
+                  <div id="accountMembershipsEmpty" class="empty-state hidden">No memberships found for this account.</div>
+                  <div id="accountMembershipsTableWrap" class="table-wrap hidden">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Membership ID</th>
+                          <th>Plan</th>
+                          <th>Status</th>
+                          <th>Start</th>
+                          <th>End</th>
+                          <th>Source</th>
+                        </tr>
+                      </thead>
+                      <tbody id="accountMembershipsTbody">
+                        <tr>
+                          <td colspan="6">Loading memberships...</td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
@@ -1337,8 +1486,12 @@
 
   <script>
     let latestMe = null;
+    let latestBookings = [];
+    let latestMemberships = [];
     let latestPurchases = [];
     let latestReports = [];
+    let latestSupportTickets = [];
+    let latestTokenLedger = null;
     let savedBrandLogo = null;
 
     const BRAND_LOGO_STORAGE_KEY = 'tm_brand_logo_v1';
@@ -1727,8 +1880,48 @@
       return [];
     }
 
+    function normalizeMemberships(data) {
+      if (Array.isArray(data)) return data;
+      if (data && Array.isArray(data.memberships)) return data.memberships;
+      if (data && Array.isArray(data.items)) return data.items;
+      return [];
+    }
+
+    function normalizeBookings(data) {
+      if (Array.isArray(data)) return data;
+      if (data && Array.isArray(data.bookings)) return data.bookings;
+      if (data && Array.isArray(data.items)) return data.items;
+      return [];
+    }
+
+    function normalizeSupportTickets(data) {
+      if (Array.isArray(data)) return data;
+      if (data && Array.isArray(data.tickets)) return data.tickets;
+      if (data && Array.isArray(data.items)) return data.items;
+      return [];
+    }
+
+    function normalizeTokenLedger(data) {
+      if (data && Array.isArray(data.ledger)) return data.ledger;
+      if (Array.isArray(data)) return data;
+      if (data && Array.isArray(data.items)) return data.items;
+      return [];
+    }
+
     function getMeEmail(me) {
       return firstDefined(me && me.email, me && me.user && me.user.email, 'Unknown');
+    }
+
+    function getMeAccountId(me) {
+      return String(firstDefined(
+        me && me.accountId,
+        me && me.account_id,
+        me && me.user && me.user.accountId,
+        me && me.user && me.user.account_id,
+        me && me.id,
+        me && me.user && me.user.id,
+        ''
+      ) || '').trim();
     }
 
     function getMeTokenId(me) {
@@ -1770,15 +1963,228 @@
       return String(data.balance);
     }
 
+    async function fetchMembershipsByAccount(accountId) {
+      const cleanAccountId = String(accountId || '').trim();
+      if (!cleanAccountId) return [];
+
+      const data = await fetchJson('/v1/memberships/by-account/' + encodeURIComponent(cleanAccountId));
+      return normalizeMemberships(data);
+    }
+
+    async function fetchBookingsByAccount(accountId) {
+      const cleanAccountId = String(accountId || '').trim();
+      if (!cleanAccountId) return [];
+
+      const data = await fetchJson('/v1/bookings/by-account/' + encodeURIComponent(cleanAccountId));
+      return normalizeBookings(data);
+    }
+
+    async function fetchSupportTicketsByAccount(accountId) {
+      const cleanAccountId = String(accountId || '').trim();
+      if (!cleanAccountId) return [];
+
+      const data = await fetchJson('/v1/support/tickets/by-account/' + encodeURIComponent(cleanAccountId));
+      return normalizeSupportTickets(data);
+    }
+
+    async function fetchTokenLedger(tokenId) {
+      const cleanTokenId = String(tokenId || '').trim();
+      if (!cleanTokenId) return null;
+
+      return await fetchJson('/transcript/tokens?tokenId=' + encodeURIComponent(cleanTokenId));
+    }
+
+    function getMembershipComparableDate(item) {
+      return Date.parse(firstDefined(
+        item && item.period_start_at,
+        item && item.periodStartAt,
+        item && item.createdAt,
+        item && item.created_at,
+        item && item.updatedAt,
+        item && item.updated_at,
+        ''
+      )) || 0;
+    }
+
+    function getRecordComparableDate(item) {
+      return Date.parse(firstDefined(
+        item && item.scheduled_for,
+        item && item.scheduledFor,
+        item && item.createdAt,
+        item && item.created_at,
+        item && item.updatedAt,
+        item && item.updated_at,
+        item && item.at,
+        ''
+      )) || 0;
+    }
+
+    function getMembershipPlan(item) {
+      return firstDefined(item && item.plan_code, item && item.planCode, item && item.plan_name, item && item.planName, '—');
+    }
+
+    function getMembershipStatus(item) {
+      return firstDefined(item && item.billing_status, item && item.billingStatus, item && item.status, 'unknown');
+    }
+
+    function renderMembershipRows(tbodyId, memberships) {
+      const tbody = document.getElementById(tbodyId);
+      if (!tbody) return;
+
+      tbody.innerHTML = memberships.map(function (item) {
+        const membershipId = firstDefined(item && item.membership_id, item && item.membershipId, item && item.id, '—');
+        const plan = getMembershipPlan(item);
+        const status = getMembershipStatus(item);
+        const start = firstDefined(item && item.period_start_at, item && item.periodStartAt, item && item.created_at, item && item.createdAt, '');
+        const end = firstDefined(item && item.period_end_at, item && item.periodEndAt, '');
+        const source = firstDefined(item && item.source, item && item.created_from, '—');
+
+        return '' +
+          '<tr>' +
+            '<td>' + escapeHtml(membershipId) + '</td>' +
+            '<td>' + escapeHtml(plan) + '</td>' +
+            '<td>' + getStatusBadge(status) + '</td>' +
+            '<td>' + escapeHtml(formatDate(start)) + '</td>' +
+            '<td>' + escapeHtml(formatDate(end)) + '</td>' +
+            '<td>' + escapeHtml(String(source)) + '</td>' +
+          '</tr>';
+      }).join('');
+    }
+
+    function renderMemberships(data) {
+      latestMemberships = normalizeMemberships(data).slice().sort(function (a, b) {
+        return getMembershipComparableDate(b) - getMembershipComparableDate(a);
+      });
+
+      const empty = document.getElementById('accountMembershipsEmpty');
+      const wrap = document.getElementById('accountMembershipsTableWrap');
+      const current = latestMemberships[0] || null;
+
+      setText('accountMembershipStatus', current ? getMembershipStatus(current) : 'No membership');
+      setText('accountMembershipPlan', current ? getMembershipPlan(current) : '—');
+
+      if (!empty || !wrap) return;
+
+      if (!latestMemberships.length) {
+        empty.classList.remove('hidden');
+        wrap.classList.add('hidden');
+        clearTableBody('accountMembershipsTbody');
+        return;
+      }
+
+      empty.classList.add('hidden');
+      wrap.classList.remove('hidden');
+      renderMembershipRows('accountMembershipsTbody', latestMemberships);
+    }
+
+    function renderBookings(data) {
+      latestBookings = normalizeBookings(data).slice().sort(function (a, b) {
+        return getRecordComparableDate(b) - getRecordComparableDate(a);
+      });
+
+      const empty = document.getElementById('calendarPageEmpty');
+      const wrap = document.getElementById('calendarPageTableWrap');
+      const tbody = document.getElementById('calendarPageTbody');
+      if (!empty || !wrap || !tbody) return;
+
+      if (!latestBookings.length) {
+        empty.classList.remove('hidden');
+        wrap.classList.add('hidden');
+        tbody.innerHTML = '';
+        return;
+      }
+
+      empty.classList.add('hidden');
+      wrap.classList.remove('hidden');
+      tbody.innerHTML = latestBookings.map(function (item) {
+        return '' +
+          '<tr>' +
+            '<td>' + escapeHtml(firstDefined(item && item.booking_id, item && item.bookingId, item && item.id, '—')) + '</td>' +
+            '<td>' + escapeHtml(firstDefined(item && item.professional_name, item && item.professional_id, item && item.professionalId, '—')) + '</td>' +
+            '<td>' + escapeHtml(firstDefined(item && item.event_type_slug, item && item.eventTypeSlug, '—')) + '</td>' +
+            '<td>' + escapeHtml(formatDate(firstDefined(item && item.scheduled_for, item && item.scheduledFor, ''))) + '</td>' +
+            '<td>' + getStatusBadge(firstDefined(item && item.status, 'scheduled')) + '</td>' +
+          '</tr>';
+      }).join('');
+    }
+
+    function renderSupportTickets(data) {
+      latestSupportTickets = normalizeSupportTickets(data).slice().sort(function (a, b) {
+        return getRecordComparableDate(b) - getRecordComparableDate(a);
+      });
+
+      const empty = document.getElementById('supportPageEmpty');
+      const wrap = document.getElementById('supportPageTableWrap');
+      const tbody = document.getElementById('supportPageTbody');
+      if (!empty || !wrap || !tbody) return;
+
+      if (!latestSupportTickets.length) {
+        empty.classList.remove('hidden');
+        wrap.classList.add('hidden');
+        tbody.innerHTML = '';
+        return;
+      }
+
+      empty.classList.add('hidden');
+      wrap.classList.remove('hidden');
+      tbody.innerHTML = latestSupportTickets.map(function (item) {
+        return '' +
+          '<tr>' +
+            '<td>' + escapeHtml(firstDefined(item && item.ticket_id, item && item.ticketId, item && item.id, '—')) + '</td>' +
+            '<td>' + escapeHtml(firstDefined(item && item.subject, '—')) + '</td>' +
+            '<td>' + getStatusBadge(firstDefined(item && item.status, 'open')) + '</td>' +
+            '<td>' + escapeHtml(formatDate(firstDefined(item && item.created_at, item && item.createdAt, ''))) + '</td>' +
+            '<td>' + escapeHtml(formatDate(firstDefined(item && item.updated_at, item && item.updatedAt, ''))) + '</td>' +
+          '</tr>';
+      }).join('');
+    }
+
+    function renderTokenUsage(data, tokenId) {
+      latestTokenLedger = data || null;
+      const ledger = normalizeTokenLedger(data).slice().sort(function (a, b) {
+        return getRecordComparableDate(b) - getRecordComparableDate(a);
+      });
+      const empty = document.getElementById('tokenUsagePageEmpty');
+      const wrap = document.getElementById('tokenUsagePageTableWrap');
+      const tbody = document.getElementById('tokenUsagePageTbody');
+
+      setText('tokenUsageTokenId', tokenId || '—');
+      setText('tokenUsageBalance', data && typeof data.balance !== 'undefined' ? String(data.balance) : '—');
+
+      if (!empty || !wrap || !tbody) return;
+
+      if (!ledger.length) {
+        empty.classList.remove('hidden');
+        wrap.classList.add('hidden');
+        tbody.innerHTML = '';
+        return;
+      }
+
+      empty.classList.add('hidden');
+      wrap.classList.remove('hidden');
+      tbody.innerHTML = ledger.map(function (item) {
+        return '' +
+          '<tr>' +
+            '<td>' + escapeHtml(formatDate(firstDefined(item && item.at, item && item.created_at, item && item.createdAt, ''))) + '</td>' +
+            '<td>' + escapeHtml(firstDefined(item && item.type, item && item.event_type, '—')) + '</td>' +
+            '<td>' + escapeHtml(String(firstDefined(item && item.amount, item && item.delta, '—'))) + '</td>' +
+            '<td>' + escapeHtml(String(firstDefined(item && item.balance_after, item && item.balanceAfter, '—'))) + '</td>' +
+            '<td>' + escapeHtml(firstDefined(item && item.reference, item && item.report_id, item && item.reportId, item && item.id, '—')) + '</td>' +
+          '</tr>';
+      }).join('');
+    }
+
     function setAccountState(me, tokenBalanceOverride) {
       latestMe = me || {};
 
+      const accountId = getMeAccountId(latestMe);
       const email = getMeEmail(latestMe);
       const tokenId = getMeTokenId(latestMe);
       const tokens = tokenBalanceOverride != null ? String(tokenBalanceOverride) : getMeTokens(latestMe);
 
       [
         ['accountEmail', email],
+        ['accountId', accountId || '—'],
         ['accountTokens', tokens],
         ['parser-token-available', tokens],
         ['receiptSummaryEmail', email],
@@ -2039,8 +2445,12 @@
       }
 
       latestMe = null;
+      latestBookings = [];
+      latestMemberships = [];
       latestPurchases = [];
       latestReports = [];
+      latestSupportTickets = [];
+      latestTokenLedger = null;
       window.location.href = '/sign-in.html?redirect=' + encodeURIComponent(APP_DASHBOARD_PATH);
     }
 
@@ -2124,6 +2534,7 @@
       const refreshBalanceBtn = document.getElementById('parser-save-token');
       const signOutBtn = document.getElementById('signOutBtn');
       const signOutBtnSecondary = document.getElementById('signOutBtnSecondary');
+      const supportCreateBtn = document.getElementById('supportCreateBtn');
 
       if (refreshBalanceBtn) {
         refreshBalanceBtn.addEventListener('click', async function () {
@@ -2134,8 +2545,10 @@
           try {
             const me = await fetchJson('/api/transcripts/me');
             const tokenId = getMeTokenId(me || {});
-            const ledgerBalance = tokenId ? await fetchLedgerBalance(tokenId) : null;
+            const ledgerData = tokenId ? await fetchTokenLedger(tokenId) : null;
+            const ledgerBalance = ledgerData && typeof ledgerData.balance !== 'undefined' ? ledgerData.balance : null;
             setAccountState(me || {}, ledgerBalance);
+            renderTokenUsage(ledgerData, tokenId);
           } catch (error) {
             if (String((error && error.message) || error) !== 'unauthorized') {
               showToast('Failed to refresh balance. ' + String((error && error.message) || error || 'unknown_error'));
@@ -2143,6 +2556,46 @@
           } finally {
             refreshBalanceBtn.disabled = false;
             refreshBalanceBtn.textContent = originalText;
+          }
+        });
+      }
+
+      if (supportCreateBtn) {
+        supportCreateBtn.addEventListener('click', async function () {
+          const accountId = getMeAccountId(latestMe || {});
+          const subject = String((document.getElementById('supportSubject') && document.getElementById('supportSubject').value) || '').trim();
+          const message = String((document.getElementById('supportMessage') && document.getElementById('supportMessage').value) || '').trim();
+          const statusEl = document.getElementById('supportCreateStatus');
+
+          if (!accountId) {
+            if (statusEl) statusEl.textContent = 'Missing authenticated account ID.';
+            return;
+          }
+          if (!subject || !message) {
+            if (statusEl) statusEl.textContent = 'Subject and message are required.';
+            return;
+          }
+
+          supportCreateBtn.disabled = true;
+          const original = supportCreateBtn.textContent;
+          supportCreateBtn.textContent = 'Creating...';
+          if (statusEl) statusEl.textContent = 'Creating ticket...';
+
+          try {
+            await fetchJson('/v1/support/tickets', {
+              method: 'POST',
+              headers: { 'content-type': 'application/json' },
+              body: JSON.stringify({ account_id: accountId, message: message, subject: subject })
+            });
+            if (document.getElementById('supportSubject')) document.getElementById('supportSubject').value = '';
+            if (document.getElementById('supportMessage')) document.getElementById('supportMessage').value = '';
+            renderSupportTickets(await fetchSupportTicketsByAccount(accountId));
+            if (statusEl) statusEl.textContent = 'Ticket created.';
+          } catch (error) {
+            if (statusEl) statusEl.textContent = 'Ticket create failed. ' + String((error && error.message) || error || 'unknown_error');
+          } finally {
+            supportCreateBtn.disabled = false;
+            supportCreateBtn.textContent = original;
           }
         });
       }
@@ -2158,18 +2611,33 @@
       switchParserStep('1');
 
       const me = await fetchJson('/api/transcripts/me');
+      const accountId = getMeAccountId(me || {});
       const tokenId = getMeTokenId(me || {});
-      const ledgerBalance = tokenId ? await fetchLedgerBalance(tokenId) : null;
+      const ledgerData = tokenId ? await fetchTokenLedger(tokenId) : null;
+      const ledgerBalance = ledgerData && typeof ledgerData.balance !== 'undefined' ? ledgerData.balance : null;
       setAccountState(me || {}, ledgerBalance);
+      renderTokenUsage(ledgerData, tokenId);
 
+      const bookingsPromise = accountId ? fetchBookingsByAccount(accountId) : Promise.resolve([]);
+      const membershipsPromise = accountId ? fetchMembershipsByAccount(accountId) : Promise.resolve([]);
       const purchasesPromise = fetchJson('/api/transcripts/purchases');
       const reportsPromise = fetchJson('/api/transcripts/reports');
+      const supportTicketsPromise = accountId ? fetchSupportTicketsByAccount(accountId) : Promise.resolve([]);
+
+      const bookings = await bookingsPromise;
+      renderBookings(bookings);
+
+      const memberships = await membershipsPromise;
+      renderMemberships(memberships);
 
       const purchases = await purchasesPromise;
       renderPurchases(purchases);
 
       const reports = await reportsPromise;
       renderReports(reports);
+
+      const supportTickets = await supportTicketsPromise;
+      renderSupportTickets(supportTickets);
 
       if (window.lucide && typeof window.lucide.createIcons === 'function') {
         window.lucide.createIcons();
@@ -2178,6 +2646,30 @@
 
     function runDashboardSelfTests() {
       const tests = [
+        {
+          name: 'normalizeBookings handles bookings wrapper',
+          run: function () {
+            return normalizeBookings({ bookings: [1, 2] }).length === 2;
+          }
+        },
+        {
+          name: 'normalizeMemberships handles memberships wrapper',
+          run: function () {
+            return normalizeMemberships({ memberships: [1, 2] }).length === 2;
+          }
+        },
+        {
+          name: 'normalizeSupportTickets handles tickets wrapper',
+          run: function () {
+            return normalizeSupportTickets({ tickets: [1, 2] }).length === 2;
+          }
+        },
+        {
+          name: 'normalizeTokenLedger handles ledger wrapper',
+          run: function () {
+            return normalizeTokenLedger({ ledger: [1, 2] }).length === 2;
+          }
+        },
         {
           name: 'buildReportHistoryUrl returns encoded route',
           run: function () {

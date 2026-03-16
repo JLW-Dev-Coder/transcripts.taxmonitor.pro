@@ -1,0 +1,362 @@
+﻿{
+  "auth": {
+    "required": true,
+    "trustClientIdentityFields": false,
+    "type": "session"
+  },
+  "contract": {
+    "authority": [
+      "R2_TTMP_CANONICAL"
+    ],
+    "governs": "TTMP authenticated account and membership workspace state",
+    "path": "/contracts/account.contract.json",
+    "source": "Transcript Tax Monitor",
+    "title": "Transcript Tax Monitor — Account Contract",
+    "usedOnPages": [
+      "/app/dashboard.html"
+    ],
+    "validation": {
+      "enumStrict": true,
+      "rejectUnknownValues": true,
+      "requireJsonContentType": true
+    },
+    "version": 2
+  },
+  "events": {
+    "createMembership": {
+      "delivery": {
+        "endpoint": "/v1/memberships",
+        "method": "POST",
+        "receiptKeyPattern": "receipts/ttmp/memberships/{eventId}.json",
+        "receiptSource": "ttmp_membership_created"
+      },
+      "effects": {
+        "canonicalUpsert": {
+          "target": "memberships/{membership_id}.json"
+        },
+        "d1ProjectionUpsert": {
+          "table": "memberships"
+        },
+        "receiptAppend": {
+          "to": "receipts/ttmp/memberships/{eventId}.json"
+        },
+        "writeOrder": [
+          "receiptAppend",
+          "canonicalUpsert",
+          "d1ProjectionUpsert"
+        ],
+        "writes": [
+          "memberships"
+        ]
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "account_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "billing_status": {
+            "enum": [
+              "active",
+              "cancelled",
+              "past_due",
+              "paused",
+              "trialing"
+            ],
+            "type": "string"
+          },
+          "period_end_at": {
+            "type": "string"
+          },
+          "period_start_at": {
+            "type": "string"
+          },
+          "plan_code": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "professional_id": {
+            "type": "string"
+          },
+          "source": {
+            "enum": [
+              "admin",
+              "free",
+              "stripe"
+            ],
+            "type": "string"
+          },
+          "stripe_customer_id": {
+            "type": "string"
+          },
+          "stripe_subscription_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "billing_status",
+          "plan_code",
+          "source"
+        ],
+        "type": "object"
+      },
+      "response": {
+        "error": {
+          "error": "membership_create_failed",
+          "ok": false
+        },
+        "success": {
+          "membership_id": "mem_123",
+          "ok": true,
+          "status": "active"
+        }
+      }
+    },
+    "deleteMembership": {
+      "delivery": {
+        "endpoint": "/v1/memberships/{membership_id}",
+        "method": "DELETE",
+        "receiptKeyPattern": "receipts/ttmp/memberships/{eventId}.json",
+        "receiptSource": "ttmp_membership_deleted"
+      },
+      "effects": {
+        "canonicalUpsert": {
+          "target": "memberships/{membership_id}.json"
+        },
+        "d1ProjectionUpsert": {
+          "table": "memberships"
+        },
+        "receiptAppend": {
+          "to": "receipts/ttmp/memberships/{eventId}.json"
+        },
+        "writeOrder": [
+          "receiptAppend",
+          "canonicalUpsert",
+          "d1ProjectionUpsert"
+        ],
+        "writes": [
+          "memberships"
+        ]
+      },
+      "notes": [
+        "This route is treated as soft delete only. Canonical record should be archived or marked deletedAt, not physically removed."
+      ],
+      "request": {
+        "additionalProperties": false,
+        "properties": {},
+        "required": [],
+        "type": "object"
+      },
+      "response": {
+        "error": {
+          "error": "membership_delete_failed",
+          "ok": false
+        },
+        "success": {
+          "membership_id": "{path.membership_id}",
+          "ok": true,
+          "status": "archived"
+        }
+      }
+    },
+    "getMembership": {
+      "delivery": {
+        "endpoint": "/v1/memberships/{membership_id}",
+        "method": "GET"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {},
+        "required": [],
+        "type": "object"
+      },
+      "response": {
+        "error": {
+          "error": "membership_not_found",
+          "ok": false
+        },
+        "success": {
+          "membership": {},
+          "ok": true
+        }
+      }
+    },
+    "getMembershipsByAccount": {
+      "delivery": {
+        "endpoint": "/v1/memberships/by-account/{account_id}",
+        "method": "GET"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {},
+        "required": [],
+        "type": "object"
+      },
+      "response": {
+        "error": {
+          "error": "memberships_unavailable",
+          "ok": false
+        },
+        "success": {
+          "memberships": [],
+          "ok": true
+        }
+      }
+    },
+    "getMembershipsByProfessional": {
+      "delivery": {
+        "endpoint": "/v1/memberships/by-professional/{professional_id}",
+        "method": "GET"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {},
+        "required": [],
+        "type": "object"
+      },
+      "response": {
+        "error": {
+          "error": "memberships_unavailable",
+          "ok": false
+        },
+        "success": {
+          "memberships": [],
+          "ok": true
+        }
+      }
+    },
+    "getSession": {
+      "delivery": {
+        "endpoint": "/api/transcripts/me",
+        "method": "GET"
+      },
+      "notes": [
+        "Returns authenticated TTMP session state used by the in-app shell."
+      ],
+      "request": {
+        "additionalProperties": false,
+        "properties": {},
+        "required": [],
+        "type": "object"
+      },
+      "response": {
+        "error": {
+          "error": "session_required",
+          "ok": false
+        },
+        "success": {
+          "balance": 0,
+          "email": "user@example.com",
+          "ok": true,
+          "tokenId": "acct_123"
+        }
+      }
+    },
+    "logout": {
+      "delivery": {
+        "endpoint": "/api/transcripts/sign-out",
+        "method": "POST"
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {},
+        "required": [],
+        "type": "object"
+      },
+      "response": {
+        "error": {
+          "error": "sign_out_failed",
+          "ok": false
+        },
+        "success": {
+          "ok": true
+        }
+      }
+    },
+    "updateMembership": {
+      "delivery": {
+        "endpoint": "/v1/memberships/{membership_id}",
+        "method": "PATCH",
+        "receiptKeyPattern": "receipts/ttmp/memberships/{eventId}.json",
+        "receiptSource": "ttmp_membership_updated"
+      },
+      "effects": {
+        "canonicalUpsert": {
+          "target": "memberships/{membership_id}.json"
+        },
+        "d1ProjectionUpsert": {
+          "table": "memberships"
+        },
+        "receiptAppend": {
+          "to": "receipts/ttmp/memberships/{eventId}.json"
+        },
+        "writeOrder": [
+          "receiptAppend",
+          "canonicalUpsert",
+          "d1ProjectionUpsert"
+        ],
+        "writes": [
+          "memberships"
+        ]
+      },
+      "request": {
+        "additionalProperties": false,
+        "properties": {
+          "billing_status": {
+            "enum": [
+              "active",
+              "cancelled",
+              "past_due",
+              "paused",
+              "trialing"
+            ],
+            "type": "string"
+          },
+          "cancel_at_period_end": {
+            "type": "boolean"
+          },
+          "deletedAt": {
+            "type": "string"
+          },
+          "metadata": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "period_end_at": {
+            "type": "string"
+          },
+          "period_start_at": {
+            "type": "string"
+          },
+          "plan_code": {
+            "type": "string"
+          },
+          "stripe_customer_id": {
+            "type": "string"
+          },
+          "stripe_subscription_id": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      },
+      "response": {
+        "error": {
+          "error": "membership_update_failed",
+          "ok": false
+        },
+        "success": {
+          "membership_id": "{path.membership_id}",
+          "ok": true
+        }
+      }
+    }
+  },
+  "schema": {
+    "name": "ttmp_account",
+    "version": 2
+  }
+}

@@ -20,7 +20,7 @@
       "rejectUnknownValues": true,
       "requireJsonContentType": true
     },
-    "version": 2
+    "version": 4
   },
   "events": {
     "claimReport": {
@@ -54,9 +54,6 @@
         "endpoint": "/api/transcripts/me",
         "method": "GET"
       },
-      "notes": [
-        "Returns authenticated transcript account state including balance and tokenId."
-      ],
       "request": {
         "additionalProperties": false,
         "properties": {},
@@ -80,9 +77,6 @@
         "endpoint": "/transcript/prices",
         "method": "GET"
       },
-      "notes": [
-        "Read-only public transcript pricing configuration."
-      ],
       "request": {
         "additionalProperties": false,
         "properties": {},
@@ -105,9 +99,6 @@
         "endpoint": "/api/transcripts/purchases",
         "method": "GET"
       },
-      "notes": [
-        "Returns authenticated purchase and receipt history."
-      ],
       "request": {
         "additionalProperties": false,
         "properties": {},
@@ -130,9 +121,6 @@
         "endpoint": "/api/transcripts/reports",
         "method": "GET"
       },
-      "notes": [
-        "Returns authenticated saved transcript report history."
-      ],
       "request": {
         "additionalProperties": false,
         "properties": {},
@@ -158,9 +146,6 @@
           "tokenId"
         ]
       },
-      "notes": [
-        "Returns transcript token ledger for a specific authenticated token."
-      ],
       "request": {
         "additionalProperties": false,
         "properties": {
@@ -180,7 +165,8 @@
           "ok": false
         },
         "success": {
-          "entries": [],
+          "balance": 0,
+          "ledger": [],
           "ok": true,
           "tokenId": "{query.tokenId}"
         }
@@ -197,7 +183,6 @@
         "canonicalUpsert": {
           "target": "reports/{reportId}.json"
         },
-        "dedupeKey": "payload.reportData.meta.taxPeriodEnding",
         "eventIdFrom": "response.eventId",
         "receiptAppend": {
           "to": "receipts/ttmp/report_previews/{eventId}.json"
@@ -211,10 +196,6 @@
           "token_usage"
         ]
       },
-      "notes": [
-        "Consumes one transcript credit when a preview is saved.",
-        "Dashboard and parse-lab both depend on this event."
-      ],
       "request": {
         "additionalProperties": false,
         "properties": {
@@ -241,109 +222,47 @@
           "reportUrl": "/assets/report.html?reportId=rpt_123"
         }
       }
+    }
+  },
+  "pages": {
+    "account": {
+      "contract": "account.contract.json",
+      "pageId": "accountPage",
+      "title": "Account"
     },
-    "sendReportEmail": {
-      "delivery": {
-        "endpoint": "/forms/transcript/report-email",
-        "method": "POST",
-        "receiptKeyPattern": "receipts/ttmp/report_emails/{eventId}.json",
-        "receiptSource": "ttmp_report_email"
-      },
-      "effects": {
-        "eventIdFrom": "payload.eventId",
-        "receiptAppend": {
-          "to": "receipts/ttmp/report_emails/{eventId}.json"
-        },
-        "writeOrder": [
-          "receiptAppend"
-        ],
-        "writes": [
-          "email_receipts"
-        ]
-      },
-      "notes": [
-        "Uses Google Workspace / Google email style integration patterns from the canonical VLP guidance."
-      ],
-      "request": {
-        "additionalProperties": false,
-        "properties": {
-          "email": {
-            "format": "email",
-            "type": "string"
-          },
-          "eventId": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "reportUrl": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "tokenId": {
-            "minLength": 1,
-            "type": "string"
-          }
-        },
-        "required": [
-          "email",
-          "eventId",
-          "reportUrl",
-          "tokenId"
-        ],
-        "type": "object"
-      },
-      "response": {
-        "error": {
-          "error": "email_send_failed",
-          "ok": false
-        },
-        "success": {
-          "ok": true,
-          "reportUrl": "{payload.reportUrl}",
-          "status": "sent"
-        }
-      }
+    "calendar": {
+      "contract": "calendar.contract.json",
+      "href": "/app/calendar.html",
+      "title": "Calendar"
     },
-    "startCheckout": {
-      "delivery": {
-        "endpoint": "/transcript/checkout",
-        "method": "POST"
-      },
-      "notes": [
-        "Creates a transcript checkout session for credit purchase."
-      ],
-      "request": {
-        "additionalProperties": false,
-        "properties": {
-          "priceId": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "quantity": {
-            "minimum": 1,
-            "type": "integer"
-          }
-        },
-        "required": [
-          "priceId",
-          "quantity"
-        ],
-        "type": "object"
-      },
-      "response": {
-        "error": {
-          "error": "checkout_failed",
-          "ok": false
-        },
-        "success": {
-          "checkoutUrl": "https://billing.taxmonitor.pro/example",
-          "ok": true
-        }
-      }
+    "parser": {
+      "contract": "parse-lab.contract.json",
+      "pageId": "dashboardPage",
+      "title": "Parser"
+    },
+    "reports": {
+      "contract": "report.contract.json",
+      "pageId": "reportsPage",
+      "title": "Reports"
+    },
+    "support": {
+      "contract": "support.contract.json",
+      "pageId": "supportPage",
+      "title": "Support"
+    },
+    "token-usage": {
+      "contract": "token-usage.contract.json",
+      "href": "/app/token-usage.html",
+      "title": "Token Usage"
+    },
+    "tokens": {
+      "contract": "tokens.contract.json",
+      "pageId": "receiptsPage",
+      "title": "Tokens"
     }
   },
   "schema": {
     "name": "ttmp_app_dashboard",
-    "version": 2
+    "version": 4
   }
 }
