@@ -39,24 +39,25 @@
 
   <style>
     :root {
-      --tm-bg: #0f172a;
-      --tm-bg-soft: #1e293b;
-      --tm-card: linear-gradient(180deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 41, 59, 0.96) 100%);
-      --tm-card-strong: linear-gradient(180deg, rgba(15, 23, 42, 0.98) 0%, rgba(17, 24, 39, 1) 100%);
-      --tm-line: rgba(255, 255, 255, 0.08);
-      --tm-line-strong: rgba(168, 85, 247, 0.22);
+      --tm-bg: #020617;
+      --tm-bg-soft: #0f172a;
+      --tm-card: linear-gradient(180deg, rgba(9, 14, 32, 0.96) 0%, rgba(17, 24, 39, 0.98) 52%, rgba(30, 41, 59, 0.98) 100%);
+      --tm-card-strong: linear-gradient(180deg, rgba(2, 6, 23, 0.98) 0%, rgba(15, 23, 42, 1) 100%);
+      --tm-line: rgba(255, 255, 255, 0.07);
+      --tm-line-strong: rgba(139, 92, 246, 0.24);
       --tm-gold: #d4a017;
       --tm-gold-soft: #f5d76e;
-      --tm-navy: #0f172a;
+      --tm-navy: #020617;
       --tm-sage: #6b8e6f;
       --tm-cream: #f8f4e9;
       --tm-text: #f8fafc;
-      --tm-text-soft: #cbd5e1;
+      --tm-text-soft: #dbe4f0;
       --tm-text-muted: #94a3b8;
-      --tm-purple: #a855f7;
-      --tm-purple-soft: #c084fc;
-      --tm-shadow: 0 24px 64px rgba(2, 8, 23, 0.42);
-      --tm-glow: 0 18px 48px rgba(168, 85, 247, 0.14);
+      --tm-purple: #8b5cf6;
+      --tm-purple-soft: #c4b5fd;
+      --tm-indigo: #6366f1;
+      --tm-shadow: 0 28px 72px rgba(2, 8, 23, 0.52);
+      --tm-glow: 0 20px 54px rgba(99, 102, 241, 0.16);
       --tm-radius: 18px;
     }
 
@@ -66,9 +67,10 @@
       color: var(--tm-text);
       font-family: 'Sora', 'DM Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       background:
-        radial-gradient(circle at 16% 18%, rgba(168, 85, 247, 0.14), transparent 24%),
-        radial-gradient(circle at 84% 12%, rgba(99, 102, 241, 0.12), transparent 22%),
-        linear-gradient(180deg, #020617 0%, #0f172a 46%, #1e293b 100%);
+        radial-gradient(circle at 14% 16%, rgba(139, 92, 246, 0.16), transparent 22%),
+        radial-gradient(circle at 82% 10%, rgba(99, 102, 241, 0.16), transparent 20%),
+        radial-gradient(circle at 50% 120%, rgba(76, 29, 149, 0.18), transparent 34%),
+        linear-gradient(180deg, #020617 0%, #081121 34%, #0f172a 68%, #172554 100%);
     }
 
     .app-shell {
@@ -228,8 +230,8 @@
     }
 
     .sidebar {
-      backdrop-filter: blur(18px);
-      background: linear-gradient(180deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 58, 95, 0.96) 100%);
+      backdrop-filter: blur(20px);
+      background: linear-gradient(180deg, rgba(2, 6, 23, 0.98) 0%, rgba(15, 23, 42, 0.98) 46%, rgba(49, 46, 129, 0.94) 100%);
       border-right: 1px solid rgba(255, 255, 255, 0.08);
       display: flex;
       flex-direction: column;
@@ -252,10 +254,11 @@
     }
 
     .topbar {
-      backdrop-filter: blur(18px);
+      backdrop-filter: blur(20px);
       background:
-        radial-gradient(circle at top left, rgba(168, 85, 247, 0.10), transparent 34%),
-        linear-gradient(180deg, rgba(15, 23, 42, 0.92) 0%, rgba(15, 23, 42, 0.84) 100%);
+        radial-gradient(circle at top left, rgba(139, 92, 246, 0.14), transparent 32%),
+        radial-gradient(circle at top right, rgba(99, 102, 241, 0.10), transparent 28%),
+        linear-gradient(180deg, rgba(2, 6, 23, 0.94) 0%, rgba(15, 23, 42, 0.90) 100%);
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       display: block;
       position: sticky;
@@ -323,25 +326,25 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #9333ea 0%, #7c3aed 52%, #4f46e5 100%);
-      box-shadow: 0 14px 32px rgba(124, 58, 237, 0.26);
+      background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 46%, #4338ca 100%);
+      box-shadow: 0 16px 34px rgba(76, 29, 149, 0.34);
       color: white;
     }
 
     .btn-primary:hover {
-      box-shadow: 0 18px 40px rgba(124, 58, 237, 0.34);
+      box-shadow: 0 20px 44px rgba(67, 56, 202, 0.36);
     }
 
     .btn-secondary {
-      background: rgba(15, 23, 42, 0.78);
-      border-color: rgba(168, 85, 247, 0.16);
+      background: rgba(9, 14, 32, 0.84);
+      border-color: rgba(139, 92, 246, 0.18);
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
       color: var(--tm-text);
     }
 
     .btn-secondary:hover {
-      background: rgba(30, 41, 59, 0.92);
-      border-color: rgba(168, 85, 247, 0.28);
+      background: rgba(17, 24, 39, 0.94);
+      border-color: rgba(139, 92, 246, 0.30);
     }
 
     .btn-danger {
@@ -358,8 +361,8 @@
     }
 
     .workspace-tabs {
-      backdrop-filter: blur(14px);
-      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(16px);
+      background: rgba(2, 6, 23, 0.74);
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       display: flex;
       gap: 0;
@@ -391,7 +394,7 @@
     }
 
     .workspace-tab:hover {
-      background: rgba(168, 85, 247, 0.08);
+      background: rgba(139, 92, 246, 0.10);
       color: var(--tm-text);
     }
 
@@ -426,19 +429,21 @@
     }
 
     .account-grid {
+      align-items: start;
       display: grid;
       gap: 24px;
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .account-grid .card:last-child {
-      grid-column: 1 / -1;
+    .account-grid-column {
+      display: grid;
+      gap: 24px;
     }
 
     .account-icon {
       align-items: center;
-      background: rgba(168, 85, 247, 0.14);
-      border: 1px solid rgba(168, 85, 247, 0.24);
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.18) 0%, rgba(99, 102, 241, 0.14) 100%);
+      border: 1px solid rgba(139, 92, 246, 0.24);
       border-radius: 16px;
       color: var(--tm-purple-soft);
       display: inline-flex;
@@ -507,7 +512,7 @@
     }
 
     .card::before {
-      background: linear-gradient(135deg, rgba(168, 85, 247, 0.82), rgba(99, 102, 241, 0.68), rgba(255, 255, 255, 0.12));
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.76), rgba(67, 56, 202, 0.70), rgba(255, 255, 255, 0.10));
       border-radius: inherit;
       content: '';
       inset: 0;
@@ -550,7 +555,7 @@
 
     .support-link {
       align-items: center;
-      background: rgba(15, 23, 42, 0.74);
+      background: rgba(9, 14, 32, 0.78);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 14px;
       color: var(--tm-text-soft);
@@ -562,8 +567,8 @@
     }
 
     .support-link:hover {
-      background: rgba(30, 41, 59, 0.92);
-      border-color: rgba(168, 85, 247, 0.24);
+      background: rgba(17, 24, 39, 0.94);
+      border-color: rgba(139, 92, 246, 0.28);
       color: var(--tm-text);
       transform: translateY(-1px);
     }
@@ -647,7 +652,7 @@
     }
 
     .parser-step:hover {
-      background: rgba(168, 85, 247, 0.06);
+      background: rgba(139, 92, 246, 0.08);
       color: var(--tm-text);
     }
 
@@ -659,8 +664,8 @@
     .parser-step-badge,
     .section-badge {
       align-items: center;
-      background: rgba(168, 85, 247, 0.14);
-      border: 1px solid rgba(168, 85, 247, 0.24);
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.20) 0%, rgba(99, 102, 241, 0.14) 100%);
+      border: 1px solid rgba(139, 92, 246, 0.24);
       border-radius: 999px;
       color: #f3e8ff;
       display: inline-flex;
@@ -714,8 +719,8 @@
 
     .parser-input {
       width: 100%;
-      background: rgba(15, 23, 42, 0.78);
-      border: 1px solid rgba(255, 255, 255, 0.10);
+      background: rgba(9, 14, 32, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.09);
       border-radius: 14px;
       color: var(--tm-text);
       font-family: inherit;
@@ -755,7 +760,7 @@
 
     .logo-preview {
       align-items: center;
-      background: rgba(15, 23, 42, 0.70);
+      background: rgba(9, 14, 32, 0.74);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 16px;
       display: flex;
@@ -810,14 +815,14 @@
     .parser-status-box,
     .parser-info-box,
     .parser-output-box {
-      background: rgba(15, 23, 42, 0.74);
+      background: rgba(9, 14, 32, 0.78);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 18px;
       padding: 16px 18px;
     }
 
     .parser-info-box {
-      background: linear-gradient(135deg, rgba(76, 29, 149, 0.22) 0%, rgba(15, 23, 42, 0.90) 52%, rgba(79, 70, 229, 0.16) 100%);
+      background: linear-gradient(135deg, rgba(76, 29, 149, 0.28) 0%, rgba(9, 14, 32, 0.92) 48%, rgba(67, 56, 202, 0.20) 100%);
       border-color: rgba(168, 85, 247, 0.20);
     }
 
@@ -829,8 +834,8 @@
     }
 
     .parser-upload-zone {
-      background: rgba(15, 23, 42, 0.60);
-      border: 2px dashed rgba(168, 85, 247, 0.34);
+      background: rgba(9, 14, 32, 0.66);
+      border: 2px dashed rgba(139, 92, 246, 0.36);
       border-radius: 22px;
       cursor: pointer;
       padding: 34px 24px;
@@ -840,9 +845,9 @@
 
     .parser-upload-zone:hover,
     .parser-upload-zone.is-dragover {
-      background: rgba(88, 28, 135, 0.22);
-      border-color: rgba(168, 85, 247, 0.58);
-      box-shadow: 0 18px 34px rgba(168, 85, 247, 0.12);
+      background: rgba(76, 29, 149, 0.26);
+      border-color: rgba(139, 92, 246, 0.56);
+      box-shadow: 0 18px 34px rgba(67, 56, 202, 0.16);
     }
 
     .parser-upload-zone svg {
@@ -921,7 +926,7 @@
 
     .footer-inner p,
     .footer-inner a {
-      color: #94a3b8;
+      color: #a5b4fc;
       font-size: 14px;
       text-decoration: none;
     }
@@ -954,8 +959,8 @@
         grid-template-columns: 1fr;
       }
 
-      .account-grid .card:last-child {
-        grid-column: auto;
+      .account-grid-column {
+        gap: 24px;
       }
 
       .table-controls {
@@ -1471,76 +1476,80 @@
 
           <section id="accountPage" class="page">
             <div class="account-grid">
-              <div class="card">
-                <div class="card-body">
-                  <div class="account-icon" aria-hidden="true">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 20a8 8 0 0 1 16 0" />
-                    </svg>
-                  </div>
-                  <h2 class="card-title">Account summary</h2>
-                  <p class="card-desc">Your signed-in account details, available credits, and current membership status.</p>
-                  <div class="detail-list">
-                    <div class="detail-row">
-                      <div class="detail-label">Email</div>
-                      <div id="accountEmail" class="detail-value">Loading...</div>
+              <div class="account-grid-column">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="account-icon" aria-hidden="true">
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 20a8 8 0 0 1 16 0" />
+                      </svg>
                     </div>
-                    <div class="detail-row">
-                      <div class="detail-label">Account ID</div>
-                      <div id="accountId" class="detail-value">—</div>
-                    </div>
-                    <div class="detail-row">
-                      <div class="detail-label">Sign-in method</div>
-                      <div class="detail-value">Magic link</div>
-                    </div>
-                    <div class="detail-row">
-                      <div class="detail-label">Available credits</div>
-                      <div id="accountTokens" class="detail-value">—</div>
-                    </div>
-                    <div class="detail-row">
-                      <div class="detail-label">Current membership</div>
-                      <div id="accountMembershipStatus" class="detail-value">Loading...</div>
-                    </div>
-                    <div class="detail-row">
-                      <div class="detail-label">Current plan</div>
-                      <div id="accountMembershipPlan" class="detail-value">—</div>
+                    <h2 class="card-title">Account summary</h2>
+                    <p class="card-desc">Your signed-in account details, available credits, and current membership status.</p>
+                    <div class="detail-list">
+                      <div class="detail-row">
+                        <div class="detail-label">Email</div>
+                        <div id="accountEmail" class="detail-value">Loading...</div>
+                      </div>
+                      <div class="detail-row">
+                        <div class="detail-label">Account ID</div>
+                        <div id="accountId" class="detail-value">—</div>
+                      </div>
+                      <div class="detail-row">
+                        <div class="detail-label">Sign-in method</div>
+                        <div class="detail-value">Magic link</div>
+                      </div>
+                      <div class="detail-row">
+                        <div class="detail-label">Available credits</div>
+                        <div id="accountTokens" class="detail-value">—</div>
+                      </div>
+                      <div class="detail-row">
+                        <div class="detail-label">Current membership</div>
+                        <div id="accountMembershipStatus" class="detail-value">Loading...</div>
+                      </div>
+                      <div class="detail-row">
+                        <div class="detail-label">Current plan</div>
+                        <div id="accountMembershipPlan" class="detail-value">—</div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="card">
-                <div class="card-body">
-                  <div class="account-icon" aria-hidden="true">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M5 7h14" />
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M5 12h14" />
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M5 17h9" />
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5Z" />
-                    </svg>
+              <div class="account-grid-column">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="account-icon" aria-hidden="true">
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M5 7h14" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M5 12h14" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M5 17h9" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5Z" />
+                      </svg>
+                    </div>
+                    <h2 class="card-title">Memberships</h2>
+                    <p class="card-desc">Plans connected to this account, including current status and billing period details.</p>
+                    <div id="accountMembershipsEmpty" class="empty-state hidden">No memberships found for this account.</div>
+                    <div id="accountMembershipsTableWrap" class="account-membership-list hidden"></div>
                   </div>
-                  <h2 class="card-title">Memberships</h2>
-                  <p class="card-desc">Plans connected to this account, including current status and billing period details.</p>
-                  <div id="accountMembershipsEmpty" class="empty-state hidden">No memberships found for this account.</div>
-                  <div id="accountMembershipsTableWrap" class="account-membership-list hidden"></div>
                 </div>
-              </div>
 
-              <div class="card">
-                <div class="card-body">
-                  <div class="account-icon" aria-hidden="true">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6v12" />
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 10H9.75a2.75 2.75 0 1 1 0-5.5H15" />
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 14h6.25a2.75 2.75 0 1 1 0 5.5H8" />
-                    </svg>
-                  </div>
-                  <h2 class="card-title">Account actions</h2>
-                  <p class="account-action-copy">Buy more credits when you need them, or sign out of your current session.</p>
-                  <div class="button-row">
-                    <a href="/index.html#pricing" class="btn btn-primary">Buy Credits</a>
-                    <button id="signOutBtnSecondary" type="button" class="btn btn-danger">Log Out</button>
+                <div class="card">
+                  <div class="card-body">
+                    <div class="account-icon" aria-hidden="true">
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6v12" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 10H9.75a2.75 2.75 0 1 1 0-5.5H15" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 14h6.25a2.75 2.75 0 1 1 0 5.5H8" />
+                      </svg>
+                    </div>
+                    <h2 class="card-title">Account actions</h2>
+                    <p class="account-action-copy">Buy more credits when you need them, or sign out of your current session.</p>
+                    <div class="button-row">
+                      <a href="/index.html#pricing" class="btn btn-primary">Buy Credits</a>
+                      <button id="signOutBtnSecondary" type="button" class="btn btn-danger">Log Out</button>
+                    </div>
                   </div>
                 </div>
               </div>
