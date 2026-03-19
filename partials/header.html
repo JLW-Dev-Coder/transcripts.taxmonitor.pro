@@ -25,136 +25,122 @@
         <a href="/index.html#pricing" class="text-sm text-blue-200 hover:text-white transition">Pricing</a>
         <a href="/contact.html" class="text-sm text-blue-200 hover:text-white transition">Contact</a>
 
-        <!-- Resources -->
-        <div class="relative">
+       
+        <!-- Resources Mega Menu -->
+        <div id="resources-dropdown" class="relative">
           <button
             id="resources-toggle"
             type="button"
-            class="inline-flex items-center gap-2 text-sm text-blue-200 hover:text-white transition"
+            class="inline-flex items-center gap-2 text-sm text-slate-300 transition hover:text-white"
             aria-expanded="false"
             aria-controls="resources-menu"
           >
             Resources
-            <svg class="h-4 w-4 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            <svg class="h-4 w-4 opacity-80 transition-transform duration-150" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
 
           <div
             id="resources-menu"
-            class="hidden absolute left-1/2 mt-3 w-[min(520px,calc(100vw-3rem))] -translate-x-1/2 rounded-2xl border border-blue-900/40 bg-navy shadow-2xl"
+            class="invisible pointer-events-none absolute left-1/2 mt-3 hidden w-[min(920px,calc(100vw-3rem))] -translate-x-1/2 rounded-2xl border border-slate-800/70 bg-slate-950 opacity-0 shadow-2xl transition duration-150"
           >
-            <div class="grid gap-4 p-4">
-              <div class="rounded-xl border border-blue-900/40 bg-blue-950/10 p-4">
+            <div class="grid gap-4 p-4 lg:grid-cols-3">
 
-                <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">
-                  Resources
-                </div>
-
+              <!-- Discover -->
+              <div class="rounded-xl border border-slate-800/60 bg-slate-950/40 p-4">
+                <div class="text-xs font-semibold uppercase tracking-wide text-slate-400">Discover</div>
                 <div class="mt-2 space-y-1">
-
-                  <a href="/resources/index.html" class="group flex items-start justify-between gap-3 rounded-lg px-3 py-2 hover:bg-blue-950/20 transition">
+                  <a href="/about.html" class="group flex items-start justify-between gap-3 rounded-lg px-3 py-2 transition hover:bg-slate-900">
                     <div>
-                      <div class="text-sm font-semibold text-white">Resources Hub</div>
-                      <div class="text-xs text-blue-300">Guides, workflows, comparisons</div>
+                      <div class="text-sm font-semibold text-slate-100 group-hover:text-white">About</div>
+                      <div class="text-xs text-slate-400">Why Transcript Tax Monitor Pro exists</div>
                     </div>
-                    <span class="text-blue-300/70 group-hover:text-white transition">→</span>
+                    <span class="text-slate-500 transition group-hover:text-amber-300">→</span>
                   </a>
 
-                  <a href="/contact.html" class="group flex items-start justify-between gap-3 rounded-lg px-3 py-2 hover:bg-blue-950/20 transition">
+                  <a href="/contact.html" class="group flex items-start justify-between gap-3 rounded-lg px-3 py-2 transition hover:bg-slate-900">
                     <div>
-                      <div class="text-sm font-semibold text-white">Support</div>
-                      <div class="text-xs text-blue-300">Contact the team</div>
+                      <div class="text-sm font-semibold text-slate-100 group-hover:text-white">Contact</div>
+                      <div class="text-xs text-slate-400">Talk to our team or get help</div>
                     </div>
-                    <span class="text-blue-300/70 group-hover:text-white transition">→</span>
+                    <span class="text-slate-500 transition group-hover:text-amber-300">→</span>
                   </a>
 
-                  <a href="https://taxmonitor.pro" class="group flex items-start justify-between gap-3 rounded-lg px-3 py-2 hover:bg-blue-950/20 transition">
+                  <a href="/magnets/section-7216-dislcosure.html" class="group flex items-start justify-between gap-3 rounded-lg px-3 py-2 transition hover:bg-slate-900">
                     <div>
-                      <div class="text-sm font-semibold text-white">Tax Monitor Pro</div>
-                      <div class="text-xs text-blue-300">IRS monitoring</div>
+                      <div class="text-sm font-semibold text-slate-100 group-hover:text-white">AI + Tax Pro Consent</div>
+                      <div class="text-xs text-slate-400">AI language for practice and compliance</div>
                     </div>
-                    <span class="text-blue-300/70 group-hover:text-white transition">→</span>
+                    <span class="text-slate-500 transition group-hover:text-amber-300">→</span>
                   </a>
-
-                  <a href="https://taxtools.taxmonitor.pro" class="group flex items-start justify-between gap-3 rounded-lg px-3 py-2 hover:bg-blue-950/20 transition">
+                  
+                  <a href="/resources/index.html" class="group flex items-start justify-between gap-3 rounded-lg px-3 py-2 transition hover:bg-slate-900">
                     <div>
-                      <div class="text-sm font-semibold text-white">TaxTools Arcade</div>
-                      <div class="text-xs text-blue-300">Simple and addicting tax games</div>
+                      <div class="text-sm font-semibold text-slate-100 group-hover:text-white">Resources Hub</div>
+                      <div class="text-xs text-slate-400">Guides, workflows, comparisons</div>
                     </div>
-                    <span class="text-blue-300/70 group-hover:text-white transition">→</span>
+                    <span class="text-slate-500 transition group-hover:text-amber-300">→</span>
                   </a>
-
                 </div>
               </div>
+
+              <!-- Learn -->
+              <div class="rounded-xl border border-slate-800/60 bg-slate-950/40 p-4">
+                <div class="text-xs font-semibold uppercase tracking-wide text-slate-400">Learn</div>
+                <div class="mt-2 space-y-1">
+                  <a href="/index.html#features" class="block rounded-lg px-3 py-2 text-sm text-slate-200 transition hover:bg-slate-900">Features</a>
+                  <a href="/index.html#how-it-works" class="block rounded-lg px-3 py-2 text-sm text-slate-200 transition hover:bg-slate-900">How It Works</a>
+                  <a href="/pricing.html" class="block rounded-lg px-3 py-2 text-sm text-slate-200 transition hover:bg-slate-900">Pricing</a>
+                  <a href="/resources/how-to-read-irs-transcripts" target="_blank" rel="noopener" class="block rounded-lg px-3 py-2 text-sm text-slate-200 transition hover:bg-slate-900">How to Read IRS Transcripts</a>
+                  <a href="/resources/transcript-types" target="_blank" rel="noopener" class="block rounded-lg px-3 py-2 text-sm text-slate-200 transition hover:bg-slate-900">Transcript Types</a>
+                </div>
+              </div>
+
+              <!-- Tools + Extras -->
+              <div class="rounded-xl border border-slate-800/60 bg-slate-950/40 p-4">
+                <div class="text-xs font-semibold uppercase tracking-wide text-slate-400">Tools &amp; extras</div>
+                <div class="mt-2 space-y-1">
+                  <a href="/resources/irs-phone-numbers.html" target="_blank" rel="noopener" class="block rounded-lg px-3 py-2 text-sm text-slate-200 transition hover:bg-slate-900">IRS Phone Numbers</a>
+                  <a href="/resources/transcript-codes" target="_blank" rel="noopener" class="block rounded-lg px-3 py-2 text-sm text-slate-200 transition hover:bg-slate-900">Transcript Codes Database</a>
+                  <a href="/resources/transcript-orders" target="_blank" rel="noopener" class="block rounded-lg px-3 py-2 text-sm text-slate-200 transition hover:bg-slate-900">Order Walkthrough</a>
+                  <a href="https://taxtools.taxmonitor.pro" target="_blank" rel="noopener" class="block rounded-lg px-3 py-2 text-sm text-slate-200 transition hover:bg-slate-900">TaxTools Arcade</a>
+                </div>
+
+                <div class="mt-4 rounded-xl border border-slate-800/60 bg-slate-950/60 p-4">
+                  <div class="text-xs text-slate-400">Need human review before a transcript issue becomes a client fire drill?</div>
+                  <div class="mt-3 flex flex-col gap-2">
+                    <a
+                      href="/contact.html#contact-options"
+                      class="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:from-amber-400 hover:to-amber-500"
+                    >
+                      Start Intake →
+                    </a>
+                    <a
+                      href="/app/login.html"
+                      class="inline-flex items-center justify-center rounded-lg border border-slate-800/70 bg-slate-950/40 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:bg-slate-900"
+                    >
+                      Log In
+                    </a>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
-
       </nav>
 
-      <!-- Divider -->
-      <div class="h-6 w-px bg-white/20"></div>
+      <div class="h-6 w-px bg-slate-700"></div>
 
-      <!-- Account area -->
-      <div class="flex items-center gap-6">
-
-        <!-- Login (shown logged out) -->
-        <a id="login-link"
-           href="/sign-in.html"
-           class="text-sm text-blue-200 hover:text-white transition">
-          Sign In
+      <div class="flex items-center gap-3">
+        <a href="/app/login.html" class="text-sm font-medium text-slate-300 transition hover:text-white">Log In</a>
+        <a
+          href="/app/intake.html"
+          class="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:from-amber-400 hover:to-amber-500"
+        >
+          Start Intake →
         </a>
-
-        <!-- Credits -->
-        <div id="token-pill"
-          class="hidden items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-3 py-2 text-xs text-blue-100">
-          <span class="text-blue-300">Credits:</span>
-          <span id="token-balance" class="font-semibold text-white">0</span>
-        </div>
-
-        <!-- Account dropdown -->
-        <div id="account-wrap" class="relative hidden">
-
-          <button
-            id="account-toggle"
-            type="button"
-            aria-expanded="false"
-            aria-controls="account-menu"
-            class="flex items-center gap-2 text-sm text-blue-200 hover:text-white transition"
-          >
-            <span id="auth-email"></span>
-
-            <svg class="h-4 w-4 opacity-70" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
-            </svg>
-          </button>
-
-          <div
-            id="account-menu"
-            class="hidden absolute right-0 mt-3 w-56 rounded-xl border border-blue-900/40 bg-navy shadow-xl"
-          >
-
-            <div class="border-b border-blue-900/40 px-4 py-3 text-xs text-blue-300">
-              Signed in as<br>
-              <span id="auth-email-menu" class="font-semibold text-white"></span>
-            </div>
-
-            <a href="/app/dashboard.html"
-               class="block px-4 py-3 text-sm text-blue-200 hover:bg-blue-950/20">
-               Dashboard
-            </a>
-
-            <a id="signout-link"
-               href="#"
-               class="block px-4 py-3 text-sm text-blue-200 hover:bg-blue-950/20">
-               Sign out
-            </a>
-
-          </div>
-
-        </div>
-
       </div>
 
     </div>
