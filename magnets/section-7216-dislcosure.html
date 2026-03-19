@@ -373,6 +373,14 @@
       .cta-btn {
         width: 100%;
       }
+
+      .download-grid {
+        grid-template-columns: 1fr !important;
+      }
+
+      .next-steps-grid {
+        grid-template-columns: 1fr !important;
+      }
     }
   </style>
   <style>body { box-sizing: border-box; }</style>
@@ -380,11 +388,9 @@
  </head>
  <body>
   <main>
-   <div class="app-wrapper">
-    <!-- Lead Magnet Nav (matches product toolbar style) -->
+   <div class="app-wrapper"><!-- Navbar -->
     <div class="sticky top-0 z-50 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur">
-     <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
-      <a href="https://transcript.taxmonitor.pro/" class="flex items-center gap-3 text-white"> <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-purple-500 text-slate-950 font-extrabold">TM</span>
+     <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4"><a href="https://transcript.taxmonitor.pro/" class="flex items-center gap-3 text-white"> <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-purple-500 text-slate-950 font-extrabold">TM</span>
        <div class="leading-tight">
         <div class="text-sm font-semibold">
          Transcript.Tax Monitor Pro
@@ -393,23 +399,19 @@
          Free IRS Transcript Code Guide
         </div>
        </div></a>
-      <div class="flex items-center gap-2">
-       <a href="/" class="inline-flex items-center gap-2 rounded-xl border border-slate-800/60 bg-slate-950/60 px-3 py-2 text-sm font-semibold text-white/80 backdrop-blur hover:text-white transition">
-        <svg class="h-5 w-5" aria-hidden="true" fill="none" stroke="currentColor" viewbox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-         <path d="M15 18l-6-6 6-6" />
+      <div class="flex items-center gap-2"><a href="/" class="inline-flex items-center gap-2 rounded-xl border border-slate-800/60 bg-slate-950/60 px-3 py-2 text-sm font-semibold text-white/80 backdrop-blur hover:text-white transition">
+        <svg class="h-5 w-5" aria-hidden="true" fill="none" stroke="currentColor" viewbox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6" />
         </svg> Back </a>
       </div>
      </div>
-    </div><!-- Main Landing Page -->
-    <div id="landing-page">
-     <!-- Hero Section -->
+    </div><!-- PAGE 1: MARKETING PAGE -->
+    <div id="marketing-page"><!-- Hero Section -->
      <section class="hero">
       <h1 id="hero-title">How We Safeguard and Enhance Research with AI Tools</h1>
       <p class="subheadline">Understand consent, modern AI tools, and compliance for tax professionals.</p>
       <p id="hero-copy">Download a ready-to-use consent template and PDF guide to safely integrate AI into your tax workflow.</p>
      </section><!-- Main Content -->
-     <div class="container">
-      <!-- Introduction Card -->
+     <div class="container"><!-- Introduction Card -->
       <div class="card">
        <h3><i data-lucide="info" style="width: 20px; height: 20px;"></i> Understanding IRS Form 7216 Consent</h3>
        <p id="intro-text">If no exception applies, the tax return preparer needs the taxpayer's consent under Treas. Reg. §301.7216-3. For Form 1040 filers, the practitioner must follow Rev. Proc. 2013-14 to obtain valid consent; for all other taxpayers, the format may vary, provided the tax return preparer meets all requirements. In the context of AI tools, obtaining consent presents some specific challenges.</p>
@@ -458,10 +460,10 @@
        <h2 style="font-size: 1.4rem; font-weight: 600; color: var(--text-light); margin-bottom: 8px;">What Other Tax Professionals Are Running Into with AI</h2>
        <p style="color: var(--text-muted); font-size: 0.95rem;">Real-world scenarios that can unintentionally trigger IRS §7216 disclosure issues. Examples for educational purposes only.</p>
       </div><!-- Risk Scenario Cards -->
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px;">
-       <!-- Card 1: Foreign Account -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px;"><!-- Card 1: Foreign Account -->
        <div class="card" style="border-left: 5px solid #ef4444;">
-        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;"><i data-lucide="alert-triangle" style="width: 20px; height: 20px; color: #ef4444;"></i> <span style="font-size: 0.85rem; color: #ef4444; font-weight: 600;">COMPLIANCE RISK EXAMPLE</span>
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+         <i data-lucide="alert-triangle" style="width: 20px; height: 20px; color: #ef4444;"></i> <span style="font-size: 0.85rem; color: #ef4444; font-weight: 600;">COMPLIANCE RISK EXAMPLE</span>
         </div>
         <div style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 8px; padding: 16px; margin-bottom: 16px; font-style: italic; line-height: 1.7; color: var(--text-light);">
          "I started using AI to research a foreign account issue and didn't think twice about it. My first question was general, but then I added client specifics to get a better answer… name, income, account details, everything. It hit me later that I had basically disclosed the entire situation to a third party."
@@ -471,7 +473,8 @@
         <p style="font-size: 0.85rem; color: #ef4444; background: rgba(239, 68, 68, 0.08); padding: 8px 12px; border-radius: 4px; border-left: 3px solid #ef4444;"><strong>Risk:</strong> This scenario may constitute a disclosure under IRC §7216.</p>
        </div><!-- Card 2: Meeting Notes -->
        <div class="card" style="border-left: 5px solid #ef4444;">
-        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;"><i data-lucide="alert-triangle" style="width: 20px; height: 20px; color: #ef4444;"></i> <span style="font-size: 0.85rem; color: #ef4444; font-weight: 600;">COMPLIANCE RISK EXAMPLE</span>
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+         <i data-lucide="alert-triangle" style="width: 20px; height: 20px; color: #ef4444;"></i> <span style="font-size: 0.85rem; color: #ef4444; font-weight: 600;">COMPLIANCE RISK EXAMPLE</span>
         </div>
         <div style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 8px; padding: 16px; margin-bottom: 16px; font-style: italic; line-height: 1.7; color: var(--text-light);">
          "I copied my client meeting notes into an AI tool to summarize things faster. It included names, income estimates, rental properties, and their LLC. I thought I was just saving time, but I didn't realize I had shared identifiable tax return information."
@@ -487,72 +490,68 @@
         <div class="checkbox">
          ✓
         </div>
-        <div>
-         <strong>Affirmative Consent Obtained:</strong> Written, signed consent received BEFORE AI processing
+        <div><strong>Affirmative Consent Obtained:</strong> Written, signed consent received BEFORE AI processing
         </div>
        </div>
        <div class="checklist-item" onclick="toggleCheckbox(this)">
         <div class="checkbox">
          ✓
         </div>
-        <div>
-         <strong>SSN &amp; PII Protection:</strong> Confirmed AI vendor uses encryption and data minimization
+        <div><strong>SSN &amp; PII Protection:</strong> Confirmed AI vendor uses encryption and data minimization
         </div>
        </div>
        <div class="checklist-item" onclick="toggleCheckbox(this)">
         <div class="checkbox">
          ✓
         </div>
-        <div>
-         <strong>Consent Duration Set:</strong> <span id="consent-duration">Consent valid for one tax year or until revoked</span>
+        <div><strong>Consent Duration Set:</strong> <span id="consent-duration">Consent valid for one tax year or until revoked</span>
         </div>
        </div>
        <div class="checklist-item" onclick="toggleCheckbox(this)">
         <div class="checkbox">
          ✓
         </div>
-        <div>
-         <strong>Vendor Safeguards:</strong> AI vendor contract includes confidentiality, data retention, and compliance obligations
+        <div><strong>Vendor Safeguards:</strong> AI vendor contract includes confidentiality, data retention, and compliance obligations
         </div>
        </div>
        <div class="checklist-item" onclick="toggleCheckbox(this)">
         <div class="checkbox">
          ✓
         </div>
-        <div>
-         <strong>No Pre-Checked Boxes:</strong> Consent is affirmative, not default or conditional
+        <div><strong>No Pre-Checked Boxes:</strong> Consent is affirmative, not default or conditional
         </div>
        </div>
        <div class="checklist-item" onclick="toggleCheckbox(this)">
         <div class="checkbox">
          ✓
         </div>
-        <div>
-         <strong>Foreign Vendor Review:</strong> If applicable, reviewed latest IRS guidance for foreign-based AI services
+        <div><strong>Foreign Vendor Review:</strong> If applicable, reviewed latest IRS guidance for foreign-based AI services
         </div>
        </div>
        <div class="checklist-item" onclick="toggleCheckbox(this)">
         <div class="checkbox">
          ✓
         </div>
-        <div>
-         <strong>Client File Documentation:</strong> Signed consent forms retained in client files
+        <div><strong>Client File Documentation:</strong> Signed consent forms retained in client files
         </div>
        </div>
       </div><!-- References Section -->
       <div class="card">
        <h3><i data-lucide="external-link" style="width: 20px; height: 20px;"></i> Official References &amp; Resources</h3>
        <p><strong>Click below to access authoritative IRS guidance:</strong></p>
-       <div><a href="https://www.tomtalkstaxes.com/p/ai-7216" target="_blank" rel="noopener noreferrer" class="reference-link"> → Tom Talks Taxes – AI &amp; 7216 Compliance </a>
+       <div>
+        <a href="https://www.tomtalkstaxes.com/p/ai-7216" target="_blank" rel="noopener noreferrer" class="reference-link"> → Tom Talks Taxes – AI &amp; 7216 Compliance </a>
        </div>
-       <div><a href="https://www.irs.gov/pub/irs-drop/rp-13-14.pdf" target="_blank" rel="noopener noreferrer" class="reference-link"> → IRS Rev. Proc. 2013-14 (Consent Requirements) </a>
+       <div>
+        <a href="https://www.irs.gov/pub/irs-drop/rp-13-14.pdf" target="_blank" rel="noopener noreferrer" class="reference-link"> → IRS Rev. Proc. 2013-14 (Consent Requirements) </a>
        </div>
-       <div><a href="https://www.law.cornell.edu/cfr/text/26/301.7216-3" target="_blank" rel="noopener noreferrer" class="reference-link"> → 26 CFR 301.7216-3 (Disclosure Regulations) </a>
+       <div>
+        <a href="https://www.law.cornell.edu/cfr/text/26/301.7216-3" target="_blank" rel="noopener noreferrer" class="reference-link"> → 26 CFR 301.7216-3 (Disclosure Regulations) </a>
        </div>
       </div><!-- CTA Section -->
       <div class="cta-section">
        <h2 style="font-size: 1.8rem; margin-bottom: 20px;">Ready to Implement AI Consent?</h2>
-       <p style="margin-bottom: 24px; font-size: 1.05rem;">Download the complete AI Consent Flyer + PDF guide for <span id="firm-name">your tax firm</span>. All templates are ready to customize and print.</p><a href="https://buy.stripe.com/eVq3cxcigdEw9tUawPew800" id="cta-button" class="cta-btn" onclick="showSuccessPage(event)"> Purchase &amp; Download – $2.99 </a>
+       <p style="margin-bottom: 24px; font-size: 1.05rem;">Download the complete AI Consent Flyer + PDF guide for <span id="firm-name">your tax firm</span>. All templates are ready to customize and print.</p><a href="" id="cta-button" class="cta-btn" target="_blank" rel="noopener noreferrer"> Purchase &amp; Download – $2.99 </a>
       </div><!-- Footer -->
       <footer class="footer">
        <p style="margin-bottom: 16px;"><strong>Compliance Notice:</strong></p>
@@ -560,8 +559,8 @@
        <p style="margin-top: 24px; font-size: 0.85rem;">© <span id="footer-year"></span> <span id="footer-firm">Your Tax Firm</span>. All rights reserved. This resource is for informational purposes only and does not constitute legal advice.</p>
       </footer>
      </div>
-    </div><!-- Post-Purchase Success Page -->
-    <div id="purchase-success-page" style="display: none; padding: 60px 20px; text-align: center;">
+    </div><!-- PAGE 2: SUCCESS/DOWNLOAD PAGE -->
+    <div id="success-page" style="display: none; padding: 60px 20px; text-align: center;">
      <div style="max-width: 800px; margin: 0 auto;">
       <div style="background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; border-radius: 12px; padding: 32px; margin-bottom: 40px;">
        <div style="font-size: 3rem; margin-bottom: 16px;">
@@ -573,25 +572,25 @@
       </div><!-- Download Section -->
       <div style="background: var(--bg-card); border: 2px solid var(--accent-purple); border-radius: 12px; padding: 40px; margin-bottom: 40px;">
        <h3 style="font-size: 1.4rem; margin-bottom: 32px; color: var(--text-light);">Your Download Package</h3>
-       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px;">
-        <!-- PDF Flyer Download -->
+       <div class="download-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px;"><!-- PDF Flyer Download -->
         <div style="background: rgba(139, 92, 246, 0.08); border: 1px solid var(--accent-purple); border-radius: 8px; padding: 24px; text-align: center;">
-         <div style="font-size: 2.5rem; margin-bottom: 16px;"><i data-lucide="file-pdf" style="width: 40px; height: 40px; color: var(--accent-purple); display: inline-block;"></i>
+         <div style="font-size: 2.5rem; margin-bottom: 16px;">
+          <i data-lucide="file-pdf" style="width: 40px; height: 40px; color: var(--accent-purple); display: inline-block;"></i>
          </div>
-         <h4 style="font-size: 1.1rem; margin-bottom: 8px; color: var(--text-light);">AI Consent Flyer (PDF)</h4>
-         <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">Professional half-page flyer with customizable logo area</p><button onclick="downloadFlyer()" style="background: var(--accent-purple); color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: background 0.3s ease;"> <i data-lucide="download" style="width: 16px; height: 16px; display: inline-block; margin-right: 8px; vertical-align: middle;"></i> Download PDF </button>
+         <h4 style="font-size: 1.1rem; margin-bottom: 8px; color: var(--text-light);">AI Consent Flyer (SVG)</h4>
+         <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">Editable flyer with customizable logo area</p><button onclick="downloadFlyer()" style="background: var(--accent-purple); color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: background 0.3s ease;"> <i data-lucide="download" style="width: 16px; height: 16px; display: inline-block; margin-right: 8px; vertical-align: middle;"></i> Download </button>
         </div><!-- Guide Download -->
         <div style="background: rgba(139, 92, 246, 0.08); border: 1px solid var(--accent-purple); border-radius: 8px; padding: 24px; text-align: center;">
-         <div style="font-size: 2.5rem; margin-bottom: 16px;"><i data-lucide="book-open" style="width: 40px; height: 40px; color: var(--accent-purple); display: inline-block;"></i>
+         <div style="font-size: 2.5rem; margin-bottom: 16px;">
+          <i data-lucide="book-open" style="width: 40px; height: 40px; color: var(--accent-purple); display: inline-block;"></i>
          </div>
          <h4 style="font-size: 1.1rem; margin-bottom: 8px; color: var(--text-light);">Implementation Guide</h4>
-         <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">Step-by-step guide to customize and use the flyer</p><button onclick="downloadGuide()" style="background: var(--accent-purple); color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: background 0.3s ease;"> <i data-lucide="download" style="width: 16px; height: 16px; display: inline-block; margin-right: 8px; vertical-align: middle;"></i> Download Guide </button>
+         <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">Step-by-step customization instructions</p><button onclick="downloadGuide()" style="background: var(--accent-purple); color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: background 0.3s ease;"> <i data-lucide="download" style="width: 16px; height: 16px; display: inline-block; margin-right: 8px; vertical-align: middle;"></i> Download </button>
         </div>
        </div><!-- Preview Section -->
        <div style="text-align: left; background: var(--bg-dark); border: 1px solid var(--accent-purple); border-radius: 8px; padding: 24px; margin-bottom: 32px;">
         <h4 style="font-size: 1.1rem; margin-bottom: 20px; color: var(--text-light);">Flyer Preview</h4>
-        <div id="flyer-preview" style="background: white; color: #333; border-radius: 8px; padding: 40px; text-align: center; font-family: 'DM Sans', sans-serif; line-height: 1.6; aspect-ratio: 8.5/5.5;">
-         <!-- Logo placeholder -->
+        <div id="flyer-preview" style="background: white; color: #333; border-radius: 8px; padding: 40px; text-align: center; font-family: 'DM Sans', sans-serif; line-height: 1.6; aspect-ratio: 8.5/5.5;"><!-- Logo placeholder -->
          <div style="height: 60px; width: 100%; margin-bottom: 20px; background: #f0f0f0; border: 2px dashed #999; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 0.9rem;">
           [YOUR FIRM LOGO HERE]
          </div>
@@ -612,7 +611,7 @@
        <div style="background: rgba(139, 92, 246, 0.05); border-left: 4px solid var(--accent-purple); padding: 20px; border-radius: 4px; text-align: left; margin-bottom: 32px;">
         <h4 style="font-size: 1rem; margin-bottom: 12px; color: var(--text-light);">How to Customize Your Flyer</h4>
         <ol style="color: var(--text-light); font-size: 0.95rem; line-height: 1.8; padding-left: 20px;">
-         <li style="margin-bottom: 8px;">Open the PDF in your preferred editor (Adobe, Canva, or Microsoft Word)</li>
+         <li style="margin-bottom: 8px;">Open the SVG file in your preferred editor (Adobe, Canva, or Microsoft Word)</li>
          <li style="margin-bottom: 8px;">Replace the logo placeholder with your firm's logo</li>
          <li style="margin-bottom: 8px;">Update contact information (email and phone)</li>
          <li style="margin-bottom: 8px;">Print or share digitally with your clients</li>
@@ -622,7 +621,7 @@
       </div><!-- Next Steps -->
       <div style="background: var(--bg-card); border-radius: 12px; padding: 32px; margin-bottom: 40px;">
        <h3 style="font-size: 1.3rem; margin-bottom: 20px; color: var(--text-light);">Next Steps</h3>
-       <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+       <div class="next-steps-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
         <div style="text-align: center;">
          <div style="font-size: 2rem; color: var(--accent-purple); margin-bottom: 12px;">
           1
@@ -655,8 +654,7 @@
     <footer class="px-6 py-3 mt-1 border-t border-slate-800/60 bg-slate-950/80 backdrop-blur">
      <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
       <p class="text-slate-500 text-sm">© <span id="footer-year-2"></span> Transcript.Tax Monitor Pro. All rights reserved.</p>
-      <div class="flex items-center gap-6">
-       <a href="/legal/privacy.html" class="text-slate-400 hover:text-purple-400 text-sm transition-colors">Privacy Policy</a> <a href="/legal/terms.html" class="text-slate-400 hover:text-purple-400 text-sm transition-colors">Terms of Service</a>
+      <div class="flex items-center gap-6"><a href="/legal/privacy.html" class="text-slate-400 hover:text-purple-400 text-sm transition-colors">Privacy Policy</a> <a href="/legal/terms.html" class="text-slate-400 hover:text-purple-400 text-sm transition-colors">Terms of Service</a>
       </div>
      </div>
     </footer>
@@ -681,30 +679,40 @@
         config = updatedConfig;
         
         // Update all text elements with firm name
-        document.getElementById('firm-name').textContent = config.firm_name || defaultConfig.firm_name;
-        document.getElementById('preview-firm').textContent = config.firm_name || defaultConfig.firm_name;
-        document.getElementById('preview-email').textContent = config.firm_email || defaultConfig.firm_email;
-        document.getElementById('preview-phone').textContent = config.firm_phone || defaultConfig.firm_phone;
-        document.getElementById('footer-firm').textContent = config.firm_name || defaultConfig.firm_name;
+        const firmNameElements = [
+          'firm-name',
+          'preview-firm',
+          'footer-firm'
+        ];
         
-        // Replace [FIRM_NAME] placeholders in consent blocks
-        const consentUse = document.getElementById('consent-use');
-        consentUse.textContent = consentUse.textContent.replace(/\[FIRM_NAME\]/g, config.firm_name || defaultConfig.firm_name);
-        
-        const consentDisclose = document.getElementById('consent-disclose');
-        consentDisclose.textContent = consentDisclose.textContent.replace(/\[FIRM_NAME\]/g, config.firm_name || defaultConfig.firm_name);
-        
-        const signatureReqs = document.getElementById('signature-requirements');
-        signatureReqs.textContent = signatureReqs.textContent.replace(/\[FIRM_NAME\]/g, config.firm_name || defaultConfig.firm_name);
+        firmNameElements.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = config.firm_name || defaultConfig.firm_name;
+        });
+
+        const emailElements = ['preview-email'];
+        emailElements.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = config.firm_email || defaultConfig.firm_email;
+        });
+
+        const phoneElements = ['preview-phone'];
+        phoneElements.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = config.firm_phone || defaultConfig.firm_phone;
+        });
         
         // Update consent duration
-        document.getElementById('consent-duration').textContent = config.consent_duration || defaultConfig.consent_duration;
+        const durationEl = document.getElementById('consent-duration');
+        if (durationEl) durationEl.textContent = config.consent_duration || defaultConfig.consent_duration;
         
         // Update vendor safeguard
-        document.getElementById('vendor-safeguard').textContent = config.vendor_safeguard || defaultConfig.vendor_safeguard;
+        const safeguardEl = document.getElementById('vendor-safeguard');
+        if (safeguardEl) safeguardEl.textContent = config.vendor_safeguard || defaultConfig.vendor_safeguard;
         
         // Update Stripe link
-        document.getElementById('cta-button').href = config.stripe_link || defaultConfig.stripe_link;
+        const ctaBtn = document.getElementById('cta-button');
+        if (ctaBtn) ctaBtn.href = config.stripe_link || defaultConfig.stripe_link;
       },
       mapToCapabilities: (config) => ({
         recolorables: [],
@@ -731,16 +739,25 @@
     lucide.createIcons();
 
     // Set footer year
-    document.getElementById('footer-year').textContent = new Date().getFullYear();
+    const footerYear = document.getElementById('footer-year');
     const footerYear2 = document.getElementById('footer-year-2');
-    if (footerYear2) footerYear2.textContent = new Date().getFullYear();
+    const year = new Date().getFullYear();
+    if (footerYear) footerYear.textContent = year;
+    if (footerYear2) footerYear2.textContent = year;
+
+    // Check URL for success parameter
+    function checkUrlForSuccess() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('success') || params.has('session_id')) {
+        showSuccessPage();
+      }
+    }
 
     // Show Success Page
-    function showSuccessPage(e) {
-      if (e) e.preventDefault();
-      const landingPage = document.getElementById('landing-page');
-      const successPage = document.getElementById('purchase-success-page');
-      if (landingPage) landingPage.style.display = 'none';
+    function showSuccessPage() {
+      const marketingPage = document.getElementById('marketing-page');
+      const successPage = document.getElementById('success-page');
+      if (marketingPage) marketingPage.style.display = 'none';
       if (successPage) successPage.style.display = 'block';
       window.scrollTo(0, 0);
       setTimeout(() => lucide.createIcons(), 100);
@@ -810,7 +827,7 @@
       URL.revokeObjectURL(url);
     }
 
-    // Download Guide (Sample text file)
+    // Download Guide
     function downloadGuide() {
       const guideContent = `AI CONSENT FLYER - IMPLEMENTATION GUIDE
 
@@ -876,8 +893,9 @@ Contact support at support@transcripttax.com
       element.classList.toggle('checked');
     }
 
-    // Initialize config values
+    // Initialize
     window.elementSdk?.onConfigChange?.(config);
+    checkUrlForSuccess();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9deedbcc9310e9e3',t:'MTc3Mzk0ODI3OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9def002c620178e4',t:'MTc3Mzk0OTc2OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
