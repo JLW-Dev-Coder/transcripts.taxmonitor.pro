@@ -24,67 +24,9 @@
         <a href="/index.html#pricing" class="text-sm text-blue-200 hover:text-white">Pricing</a>
         <a href="/contact.html" class="text-sm text-blue-200 hover:text-white">Contact</a>
 
-        <!-- Mega Menu -->
-        <div class="relative">
-          <button id="resources-toggle"
-            class="inline-flex items-center gap-2 text-sm text-blue-200 hover:text-white"
-            type="button"
-            aria-expanded="false">
-            Resources
-            <svg class="h-4 w-4 transition-transform" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M19 9l-7 7-7-7"/>
-            </svg>
-          </button>
-
-          <!-- FIXED MENU -->
-          <div id="resources-menu"
-            class="hidden absolute left-1/2 mt-3 w-[min(920px,calc(100vw-3rem))] -translate-x-1/2 rounded-2xl border border-blue-900/40 bg-navy shadow-2xl transition-all duration-150">
-
-            <div class="grid gap-4 p-4 lg:grid-cols-3">
-
-              <!-- Discover -->
-              <div class="rounded-xl border border-blue-900/40 bg-blue-950/10 p-4">
-                <div class="text-xs font-semibold uppercase text-blue-300">Discover</div>
-
-                <div class="mt-2 space-y-1">
-                  <a href="/about.html" class="block px-3 py-2 hover:bg-blue-950/20">About</a>
-                  <a href="/contact.html" class="block px-3 py-2 hover:bg-blue-950/20">Contact</a>
-                  <a href="/resources/index.html" class="block px-3 py-2 hover:bg-blue-950/20">Resources Hub</a>
-                  <a href="/magnets/section-7216-disclosure.html" class="block px-3 py-2 hover:bg-blue-950/20">§7216 Disclosure Guide</a>
-                </div>
-              </div>
-
-              <!-- Learn -->
-              <div class="rounded-xl border border-blue-900/40 bg-blue-950/10 p-4">
-                <div class="text-xs font-semibold uppercase text-blue-300">Learn</div>
-
-                <div class="mt-2 space-y-1">
-                  <a href="/index.html#features" class="block px-3 py-2 hover:bg-blue-950/20">Features</a>
-                  <a href="/index.html#how-it-works" class="block px-3 py-2 hover:bg-blue-950/20">How It Works</a>
-                  <a href="/index.html#pricing" class="block px-3 py-2 hover:bg-blue-950/20">Pricing</a>
-                  <a href="/resources/how-to-read-irs-transcripts" class="block px-3 py-2 hover:bg-blue-950/20">How to Read IRS Transcripts</a>
-                  <a href="/resources/transcript-types" class="block px-3 py-2 hover:bg-blue-950/20">Transcript Types</a>
-                </div>
-              </div>
-
-              <!-- Tools -->
-              <div class="rounded-xl border border-blue-900/40 bg-blue-950/10 p-4">
-                <div class="text-xs font-semibold uppercase text-blue-300">Tools & Extras</div>
-
-                <div class="mt-2 space-y-1">
-                  <a href="/resources/irs-phone-numbers.html" class="block px-3 py-2 hover:bg-blue-950/20">IRS Phone Numbers</a>
-                  <a href="/resources/transcript-codes" class="block px-3 py-2 hover:bg-blue-950/20">Transcript Codes</a>
-                  <a href="/resources/transcript-orders" class="block px-3 py-2 hover:bg-blue-950/20">Order Walkthrough</a>
-                  <a href="https://taxmonitor.pro" target="_blank" class="block px-3 py-2 hover:bg-blue-950/20">Tax Monitor Pro</a>
-                  <a href="https://taxtools.taxmonitor.pro" target="_blank" class="block px-3 py-2 hover:bg-blue-950/20">TaxTools Arcade</a>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-      </nav>
+       <!-- Mega Menu --> 
+        <div id="resources-dropdown" class="relative"> 
+          <button id="resources-toggle" type="button" class="inline-flex items-center gap-2 text-sm text-blue-200 hover:text-white transition" aria-expanded="false" > Resources <svg class="h-4 w-4 opacity-80 transition-transform duration-150" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"> <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/> </svg> </button> <div id="resources-menu" class="invisible pointer-events-none absolute left-1/2 mt-3 hidden w-[min(920px,calc(100vw-3rem))] -translate-x-1/2 rounded-2xl border border-blue-900/40 bg-navy opacity-0 shadow-2xl transition duration-150" > <div class="grid gap-4 p-4 lg:grid-cols-3"> <!-- Discover --> <div class="rounded-xl border border-blue-900/40 bg-blue-950/10 p-4"> <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">Discover</div> <div class="mt-2 space-y-1"> <a href="/about.html" class="group flex justify-between rounded-lg px-3 py-2 hover:bg-blue-950/20"> <div> <div class="text-sm font-semibold text-white">About</div> <div class="text-xs text-blue-300">Why TTMP exists</div> </div> <span class="text-blue-300/70 group-hover:text-white">→</span> </a> <a href="/contact.html" class="group flex justify-between rounded-lg px-3 py-2 hover:bg-blue-950/20"> <div> <div class="text-sm font-semibold text-white">Contact</div> <div class="text-xs text-blue-300">Talk to support</div> </div> <span class="text-blue-300/70 group-hover:text-white">→</span> </a> <a href="/resources/index.html" class="group flex justify-between rounded-lg px-3 py-2 hover:bg-blue-950/20"> <div> <div class="text-sm font-semibold text-white">Resources Hub</div> <div class="text-xs text-blue-300">Guides & workflows</div> </div> <span class="text-blue-300/70 group-hover:text-white">→</span> </a> <a href="/magnets/section-7216-disclosure.html" class="group flex justify-between rounded-lg px-3 py-2 hover:bg-blue-950/20"> <div> <div class="text-sm font-semibold text-white">§7216 Disclosure Guide</div> <div class="text-xs text-blue-300">Enjoy AI + compliance</div> </div> <span class="text-blue-300/70 group-hover:text-white">→</span> </a> </div> </div> <!-- Learn --> <div class="rounded-xl border border-blue-900/40 bg-blue-950/10 p-4"> <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">Learn</div> <div class="mt-2 space-y-1"> <a href="/index.html#features" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20">Features</a> <a href="/index.html#how-it-works" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20">How It Works</a> <a href="/index.html#pricing" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20">Pricing</a> <a href="/resources/how-to-read-irs-transcripts" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20">How to Read IRS Transcripts</a> <a href="/resources/transcript-types" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20">Transcript Types</a> </div> </div> <!-- Tools --> <div class="rounded-xl border border-blue-900/40 bg-blue-950/10 p-4"> <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">Tools & Extras</div> <div class="mt-2 space-y-1"> <a href="/resources/irs-phone-numbers.html" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20"> IRS Phone Numbers </a> <a href="/resources/transcript-codes" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20"> Transcript Codes </a> <a href="/resources/transcript-orders" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20"> Order Walkthrough </a> <a href="https://taxmonitor.pro" target="_blank" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20"> Tax Monitor Pro </a> <a href="https://taxtools.taxmonitor.pro" target="_blank" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20"> TaxTools Arcade </a> </div> <div class="mt-4 rounded-xl border border-blue-900/40 bg-blue-950/20 p-4"> <div class="text-xs text-blue-300"> Need transcripts handled without manual work? </div> <div class="mt-3 flex flex-col gap-2"> <a href="/app/dashboard.html" class="rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 px-4 py-2 text-sm font-semibold text-slate-950 text-center"> Open App → </a> <a href="/sign-in.html" class="rounded-lg border border-blue-900/40 px-4 py-2 text-sm text-blue-200 text-center hover:bg-blue-950/20"> Sign In </a> </div> </div> </div> </div> </div> </div> </nav>
 
       <div class="h-6 w-px bg-white/20"></div>
 
