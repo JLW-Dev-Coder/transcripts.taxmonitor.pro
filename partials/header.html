@@ -1,14 +1,22 @@
-  <header class="sticky top-0 z-50 border-b border-blue-900/40 bg-navy/80 backdrop-blur text-white">
-   <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4"><!-- Logo --> <a href="/index.html" class="flex items-center gap-3"> <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 text-slate-950 font-bold">TM</span>
+<!-- partials/header.html -->
+<header class="sticky top-0 z-50 border-b border-blue-900/40 bg-navy/80 backdrop-blur text-white">
+    
+   <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
+     <!-- Logo --> 
+     <a href="/index.html" class="flex items-center gap-3"> <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 text-slate-950 font-bold">TM</span>
      <div class="flex flex-col leading-tight"><span class="font-semibold tracking-tight text-white">Transcript.Tax Monitor Pro</span> <span class="text-xs text-blue-300">Transcript automation</span>
-     </div></a> <!-- Desktop Nav -->
+     </div></a> 
+     
+     <!-- Desktop Nav -->
     <div class="hidden items-center gap-10 md:flex">
      <nav class="flex items-center gap-8"><a href="/about.html" class="text-sm text-blue-200 hover:text-white">About</a> <a href="/index.html#features" class="text-sm text-blue-200 hover:text-white">Features</a> <a href="/index.html#how-it-works" class="text-sm text-blue-200 hover:text-white">How It Works</a> <a href="/index.html#pricing" class="text-sm text-blue-200 hover:text-white">Pricing</a> <a href="/contact.html" class="text-sm text-blue-200 hover:text-white">Contact</a> <!-- Resources Dropdown -->
       <div class="relative"><button id="resources-toggle" type="button" class="inline-flex items-center gap-2 text-sm text-blue-200 hover:text-white transition" aria-expanded="false"> Resources 
         <svg class="h-4 w-4 opacity-80 transition-transform duration-150" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
         </svg></button>
        <div id="resources-menu" class="absolute left-1/2 mt-3 hidden w-[min(920px,calc(100vw-3rem))] -translate-x-1/2 rounded-2xl border border-blue-900/40 bg-navy shadow-2xl transition duration-150">
-        <div class="grid gap-4 p-4 lg:grid-cols-3"><!-- Discover -->
+        <div class="grid gap-4 p-4 lg:grid-cols-3">
+          
+          <!-- Discover -->
          <div class="rounded-xl border border-blue-900/40 bg-blue-950/10 p-4">
           <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">
            Discover
@@ -47,33 +55,57 @@
              </div>
             </div><span class="text-blue-300/70 group-hover:text-white">→</span> </a>
           </div>
-         </div><!-- Learn -->
+         </div>
+          
+          <!-- Learn -->
          <div class="rounded-xl border border-blue-900/40 bg-blue-950/10 p-4">
           <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">
            Learn
           </div>
           <div class="mt-2 space-y-1"><a href="/index.html#features" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20">Features</a> <a href="/index.html#how-it-works" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20">How It Works</a> <a href="/index.html#pricing" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20">Pricing</a> <a href="/resources/how-to-read-irs-transcripts" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20">How to Read IRS Transcripts</a> <a href="/resources/transcript-types" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20">Transcript Types</a>
           </div>
-         </div><!-- Tools -->
-         <div class="rounded-xl border border-blue-900/40 bg-blue-950/10 p-4">
-          <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">
-           Tools &amp; Extras
-          </div>
-          <div class="mt-2 space-y-1"><a href="/resources/irs-phone-numbers.html" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20">IRS Phone Numbers</a> <a href="/resources/transcript-codes" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20">Transcript Codes</a> <a href="/resources/transcript-orders" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20">Order Walkthrough</a> <a href="https://taxmonitor.pro" target="_blank" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20">Tax Monitor Pro</a> <a href="https://taxtools.taxmonitor.pro" target="_blank" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20">TaxTools Arcade</a>
-          </div>
-          <div class="mt-4 rounded-xl border border-blue-900/40 bg-blue-950/20 p-4">
-           <div class="text-xs text-blue-300">
-            Need transcripts handled without manual work?
-           </div>
-           <div class="mt-3 flex flex-col gap-2"><a href="/app/dashboard.html" class="rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 px-4 py-2 text-sm font-semibold text-slate-950 text-center">Open App →</a> <a href="/sign-in.html" class="rounded-lg border border-blue-900/40 px-4 py-2 text-sm text-blue-200 text-center hover:bg-blue-950/20">Sign In</a>
-           </div>
-          </div>
          </div>
+
+         <!-- Tools + Extras -->
+              <div class="rounded-xl border border-blue-900/40 bg-blue-950/10 p-4">
+                <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">
+                  Tools &amp; extras</div>
+                <div class="mt-2 space-y-1">
+            <a href="/resources/irs-phone-numbers.html" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20">IRS Phone Numbers</a> 
+            <a href="/resources/transcript-codes" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20">Transcript Codes</a> 
+            <a href="/resources/transcript-orders" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20">Order Walkthrough</a> 
+            <a href="https://taxmonitor.pro" target="_blank" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20">Tax Monitor Pro</a> 
+            <a href="https://taxtools.taxmonitor.pro" target="_blank" class="block rounded-lg px-3 py-2 text-sm text-blue-200 hover:bg-blue-950/20">TaxTools Arcade</a>
+                </div>
+
+                <div class="mt-4 rounded-xl border border-blue-900/40 bg-blue-950/20 p-4">
+                  <div class="text-xs text-slate-400">
+                    Need human review before a transcript issue becomes a client fire drill?</div>
+                  <div class="mt-3 flex flex-col gap-2">
+                    <a
+                      href="/contact.html#contact-options"
+                      class="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:from-amber-400 hover:to-amber-500"
+                    >
+                      Start Intake →
+                    </a>
+                    <a id="login-link" href="/sign-in.html" 
+                      class="inline-flex items-center justify-center rounded-lg border border-blue-900/40 bg-blue-950/10 px-4 py-2 text-sm font-semibold text-blue-200 transition hover:bg-blue-950/20"
+                    >
+                      Sign In
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
         </div>
-        <div class="h-6 w-px bg-white/20"></div>
-        <div class="flex items-center gap-6"><a id="login-link" href="/sign-in.html" class="text-sm text-blue-200 hover:text-white">Sign In</a>
-        </div>
-       </div><!-- Mobile Toggle --> <button id="mobile-menu-btn" class="md:hidden p-2 text-blue-200">☰</button> <!-- Mobile Menu -->
+      </nav>
+        
+        <!-- Mobile Toggle --> 
+        <button id="mobile-menu-btn" class="md:hidden p-2 text-blue-200">☰</button> 
+        
+        <!-- Mobile Menu -->
        <div id="mobile-menu" class="hidden border-t border-blue-900/40 bg-navy md:hidden">
         <div class="flex flex-col gap-4 px-6 py-6 text-sm"><a href="/about.html">About</a> <a href="/index.html#features">Features</a> <a href="/index.html#how-it-works">How It Works</a> <a href="/index.html#pricing">Pricing</a> <a href="/contact.html">Contact</a> <a href="/resources/index.html">Resources</a> <a href="/sign-in.html">Sign In</a>
         </div>
@@ -121,5 +153,6 @@
       });
     })();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9def8045d75727c9',t:'MTc3Mzk1NTAxNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>
+   (function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9def8045d75727c9',t:'MTc3Mzk1NTAxNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
   </header>
