@@ -13,7 +13,7 @@
     "source": "Transcript Tax Monitor",
     "title": "Transcript Tax Monitor — Account Contract",
     "usedOnPages": [
-      "/app/dashboard.html"
+      "/app/account.html"
     ],
     "validation": {
       "enumStrict": true,
