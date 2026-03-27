@@ -5,9 +5,13 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "deploy": "opennextjs-cloudflare deploy",
+    "preview": "opennextjs-cloudflare preview",
+    "cf:build": "opennextjs-cloudflare build"
   },
   "dependencies": {
+    "@opennextjs/cloudflare": "latest",
     "next": "^14.2.35",
     "react": "^18",
     "react-dom": "^18"
