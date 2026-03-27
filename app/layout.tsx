@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import './globals.css'
+import Header from '@/components/Header'
 
 export const metadata: Metadata = {
   title: { default: 'Transcript Tax Monitor Pro', template: '%s | Transcript Tax Monitor Pro' },
@@ -8,7 +10,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Header />
+        {children}
+      </body>
     </html>
   )
 }
