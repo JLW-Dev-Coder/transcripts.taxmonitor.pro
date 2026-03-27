@@ -10,8 +10,11 @@ export async function generateStaticParams() {
   return getAllResources().map(r => ({ slug: r.slug }))
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const resource = getResource(params.slug)
+export async function generateMetadata(
+  { params }: { params: Promise<{ slug: string }> }
+): Promise<Metadata> {
+  const { slug } = await params
+  const resource = getResource(slug)
   if (!resource) return {}
   const url = `${CANONICAL_BASE}/resources/${resource.slug}`
   return {
@@ -22,8 +25,11 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
-export default function ResourcePage({ params }: { params: { slug: string } }) {
-  const resource = getResource(params.slug)
+export default async function ResourcePage(
+  { params }: { params: Promise<{ slug: string }> }
+) {
+  const { slug } = await params
+  const resource = getResource(slug)
   if (!resource) notFound()
   const Template = getTemplate(resource.template)
   return (
