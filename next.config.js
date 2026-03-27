@@ -22,6 +22,31 @@ const nextConfig = {
         destination: '/login',
         permanent: true,
       },
+      {
+        source: '/legal/privacy.html',
+        destination: '/legal/privacy',
+        permanent: true,
+      },
+      {
+        source: '/legal/refund.html',
+        destination: '/legal/refund',
+        permanent: true,
+      },
+      {
+        source: '/legal/terms.html',
+        destination: '/legal/terms',
+        permanent: true,
+      },
+      {
+        source: '/magnets/lead-magnet.html',
+        destination: '/magnets/lead-magnet',
+        permanent: true,
+      },
+      {
+        source: '/magnets/section-7216-dislcosure.html',
+        destination: '/magnets/section-7216',
+        permanent: true,
+      },
     ]
   },
 }

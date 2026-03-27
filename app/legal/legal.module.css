@@ -1,0 +1,320 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 15, 26, 0.80);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.headerInner {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+}
+
+.closeBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(15, 15, 26, 0.60);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 1rem;
+  color: rgba(255, 255, 255, 0.80);
+  text-decoration: none;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.closeBtn:hover {
+  color: #fff;
+  transform: scale(1.05);
+  text-decoration: none;
+}
+
+/* ── Main ───────────────────────────────────────────────── */
+.main {
+  flex: 1;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+
+/* ── Brand block ────────────────────────────────────────── */
+.brand {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.brandLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+
+.brandLink:hover {
+  text-decoration: none;
+}
+
+.brandLogo {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+  flex-shrink: 0;
+}
+
+.brandLogoText {
+  color: #0f0f1a;
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: -0.02em;
+}
+
+.brandInfo {
+  text-align: left;
+}
+
+.brandName {
+  color: var(--text);
+  font-weight: 600;
+  font-size: 1.125rem;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.brandOwner {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  margin: 0;
+}
+
+/* ── Title block ────────────────────────────────────────── */
+.titleBlock {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.pageTitle {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.pageSubtitle {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.lastUpdated {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+/* ── Glass card ─────────────────────────────────────────── */
+.glassCard {
+  background: rgba(30, 35, 45, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 0 60px rgba(124, 58, 237, 0.05),
+    0 25px 50px -12px rgba(0, 0, 0, 0.4);
+  border-radius: 1rem;
+  padding: 2rem 2.5rem;
+}
+
+/* ── Sections ───────────────────────────────────────────── */
+.section {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sectionLast {
+  /* last section — no divider */
+}
+
+.sectionTitle {
+  color: var(--text);
+  font-weight: 600;
+  font-size: 1.125rem;
+  margin-bottom: 0.75rem;
+}
+
+.subsectionTitle {
+  color: var(--text);
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* ── Typography ─────────────────────────────────────────── */
+.body {
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.bodySpaced {
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.bodyMt {
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-top: 0.75rem;
+  margin-bottom: 0;
+}
+
+.bodySmall {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  margin-top: 1rem;
+  margin-bottom: 0;
+}
+
+.strong {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.accentLink {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.accentLink:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+/* ── Lists ──────────────────────────────────────────────── */
+.list {
+  list-style: disc;
+  padding-left: 1.25rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.listOrdered {
+  list-style: decimal;
+  padding-left: 1.25rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.listMt {
+  list-style: disc;
+  padding-left: 1.25rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* ── Section 8 subsections (Terms) ─────────────────────── */
+.subsectionGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+.footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 15, 26, 0.80);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 0.75rem 1.5rem;
+  margin-top: 0.25rem;
+}
+
+.footerInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.footerCopy {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.footerLinks {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.footerLink {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footerLink:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (min-width: 768px) {
+  .footerInner {
+    flex-direction: row;
+  }
+}
+
+@media (max-width: 640px) {
+  .main {
+    padding: 2rem 1rem;
+  }
+
+  .glassCard {
+    padding: 1.5rem;
+  }
+}
