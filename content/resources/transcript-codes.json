@@ -1,0 +1,15 @@
+{
+  "slug": "transcript-codes",
+  "title": "IRS Transcript Codes (Complete List &amp; Meanings)",
+  "template": "explainer",
+  "category": "resource",
+  "cta": "free-trial",
+  "description": "Search and filter IRS transcript codes by number or meaning. Complete reference guide for tax professionals with plain-English explanations and related code patterns.",
+  "content": "<div class=\"flex items-start justify-between gap-4\">\n              <div class=\"text-white font-semibold\">\n                IRS Code <span class=\"text-purple-300\">${item.code}</span>\n              </div>\n              <div class=\"shrink-0 text-xs text-white/60 rounded-full border border-slate-700/40 bg-slate-950/30 px-3 py-1 capitalize\">\n                ${String(item.category).replace(/-/g,' ')}\n              </div>\n            </div>\n\n            <p class=\"mt-3 text-sm text-white/70\">${item.summary}</p>\n\n            <div class=\"mt-5 text-xs text-white/55\">Commonly appears with: <span class=\"text-white/70\">${relatedText}</span></div>\n\n            <div class=\"mt-6\">\n              <a class=\"text-xs text-purple-300 inline-flex items-center gap-2 hover:text-purple-200 transition\" href=\"${tmSlug(item.code)}\">\n                Read full meaning\n                <span aria-hidden=\"true\">→</span>\n              </a>\n            </div>",
+  "related": [
+    "irs-transcript-codes-explained-in-plain-english",
+    "how-to-understand-irs-transaction-codes",
+    "irs-code-150-meaning",
+    "irs-code-570-meaning"
+  ]
+}

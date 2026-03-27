@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Read(//tmp/**)"
+    ]
+  },
+  "model": "claude-sonnet-4-20250514",
+  "autoApprove": [
+    "Write",
+    "Edit",
+    "Create"
+  ],
+  "autoApprovePatterns": [
+    "content/resources/**/*.json",
+    "components/**/*.tsx",
+    "lib/**/*.ts",
+    "app/**/*.tsx",
+    "app/**/*.ts"
+  ],
+  "deny": [
+    "Bash(rm -rf *)",
+    "Bash(curl *)",
+    "Bash(wget *)"
+  ],
+  "maxTurns": 20
+}

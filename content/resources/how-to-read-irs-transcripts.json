@@ -1,0 +1,15 @@
+{
+  "slug": "how-to-read-irs-transcripts",
+  "title": "How to Read IRS Transcripts",
+  "template": "how-to",
+  "category": "guide",
+  "cta": "free-trial",
+  "description": "Step-by-step guide to reading and understanding IRS account transcripts for tax professionals.",
+  "content": "<p>IRS transcripts contain a chronological record of all actions taken on a taxpayer account. Each line represents a transaction code with a date and amount.</p>",
+  "related": [
+    "irs-code-150-meaning",
+    "irs-code-570-meaning",
+    "transcript-types",
+    "irs-transcript-codes-explained-in-plain-english"
+  ]
+}

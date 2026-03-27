@@ -1,0 +1,15 @@
+{
+  "slug": "irs-phone-numbers",
+  "title": "IRS Department Phone Numbers",
+  "template": "explainer",
+  "category": "resource",
+  "cta": "free-trial",
+  "description": "A searchable directory of IRS department phone numbers for tax professionals. Find the right IRS office for transcripts, appeals, and collections.",
+  "content": "<!-- Controls -->\r\n    <div class=\"controls\">\r\n     <div class=\"search-box\"><i class=\"search-icon\" data-lucide=\"search\"></i> <input type=\"text\" id=\"searchInput\" placeholder=\"Search departments or numbers...\">",
+  "related": [
+    "how-to-read-irs-transcripts",
+    "irs-transcript-review-checklist-for-tax-professionals",
+    "irs-code-570-meaning",
+    "how-to-prepare-for-a-tax-resolution-consult-using-transcripts"
+  ]
+}

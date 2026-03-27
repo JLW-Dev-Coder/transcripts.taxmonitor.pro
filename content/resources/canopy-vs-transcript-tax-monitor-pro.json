@@ -1,0 +1,15 @@
+{
+  "slug": "canopy-vs-transcript-tax-monitor-pro",
+  "title": "Canopy vs Transcript Tax Monitor Pro",
+  "template": "comparison",
+  "category": "comparison",
+  "cta": "demo",
+  "description": "Compare Canopy and Transcript Tax Monitor Pro for IRS transcript analysis. See which tool is right for your tax practice.",
+  "content": "<p>Transcript Tax Monitor Pro is purpose-built for IRS transcript analysis, while Canopy is a broader practice management suite. TTMP provides deeper transcript automation at a lower per-transcript cost.</p>",
+  "related": [
+    "how-to-read-irs-transcripts",
+    "how-to-interpret-irs-transcripts-faster",
+    "canopy-vs-manual-transcript-interpretation",
+    "intuit-transcript-feature-vs-dedicated-parser"
+  ]
+}
