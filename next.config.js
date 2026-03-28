@@ -57,6 +57,16 @@ const nextConfig = {
         destination: '/resources',
         permanent: true,
       },
+      {
+        source: '/assets/product.html',
+        destination: '/product',
+        permanent: true,
+      },
+      {
+        source: '/magnets/guide.html',
+        destination: '/magnets/guide',
+        permanent: true,
+      },
     ]
   },
 }
