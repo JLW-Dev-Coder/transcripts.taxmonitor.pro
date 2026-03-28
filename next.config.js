@@ -47,6 +47,16 @@ const nextConfig = {
         destination: '/magnets/section-7216',
         permanent: true,
       },
+      {
+        source: '/resources/index.html',
+        destination: '/resources',
+        permanent: true,
+      },
+      {
+        source: '/resources/',
+        destination: '/resources',
+        permanent: true,
+      },
     ]
   },
 }

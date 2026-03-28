@@ -1,0 +1,346 @@
+/* Hero */
+.hero {
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--surface-border);
+  padding: 5rem 1.5rem;
+}
+
+.heroInner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.heroTitle {
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+
+.subheadline {
+  font-size: 1.25rem;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+.introPara {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text);
+  margin-bottom: 1rem;
+  max-width: 780px;
+}
+
+.introList {
+  list-style: disc;
+  padding-left: 1.5rem;
+  margin: 1rem 0 1.5rem;
+  color: var(--text-muted);
+}
+
+.introList li {
+  margin: 0.5rem 0;
+  line-height: 1.7;
+}
+
+.introList a {
+  color: var(--text-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.introList a:hover {
+  color: var(--accent);
+}
+
+.ctaGroup {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.btnPrimary {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.75rem 1.75rem;
+  border-radius: var(--radius);
+  text-decoration: none;
+  display: inline-block;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btnPrimary:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+.btnSecondary {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  color: var(--text);
+  font-weight: 700;
+  padding: 0.75rem 1.75rem;
+  border-radius: var(--radius);
+  text-decoration: none;
+  display: inline-block;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.btnSecondary:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+/* Section */
+.section {
+  padding: 4rem 0;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.section:last-of-type {
+  border-bottom: none;
+}
+
+.sectionInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.sectionTitle {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  padding-left: 1rem;
+  border-left: 4px solid var(--accent);
+  margin-bottom: 1.25rem;
+  line-height: 1.2;
+}
+
+.sectionIntro {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--text-muted);
+  max-width: 800px;
+}
+
+/* Card grid */
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  border-color: var(--accent);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.12);
+}
+
+.cardTitle {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.4;
+  transition: color 0.2s ease;
+}
+
+.card:hover .cardTitle {
+  color: var(--accent);
+}
+
+.cardArrow {
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity 0.2s ease, margin-left 0.2s ease;
+  margin-left: 0;
+}
+
+.card:hover .cardArrow {
+  opacity: 1;
+  margin-left: 4px;
+}
+
+/* Flow diagram */
+.diagram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+  padding: 2rem;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius);
+}
+
+.diagramItem {
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 1rem 1.5rem;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.diagramArrow {
+  color: var(--accent);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* CTA band */
+.ctaBandSection {
+  padding: 4rem 1.5rem;
+}
+
+.ctaBand {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  border-radius: var(--radius);
+  padding: 3rem 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  position: relative;
+  background:
+    radial-gradient(1200px 220px at 50% 0%, rgba(167, 139, 250, 0.28), transparent 60%),
+    linear-gradient(180deg, rgba(124, 58, 237, 0.34) 0%, rgba(124, 58, 237, 0.18) 45%, rgba(15, 15, 26, 0.12) 100%);
+}
+
+.ctaBand::after {
+  content: '';
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: -70px;
+  height: 180px;
+  border-radius: 999px;
+  background: rgba(124, 58, 237, 0.25);
+  filter: blur(26px);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.ctaBandTitle {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+  margin-bottom: 0.75rem;
+}
+
+.ctaBandBody {
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.82);
+  max-width: 52rem;
+  margin: 0 auto 1.75rem;
+  line-height: 1.8;
+}
+
+.ctaButtons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.ctaBtnPrimary {
+  background: #ffffff;
+  color: #0b1220;
+  font-weight: 800;
+  padding: 0.875rem 1.75rem;
+  border-radius: var(--radius);
+  text-decoration: none;
+  display: inline-block;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.ctaBtnPrimary:hover {
+  background: rgba(255, 255, 255, 0.92);
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+}
+
+.ctaBtnSecondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-weight: 800;
+  padding: 0.875rem 1.75rem;
+  border-radius: var(--radius);
+  text-decoration: none;
+  display: inline-block;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.ctaBtnSecondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.28);
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero {
+    padding: 2.5rem 1.5rem;
+  }
+
+  .section {
+    padding: 2.5rem 0;
+  }
+
+  .cardGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .ctaGroup {
+    flex-direction: column;
+  }
+
+  .btnPrimary,
+  .btnSecondary {
+    text-align: center;
+  }
+
+  .diagram {
+    gap: 1rem;
+  }
+
+  .diagramItem {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .ctaBandSection {
+    padding: 2.5rem 1.5rem;
+  }
+
+  .ctaButtons {
+    flex-direction: column;
+    align-items: center;
+  }
+}
