@@ -7,16 +7,54 @@
 - Hosting: Vercel (later Cloudflare Pages)
 - Repo: transcript.taxmonitor.pro
 
-## Repo Structure (confirmed before every task)
+## File Inventory (DEFINITIVE - Last Updated 2026-03-27)
 
+### Active TSX Pages (Next.js App Router)
 ```
 /app
-  /resources/[slug]/page.tsx
-  /pricing/page.tsx
-  /demo/page.tsx
-  /login/page.tsx
-  /sitemap.xml/route.ts
+  page.tsx                     → / (root)
+  layout.tsx                   → root layout
+  not-found.tsx               → 404 page
+  /about/page.tsx             → /about
+  /contact/page.tsx           → /contact
+  /demo/page.tsx              → /demo
+  /login/page.tsx             → /login
+  /pricing/page.tsx           → /pricing
+  /product/page.tsx           → /product
+  /resources/page.tsx         → /resources
+  /resources/[slug]/page.tsx  → /resources/[slug] (dynamic)
+  /app/dashboard/page.tsx     → /app/dashboard
+  /legal/privacy/page.tsx     → /legal/privacy
+  /legal/refund/page.tsx      → /legal/refund
+  /legal/terms/page.tsx       → /legal/terms
+  /magnets/lead-magnet/page.tsx    → /magnets/lead-magnet
+  /magnets/section-7216/page.tsx   → /magnets/section-7216
+  /magnets/guide/page.tsx          → /magnets/guide
+  /sitemap.xml/route.ts       → /sitemap.xml
+```
 
+### Legacy HTML Files (ORPHANED - REMOVE)
+```
+⚠️ /app/account.html        ← NO TSX equivalent, dead code
+⚠️ /app/calendar.html       ← NO TSX equivalent, dead code
+⚠️ /app/receipts.html       ← NO TSX equivalent, dead code
+⚠️ /app/reports.html        ← NO TSX equivalent, dead code
+⚠️ /app/support.html        ← NO TSX equivalent, dead code
+⚠️ /app/token-usage.html    ← NO TSX equivalent, dead code
+```
+
+### Asset Files (KEEP)
+```
+/assets/payment-success.html    ← Static asset
+/assets/report-preview.html     ← Static asset
+/assets/report.html             ← Static asset
+/partials/app-sidebar.html      ← Template partial
+/partials/app-topbar.html       ← Template partial
+/partials/parse-lab.html        ← Template partial
+```
+
+### Components & Libraries
+```
 /components
   ResourceLayout.tsx
   CTA.tsx
@@ -41,8 +79,7 @@
   templateRouter.ts
 
 /public
-  /images
-  /logos
+  (empty)
 ```
 
 ## Content JSON Schema
@@ -131,6 +168,43 @@ Never rewrite, summarize, or shorten content.
 
 If any fail → stop and report.
 
+## File Type Rules — TSX ONLY Going Forward
+
+**RULE: All pages must be .tsx files in the App Router structure**
+
+- ✅ **Pages:** Use `app/*/page.tsx` only
+- ✅ **Layouts:** Use `app/*/layout.tsx` only
+- ✅ **Components:** Use `.tsx` files in `/app` or `/components`
+- ❌ **Never:** Create `.html` files in `/app` directory
+- ❌ **Never:** Create static HTML routes
+- ⚠️ **Legacy:** 6 orphaned HTML files exist in `/app` - these should be deleted
+
+**Why TSX Only:**
+- Next.js App Router ignores `.html` files in `/app`
+- Static generation via `generateStaticParams()` creates optimized HTML at build time
+- TypeScript + React provides better developer experience
+- SEO and performance optimizations built into Next.js
+
+## Build & Deploy Commands
+
+```bash
+# Development
+npm run dev              # Start Next.js dev server
+
+# Static Build
+npm run build           # Next.js static build to /out
+
+# Cloudflare Pages Deployment
+npm run cf:build        # OpenNext.js build for CF Pages
+npm run deploy          # Deploy to Cloudflare Pages
+npm run preview         # Preview CF Pages deployment
+
+# Hosting
+npm run start           # Start production server (if needed)
+```
+
+**Build Output:** Static files generated to `/out` directory for deployment.
+
 ## Hard Constraints — Never Do
 
 - ❌ Create a 6th template type
@@ -140,6 +214,8 @@ If any fail → stop and report.
 - ❌ Rewrite or summarize SEO content
 - ❌ Change slugs
 - ❌ Add `"use client"` to resource pages
+- ❌ **NEW:** Create `.html` files in `/app` directory
+- ❌ **NEW:** Use static HTML instead of TSX pages
 
 ## Success Criteria
 
