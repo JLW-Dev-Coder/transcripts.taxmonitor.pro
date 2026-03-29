@@ -227,7 +227,7 @@
     const reportEmailInput = document.getElementById("report-email");
     const reportEmailStatus = document.getElementById("report-email-status");
 
-    const API_BASE = "";
+    const API_BASE = "https://api.virtuallaunch.pro";
     const NL = String.fromCharCode(10);
 
     const state = {
@@ -380,7 +380,7 @@
     }
 
     async function fetchTokenBalance() {
-      const out = await fetchJson("/api/transcripts/me", {
+      const out = await fetchJson(API_BASE + "/v1/auth/session", {
         method: "GET",
         credentials: "include",
       });
@@ -770,7 +770,7 @@
       setPreviewActionStatus("Saving preview report…", "");
 
       try {
-        const out = await fetchJson("/api/transcripts/preview", {
+        const out = await fetchJson(API_BASE + "/v1/transcripts/preview", {
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
@@ -871,12 +871,12 @@
         state.lastReportLink = state.lastReportLink || "";
 
         if (!state.eventId) {
-          throw new Error("Missing preview eventId. Update /api/transcripts/preview to return eventId and store it before emailing.");
+          throw new Error("Missing preview eventId. Update /v1/transcripts/preview to return eventId and store it before emailing.");
         }
 
         setReportEmailStatus("Sending email…", "");
 
-        const out = await fetchJson(API_BASE + "/forms/transcript/report-email", {
+        const out = await fetchJson(API_BASE + "/v1/transcripts/report-email", {
           method: "POST",
           mode: "cors",
           credentials: "omit",

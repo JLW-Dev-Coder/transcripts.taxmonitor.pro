@@ -203,7 +203,7 @@
   </div>
 
   <script>
-    const API_BASE = "";
+    const API_BASE = "https://api.virtuallaunch.pro";
 
     function getRedirect() {
       const p = new URLSearchParams(String(window.location.search || ""));
@@ -293,7 +293,7 @@
     }
 
     async function startMagicLink(email, redirect) {
-      const res = await fetch(API_BASE + "/api/transcripts/magic-link/request", {
+      const res = await fetch(API_BASE + "/v1/auth/magic-link/request", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
