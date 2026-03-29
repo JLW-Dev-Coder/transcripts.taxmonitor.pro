@@ -1,25 +1,45 @@
 {
   "permissions": {
     "allow": [
+<<<<<<< HEAD
       "Read(/tmp/**)"
     ]
   },
+=======
+      "Bash(npm install:*)",
+      "Read(//tmp/**)"
+    ]
+  },
+  "model": "claude-sonnet-4-20250514",
+>>>>>>> bf326c332e5e6078709488ba529af46480ddc565
   "autoApprove": [
     "Write",
     "Edit",
     "Create"
   ],
   "autoApprovePatterns": [
+<<<<<<< HEAD
     "**/*.html",
     "**/*.js",
     "**/*.css",
     ".claude/**"
+=======
+    "content/resources/**/*.json",
+    "components/**/*.tsx",
+    "lib/**/*.ts",
+    "app/**/*.tsx",
+    "app/**/*.ts"
+>>>>>>> bf326c332e5e6078709488ba529af46480ddc565
   ],
   "deny": [
     "Bash(rm -rf *)",
     "Bash(curl *)",
+<<<<<<< HEAD
     "Bash(wget *)",
     "Write(workers/**)"
+=======
+    "Bash(wget *)"
+>>>>>>> bf326c332e5e6078709488ba529af46480ddc565
   ],
   "maxTurns": 20
 }

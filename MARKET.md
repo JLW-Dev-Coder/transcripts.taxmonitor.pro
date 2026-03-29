@@ -1,5 +1,30 @@
 # MARKET.md (Transcript.Tax Monitor Pro — Parser-Only)
 
+## Build Status
+
+- **Scaffold complete:** no
+- **Existing required files:** 0
+- **Missing required files:** 16
+- **Missing:**
+  - app/resources/[slug]/page.tsx
+  - app/pricing/page.tsx
+  - app/demo/page.tsx
+  - app/login/page.tsx
+  - app/sitemap.xml/route.ts
+  - components/ResourceLayout.tsx
+  - components/CTA.tsx
+  - components/Sidebar.tsx
+  - components/templates/IRSCodeTemplate.tsx
+  - components/templates/ExplainerTemplate.tsx
+  - components/templates/ComparisonTemplate.tsx
+  - components/templates/HowToTemplate.tsx
+  - components/templates/SalesTemplate.tsx
+  - lib/getResource.ts
+  - lib/getAllResources.ts
+  - lib/templateRouter.ts
+- **Content files found:** none yet (517 HTML files in /resources/ await migration to /content/resources/*.json)
+- **Last updated by Claude:** 2026-03-27
+
 ## 1) What this product is
 **Transcript.Tax Monitor Pro** is a **local IRS transcript parsing and reporting automation tool** built for tax professionals. It:
 - ingests IRS transcript files (PDF).

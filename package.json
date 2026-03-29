@@ -1,0 +1,25 @@
+{
+  "name": "transcript-tax-monitor-pro",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "deploy": "opennextjs-cloudflare deploy",
+    "preview": "opennextjs-cloudflare preview",
+    "cf:build": "opennextjs-cloudflare build"
+  },
+  "dependencies": {
+    "@opennextjs/cloudflare": "latest",
+    "next": "^15.2.4",
+    "react": "^19",
+    "react-dom": "^19"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5"
+  }
+}
