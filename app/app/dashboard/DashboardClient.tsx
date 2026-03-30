@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import styles from './dashboard.module.css'
+import { getTokenBalance, getTokenPricing, purchaseTokens, type TokenPackage } from '@/lib/api'
 
 const WORKER_BASE = 'https://transcripts-tax-monitor-pro-api.txdev.workers.dev'
 const PDFJS_VERSION = '3.11.174'
@@ -38,6 +39,10 @@ export default function DashboardClient() {
   const [copyRawLabel, setCopyRawLabel] = useState('Copy')
   const [copyJsonLabel, setCopyJsonLabel] = useState('Copy')
   const [dragging, setDragging] = useState(false)
+  const [purchaseModalOpen, setPurchaseModalOpen] = useState(false)
+  const [pricingPackages, setPricingPackages] = useState<TokenPackage[]>([])
+  const [purchaseLoading, setPurchaseLoading] = useState<string | null>(null)
+  const [modalError, setModalError] = useState('')
 
   const pdfjsRef = useRef<any>(null)
   const pdfFileRef = useRef<File | null>(null)
@@ -81,13 +86,37 @@ export default function DashboardClient() {
   }, [router])
 
   const handleRefreshBalance = async () => {
-    const res = await fetch(`${WORKER_BASE}/api/transcripts/me`, { credentials: 'include' })
-    if (res.ok) {
-      const data = await res.json()
-      if (data.ok) {
-        setBalance(data.user.balance)
-        setSession(prev => prev ? { ...prev, balance: data.user.balance } : prev)
-      }
+    if (!session) return
+    try {
+      const data = await getTokenBalance(session.tokenId)
+      setBalance(data.transcript_tokens)
+      setSession(prev => prev ? { ...prev, balance: data.transcript_tokens } : prev)
+    } catch {
+      // silently fail, keep existing balance
+    }
+  }
+
+  const handleOpenPurchaseModal = async () => {
+    setPurchaseModalOpen(true)
+    setModalError('')
+    setPricingPackages([])
+    try {
+      const data = await getTokenPricing()
+      setPricingPackages(data.packages)
+    } catch {
+      setModalError('Failed to load pricing. Please try again.')
+    }
+  }
+
+  const handlePurchase = async (price_id: string) => {
+    setPurchaseLoading(price_id)
+    setModalError('')
+    try {
+      const data = await purchaseTokens(price_id)
+      window.location.href = data.session_url
+    } catch {
+      setModalError('Purchase failed. Please try again.')
+      setPurchaseLoading(null)
     }
   }
 
@@ -281,10 +310,14 @@ export default function DashboardClient() {
               {session && <span className={styles.topbarEmail}>{session.email}</span>}
             </div>
             <div className={styles.topbarRight}>
-              <span className={styles.balanceLabelSoft}>Balance:</span>
-              <span className={styles.parserBalanceValue}>{balance}</span>
+              <span className={`${styles.tokenBadge} ${balance > 0 ? styles.tokenBadgeGreen : styles.tokenBadgeAmber}`}>
+                {balance > 0 ? `${balance} tokens` : '0 tokens'}
+              </span>
               <button type="button" onClick={handleRefreshBalance} className={styles.btnSecondary}>
                 Refresh
+              </button>
+              <button type="button" onClick={handleOpenPurchaseModal} className={styles.btnPrimary}>
+                Buy Tokens
               </button>
             </div>
           </div>
@@ -340,30 +373,22 @@ export default function DashboardClient() {
                       <p className={styles.parserNote}>Saving a preview consumes 1 credit from your balance.</p>
                     </div>
 
-                    <div className={styles.parserBalanceRow}>
-                      <div className={styles.parserStatusBox}>
-                        <span className={styles.balanceLabelSoft}>Available balance:</span>
-                        <span className={styles.parserBalanceValue}>{balance}</span>
+                    <div>
+                      <label className={styles.parserFormLabel}>Token Balance</label>
+                      <div className={styles.tokenWidgetRow}>
+                        <span className={`${styles.tokenBadge} ${balance > 0 ? styles.tokenBadgeGreen : styles.tokenBadgeAmber}`}>
+                          {balance > 0 ? `${balance} tokens remaining` : '0 tokens — purchase to continue'}
+                        </span>
+                        <button type="button" onClick={handleRefreshBalance} className={styles.btnSecondary}>
+                          Refresh
+                        </button>
+                        <button type="button" onClick={handleOpenPurchaseModal} className={styles.btnPrimary}>
+                          Buy Tokens
+                        </button>
                       </div>
-                      <button type="button" onClick={handleRefreshBalance} className={styles.btnSecondary}>
-                        Refresh Balance
-                      </button>
-                    </div>
-
-                    <div className={styles.parserInfoBox}>
-                      <div className={styles.parserBalanceRow} style={{ alignItems: 'center' }}>
-                        <div>
-                          <div className={styles.parserFormLabel}>Need more credits?</div>
-                          <div className={styles.parserStatusBox}>Purchase more credits if your balance is low.</div>
-                          <p className={styles.parserNote}>Preview reports are saved to your account.</p>
-                        </div>
-                        <div className={styles.infoBoxActions}>
-                          <Link href="/app/account" className={styles.btnPrimary}>Buy Credits</Link>
-                          <div className={`${styles.parserNote} ${styles.centerText}`}>
-                            Purchase credits to continue using the parser.
-                          </div>
-                        </div>
-                      </div>
+                      {balance === 0 && (
+                        <p className={styles.noTokensMsg}>No tokens remaining. Purchase tokens to analyze transcripts.</p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -467,12 +492,16 @@ export default function DashboardClient() {
                     <button
                       type="button"
                       className={styles.btnSecondary}
-                      disabled={!jsonText || previewSaved}
+                      disabled={!jsonText || previewSaved || balance === 0}
                       onClick={handleSavePreview}
                     >
                       Save Preview Report
                     </button>
                   </div>
+
+                  {balance === 0 && (
+                    <p className={styles.noTokensMsg}>No tokens remaining. Purchase tokens to analyze transcripts.</p>
+                  )}
 
                   <div className={`${styles.parserStatusBox} ${styles.statusBoxMargin}`}>
                     {previewStatus}
@@ -547,6 +576,59 @@ export default function DashboardClient() {
           </div>
         </main>
       </div>
+
+      {/* Token Purchase Modal */}
+      {purchaseModalOpen && (
+        <div className={styles.modalOverlay} onClick={() => setPurchaseModalOpen(false)}>
+          <div className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <div className={styles.modalTitle}>Purchase Tokens</div>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setPurchaseModalOpen(false)}
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
+
+            {pricingPackages.length === 0 && !modalError && (
+              <p className={styles.parserNote}>Loading packages...</p>
+            )}
+
+            {modalError && <p className={styles.modalError}>{modalError}</p>}
+
+            {pricingPackages.length > 0 && (
+              <div className={styles.packageGrid}>
+                {pricingPackages.map((pkg) => (
+                  <div
+                    key={pkg.price_id}
+                    className={`${styles.packageCard} ${pkg.badge === 'Popular' ? styles.packageCardPopular : ''}`}
+                  >
+                    {pkg.badge && (
+                      <div className={styles.packagePopularBadge}>{pkg.badge}</div>
+                    )}
+                    <div className={styles.packageLabel}>{pkg.label}</div>
+                    <div className={styles.packageTokens}>{pkg.tokens}</div>
+                    <div className={styles.packageTokensLabel}>tokens</div>
+                    <div className={styles.packagePrice}>${pkg.price}</div>
+                    <button
+                      type="button"
+                      className={styles.btnPrimary}
+                      style={{ width: '100%' }}
+                      disabled={purchaseLoading === pkg.price_id}
+                      onClick={() => handlePurchase(pkg.price_id)}
+                    >
+                      {purchaseLoading === pkg.price_id ? 'Redirecting...' : 'Buy'}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
