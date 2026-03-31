@@ -1,3 +1,9 @@
+import PricingSection from '../PricingSection'
+
+export const metadata = {
+  title: 'Pricing | Transcript Tax Monitor',
+}
+
 export default function PricingPage() {
-  return <main><h1>Pricing</h1></main>
+  return <PricingSection />
 }

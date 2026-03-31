@@ -9,6 +9,40 @@
   --max-width:     1280px;
   --page-gutter:   clamp(1.25rem, 5vw, 3rem);
   --header-height: 68px;
+
+  /* Surface & background */
+  --bg:             #0a0f1e;
+  --surface:        #111827;
+  --surface-border: #1f2937;
+
+  /* Text */
+  --text:           #f9fafb;
+  --text-muted:     #9ca3af;
+
+  /* Accent derived */
+  --accent-hover:   #0f766e;
+
+  /* Radius */
+  --radius:         10px;
+  --radius-md:      8px;
+  --radius-full:    9999px;
+
+  /* Transitions */
+  --transition-fast:   150ms ease;
+  --transition-normal: 250ms ease;
+
+  /* Shadows */
+  --shadow-xl: 0 24px 48px rgba(0,0,0,0.6);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg:             #ffffff;
+    --surface:        #f9fafb;
+    --surface-border: #e5e7eb;
+    --text:           #111827;
+    --text-muted:     #6b7280;
+  }
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
