@@ -126,7 +126,7 @@ export default function SiteHeader() {
             Log In
           </Link>
           <Link
-            href="/signup"
+            href="/login"
             style={{
               fontFamily: "var(--font-body, system-ui, sans-serif)",
               fontSize: "var(--text-sm, 0.875rem)",
@@ -245,7 +245,7 @@ export default function SiteHeader() {
               Log In
             </Link>
             <Link
-              href="/signup"
+              href="/login"
               onClick={() => setDrawerOpen(false)}
               style={{
                 fontFamily: "var(--font-body, system-ui, sans-serif)",

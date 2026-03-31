@@ -1,8 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap');
-
 :root {
-  --font-display: 'DM Serif Display', Georgia, serif;
-  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-display: 'Raleway', sans-serif;
+  --font-body: 'Raleway', sans-serif;
   --accent:        #14b8a6;
   --accent-light:  #f0fdfa;
   --accent-dark:   #0f766e;
@@ -22,7 +20,7 @@ html {
 body {
   background: var(--bg, #ffffff);
   color: var(--text, #111827);
-  font-family: var(--font-body);
+  font-family: var(--font-raleway), Inter, system-ui, sans-serif;
   font-size: 16px;
   line-height: 1.7;
   min-height: 100vh;
