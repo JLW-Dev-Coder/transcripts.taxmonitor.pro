@@ -1,0 +1,139 @@
+.footer {
+  background: #020617;
+  border-top: 1px solid rgba(30, 41, 59, 0.6);
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+  display: grid;
+  gap: 2.5rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .container {
+    grid-template-columns: 1.35fr 1fr 1fr 1fr;
+    align-items: start;
+    gap: 2.5rem 4rem;
+  }
+}
+
+.brandCol { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.logoRow { display: flex; align-items: center; gap: 0.625rem; }
+
+.logoMark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #14b8a6;
+  font-weight: 700;
+  font-size: 13px;
+  color: #020617;
+  flex-shrink: 0;
+}
+
+.brandName {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.tagline { font-size: 0.75rem; color: #94a3b8; }
+
+.description {
+  font-size: 0.875rem;
+  line-height: 1.75;
+  color: #94a3b8;
+  max-width: 300px;
+}
+
+.ctaRow { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.25rem; }
+
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #14b8a6;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #020617;
+  text-decoration: none;
+  transition: background 150ms ease;
+}
+.btnPrimary:hover { background: #2dd4bf; text-decoration: none; }
+
+.btnSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid rgba(30, 41, 59, 0.7);
+  background: rgba(2, 6, 23, 0.4);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  text-decoration: none;
+  transition: background 150ms ease;
+}
+.btnSecondary:hover { background: #0f172a; text-decoration: none; }
+
+.col { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.colHeading {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+}
+
+.colLink {
+  font-size: 0.875rem;
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+.colLink:hover { color: #ffffff; text-decoration: none; }
+
+.copyright {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 1rem;
+}
+
+.bottomBar {
+  border-top: 1px solid rgba(30, 41, 59, 0.6);
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .bottomBar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.bottomLeft { font-size: 0.875rem; color: #64748b; }
+
+.affiliateLink {
+  font-size: 0.875rem;
+  color: #2dd4bf;
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+.affiliateLink:hover { color: #5eead4; text-decoration: none; }
