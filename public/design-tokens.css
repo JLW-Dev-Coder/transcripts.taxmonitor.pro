@@ -1,0 +1,180 @@
+/* ============================================================
+   Design Tokens — Transcript Tax Monitor Pro
+   ============================================================ */
+
+/* --- Typography --- */
+:root {
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body:    'DM Sans', system-ui, sans-serif;
+
+  --text-xs:   0.75rem;   /* 12px */
+  --text-sm:   0.875rem;  /* 14px */
+  --text-base: 1rem;      /* 16px */
+  --text-lg:   1.125rem;  /* 18px */
+  --text-xl:   1.25rem;   /* 20px */
+  --text-2xl:  1.5rem;    /* 24px */
+  --text-3xl:  1.875rem;  /* 30px */
+  --text-4xl:  2.25rem;   /* 36px */
+  --text-5xl:  3rem;      /* 48px */
+
+  --leading-tight:  1.25;
+  --leading-snug:   1.375;
+  --leading-normal: 1.625;
+  --leading-relaxed: 1.75;
+
+  --tracking-tight:  -0.025em;
+  --tracking-normal:  0;
+  --tracking-wide:    0.025em;
+}
+
+/* --- Spacing Scale --- */
+:root {
+  --space-0:   0;
+  --space-1:   0.25rem;   /* 4px  */
+  --space-2:   0.5rem;    /* 8px  */
+  --space-3:   0.75rem;   /* 12px */
+  --space-4:   1rem;      /* 16px */
+  --space-5:   1.25rem;   /* 20px */
+  --space-6:   1.5rem;    /* 24px */
+  --space-8:   2rem;      /* 32px */
+  --space-10:  2.5rem;    /* 40px */
+  --space-12:  3rem;      /* 48px */
+  --space-16:  4rem;      /* 64px */
+  --space-20:  5rem;      /* 80px */
+  --space-24:  6rem;      /* 96px */
+  --space-32:  8rem;      /* 128px */
+}
+
+/* --- Layout --- */
+:root {
+  --max-width:     1280px;
+  --header-height: 68px;
+  --page-gutter:   clamp(1.25rem, 5vw, 3rem);
+  --content-width: 860px;
+  --sidebar-width: 280px;
+}
+
+/* --- Border Radius --- */
+:root {
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-2xl:  24px;
+  --radius-full: 9999px;
+}
+
+/* --- Shadows --- */
+:root {
+  --shadow-xs:  0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl:  0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* --- Transitions --- */
+:root {
+  --duration-fast:   150ms;
+  --duration-normal: 250ms;
+  --duration-slow:   400ms;
+  --ease-default:    cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in:         cubic-bezier(0.4, 0, 1, 1);
+  --ease-out:        cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out:     cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast:   var(--duration-fast) var(--ease-default);
+  --transition-normal: var(--duration-normal) var(--ease-default);
+  --transition-slow:   var(--duration-slow) var(--ease-default);
+}
+
+/* --- Neutral Palette --- */
+:root {
+  --neutral-50:  #f9fafb;
+  --neutral-100: #f3f4f6;
+  --neutral-200: #e5e7eb;
+  --neutral-300: #d1d5db;
+  --neutral-400: #9ca3af;
+  --neutral-500: #6b7280;
+  --neutral-600: #4b5563;
+  --neutral-700: #374151;
+  --neutral-800: #1f2937;
+  --neutral-900: #111827;
+  --neutral-950: #030712;
+}
+
+/* --- Accent / Brand --- */
+:root {
+  --accent:        #14b8a6;
+  --accent-light:  #f0fdfa;
+  --accent-dark:   #0f766e;
+  --accent-text:   #0d6e66;
+  --accent-border: #99f6e4;
+  --accent-50:     #f0fdfa;
+  --accent-100:    #ccfbf1;
+  --accent-200:    #99f6e4;
+  --accent-300:    #5eead4;
+  --accent-400:    #2dd4bf;
+  --accent-500:    #14b8a6;
+  --accent-600:    #0d9488;
+  --accent-700:    #0f766e;
+  --accent-800:    #115e59;
+  --accent-900:    #134e4a;
+}
+
+/* --- Semantic Colors (Light Mode) --- */
+:root {
+  --color-success:      #10b981;
+  --color-success-light:#ecfdf5;
+  --color-warning:      #f59e0b;
+  --color-warning-light:#fffbeb;
+  --color-error:        #ef4444;
+  --color-error-light:  #fef2f2;
+  --color-info:         #3b82f6;
+  --color-info-light:   #eff6ff;
+}
+
+/* --- Surface & Text (Light Mode) --- */
+:root {
+  --bg:             #ffffff;
+  --bg-secondary:   var(--neutral-50);
+  --bg-tertiary:    var(--neutral-100);
+  --surface:        #ffffff;
+  --surface-raised: #ffffff;
+  --surface-border: var(--neutral-200);
+  --text:           var(--neutral-900);
+  --text-secondary: var(--neutral-600);
+  --text-muted:     var(--neutral-400);
+  --text-inverse:   #ffffff;
+}
+
+/* --- Dark Mode --- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:             var(--neutral-950);
+    --bg-secondary:   var(--neutral-900);
+    --bg-tertiary:    var(--neutral-800);
+    --surface:        var(--neutral-900);
+    --surface-raised: var(--neutral-800);
+    --surface-border: var(--neutral-700);
+    --text:           var(--neutral-50);
+    --text-secondary: var(--neutral-300);
+    --text-muted:     var(--neutral-500);
+    --text-inverse:   var(--neutral-950);
+
+    --accent-text:   #5eead4;
+    --accent-light:  #042f2e;
+
+    --color-success-light: #064e3b;
+    --color-warning-light: #451a03;
+    --color-error-light:   #450a0a;
+    --color-info-light:    #1e3a5f;
+
+    --shadow-xs:  0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+    --shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+    --shadow-xl:  0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  }
+}
