@@ -291,6 +291,7 @@ export default function DashboardClient() {
           <Link href="/app/support" className={styles.navLink}>Support</Link>
           <Link href="/app/token-usage" className={styles.navLink}>Token Usage</Link>
           <Link href="/app/calendar" className={styles.navLink}>Calendar</Link>
+          <Link href="/app/affiliate" className={styles.navLink}>Affiliate</Link>
         </nav>
 
         <div className={styles.sidebarFooter}>
