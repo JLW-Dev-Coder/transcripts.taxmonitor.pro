@@ -8,7 +8,8 @@
     "start": "next start",
     "deploy": "opennextjs-cloudflare deploy",
     "preview": "opennextjs-cloudflare preview",
-    "cf:build": "opennextjs-cloudflare build"
+    "cf:build": "opennextjs-cloudflare build",
+    "pages:build": "opennextjs-cloudflare build && cp .open-next/worker.js .open-next/assets/_worker.js"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "latest",
