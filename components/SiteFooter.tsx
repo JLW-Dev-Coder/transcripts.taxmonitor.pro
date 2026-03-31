@@ -1,165 +1,162 @@
 import Link from "next/link";
 
-const PLATFORM_LINKS = [
-  { label: "About", href: "/about" },
-  { label: "Features", href: "#features" },
-  { label: "Pricing", href: "/pricing" },
-  { label: "Contact", href: "/contact" },
-];
-
-const RESOURCE_LINKS = [
-  { label: "Resources", href: "/resources" },
-  { label: "Demo", href: "/demo" },
-  { label: "Help Center", href: "/contact" },
-];
-
-const LEGAL_LINKS = [
-  { label: "Privacy Policy", href: "/privacy" },
-  { label: "Terms of Service", href: "/terms" },
-  { label: "Refund Policy", href: "/refunds" },
-];
-
-const VLP_ECOSYSTEM = [
-  { label: "VirtualLaunch Pro", href: "https://virtuallaunch.pro" },
-  { label: "Tax Monitor Pro", href: "https://taxmonitor.pro" },
-  { label: "Tax Monitor Transcript", href: "https://transcript.taxmonitor.pro" },
-  { label: "Business Builder Pro", href: "https://businessbuilder.pro" },
-  { label: "Business Monitor Pro", href: "https://businessmonitor.pro" },
-  { label: "Compliance Monitor Pro", href: "https://compliancemonitor.pro" },
-  { label: "Notary Monitor Pro", href: "https://notarymonitor.pro" },
-  { label: "HR Monitor Pro", href: "https://hrmonitor.pro" },
-];
-
-const columnHeadingStyle: React.CSSProperties = {
-  fontFamily: "var(--font-display, Georgia, serif)",
-  fontSize: "var(--text-sm, 0.875rem)",
-  fontWeight: 700,
-  color: "#fff",
-  marginBottom: "var(--space-4, 1rem)",
-  letterSpacing: "0.025em",
-  textTransform: "uppercase" as const,
-};
-
-const linkStyle: React.CSSProperties = {
-  fontFamily: "var(--font-body, system-ui, sans-serif)",
-  fontSize: "var(--text-sm, 0.875rem)",
-  color: "#9ca3af",
-  textDecoration: "none",
-  lineHeight: 2,
-  display: "block",
-  transition: "color 150ms ease",
-};
-
 export default function SiteFooter() {
   return (
-    <footer
-      style={{
-        background: "#030712",
-        borderTop: "3px solid #14b8a6",
-        color: "#9ca3af",
-        fontFamily: "var(--font-body, system-ui, sans-serif)",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: "var(--max-width, 1280px)",
-          margin: "0 auto",
-          padding: "var(--space-16, 4rem) var(--page-gutter, clamp(1.25rem, 5vw, 3rem)) var(--space-8, 2rem)",
-        }}
-      >
-        {/* Columns */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-            gap: "var(--space-10, 2.5rem)",
-            marginBottom: "var(--space-12, 3rem)",
-          }}
-        >
-          {/* Platform */}
-          <div>
-            <h4 style={columnHeadingStyle}>Platform</h4>
-            {PLATFORM_LINKS.map((l) => (
-              <Link key={l.href + l.label} href={l.href} style={linkStyle}>
-                {l.label}
-              </Link>
-            ))}
-          </div>
-
-          {/* Resources */}
-          <div>
-            <h4 style={columnHeadingStyle}>Resources</h4>
-            {RESOURCE_LINKS.map((l) => (
-              <Link key={l.href + l.label} href={l.href} style={linkStyle}>
-                {l.label}
-              </Link>
-            ))}
-          </div>
-
-          {/* Legal */}
-          <div>
-            <h4 style={columnHeadingStyle}>Legal</h4>
-            {LEGAL_LINKS.map((l) => (
-              <Link key={l.href + l.label} href={l.href} style={linkStyle}>
-                {l.label}
-              </Link>
-            ))}
-          </div>
-
-          {/* VLP Ecosystem */}
-          <div>
-            <h4 style={columnHeadingStyle}>VLP Ecosystem</h4>
-            {VLP_ECOSYSTEM.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={linkStyle}
+    <footer className="bg-slate-950 border-t border-slate-800/60">
+      <div className="mx-auto max-w-7xl px-6 py-12">
+        <div className="grid gap-10 md:grid-cols-[1.35fr_1fr_1fr_1fr] md:items-start md:gap-x-16">
+          {/* Column 1 — Brand */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-500 font-bold text-slate-950 text-sm">
+                TT
+              </div>
+              <span className="font-semibold tracking-tight text-white">
+                Transcript Tax Monitor
+              </span>
+            </div>
+            <p className="text-xs text-slate-400">
+              Transcript automation for tax professionals
+            </p>
+            <p className="text-sm leading-relaxed text-slate-400">
+              Upload a client&apos;s IRS transcript PDF and get a plain-English
+              analysis report in seconds — with every transaction code explained
+              and recommendations included.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/login"
+                className="inline-flex items-center justify-center rounded-lg bg-teal-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-teal-400"
               >
-                {l.label}
-              </a>
-            ))}
+                Try Free →
+              </Link>
+              <Link
+                href="/pricing"
+                className="inline-flex items-center justify-center rounded-lg border border-slate-800/70 bg-slate-950/40 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:bg-slate-900"
+              >
+                View Pricing
+              </Link>
+            </div>
+          </div>
+
+          {/* Column 2 — Platform */}
+          <div>
+            <h4 className="text-sm font-semibold text-white mb-4">Platform</h4>
+            <ul className="space-y-2">
+              <li>
+                <Link href="#about" className="text-sm text-slate-300 transition hover:text-white">
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="text-sm text-slate-300 transition hover:text-white">
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link href="#features" className="text-sm text-slate-300 transition hover:text-white">
+                  Features
+                </Link>
+              </li>
+              <li>
+                <Link href="#how-it-works" className="text-sm text-slate-300 transition hover:text-white">
+                  How It Works
+                </Link>
+              </li>
+              <li>
+                <Link href="/pricing" className="text-sm text-slate-300 transition hover:text-white">
+                  Pricing
+                </Link>
+              </li>
+              <li>
+                <Link href="/resources" className="text-sm text-slate-300 transition hover:text-white">
+                  Resources
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 3 — Resources */}
+          <div>
+            <h4 className="text-sm font-semibold text-white mb-4">Resources</h4>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/affiliates" className="text-sm text-slate-300 transition hover:text-white">
+                  Affiliates
+                </Link>
+              </li>
+              <li>
+                <a href="https://developers.virtuallaunch.pro" target="_blank" rel="noopener noreferrer" className="text-sm text-slate-300 transition hover:text-white">
+                  Developers VLP
+                </a>
+              </li>
+              <li>
+                <a href="https://games.virtuallaunch.pro" target="_blank" rel="noopener noreferrer" className="text-sm text-slate-300 transition hover:text-white">
+                  Games VLP
+                </a>
+              </li>
+              <li>
+                <Link href="/contact" className="text-sm text-slate-300 transition hover:text-white">
+                  Support
+                </Link>
+              </li>
+              <li>
+                <a href="https://taxmonitor.pro" target="_blank" rel="noopener noreferrer" className="text-sm text-slate-300 transition hover:text-white">
+                  Tax Monitor Pro
+                </a>
+              </li>
+              <li>
+                <a href="https://taxtools.taxmonitor.pro" target="_blank" rel="noopener noreferrer" className="text-sm text-slate-300 transition hover:text-white">
+                  Tax Tools Arcade
+                </a>
+              </li>
+              <li>
+                <a href="https://virtuallaunch.pro" target="_blank" rel="noopener noreferrer" className="text-sm text-slate-300 transition hover:text-white">
+                  Virtual Launch Pro
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 4 — Legal */}
+          <div>
+            <h4 className="text-sm font-semibold text-white mb-4">Legal</h4>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/legal/privacy" className="text-sm text-slate-300 transition hover:text-white">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/legal/refund" className="text-sm text-slate-300 transition hover:text-white">
+                  Refund Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/legal/terms" className="text-sm text-slate-300 transition hover:text-white">
+                  Terms of Service
+                </Link>
+              </li>
+            </ul>
+            <p className="text-xs text-slate-500 mt-4">
+              &copy; 2026 Lenore, Inc. All rights reserved.
+            </p>
           </div>
         </div>
 
-        {/* Affiliate Callout */}
-        <div
-          style={{
-            textAlign: "center",
-            padding: "var(--space-6, 1.5rem)",
-            marginBottom: "var(--space-8, 2rem)",
-            background: "rgba(20, 184, 166, 0.08)",
-            borderRadius: "var(--radius-lg, 12px)",
-            border: "1px solid rgba(20, 184, 166, 0.2)",
-          }}
-        >
-          <span style={{ fontSize: "var(--text-sm, 0.875rem)", color: "#d1d5db" }}>
-            Earn 20% &mdash;{" "}
-            <Link
-              href="/contact"
-              style={{
-                color: "#14b8a6",
-                fontWeight: 600,
-                textDecoration: "none",
-              }}
-            >
-              Affiliate Program
-            </Link>
-          </span>
-        </div>
-
-        {/* Bottom */}
-        <div
-          style={{
-            borderTop: "1px solid #1f2937",
-            paddingTop: "var(--space-6, 1.5rem)",
-            textAlign: "center",
-            fontSize: "var(--text-xs, 0.75rem)",
-            color: "#6b7280",
-          }}
-        >
-          &copy; 2026 Lenore, Inc. All rights reserved.
+        {/* Bottom bar */}
+        <div className="border-t border-slate-800/60 mt-10 pt-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm text-slate-500">
+              &copy; 2026 Lenore, Inc.
+            </p>
+            <p className="text-sm text-slate-500">
+              Earn 20% on every referral &mdash;{" "}
+              <Link href="/affiliates" className="text-sm text-teal-400 hover:text-teal-300">
+                Join the Affiliate Program
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </footer>
