@@ -1,10 +1,10 @@
 .wrapper {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 3rem 1.5rem 5rem;
   display: grid;
-  grid-template-columns: 1fr var(--sidebar-width);
-  gap: 2rem;
+  grid-template-columns: 1fr 280px;
+  gap: 3rem;
   align-items: start;
 }
 
@@ -12,39 +12,80 @@
   min-width: 0;
 }
 
+.category {
+  display: inline-block;
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.85rem;
+  border-radius: 100px;
+  margin-bottom: 1rem;
+}
+
 .title {
-  font-size: 2rem;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
   font-weight: 800;
   letter-spacing: -0.03em;
-  margin-bottom: 1.5rem;
   color: var(--text);
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.description {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--surface-border);
 }
 
 .content {
   color: var(--text);
-  line-height: 1.8;
+  line-height: 1.75;
+  font-size: 1rem;
+}
+
+.content p {
+  margin-bottom: 1.25rem;
+  color: var(--text-muted);
 }
 
 .content h2 {
-  font-size: 1.3rem;
+  font-size: 1.35rem;
   font-weight: 700;
-  margin: 2rem 0 0.75rem;
   color: var(--text);
+  margin: 2rem 0 0.75rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--surface-border);
 }
 
 .content h3 {
   font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--text);
   margin: 1.5rem 0 0.5rem;
-  color: var(--text-muted);
 }
 
 .content ul, .content ol {
   padding-left: 1.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 
-.content li { margin-bottom: 0.4rem; }
+.content li {
+  margin-bottom: 0.5rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.content strong {
+  color: var(--text);
+  font-weight: 600;
+}
 
 .content img, .content svg {
   max-width: 100%;
@@ -60,19 +101,26 @@
 
 .content th {
   background: var(--surface);
-  padding: 0.6rem 1rem;
-  text-align: left;
+  color: var(--text);
   font-weight: 600;
-  border-bottom: 1px solid var(--surface-border);
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border: 1px solid var(--surface-border);
 }
 
 .content td {
-  padding: 0.6rem 1rem;
-  border-bottom: 1px solid var(--surface-border);
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--surface-border);
+  color: var(--text-muted);
+}
+
+.content tr:nth-child(even) td {
+  background: color-mix(in srgb, var(--surface) 50%, transparent);
 }
 
 @media (max-width: 768px) {
   .wrapper {
     grid-template-columns: 1fr;
+    padding: 2rem 1.25rem 4rem;
   }
 }

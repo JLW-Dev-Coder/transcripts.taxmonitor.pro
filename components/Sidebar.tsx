@@ -14,7 +14,7 @@ export default function Sidebar({ resource }: { resource: Resource }) {
             {resource.related.map(slug => (
               <li key={slug}>
                 <Link href={`/resources/${slug}`}>
-                  {slug.replace(/-/g, ' ')}
+                  {slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
                 </Link>
               </li>
             ))}

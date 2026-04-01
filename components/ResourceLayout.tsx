@@ -10,10 +10,18 @@ export default function ResourceLayout({
   resource: Resource
   children: React.ReactNode
 }) {
+  const categoryLabel = resource.category
+    .replace(/-/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase())
+
   return (
     <div className={styles.wrapper}>
       <main className={styles.main}>
+        <span className={styles.category}>{categoryLabel}</span>
         <h1 className={styles.title}>{resource.title}</h1>
+        {resource.description && (
+          <p className={styles.description}>{resource.description}</p>
+        )}
         <CTA type={resource.cta} variant="inline" />
         <div className={styles.content}>{children}</div>
         <CTA type={resource.cta} variant="post-content" />
