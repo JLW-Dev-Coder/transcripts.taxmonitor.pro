@@ -305,14 +305,14 @@ export default function DashboardClient() {
         </div>
 
         <nav className={styles.sidebarNav}>
-          <Link href="/app/dashboard" className={`${styles.navLink} ${styles.navLinkActive}`}>Dashboard</Link>
-          <Link href="/app/account" className={styles.navLink}>Account</Link>
-          <Link href="/app/reports" className={styles.navLink}>Reports</Link>
-          <Link href="/app/receipts" className={styles.navLink}>Receipts</Link>
-          <Link href="/app/support" className={styles.navLink}>Support</Link>
-          <Link href="/app/token-usage" className={styles.navLink}>Token Usage</Link>
-          <Link href="/app/calendar" className={styles.navLink}>Calendar</Link>
-          <Link href="/app/affiliate" className={styles.navLink}>Affiliate</Link>
+          <Link href="/app/dashboard" className={`${styles.navLink} ${styles.navLinkActive}`}><span className={styles.navDot} />Dashboard</Link>
+          <Link href="/app/account" className={styles.navLink}><span className={styles.navDot} />Account</Link>
+          <Link href="/app/reports" className={styles.navLink}><span className={styles.navDot} />Reports</Link>
+          <Link href="/app/receipts" className={styles.navLink}><span className={styles.navDot} />Receipts</Link>
+          <Link href="/app/support" className={styles.navLink}><span className={styles.navDot} />Support</Link>
+          <Link href="/app/token-usage" className={styles.navLink}><span className={styles.navDot} />Token Usage</Link>
+          <Link href="/app/calendar" className={styles.navLink}><span className={styles.navDot} />Calendar</Link>
+          <Link href="/app/affiliate" className={styles.navLink}><span className={styles.navDot} />Affiliate</Link>
         </nav>
 
         <div className={styles.sidebarFooter}>
@@ -326,33 +326,26 @@ export default function DashboardClient() {
       <div className={styles.mainShell}>
         {/* Topbar */}
         <header className={styles.topbar}>
-          <div className={styles.topbarInner}>
-            <div className={styles.topbarLeft}>
-              <span className={styles.topbarTitle}>Dashboard</span>
-              {session && <span className={styles.topbarEmail}>{session.email}</span>}
-            </div>
-            <div className={styles.topbarRight}>
-              <span className={`${styles.tokenBadge} ${balance > 0 ? styles.tokenBadgeGreen : styles.tokenBadgeAmber}`}>
-                {balance > 0 ? `${balance} tokens` : '0 tokens'}
-              </span>
-              <button type="button" onClick={handleRefreshBalance} className={styles.btnSecondary}>
-                Refresh
-              </button>
-              <button type="button" onClick={handleOpenPurchaseModal} className={styles.btnPrimary}>
-                Buy Tokens
-              </button>
-            </div>
+          <div className={styles.topbarLeft}>
+            <span className={styles.topbarTitle}>Dashboard</span>
+            {session && <span className={styles.topbarEmail}>{session.email}</span>}
+          </div>
+          <div className={styles.topbarRight}>
+            <span className={`${styles.tokenBadge} ${balance > 0 ? styles.tokenBadgeGreen : styles.tokenBadgeAmber}`}>
+              {balance > 0 ? `${balance} tokens` : '0 tokens'}
+            </span>
+            <button type="button" onClick={handleRefreshBalance} className={styles.btnSecondary}>
+              Refresh
+            </button>
+            <button type="button" onClick={handleOpenPurchaseModal} className={styles.btnPrimary}>
+              Buy Tokens
+            </button>
           </div>
         </header>
 
         {/* Main content */}
         <main className={styles.workspaceContent}>
-          <div className={styles.parserCardShell}>
-            <div className={styles.parserCardBody}>
-              <div className={styles.parserHero}>
-                <h2>Ready to use the Transcript Parser?</h2>
-                <p>Upload a transcript PDF. Parsing runs locally in your browser, and the PDF file itself is never uploaded.</p>
-              </div>
+          <div className={styles.parserCard}>
 
               {/* Step tabs */}
               <div className={styles.parserSteps}>
@@ -366,10 +359,10 @@ export default function DashboardClient() {
                     <button
                       key={s}
                       type="button"
-                      className={`${styles.parserStep} ${step === s ? styles.parserStepActive : ''}`}
+                      className={`${styles.parserStep} ${step === s ? styles.parserStepActive : ''} ${step > s ? styles.parserStepDone : ''}`}
                       onClick={() => setStep(s)}
                     >
-                      <span className={styles.parserStepBadge}>{s}</span>
+                      <span className={styles.parserStepBadge}>{step > s ? '✓' : s}</span>
                       <div>
                         <div className={styles.parserStepTitle}>{labels[s].title}</div>
                         <p className={styles.parserStepCopy}>{labels[s].copy}</p>
@@ -471,11 +464,17 @@ export default function DashboardClient() {
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
                   >
-                    <div className={styles.uploadZoneTitle}>Drop PDF here or click to browse</div>
-                    {pdfFileName
-                      ? <p className={styles.parserNote}>{pdfFileName}</p>
-                      : <p className={styles.parserNote}>Accepts IRS transcripts (Account, Return, Wage &amp; Income)</p>
-                    }
+                    <div className={styles.uploadZoneIcon}>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="12" y1="18" x2="12" y2="12"/>
+                        <polyline points="9 15 12 12 15 15"/>
+                      </svg>
+                    </div>
+                    <div className={styles.uploadZoneTitle}>Drop IRS transcript PDF here</div>
+                    <div className={styles.uploadZoneSub}>Or click to browse — Account, Return, Wage &amp; Income transcripts accepted</div>
+                    {pdfFileName && <span className={styles.uploadZoneFile}>{pdfFileName}</span>}
                   </div>
 
                   <input
@@ -491,108 +490,90 @@ export default function DashboardClient() {
                 </div>
               )}
 
-              {/* Panel 3 */}
+              {/* Panel 3 — placeholder for step nav */}
               {step === 3 && (
                 <div className={styles.parserSection}>
-                  <div className={styles.parserActionRow}>
-                    <button
-                      type="button"
-                      className={styles.btnSecondary}
-                      disabled={!pdfReady}
-                      onClick={handleExtractRaw}
-                    >
-                      Extract Raw Text
-                    </button>
-                    <button
-                      type="button"
-                      className={styles.btnPrimary}
-                      disabled={!rawText}
-                      onClick={handleParseStructured}
-                    >
-                      Parse Structured JSON
-                    </button>
-                    <button
-                      type="button"
-                      className={styles.btnSecondary}
-                      disabled={!jsonText || previewSaved || balance === 0}
-                      onClick={handleSavePreview}
-                    >
-                      Save Preview Report
-                    </button>
-                  </div>
-
-                  {balance === 0 && (
-                    <p className={styles.noTokensMsg}>No tokens remaining. Purchase tokens to analyze transcripts.</p>
-                  )}
-
-                  <div className={`${styles.parserStatusBox} ${styles.statusBoxMargin}`}>
-                    {previewStatus}
-                  </div>
-
-                  <div className={styles.parserOutputGrid}>
-                    <div className={styles.parserOutputBox}>
-                      <div className={styles.parserOutputHead}>
-                        <div className={styles.parserOutputTitle}>Raw Text Output</div>
-                        <button
-                          type="button"
-                          className={styles.parserCopyBtn}
-                          onClick={() => handleCopy(rawText, 'raw')}
-                        >
-                          {copyRawLabel}
-                        </button>
-                      </div>
-                      <pre className={styles.parserOutputPre}>{rawText || '(no text yet)'}</pre>
-                    </div>
-
-                    <div className={styles.parserOutputBox}>
-                      <div className={styles.parserOutputHead}>
-                        <div className={styles.parserOutputTitle}>Structured JSON Output</div>
-                        <button
-                          type="button"
-                          className={styles.parserCopyBtn}
-                          onClick={() => handleCopy(jsonText, 'json')}
-                        >
-                          {copyJsonLabel}
-                        </button>
-                      </div>
-                      <pre className={styles.parserOutputPre}>{jsonText || '(no json yet)'}</pre>
-                    </div>
-                  </div>
-
-                  <div className={`${styles.parserOutputBox} ${styles.emailSection}`}>
-                    <div className={`${styles.parserOutputHead} ${styles.emailOutputHead}`}>
-                      <div className={styles.parserOutputTitle}>Email report link</div>
-                      <div className={styles.parserNote}>A short secure report link is generated for email delivery.</div>
-                    </div>
-
-                    <div className={styles.parserEmailGrid}>
-                      <div>
-                        <label htmlFor="report-email" className={styles.parserFormLabel}>Email</label>
-                        <input
-                          id="report-email"
-                          type="email"
-                          placeholder="client@firm.com"
-                          className={styles.parserInput}
-                          autoComplete="email"
-                          value={emailInput}
-                          onChange={(e) => setEmailInput(e.target.value)}
-                        />
-                        <p className={styles.parserNote}>Requires parsed JSON and a saved preview report.</p>
-                      </div>
-                      <div className={styles.emailButtonCol}>
-                        <button
-                          type="button"
-                          className={styles.btnPrimary}
-                          disabled={!previewSaved || !emailInput}
-                          onClick={handleEmailReport}
-                        >
-                          Email report link
-                        </button>
-                        <div className={`${styles.parserNote} ${styles.centerText}`}>{emailStatus}</div>
-                      </div>
-                    </div>
-                  </div>
+                  <p className={styles.parserNote}>Use the output panel below to extract, parse, and email reports.</p>
                 </div>
+              )}
+          </div>
+
+          {/* Always-visible output panel */}
+          <div className={styles.outputCard} style={{ marginTop: 12 }}>
+            <p className={styles.outputCardTitle}>Output</p>
+            <div className={styles.parserActionRow}>
+              <button
+                type="button"
+                className={styles.btnSecondary}
+                disabled={!pdfReady}
+                onClick={handleExtractRaw}
+              >
+                Extract raw text
+              </button>
+              <button
+                type="button"
+                className={styles.btnSecondary}
+                disabled={!rawText}
+                onClick={handleParseStructured}
+              >
+                Parse structured JSON
+              </button>
+              <button
+                type="button"
+                className={styles.btnPrimary}
+                disabled={!jsonText || previewSaved || balance === 0}
+                onClick={handleSavePreview}
+              >
+                Save report (1 token)
+              </button>
+            </div>
+
+            {balance === 0 && (
+              <p className={styles.noTokensMsg}>No tokens — purchase tokens to save reports.</p>
+            )}
+
+            <div className={styles.parserStatusBox}>{previewStatus}</div>
+
+            <div className={styles.parserOutputGrid}>
+              <div className={styles.parserOutputBox}>
+                <div className={styles.parserOutputHead}>
+                  <span className={styles.parserOutputTitle}>Raw text</span>
+                  <button type="button" className={styles.parserCopyBtn} onClick={() => handleCopy(rawText, 'raw')}>{copyRawLabel}</button>
+                </div>
+                <pre className={styles.parserOutputPre}>{rawText || '— awaiting extraction —'}</pre>
+              </div>
+              <div className={styles.parserOutputBox}>
+                <div className={styles.parserOutputHead}>
+                  <span className={styles.parserOutputTitle}>Structured JSON</span>
+                  <button type="button" className={styles.parserCopyBtn} onClick={() => handleCopy(jsonText, 'json')}>{copyJsonLabel}</button>
+                </div>
+                <pre className={styles.parserOutputPre}>{jsonText || '— awaiting parse —'}</pre>
+              </div>
+            </div>
+
+            <div className={styles.emailSection}>
+              <span className={styles.sectionLabel}>Email report link to client</span>
+              <div className={styles.emailRow}>
+                <input
+                  id="report-email"
+                  type="email"
+                  placeholder="client@firm.com"
+                  className={styles.parserInput}
+                  autoComplete="email"
+                  value={emailInput}
+                  onChange={(e) => setEmailInput(e.target.value)}
+                />
+                <button
+                  type="button"
+                  className={styles.btnPrimary}
+                  disabled={!previewSaved || !emailInput}
+                  onClick={handleEmailReport}
+                >
+                  Send link
+                </button>
+              </div>
+              {emailStatus !== 'Not ready.' && (
+                <p className={styles.parserNote} style={{ marginTop: 6 }}>{emailStatus}</p>
               )}
             </div>
           </div>
