@@ -44,6 +44,20 @@ export default async function ResourcePage(
           url: `${CANONICAL_BASE}/resources/${resource.slug}`,
         })}}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Resources', item: 'https://transcript.taxmonitor.pro/resources/' },
+            resource.category === 'transaction-code'
+              ? { '@type': 'ListItem', position: 2, name: 'IRS Codes', item: 'https://transcript.taxmonitor.pro/resources/transcript-codes/' }
+              : { '@type': 'ListItem', position: 2, name: 'Guides', item: 'https://transcript.taxmonitor.pro/resources/' },
+            { '@type': 'ListItem', position: 3, name: resource.title, item: `https://transcript.taxmonitor.pro/resources/${resource.slug}/` },
+          ]
+        })}}
+      />
       <Template data={resource} />
     </>
   )

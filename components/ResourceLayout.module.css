@@ -1,3 +1,33 @@
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.bcLink {
+  font-size: 0.75rem;
+  color: var(--accent);
+  text-decoration: none;
+  transition: opacity 150ms ease;
+}
+
+.bcLink:hover {
+  opacity: 0.75;
+  text-decoration: none;
+}
+
+.bcSep {
+  font-size: 0.75rem;
+  color: var(--surface-border);
+}
+
+.bcCurrent {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
 .wrapper {
   max-width: 1200px;
   margin: 0 auto;
