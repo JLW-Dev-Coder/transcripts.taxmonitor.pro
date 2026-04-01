@@ -88,12 +88,34 @@ export default function DashboardClient() {
         }
 
         const data = await res.json()
+        const sessionData = data.session || data
+
+        const accountId = sessionData.account_id || ''
+        const userEmail = sessionData.email || email || ''
+
         setSession({
-          email: data.email || email || '',
-          tokenId: data.account_id || data.user?.tokenId || '',
-          balance: data.balance ?? data.user?.balance ?? 0,
+          email: userEmail,
+          tokenId: accountId,
+          balance: 0,
         })
-        setBalance(data.balance ?? data.user?.balance ?? 0)
+
+        // Fetch token balance separately
+        if (accountId) {
+          try {
+            const tokenRes = await fetch(
+              `${WORKER_BASE}/v1/tokens/balance/${accountId}`,
+              { credentials: 'include' }
+            )
+            if (tokenRes.ok) {
+              const tokenData = await tokenRes.json()
+              const bal = tokenData.transcript_tokens ?? tokenData.balance ?? 0
+              setBalance(bal)
+              setSession(prev => prev ? { ...prev, balance: bal } : prev)
+            }
+          } catch {
+            // silently fail — balance stays 0
+          }
+        }
       } catch {
         sessionStorage.removeItem('ttmp_session_id')
         sessionStorage.removeItem('ttmp_email')
@@ -105,13 +127,20 @@ export default function DashboardClient() {
   }, [])
 
   const handleRefreshBalance = async () => {
-    if (!session) return
+    if (!session?.tokenId) return
     try {
-      const data = await getTokenBalance(session.tokenId)
-      setBalance(data.transcript_tokens)
-      setSession(prev => prev ? { ...prev, balance: data.transcript_tokens } : prev)
+      const tokenRes = await fetch(
+        `${WORKER_BASE}/v1/tokens/balance/${session.tokenId}`,
+        { credentials: 'include' }
+      )
+      if (tokenRes.ok) {
+        const tokenData = await tokenRes.json()
+        const bal = tokenData.transcript_tokens ?? tokenData.balance ?? 0
+        setBalance(bal)
+        setSession(prev => prev ? { ...prev, balance: bal } : prev)
+      }
     } catch {
-      // silently fail, keep existing balance
+      // silently fail
     }
   }
 
