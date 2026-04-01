@@ -579,7 +579,8 @@ export default function DashboardClient() {
     const trackingMatch   = norm.match(/Tracking Number:\s*(\d+)/i)
     const ssnProvided     = norm.match(/SSN provided:\s*(XXX-XX-\d{4})/i)
       || norm.match(/Taxpayer Identification Number:\s*(XXX-XX-\d{4})/i)
-    const nameMatch       = norm.match(/(?:XXX-XX-\d{4})\s+([A-Z][A-Z\s]+?)(?:\s+\d{3,}|\s+[A-Z]\s)/)?.[1]?.trim()
+    const nameMatch       = norm.match(/XXX-XX-\d{4}\s+([A-Z][A-Z\s]{2,30}?)(?:\s+\d{3,}|\s*$)/)?.[1]?.trim()
+      || norm.match(/Taxpayer Identification Number:\s*XXX-XX-\d{4}\s+([A-Z][A-Z\s]{2,30}?)(?:\s+\d|\s*$)/)?.[1]?.trim()
 
     if (isReturnTranscript) {
       // ── RETURN TRANSCRIPT parsing ──
@@ -785,42 +786,44 @@ export default function DashboardClient() {
     // ── RECORD OF ACCOUNT parsing ──
     if (isRecordOfAccount) {
       const transactions: any[] = []
-      const txSection = text.match(/TRANSACTIONS[\s\S]*?(?=SSN provided:|$)/i)?.[0] || ''
-      const txLines   = txSection.split('\n')
 
-      const cleanDesc = (raw: string, code: string): string => {
-        return raw
+      // Scan the entire raw text for transaction code patterns
+      const txRegex = /\b(\d{3})\s+((?:[A-Za-z][^$\n]*?)?)\s+(\d{2}-\d{2}-\d{4})\s+([-]?\$?[\d,]+\.\d{2})/g
+      let roaMatch
+
+      // Only scan the TRANSACTIONS section if it exists
+      const roaTxStart = text.indexOf('TRANSACTIONS')
+      const roaTxEnd   = text.indexOf('This   Product   Contains Sensitive Taxpayer Data', roaTxStart > 0 ? roaTxStart : 0)
+      const roaTxSection = roaTxStart > 0
+        ? text.slice(roaTxStart, roaTxEnd > roaTxStart ? roaTxEnd : undefined)
+        : text
+
+      while ((roaMatch = txRegex.exec(roaTxSection)) !== null) {
+        const code    = roaMatch[1]
+        const rawDesc = roaMatch[2].trim()
+        const date    = roaMatch[3]
+        const amount  = roaMatch[4].startsWith('$') ? roaMatch[4] : '$' + roaMatch[4]
+
+        if (code === 'COD' || rawDesc.includes('EXPLANATION')) continue
+
+        const desc = rawDesc
           .replace(/\b\d{8}\b/g, '')
-          .replace(/\b\d{5}-\d{3}-\d{5}-\d{1,2}\b/g, '')
+          .replace(/\b\d{5}-\d{3}-\d{5}-\d\b/g, '')
           .replace(/\b(NOTICE\d+|CP\s+\d+)\b/gi, '')
+          .replace(/\b00-00-0000\b/g, '')
           .replace(/\b00\b/g, '')
           .replace(/\s{2,}/g, ' ')
-          .trim() || getCodeDescription(code)
-      }
+          .trim()
 
-      for (const line of txLines) {
-        const trimmed = line.trim()
-        if (!trimmed) continue
-        const p = trimmed.match(/^(\d{3})\s+(.+?)\s+(\d{2}-\d{2}-\d{4})\s+([\$\-]?[\d,]+\.\d{2})\s*$/)
-        if (p) {
-          transactions.push({ code: p[1], date: p[3], description: cleanDesc(p[2], p[1]), amount: p[4], impact: cleanDesc(p[2], p[1]) })
-          continue
-        }
-        const p2 = trimmed.match(/^(\d{3})\s+(.+?)\s+\d{11,}\s+\d{8}\s+(\d{2}-\d{2}-\d{4})\s+([\$\-]?[\d,]+\.\d{2})\s*$/)
-        if (p2) {
-          transactions.push({ code: p2[1], date: p2[3], description: cleanDesc(p2[2], p2[1]), amount: p2[4], impact: cleanDesc(p2[2], p2[1]) })
-          continue
-        }
-        const p3 = trimmed.match(/^(\d{3})\s{2,}([A-Za-z].+?)\s{2,}(\d{2}-\d{2}-\d{4})\s+([\$\-]?[\d,]+\.\d{2})/)
-        if (p3) {
-          transactions.push({ code: p3[1], date: p3[3], description: cleanDesc(p3[2], p3[1]), amount: p3[4], impact: cleanDesc(p3[2], p3[1]) })
-          continue
-        }
-        const p4 = trimmed.match(/^(\d{3})\s+(.+?)\s+(\d{2}-\d{2}-\d{4})\s+(-\$[\d,]+\.\d{2})\s*$/)
-        if (p4) {
-          transactions.push({ code: p4[1], date: p4[3], description: cleanDesc(p4[2], p4[1]), amount: p4[4], impact: cleanDesc(p4[2], p4[1]) })
-          continue
-        }
+        if (!desc && !getCodeDescription(code)) continue
+
+        transactions.push({
+          code,
+          date,
+          amount,
+          description: desc || getCodeDescription(code),
+          impact:      desc || getCodeDescription(code),
+        })
       }
 
       const acctBalance    = norm.match(/Account balance:\s*\$([\d,\.]+)/i)?.[1]
@@ -902,50 +905,44 @@ export default function DashboardClient() {
 
     // ── ACCOUNT TRANSCRIPT parsing (transaction codes) ──
     const transactions: any[] = []
-    const lines = text.split('\n')
 
-    const cleanDescAcct = (raw: string, code: string): string => {
-      return raw
+    // Scan the entire raw text for transaction code patterns
+    const acctTxRegex = /\b(\d{3})\s+((?:[A-Za-z][^$\n]*?)?)\s+(\d{2}-\d{2}-\d{4})\s+([-]?\$?[\d,]+\.\d{2})/g
+    let acctMatch
+
+    // Only scan the TRANSACTIONS section if it exists
+    const acctTxStart = text.indexOf('TRANSACTIONS')
+    const acctTxEnd   = text.indexOf('This   Product   Contains Sensitive Taxpayer Data', acctTxStart > 0 ? acctTxStart : 0)
+    const acctTxSection = acctTxStart > 0
+      ? text.slice(acctTxStart, acctTxEnd > acctTxStart ? acctTxEnd : undefined)
+      : text
+
+    while ((acctMatch = acctTxRegex.exec(acctTxSection)) !== null) {
+      const code    = acctMatch[1]
+      const rawDesc = acctMatch[2].trim()
+      const date    = acctMatch[3]
+      const amount  = acctMatch[4].startsWith('$') ? acctMatch[4] : '$' + acctMatch[4]
+
+      if (code === 'COD' || rawDesc.includes('EXPLANATION')) continue
+
+      const desc = rawDesc
         .replace(/\b\d{8}\b/g, '')
-        .replace(/\b\d{5}-\d{3}-\d{5}-\d{1,2}\b/g, '')
+        .replace(/\b\d{5}-\d{3}-\d{5}-\d\b/g, '')
         .replace(/\b(NOTICE\d+|CP\s+\d+)\b/gi, '')
+        .replace(/\b00-00-0000\b/g, '')
         .replace(/\b00\b/g, '')
         .replace(/\s{2,}/g, ' ')
-        .trim() || getCodeDescription(code)
-    }
+        .trim()
 
-    for (const line of lines) {
-      const trimmed = line.trim()
-      if (!trimmed) continue
+      if (!desc && !getCodeDescription(code)) continue
 
-      // Must start with a 3-digit transaction code
-      if (!/^\d{3}\s/.test(trimmed)) continue
-
-      // Pattern 1: code desc date amount (with or without $ sign)
-      let dateMatch = trimmed.match(/(\d{2}-\d{2}-\d{4})\s+([\-]?\$[\d,]+\.\d{2})\s*$/)
-      if (!dateMatch) {
-        dateMatch = trimmed.match(/(\d{2}-\d{2}-\d{4})\s+([\-]?[\d,]+\.\d{2})\s*$/)
-      }
-      if (dateMatch) {
-        const date   = dateMatch[1]
-        const amount = dateMatch[2]
-        const code   = trimmed.slice(0, 3)
-        const middle = trimmed.slice(3, trimmed.lastIndexOf(dateMatch[0])).trim()
-        const description = cleanDescAcct(middle, code)
-        transactions.push({ code, date, amount, description, impact: description })
-        continue
-      }
-
-      // Pattern 2: code desc date negative-amount
-      const p4 = trimmed.match(/^(\d{3})\s+(.+?)\s+(\d{2}-\d{2}-\d{4})\s+(-\$[\d,]+\.\d{2})\s*$/)
-      if (p4) {
-        transactions.push({
-          code: p4[1], date: p4[3],
-          description: cleanDescAcct(p4[2], p4[1]),
-          amount: p4[4], impact: cleanDescAcct(p4[2], p4[1]),
-        })
-        continue
-      }
+      transactions.push({
+        code,
+        date,
+        amount,
+        description: desc || getCodeDescription(code),
+        impact:      desc || getCodeDescription(code),
+      })
     }
 
     const balanceMatch       = norm.match(/Account\s+balance[:\s]+\$?([\d,\.]+)/i)
