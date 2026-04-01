@@ -332,82 +332,150 @@ export default function DashboardClient() {
       text = extracted
     }
 
-    const transactions: { code: string; date: string; description: string; amount: string; impact: string }[] = []
+    // ── Detect transcript type ──
+    const isReturnTranscript = /Form 1040 Tax Return Transcript/i.test(text)
 
+    // ── Universal metadata ──
+    const ssnMatch       = text.match(/SSN[^:]*:\s*(XXX-XX-\d{4}|\d{3}-\d{2}-\d{4})/i)
+    const nameMatch      = text.match(/(?:JAMI|JAMES|JOHN|JANE|[A-Z]{2,}\s+[A-Z]?\s*[A-Z]{2,})\s+\d{4}/)?.[0]
+      || text.match(/(?:taxpayer name|name)[:\s]+([A-Z][A-Z\s]+)/i)?.[1]
+    const taxYearMatch   = text.match(/Tax Period Ending[:\s]+(\d{2}-\d{2}-(\d{4}))/i)
+      || text.match(/Report for Tax Period Ending[:\s]+(\d{2}-\d{2}-(\d{4}))/i)
+      || text.match(/\b(20\d{2})\b/)
+    const taxYear        = taxYearMatch?.[2] || taxYearMatch?.[1] || ''
+    const requestDateMatch = text.match(/Request Date[:\s]+(\d{2}-\d{2}-\d{4})/i)
+    const requestDate    = requestDateMatch?.[1] || ''
+    const cycleMatch     = text.match(/Cycle posted[:\s]+(\d+)/i)
+    const receivedMatch  = text.match(/Received date[:\s]+(\d{2}-\d{2}-\d{4})/i)
+    const filingStatusMatch = text.match(/Filing status[:\s]+(\w+)/i)
+    const formMatch      = text.match(/Taxpayer Form number[:\s]+([\w-]+)/i)
+    const trackingMatch  = text.match(/Tracking Number[:\s]+(\d+)/i)
+
+    function extractAmt(label: string): string {
+      const re = new RegExp(label + '[:\\s]+\\$?([\\d,\\.]+)', 'i')
+      const m  = text.match(re)
+      return m ? '$' + m[1] : '$0.00'
+    }
+
+    function extractVal(label: string): string {
+      const re = new RegExp(label + '[:\\s]+([^\\n\\r$]+)', 'i')
+      const m  = text.match(re)
+      return m ? m[1].trim() : '—'
+    }
+
+    if (isReturnTranscript) {
+      // ── RETURN TRANSCRIPT parsing ──
+      const parsed = {
+        transcriptType: 'return',
+        taxpayer: {
+          ssn:          ssnMatch?.[1] || '—',
+          name:         nameMatch?.replace(/\d{4}.*/, '').trim() || '—',
+          taxYear,
+          requestDate,
+          filingStatus: filingStatusMatch?.[1] || '—',
+          formNumber:   formMatch?.[1] || '1040',
+          cyclePosted:  cycleMatch?.[1] || '—',
+          receivedDate: receivedMatch?.[1] || '—',
+          trackingNumber: trackingMatch?.[1] || '—',
+        },
+        income: {
+          totalWages:            extractAmt('Total wages'),
+          businessIncome:        extractAmt('Business income or loss \\(Schedule C\\):'),
+          totalIncome:           extractAmt('Total income:'),
+          adjustedGrossIncome:   extractAmt('Adjusted gross income:'),
+          scheduleEIC_SelfEmploymentIncome: extractAmt('Schedule EIC Self-employment income per computer'),
+        },
+        adjustments: {
+          selfEmploymentTaxDeduction: extractAmt('Self-employment tax deduction:'),
+          qualifiedBusinessIncome:    extractAmt('Qualified business income deduction:'),
+          totalAdjustments:           extractAmt('Total adjustments:'),
+        },
+        taxAndCredits: {
+          taxableIncome:        extractAmt('Taxable income:'),
+          tentativeTax:         extractAmt('Tentative tax:'),
+          selfEmploymentTax:    extractAmt('Self employment tax:'),
+          totalTaxLiability:    extractAmt('Total tax liability taxpayer figures:'),
+          incomeTaxAfterCredits: extractAmt('Income tax after credits per computer'),
+          standardDeduction:    extractAmt('Standard deduction per computer'),
+          totalCredits:         extractAmt('Total credits:'),
+        },
+        payments: {
+          federalWithheld:   extractAmt('Federal income tax withheld:'),
+          estimatedPayments: extractAmt('Estimated tax payments:'),
+          totalPayments:     extractAmt('Total payments:'),
+        },
+        refundOrOwed: {
+          amountOwed:        extractAmt('Amount you owe:'),
+          balanceDue:        extractAmt('Balance due\\/overpayment using taxpayer figure per computer'),
+          estimatedPenalty:  extractAmt('Estimated tax penalty:'),
+        },
+        scheduleC: {
+          grossReceipts:     extractAmt('Gross receipts or sales:'),
+          totalExpenses:     extractAmt('Total expenses:'),
+          homeOfficeExpense: extractAmt('Expense for business use of home:'),
+          netProfit:         extractAmt('Schedule C net profit or loss per computer'),
+          naicsCode:         extractVal('North American Industry Classification System'),
+          accountMethod:     extractVal('Account method'),
+        },
+        selfEmploymentTax: {
+          totalSETax:        extractAmt('Total Self-Employment tax per computer'),
+          seIncome:          extractAmt('Total Self-Employment income:'),
+          socialSecurityTax: extractAmt('Self-Employment Social Security tax computer'),
+          medicareTax:       extractAmt('Self-Employment Medicare tax per computer'),
+        },
+        qualifiedBusinessIncome: {
+          qbiComponent:      extractAmt('Qualified business income component:'),
+          totalQBI:          extractAmt('Total qualified business income or loss:'),
+          deduction:         extractAmt('Form 8995 net capital gains'),
+        },
+        transactions: [],
+        balances: {
+          assessedTax: extractAmt('Total assessment per computer'),
+          payments:    extractAmt('Total payments:'),
+          credits:     extractAmt('Total credits:'),
+          balance:     extractAmt('Amount you owe:'),
+        },
+        metadata: {
+          transcriptType: 'Form 1040 Tax Return Transcript',
+          requestDate,
+          parsedAt: new Date().toISOString(),
+        },
+      }
+      setJsonText(JSON.stringify(parsed, null, 2))
+      return
+    }
+
+    // ── ACCOUNT TRANSCRIPT parsing (transaction codes) ──
+    const transactions: any[] = []
     const lines = text.split('\n')
     for (const line of lines) {
       const trimmed = line.trim()
       if (!trimmed) continue
-
-      // Pattern 1: code date description amount
-      // e.g. "150  01-15-2024  Tax return filed  $1,234.56"
       const p1 = trimmed.match(/^(\d{2,4})\s+(\d{2}-\d{2}-\d{4})\s+(.+?)\s+([\$\-]?[\d,]+\.\d{2})\s*$/)
-      if (p1) {
-        transactions.push({
-          code: p1[1],
-          date: p1[2],
-          description: p1[3].trim(),
-          amount: p1[4],
-          impact: p1[3].trim(),
-        })
-        continue
-      }
-
-      // Pattern 2: code date amount (no description)
+      if (p1) { transactions.push({ code: p1[1], date: p1[2], description: p1[3].trim(), amount: p1[4], impact: p1[3].trim() }); continue }
       const p2 = trimmed.match(/^(\d{2,4})\s+(\d{2}-\d{2}-\d{4})\s+([\$\-]?[\d,]+\.\d{2})\s*$/)
-      if (p2) {
-        transactions.push({
-          code: p2[1],
-          date: p2[2],
-          description: getCodeDescription(p2[1]),
-          amount: p2[3],
-          impact: getCodeDescription(p2[1]),
-        })
-        continue
-      }
-
-      // Pattern 3: code spaces date (amount at end or zero)
+      if (p2) { transactions.push({ code: p2[1], date: p2[2], description: getCodeDescription(p2[1]), amount: p2[3], impact: getCodeDescription(p2[1]) }); continue }
       const p3 = trimmed.match(/^(\d{2,4})\s{2,}(\d{2}-\d{2}-\d{4})\s{2,}(.+)$/)
       if (p3) {
         const rest = p3[3].trim()
         const amtMatch = rest.match(/([\$\-]?[\d,]+\.\d{2})\s*$/)
         const amount = amtMatch ? amtMatch[1] : '$0.00'
         const desc = amtMatch ? rest.replace(amtMatch[0], '').trim() : rest
-        transactions.push({
-          code: p3[1],
-          date: p3[2],
-          description: desc || getCodeDescription(p3[1]),
-          amount,
-          impact: desc || getCodeDescription(p3[1]),
-        })
+        transactions.push({ code: p3[1], date: p3[2], description: desc || getCodeDescription(p3[1]), amount, impact: desc || getCodeDescription(p3[1]) })
       }
     }
 
-    // Extract metadata
-    const taxYearMatch = text.match(/TAX\s+PERIOD[:\s]+(\d{4})/i) || text.match(/\b(20\d{2})\b/)
-    const taxYear = taxYearMatch ? taxYearMatch[1] : ''
-    const balanceMatch = text.match(/ACCOUNT\s+BALANCE[:\s]+([\$\-]?[\d,.]+)/i)
-    const balanceAmount = balanceMatch ? balanceMatch[1] : ''
+    const balanceMatch  = text.match(/ACCOUNT\s+BALANCE[:\s]+([\$\-]?[\d,.]+)/i)
     const returnTypeMatch = text.match(/RETURN\s+TYPE[:\s]+([A-Z0-9\-]+)/i)
-    const returnType = returnTypeMatch ? returnTypeMatch[1] : ''
 
     const parsed = {
-      taxpayer: { name: '', ssn: '', address: '', taxYear },
-      filingInfo: { returnType, filingStatus: '', cyclePosted: '' },
+      transcriptType: 'account',
+      taxpayer: { ssn: ssnMatch?.[1] || '—', name: '—', taxYear, requestDate, filingStatus: filingStatusMatch?.[1] || '—', formNumber: formMatch?.[1] || '—', cyclePosted: cycleMatch?.[1] || '—', receivedDate: receivedMatch?.[1] || '—', trackingNumber: trackingMatch?.[1] || '—' },
       transactions,
-      balances: {
-        assessedTax: '',
-        payments: '',
-        credits: '',
-        balance: balanceAmount,
-      },
-      metadata: {
-        transcriptType: '',
-        requestDate: '',
-        parsedAt: new Date().toISOString(),
-      },
+      balances: { assessedTax: '', payments: '', credits: '', balance: balanceMatch?.[1] ? '$' + balanceMatch[1] : '$0.00' },
+      filingInfo: { returnType: returnTypeMatch?.[1] || '—', filingStatus: '', cyclePosted: '' },
+      metadata: { transcriptType: 'Account Transcript', requestDate, parsedAt: new Date().toISOString() },
     }
-
     setJsonText(JSON.stringify(parsed, null, 2))
   }
 

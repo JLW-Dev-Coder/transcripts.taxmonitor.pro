@@ -7,89 +7,190 @@ import { Suspense } from 'react'
 const API = 'https://api.virtuallaunch.pro'
 
 function buildReportHtml(rd: any, logoDataUrl: string | null): string {
-  const transactions: any[] = rd?.transactions || []
-  const taxpayer            = rd?.taxpayer || {}
-  const balances            = rd?.balances || {}
-  const filingInfo          = rd?.filingInfo || {}
-  const reportDate          = new Date().toLocaleDateString()
-  const taxYear             = taxpayer.taxYear || filingInfo.taxYear || '—'
-  const balance             = balances.balance || '$0.00'
-  const preparedBy          = rd?.preparedBy || 'Tax Professional'
-
-  const logoHtml = logoDataUrl
+  const isReturn  = rd?.transcriptType === 'return'
+  const reportDate = new Date().toLocaleDateString()
+  const taxpayer   = rd?.taxpayer || {}
+  const logo = logoDataUrl
     ? `<img src="${logoDataUrl}" style="max-width:160px;height:auto;" />`
     : `<div style="width:160px;height:110px;background:#f3f4f6;border:2px dashed #d1d5db;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#9ca3af;font-size:12px;text-align:center;font-weight:800;padding:8px;"><div>Company Logo</div><div style="margin-top:6px;font-size:10px;font-weight:600;color:#6b7280;line-height:1.3;">Upload from dashboard</div></div>`
 
-  const timelineHtml = transactions.map(tx => `
-    <div class="timeline-item">
-      <div>
-        <div class="timeline-date">${tx.date || '—'}</div>
-        <div class="timeline-code">TC ${tx.code || '—'}</div>
-      </div>
-      <div>
-        <div class="timeline-description">${tx.description || '—'}</div>
-        <div class="timeline-impact">${tx.impact || tx.amount || '—'}</div>
-      </div>
-    </div>
-  `).join('')
+  function infoBlock(label: string, value: string) {
+    return `<div class="info-block"><div class="info-label">${label}</div><div class="info-value">${value || '—'}</div></div>`
+  }
 
-  const tableRowsHtml = transactions.map(tx => `
-    <tr>
-      <td class="code-column">${tx.code || '—'}</td>
-      <td>${tx.date || '—'}</td>
-      <td>${tx.description || '—'}</td>
-      <td>${tx.impact || tx.amount || '—'}</td>
-    </tr>
-  `).join('')
+  function statusCard(label: string, value: string, colorClass = '') {
+    return `<div class="status-card"><div class="status-value ${colorClass}">${value || '—'}</div><div class="status-label">${label}</div></div>`
+  }
 
-  const codeMeaningsHtml = transactions.map(tx => `
-    <div style="margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid #e5e7eb;">
-      <div style="font-weight:800;color:#0b0a14;margin-bottom:8px;font-size:14px;">TC ${tx.code}: ${tx.description || '—'}</div>
-      <div style="color:#6b7280;line-height:1.6;font-size:13px;">${tx.impact || tx.amount || 'See IRS Publication 1546 for full definition.'}</div>
-    </div>
-  `).join('')
+  function lineRow(label: string, value: string, bold = false) {
+    return `<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #e5e7eb;font-size:13px;${bold ? 'font-weight:800;border-top:2px solid #7c3aed;margin-top:6px;' : ''}"><span style="color:${bold ? '#0b0a14' : '#374151'}">${label}</span><span style="font-weight:${bold ? '800' : '600'};color:${bold ? '#7c3aed' : '#0b0a14'}">${value}</span></div>`
+  }
 
-  return `
+  const headerHtml = `
     <div class="report-page">
       <div class="page-content">
         <div class="report-header">
           <div class="header-left">
-            <h1>IRS Transcript Report</h1>
-            <p>Client-Ready Account Analysis</p>
+            <h1>${isReturn ? 'Tax Return Transcript Report' : 'IRS Account Transcript Report'}</h1>
+            <p>${isReturn ? 'Form 1040 Return Analysis' : 'Account Transaction Analysis'}</p>
           </div>
-          <div class="header-right">${logoHtml}</div>
+          <div class="header-right">${logo}</div>
         </div>
 
         <div class="section">
-          <div class="section-title">Client Information</div>
+          <div class="section-title">Taxpayer Information</div>
           <div class="info-grid">
-            <div class="info-block"><div class="info-label">Taxpayer Name</div><div class="info-value">${taxpayer.name || '—'}</div></div>
-            <div class="info-block"><div class="info-label">Tax Period Ending</div><div class="info-value">${taxYear}</div></div>
-            <div class="info-block"><div class="info-label">Report Date</div><div class="info-value">${reportDate}</div></div>
-            <div class="info-block"><div class="info-label">Prepared By</div><div class="info-value">${preparedBy}</div></div>
+            ${infoBlock('SSN', taxpayer.ssn)}
+            ${infoBlock('Tax Period Ending', taxpayer.taxYear ? '12/31/' + taxpayer.taxYear : '—')}
+            ${infoBlock('Filing Status', taxpayer.filingStatus)}
+            ${infoBlock('Form Number', taxpayer.formNumber)}
+            ${infoBlock('Received Date', taxpayer.receivedDate)}
+            ${infoBlock('Cycle Posted', taxpayer.cyclePosted)}
+            ${infoBlock('Request Date', taxpayer.requestDate || rd?.metadata?.requestDate)}
+            ${infoBlock('Tracking Number', taxpayer.trackingNumber)}
           </div>
-        </div>
+        </div>`
 
+  if (isReturn) {
+    const inc  = rd?.income || {}
+    const adj  = rd?.adjustments || {}
+    const tax  = rd?.taxAndCredits || {}
+    const pay  = rd?.payments || {}
+    const owe  = rd?.refundOrOwed || {}
+    const schC = rd?.scheduleC || {}
+    const se   = rd?.selfEmploymentTax || {}
+
+    const amtOwed   = owe.amountOwed || '$0.00'
+    const isBalance = parseFloat(amtOwed.replace(/[^0-9.]/g, '')) > 0
+    const riskLevel = isBalance ? 'Balance Due' : 'Clean'
+    const riskClass = isBalance ? 'attention' : 'low'
+
+    return headerHtml + `
         <div class="section">
           <div class="section-title">Account Status</div>
           <div class="status-grid">
-            <div class="status-card"><div class="status-value">${balance}</div><div class="status-label">Current Balance</div></div>
-            <div class="status-card"><div class="status-value">${balances.refundStatus || '—'}</div><div class="status-label">Refund Status</div></div>
-            <div class="status-card"><div class="status-value">${transactions.length}</div><div class="status-label">Codes Found</div></div>
+            ${statusCard('Total Income', inc.totalIncome)}
+            ${statusCard('Total Tax', tax.totalTaxLiability)}
+            ${statusCard('Amount Owed', amtOwed, riskClass)}
+          </div>
+          <div class="status-grid" style="grid-template-columns:repeat(2,1fr)">
+            ${statusCard('Total Payments', pay.totalPayments)}
+            ${statusCard('Status', riskLevel, riskClass)}
           </div>
         </div>
 
         <div class="section">
           <div class="section-title">What This Means</div>
-          <div class="summary-box">${rd?.summary || 'This transcript has been parsed and all transaction codes have been extracted. Review the timeline below for a chronological view of IRS actions on this account.'}</div>
+          <div class="summary-box">
+            ${isBalance
+              ? `This transcript shows a balance due of <strong>${amtOwed}</strong> for tax year ${taxpayer.taxYear}. The taxpayer had self-employment income of ${inc.businessIncome} and a total tax liability of ${tax.totalTaxLiability}. No payments were made against this liability. Immediate attention is recommended — penalties and interest may be accruing.`
+              : `This transcript shows a clean filing for tax year ${taxpayer.taxYear}. Total income was ${inc.totalIncome} with a tax liability of ${tax.totalTaxLiability}. All obligations appear to be satisfied.`
+            }
+          </div>
         </div>
 
-        ${transactions.length > 0 ? `
-          <div class="section">
-            <div class="section-title">Key Transcript Events</div>
-            <div class="timeline">${timelineHtml}</div>
+        <div class="report-footer">
+          <span>Confidential — for named taxpayer and representative only.</span>
+          <span>Generated ${reportDate}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="report-page">
+      <div class="page-content">
+        <div class="report-header">
+          <div class="header-left"><h1>Income & Tax Detail</h1><p>Form 1040 Line Items</p></div>
+          <div class="header-right">${logoDataUrl ? `<img src="${logoDataUrl}" style="max-width:120px;height:auto;" />` : ''}</div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Income</div>
+          <div style="background:#f9fafb;padding:16px;border-radius:10px;border-left:4px solid #7c3aed;">
+            ${lineRow('Total Wages (W-2)', inc.totalWages)}
+            ${lineRow('Business Income (Schedule C)', inc.businessIncome)}
+            ${lineRow('Total Income', inc.totalIncome)}
+            ${lineRow('Self-Employment Income (EIC)', inc.scheduleEIC_SelfEmploymentIncome)}
+            ${lineRow('Adjusted Gross Income', inc.adjustedGrossIncome, true)}
           </div>
-        ` : '<p style="color:#6b7280;font-size:13px;">No transaction codes were extracted. Try re-parsing the transcript from the dashboard.</p>'}
+        </div>
+
+        <div class="section">
+          <div class="section-title">Adjustments & Deductions</div>
+          <div style="background:#f9fafb;padding:16px;border-radius:10px;border-left:4px solid #7c3aed;">
+            ${lineRow('Self-Employment Tax Deduction', adj.selfEmploymentTaxDeduction)}
+            ${lineRow('Qualified Business Income Deduction', adj.qualifiedBusinessIncome)}
+            ${lineRow('Standard Deduction', tax.standardDeduction)}
+            ${lineRow('Total Adjustments', adj.totalAdjustments, true)}
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Tax Calculation</div>
+          <div style="background:#f9fafb;padding:16px;border-radius:10px;border-left:4px solid #7c3aed;">
+            ${lineRow('Taxable Income', tax.taxableIncome)}
+            ${lineRow('Tentative Tax', tax.tentativeTax)}
+            ${lineRow('Self-Employment Tax', tax.selfEmploymentTax)}
+            ${lineRow('Total Credits', tax.totalCredits)}
+            ${lineRow('Total Tax Liability', tax.totalTaxLiability, true)}
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Payments & Balance</div>
+          <div style="background:#f9fafb;padding:16px;border-radius:10px;border-left:4px solid #7c3aed;">
+            ${lineRow('Federal Tax Withheld', pay.federalWithheld)}
+            ${lineRow('Estimated Tax Payments', pay.estimatedPayments)}
+            ${lineRow('Total Payments', pay.totalPayments)}
+            ${lineRow('Total Tax Liability', tax.totalTaxLiability)}
+            ${lineRow('Amount Owed / (Refund)', owe.amountOwed, true)}
+          </div>
+        </div>
+
+        <div class="report-footer">
+          <span>For IRS code definitions, consult IRS Publication 1546.</span>
+          <span>Generated ${reportDate}</span>
+        </div>
+      </div>
+    </div>
+
+    ${schC.grossReceipts && schC.grossReceipts !== '$0.00' ? `
+    <div class="report-page">
+      <div class="page-content">
+        <div class="report-header">
+          <div class="header-left"><h1>Schedule C & Self-Employment</h1><p>Business Income Analysis</p></div>
+          <div class="header-right">${logoDataUrl ? `<img src="${logoDataUrl}" style="max-width:120px;height:auto;" />` : ''}</div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Schedule C — Business Income</div>
+          <div style="background:#f9fafb;padding:16px;border-radius:10px;border-left:4px solid #7c3aed;">
+            ${lineRow('Gross Receipts / Sales', schC.grossReceipts)}
+            ${lineRow('Total Expenses', schC.totalExpenses)}
+            ${lineRow('Home Office Expense', schC.homeOfficeExpense)}
+            ${lineRow('Net Profit / Loss', schC.netProfit, true)}
+          </div>
+          <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            ${infoBlock('NAICS Code', schC.naicsCode)}
+            ${infoBlock('Accounting Method', schC.accountMethod)}
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Self-Employment Tax Breakdown</div>
+          <div style="background:#f9fafb;padding:16px;border-radius:10px;border-left:4px solid #7c3aed;">
+            ${lineRow('Total SE Income', se.seIncome)}
+            ${lineRow('Social Security Tax', se.socialSecurityTax)}
+            ${lineRow('Medicare Tax', se.medicareTax)}
+            ${lineRow('Total SE Tax', se.totalSETax, true)}
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Practitioner Notes</div>
+          <div class="summary-box">
+            <strong>Schedule C filed</strong> with gross receipts of ${schC.grossReceipts}. Net profit after home office deduction: ${schC.netProfit}. Self-employment tax of ${se.totalSETax} applies on net earnings. The QBI deduction of ${adj.qualifiedBusinessIncome} reduces taxable income. <strong>No estimated tax payments were made</strong> — consider advising on 2024 quarterly estimates to avoid penalty.
+          </div>
+        </div>
 
         <div class="report-footer">
           <span>This report is confidential and for the named taxpayer and their representative only.</span>
@@ -97,45 +198,82 @@ function buildReportHtml(rd: any, logoDataUrl: string | null): string {
         </div>
       </div>
     </div>
+    ` : ''}
+    `
+  }
 
-    ${transactions.length > 0 ? `
-      <div class="report-page">
-        <div class="page-content">
-          <div class="report-header">
-            <div class="header-left"><h1>Technical Analysis</h1><p>Transaction Code Breakdown</p></div>
-            <div class="header-right">${logoDataUrl ? `<img src="${logoDataUrl}" style="max-width:160px;height:auto;" />` : ''}</div>
-          </div>
+  // ── ACCOUNT TRANSCRIPT report ──
+  const transactions: any[] = rd?.transactions || []
+  const balances = rd?.balances || {}
 
-          <div class="section">
-            <div class="section-title">Transaction Code Details</div>
-            <table class="transaction-table">
-              <thead><tr><th>TC Code</th><th>Date</th><th>Description</th><th>Impact / Amount</th></tr></thead>
-              <tbody>${tableRowsHtml}</tbody>
-            </table>
-          </div>
+  const timelineHtml = transactions.map((tx: any) => `
+    <div class="timeline-item">
+      <div><div class="timeline-date">${tx.date || '—'}</div><div class="timeline-code">TC ${tx.code || '—'}</div></div>
+      <div><div class="timeline-description">${tx.description || '—'}</div><div class="timeline-impact">${tx.impact || tx.amount || '—'}</div></div>
+    </div>`).join('')
 
-          <div class="section">
-            <div class="section-title">Understanding These Codes</div>
-            ${codeMeaningsHtml}
-          </div>
+  const tableRowsHtml = transactions.map((tx: any) => `
+    <tr>
+      <td class="code-column">${tx.code || '—'}</td>
+      <td>${tx.date || '—'}</td>
+      <td>${tx.description || '—'}</td>
+      <td>${tx.impact || tx.amount || '—'}</td>
+    </tr>`).join('')
 
-          <div class="section">
-            <div class="section-title">Balance Calculation</div>
-            <div class="balance-box">
-              <div class="balance-row"><div class="balance-label">Assessed Tax</div><div class="balance-desc">Tax liability per return filed</div><div class="balance-amount">${balances.assessedTax || '—'}</div></div>
-              <div class="balance-row"><div class="balance-label">Withholding</div><div class="balance-desc">Federal tax withheld from income</div><div class="balance-amount">${balances.payments || '—'}</div></div>
-              <div class="balance-row"><div class="balance-label">Credits</div><div class="balance-desc">Additional credits applied</div><div class="balance-amount">${balances.credits || '—'}</div></div>
-              <div class="balance-row"><div class="balance-label">Current Balance</div><div></div><div class="balance-amount">${balance}</div></div>
-            </div>
-          </div>
-
-          <div class="report-footer">
-            <span>For IRS transaction code definitions, consult IRS Publication 1546.</span>
-            <span>Generated ${reportDate}</span>
+  return headerHtml + `
+        <div class="section">
+          <div class="section-title">Account Status</div>
+          <div class="status-grid">
+            ${statusCard('Current Balance', balances.balance)}
+            ${statusCard('Codes Found', String(transactions.length))}
+            ${statusCard('Tax Year', taxpayer.taxYear)}
           </div>
         </div>
+
+        <div class="section">
+          <div class="section-title">What This Means</div>
+          <div class="summary-box">This account transcript shows ${transactions.length} transaction code${transactions.length !== 1 ? 's' : ''} for tax year ${taxpayer.taxYear}. Review the timeline below for a chronological view of all IRS actions on this account.</div>
+        </div>
+
+        ${transactions.length > 0 ? `
+          <div class="section">
+            <div class="section-title">Key Transcript Events</div>
+            <div class="timeline">${timelineHtml}</div>
+          </div>` : ''}
+
+        <div class="report-footer">
+          <span>Confidential — for named taxpayer and representative only.</span>
+          <span>Generated ${reportDate}</span>
+        </div>
       </div>
-    ` : ''}
+    </div>
+
+    ${transactions.length > 0 ? `
+    <div class="report-page">
+      <div class="page-content">
+        <div class="report-header">
+          <div class="header-left"><h1>Technical Analysis</h1><p>Transaction Code Breakdown</p></div>
+          <div class="header-right">${logoDataUrl ? `<img src="${logoDataUrl}" style="max-width:120px;height:auto;" />` : ''}</div>
+        </div>
+        <div class="section">
+          <div class="section-title">Transaction Code Details</div>
+          <table class="transaction-table">
+            <thead><tr><th>TC Code</th><th>Date</th><th>Description</th><th>Amount</th></tr></thead>
+            <tbody>${tableRowsHtml}</tbody>
+          </table>
+        </div>
+        <div class="balance-box">
+          ${lineRow('Assessed Tax', balances.assessedTax || '—')}
+          ${lineRow('Payments', balances.payments || '—')}
+          ${lineRow('Credits', balances.credits || '—')}
+          ${lineRow('Current Balance', balances.balance || '—', true)}
+        </div>
+        <div class="report-footer">
+          <span>For IRS code definitions, consult IRS Publication 1546.</span>
+          <span>Generated ${reportDate}</span>
+        </div>
+      </div>
+    </div>` : ''}
   `
 }
 
@@ -243,6 +381,9 @@ const REPORT_CSS = `
   .status-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px;}
   .status-card{background:linear-gradient(135deg,#f9fafb,#f3f4f6);padding:18px;border-radius:12px;border:1px solid #e5e7eb;text-align:center;}
   .status-value{font-size:20px;font-weight:800;color:#0b0a14;margin-bottom:6px;min-height:26px;line-height:1.1;}
+  .status-value.low{color:#059669;}
+  .status-value.moderate{color:#d97706;}
+  .status-value.attention{color:#dc2626;}
   .status-label{font-size:11px;font-weight:800;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;}
   .summary-box{background:rgba(124,58,237,.08);border-left:4px solid #7c3aed;padding:18px;border-radius:10px;line-height:1.7;color:#374151;font-size:14px;}
   .timeline{margin-top:14px;}
