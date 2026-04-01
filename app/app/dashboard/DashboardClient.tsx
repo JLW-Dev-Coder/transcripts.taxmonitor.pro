@@ -280,6 +280,9 @@ export default function DashboardClient() {
       setBalance(data.balance_after ?? 0)
       setSession(prev => prev ? { ...prev, balance: data.balance_after ?? 0 } : prev)
       setPreviewStatus(`Report saved. 1 token used. ${data.balance_after} tokens remaining.`)
+      setTimeout(() => {
+        window.location.href = `/app/report/?report_id=${data.report_id}`
+      }, 1500)
     } else {
       setPreviewStatus(data.message || data.error || 'Failed to save report.')
     }
