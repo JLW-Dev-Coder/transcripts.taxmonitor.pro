@@ -425,7 +425,12 @@ function buildReportHtml(rd: any, logoDataUrl: string | null): string {
 
   // ── ACCOUNT TRANSCRIPT report ──
   const transactions: any[] = rd?.transactions || []
-  const balances = rd?.balances || {}
+  const acctBal = rd?.balances || {}
+  const retSum  = rd?.returnSummary || {}
+
+  const hasAcctBalance = parseFloat((acctBal.balance || '$0').replace(/[^0-9.]/g, '')) > 0
+  const hasAcctPenalty = parseFloat((acctBal.accruedPenalty || '$0').replace(/[^0-9.]/g, '')) > 0
+  const acctRiskClass  = hasAcctBalance ? (hasAcctPenalty ? 'attention' : 'moderate') : 'low'
 
   const timelineHtml = transactions.map((tx: any) => `
     <div class="timeline-item">
@@ -445,9 +450,9 @@ function buildReportHtml(rd: any, logoDataUrl: string | null): string {
         <div class="section">
           <div class="section-title">Account Status</div>
           <div class="status-grid">
-            ${statusCard('Current Balance', balances.balance)}
-            ${statusCard('Codes Found', String(transactions.length))}
-            ${statusCard('Tax Year', taxpayer.taxYear)}
+            ${statusCard('Account Balance', acctBal.balance, hasAcctBalance ? 'attention' : 'low')}
+            ${statusCard('Accrued Interest', acctBal.accruedInt || '—')}
+            ${statusCard('Payoff Amount', acctBal.payoffAmount || '—', 'moderate')}
           </div>
         </div>
 
@@ -461,6 +466,33 @@ function buildReportHtml(rd: any, logoDataUrl: string | null): string {
             <div class="section-title">Key Transcript Events</div>
             <div class="timeline">${timelineHtml}</div>
           </div>` : ''}
+
+        ${retSum.adjustedGrossIncome && retSum.adjustedGrossIncome !== '—' ? `
+          <div class="section">
+            <div class="section-title">Return Summary</div>
+            <div class="info-grid">
+              ${infoBlock('Filing Status', retSum.filingStatus)}
+              ${infoBlock('Adjusted Gross Income', retSum.adjustedGrossIncome)}
+              ${infoBlock('Taxable Income', retSum.taxableIncome)}
+              ${infoBlock('Tax Per Return', retSum.taxPerReturn)}
+              ${infoBlock('Return Due Date', retSum.returnDueDate)}
+              ${infoBlock('Processing Date', retSum.processingDate)}
+            </div>
+          </div>` : ''}
+
+        <div class="section">
+          <div class="section-title">Practitioner Notes</div>
+          <div class="summary-box">
+            Account balance of <strong>${acctBal.balance}</strong> for tax year ${taxpayer.taxYear}.
+            ${parseFloat((acctBal.accruedInt || '$0').replace(/[^0-9.]/g, '')) > 0 ? ` Accrued interest: ${acctBal.accruedInt}.` : ''}
+            ${parseFloat((acctBal.accruedPenalty || '$0').replace(/[^0-9.]/g, '')) > 0 ? ` Accrued penalty: ${acctBal.accruedPenalty}.` : ''}
+            ${transactions.some((t: any) => t.code === '530') ? ' <strong>CNC status active</strong> — collection suspended due to hardship.' : ''}
+            ${transactions.some((t: any) => t.code === '971') ? ` ${transactions.filter((t: any) => t.code === '971').length} IRS notice(s) issued — verify client received and responded.` : ''}
+            ${transactions.some((t: any) => t.code === '500' || (t.code === '971' && t.description?.toLowerCase().includes('installment'))) ? ' Installment agreement on record.' : ''}
+            ${transactions.some((t: any) => t.code === '846') ? ' Refund was previously issued on this account.' : ''}
+            Total payoff amount as of report date: <strong>${acctBal.payoffAmount || acctBal.balance}</strong>.
+          </div>
+        </div>
 
         <div class="report-footer">
           <span>Confidential — for named taxpayer and representative only.</span>
@@ -484,10 +516,10 @@ function buildReportHtml(rd: any, logoDataUrl: string | null): string {
           </table>
         </div>
         <div class="balance-box">
-          ${lineRow('Assessed Tax', balances.assessedTax || '—')}
-          ${lineRow('Payments', balances.payments || '—')}
-          ${lineRow('Credits', balances.credits || '—')}
-          ${lineRow('Current Balance', balances.balance || '—', true)}
+          ${lineRow('Account Balance', acctBal.balance || '—')}
+          ${lineRow('Accrued Interest', acctBal.accruedInt || '—')}
+          ${lineRow('Accrued Penalty', acctBal.accruedPenalty || '—')}
+          ${lineRow('Payoff Amount', acctBal.payoffAmount || '—', true)}
         </div>
         <div class="report-footer">
           <span>For IRS code definitions, consult IRS Publication 1546.</span>

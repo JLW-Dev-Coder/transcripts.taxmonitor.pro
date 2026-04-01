@@ -342,10 +342,9 @@ export default function DashboardClient() {
     const ssnMatch       = text.match(/SSN[^:]*:\s*(XXX-XX-\d{4}|\d{3}-\d{2}-\d{4})/i)
     const nameMatch      = text.match(/(?:JAMI|JAMES|JOHN|JANE|[A-Z]{2,}\s+[A-Z]?\s*[A-Z]{2,})\s+\d{4}/)?.[0]
       || text.match(/(?:taxpayer name|name)[:\s]+([A-Z][A-Z\s]+)/i)?.[1]
-    const taxYearMatch   = text.match(/Tax Period Ending[:\s]+(\d{2}-\d{2}-(\d{4}))/i)
-      || text.match(/Report for Tax Period Ending[:\s]+(\d{2}-\d{2}-(\d{4}))/i)
-      || text.match(/\b(20\d{2})\b/)
-    const taxYear        = taxYearMatch?.[2] || taxYearMatch?.[1] || ''
+    const taxPeriodMatch = text.match(/Tax Period(?:\s+Ending|\s+Requested)?[:\s]+(?:\d{2}-\d{2}-)?(\d{4})/i)
+      || text.match(/Report\s+for\s+Tax\s+Period\s+Ending[:\s]+\d{2}-\d{2}-(\d{4})/i)
+    const taxYear = taxPeriodMatch?.[1] || ''
     const requestDateMatch = text.match(/Request Date[:\s]+(\d{2}-\d{2}-\d{4})/i)
     const requestDate    = requestDateMatch?.[1] || ''
     const cycleMatch     = text.match(/Cycle posted[:\s]+(\d+)/i)
@@ -634,28 +633,77 @@ export default function DashboardClient() {
     for (const line of lines) {
       const trimmed = line.trim()
       if (!trimmed) continue
-      const p1 = trimmed.match(/^(\d{2,4})\s+(\d{2}-\d{2}-\d{4})\s+(.+?)\s+([\$\-]?[\d,]+\.\d{2})\s*$/)
-      if (p1) { transactions.push({ code: p1[1], date: p1[2], description: p1[3].trim(), amount: p1[4], impact: p1[3].trim() }); continue }
-      const p2 = trimmed.match(/^(\d{2,4})\s+(\d{2}-\d{2}-\d{4})\s+([\$\-]?[\d,]+\.\d{2})\s*$/)
-      if (p2) { transactions.push({ code: p2[1], date: p2[2], description: getCodeDescription(p2[1]), amount: p2[3], impact: getCodeDescription(p2[1]) }); continue }
-      const p3 = trimmed.match(/^(\d{2,4})\s{2,}(\d{2}-\d{2}-\d{4})\s{2,}(.+)$/)
-      if (p3) {
-        const rest = p3[3].trim()
-        const amtMatch = rest.match(/([\$\-]?[\d,]+\.\d{2})\s*$/)
-        const amount = amtMatch ? amtMatch[1] : '$0.00'
-        const desc = amtMatch ? rest.replace(amtMatch[0], '').trim() : rest
-        transactions.push({ code: p3[1], date: p3[2], description: desc || getCodeDescription(p3[1]), amount, impact: desc || getCodeDescription(p3[1]) })
-      }
+
+      // Must start with a 3-digit transaction code
+      if (!/^\d{3}\s/.test(trimmed)) continue
+
+      // Extract the date — always MM-DD-YYYY format
+      const dateMatch = trimmed.match(/(\d{2}-\d{2}-\d{4})\s+([\-]?\$[\d,]+\.\d{2})\s*$/)
+      if (!dateMatch) continue
+
+      const date   = dateMatch[1]
+      const amount = dateMatch[2]
+      const code   = trimmed.slice(0, 3)
+
+      // Everything between code and date is description + optional cycle data
+      let middle = trimmed.slice(3, trimmed.lastIndexOf(dateMatch[0])).trim()
+
+      // Remove cycle numbers (8-digit numbers like 20221605)
+      middle = middle.replace(/\b\d{8}\b/g, '').trim()
+
+      // Remove IRS document reference numbers like 90211-509-61036-2
+      middle = middle.replace(/\b\d{5}-\d{3}-\d{5}-\d{1,2}\b/g, '').trim()
+
+      // Remove notice codes like NOTICE1444, CP   0014
+      middle = middle.replace(/\b(NOTICE\d+|CP\s+\d+)\b/gi, '').trim()
+
+      // Collapse multiple spaces
+      const description = middle.replace(/\s{2,}/g, ' ').trim() || getCodeDescription(code)
+
+      transactions.push({
+        code,
+        date,
+        amount,
+        description,
+        impact: description,
+      })
     }
 
-    const balanceMatch  = text.match(/ACCOUNT\s+BALANCE[:\s]+([\$\-]?[\d,.]+)/i)
-    const returnTypeMatch = text.match(/RETURN\s+TYPE[:\s]+([A-Z0-9\-]+)/i)
+    const balanceMatch       = text.match(/Account\s+balance[:\s]+\$?([\d,\.]+)/i)
+    const acctBalanceMatch   = text.match(/Account\s+balance:\s*\$([\d,\.]+)/i)
+    const accruedIntMatch    = text.match(/Accrued\s+interest:\s*\$([\d,\.]+)/i)
+    const accruedPenMatch    = text.match(/Accrued\s+penalty:\s*\$([\d,\.]+)/i)
+    const payoffMatch        = text.match(/Account\s+balance\s+plus\s+accruals[^:]*:\s*\$([\d,\.]+)/i)
+    const returnTypeMatch    = text.match(/RETURN\s+TYPE[:\s]+([A-Z0-9\-]+)/i)
+
+    const filingStatusMatch2 = text.match(/Filing\s+status[:\s]+(\w+)/i)
+    const agiMatch           = text.match(/Adjusted\s+gross\s+income[:\s]+\$([\d,\.]+)/i)
+    const taxableIncMatch    = text.match(/Taxable\s+income[:\s]+\$([\d,\.]+)/i)
+    const taxPerReturnMatch  = text.match(/Tax\s+per\s+return[:\s]+\$([\d,\.]+)/i)
+    const procDateMatch      = text.match(/Processing\s+date[:\s]+(\d{2}-\d{2}-\d{4})/i)
+    const returnDueMatch     = text.match(/Return\s+due\s+date[^:]*:\s*(\d{2}-\d{2}-\d{4})/i)
 
     const parsed = {
       transcriptType: 'account',
       taxpayer: { ssn: ssnMatch?.[1] || '—', name: '—', taxYear, requestDate, filingStatus: filingStatusMatch?.[1] || '—', formNumber: formMatch?.[1] || '—', cyclePosted: cycleMatch?.[1] || '—', receivedDate: receivedMatch?.[1] || '—', trackingNumber: trackingMatch?.[1] || '—' },
       transactions,
-      balances: { assessedTax: '', payments: '', credits: '', balance: balanceMatch?.[1] ? '$' + balanceMatch[1] : '$0.00' },
+      balances: {
+        assessedTax: '',
+        payments:    '',
+        credits:     '',
+        balance:     acctBalanceMatch ? `$${acctBalanceMatch[1]}` : (balanceMatch?.[1] ? `$${balanceMatch[1]}` : '$0.00'),
+        accruedInt:  accruedIntMatch  ? `$${accruedIntMatch[1]}`  : '$0.00',
+        accruedPenalty: accruedPenMatch ? `$${accruedPenMatch[1]}` : '$0.00',
+        payoffAmount: payoffMatch ? `$${payoffMatch[1]}` : '$0.00',
+      },
+      returnSummary: {
+        filingStatus:        filingStatusMatch2?.[1] || '—',
+        adjustedGrossIncome: agiMatch ? `$${agiMatch[1]}` : '—',
+        taxableIncome:       taxableIncMatch ? `$${taxableIncMatch[1]}` : '—',
+        taxPerReturn:        taxPerReturnMatch ? `$${taxPerReturnMatch[1]}` : '—',
+        processingDate:      procDateMatch?.[1] || '—',
+        returnDueDate:       returnDueMatch?.[1] || '—',
+      },
       filingInfo: { returnType: returnTypeMatch?.[1] || '—', filingStatus: '', cyclePosted: '' },
       metadata: { transcriptType: 'Account Transcript', requestDate, parsedAt: new Date().toISOString() },
     }
