@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+
 import styles from './dashboard.module.css'
 import { getTokenBalance, getTokenPricing, purchaseTokens, type TokenPackage } from '@/lib/api'
 
@@ -18,8 +18,6 @@ interface Session {
 type Step = 1 | 2 | 3
 
 export default function DashboardClient() {
-  const router = useRouter()
-
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
   const [step, setStep] = useState<Step>(1)
@@ -66,24 +64,45 @@ export default function DashboardClient() {
     const saved = localStorage.getItem('tm_brand_logo')
     if (saved) setLogoDataUrl(saved)
 
-    // Fetch session
+    // Fetch session using Bearer token from sessionStorage
     ;(async () => {
+      const sessionId = sessionStorage.getItem('ttmp_session_id')
+      const email = sessionStorage.getItem('ttmp_email')
+
+      if (!sessionId) {
+        window.location.href = '/login/'
+        return
+      }
+
       try {
-        const res = await fetch(`${WORKER_BASE}/v1/auth/session`, { credentials: 'include' })
-        const data = await res.json()
-        if (res.ok && data.ok) {
-          setSession({ email: data.user.email, tokenId: data.user.tokenId, balance: data.user.balance })
-          setBalance(data.user.balance)
-        } else {
-          router.replace('/login')
+        const res = await fetch(`${WORKER_BASE}/v1/auth/session`, {
+          headers: { 'Authorization': `Bearer ${sessionId}` },
+          credentials: 'include',
+        })
+
+        if (!res.ok) {
+          sessionStorage.removeItem('ttmp_session_id')
+          sessionStorage.removeItem('ttmp_email')
+          window.location.href = '/login/'
+          return
         }
+
+        const data = await res.json()
+        setSession({
+          email: data.email || email || '',
+          tokenId: data.account_id || data.user?.tokenId || '',
+          balance: data.balance ?? data.user?.balance ?? 0,
+        })
+        setBalance(data.balance ?? data.user?.balance ?? 0)
       } catch {
-        router.replace('/login')
+        sessionStorage.removeItem('ttmp_session_id')
+        sessionStorage.removeItem('ttmp_email')
+        window.location.href = '/login/'
       } finally {
         setLoading(false)
       }
     })()
-  }, [router])
+  }, [])
 
   const handleRefreshBalance = async () => {
     if (!session) return
@@ -122,7 +141,9 @@ export default function DashboardClient() {
 
   const handleSignOut = async () => {
     await fetch(`${WORKER_BASE}/v1/auth/logout`, { method: 'POST', credentials: 'include' })
-    router.replace('/login')
+    sessionStorage.removeItem('ttmp_session_id')
+    sessionStorage.removeItem('ttmp_email')
+    window.location.href = '/login/'
   }
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
