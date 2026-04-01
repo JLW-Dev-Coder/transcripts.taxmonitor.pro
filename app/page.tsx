@@ -91,15 +91,15 @@ const SOLVES_CARDS = [
 ]
 
 const USE_CASES = [
-  { label: '846 — Refund timing questions', url: '#' },
-  { label: '420 — Audit code explanation', url: '#' },
-  { label: '424 — Examination referral', url: '#' },
-  { label: '810 — Refund freeze analysis', url: '#' },
-  { label: '290 — Zero additional tax', url: '#' },
-  { label: '570 + 806 — Refund hold combination', url: '#' },
-  { label: '150 + 806 — Basic return filed', url: '#' },
-  { label: '570 + 971 — Notice timeline', url: '#' },
-  { label: 'Transactions unreadable', url: '#' },
+  { label: '846 — Refund timing questions',       url: '/resources/irs-code-846-meaning/' },
+  { label: '420 — Audit code explanation',         url: '/resources/irs-code-420-meaning/' },
+  { label: '424 — Examination referral',           url: '/resources/irs-code-424-meaning/' },
+  { label: '810 — Refund freeze analysis',         url: '/resources/irs-code-810-meaning/' },
+  { label: '290 — Zero additional tax',            url: '/resources/irs-code-290-meaning/' },
+  { label: '570 + 806 — Refund hold combination',  url: '/resources/irs-transcript-shows-570-what-next/' },
+  { label: '150 + 806 — Basic return filed',       url: '/resources/irs-code-150-meaning/' },
+  { label: '570 + 971 — Notice timeline',          url: '/resources/irs-code-971-meaning/' },
+  { label: 'Transactions unreadable',              url: '/resources/how-to-read-irs-transcripts/' },
 ]
 
 export default function HomePage() {
@@ -260,8 +260,6 @@ export default function HomePage() {
                 key={uc.label}
                 href={uc.url}
                 className={styles.useCaseCard}
-                target="_blank"
-                rel="noopener noreferrer"
               >
                 <span className={styles.useCaseLabel}>{uc.label}</span>
                 <span className={styles.useCaseArrow}>→</span>
