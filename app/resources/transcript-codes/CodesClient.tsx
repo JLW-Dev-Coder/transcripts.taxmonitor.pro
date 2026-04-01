@@ -42,7 +42,11 @@ export default function CodesClient({ items }: { items: CodeItem[] }) {
 
       <div className={styles.grid}>
         {filtered.map(item => (
-          <Link key={item.slug} href={`/resources/${item.slug}/`} className={styles.card}>
+          <Link
+            key={item.slug}
+            href={'/resources/' + item.slug + '/'}
+            className={styles.card}
+          >
             <span className={styles.codeNum}>{item.code}</span>
             <span className={styles.codeTitle}>{item.title}</span>
             {item.description && (
@@ -55,7 +59,10 @@ export default function CodesClient({ items }: { items: CodeItem[] }) {
       {filtered.length === 0 && (
         <div className={styles.empty}>
           <p>No codes found for &ldquo;{query}&rdquo;</p>
-          <button onClick={() => setQuery('')} className={styles.clearBtn}>
+          <button
+            onClick={() => setQuery('')}
+            className={styles.clearBtn}
+          >
             Clear search
           </button>
         </div>

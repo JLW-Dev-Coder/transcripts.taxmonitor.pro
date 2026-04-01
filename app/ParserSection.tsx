@@ -3,199 +3,86 @@
 import { useState, useRef } from 'react'
 import styles from './page.module.css'
 
-const API = 'https://api.virtuallaunch.pro'
-
-type Status = 'idle' | 'uploading' | 'done' | 'error' | 'auth'
-
 export default function ParserSection() {
-  const [status, setStatus]   = useState<Status>('idle')
-  const [report, setReport]   = useState<string | null>(null)
-  const [error, setError]     = useState<string | null>(null)
-  const [hasToken, setHasToken] = useState<boolean | null>(null)
-  const fileRef               = useRef<HTMLInputElement>(null)
+  const [dragging, setDragging] = useState(false)
+  const fileRef = useRef<HTMLInputElement>(null)
 
-  async function checkToken() {
-    try {
-      const res = await fetch(`${API}/v1/tokens/balance/me`, { credentials: 'include' })
-      if (!res.ok) return false
-      const data = await res.json()
-      return (data?.balance ?? 0) > 0
-    } catch {
-      return false
-    }
-  }
-
-  async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
+  function handleFile(file: File | null) {
     if (!file) return
     if (file.type !== 'application/pdf') {
-      setError('Please upload a PDF file.')
-      setStatus('error')
+      alert('Please upload a PDF file.')
       return
     }
-
-    setStatus('uploading')
-    setError(null)
-    setReport(null)
-
-    const formData = new FormData()
-    formData.append('file', file)
-
-    try {
-      const res = await fetch(`${API}/v1/transcripts/preview`, {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-      })
-
-      if (res.status === 401 || res.status === 403) {
-        setStatus('auth')
-        return
-      }
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
-        throw new Error(data?.message || `Upload failed (${res.status})`)
-      }
-
-      const data = await res.json()
-      const html = data?.html || data?.report || ''
-      setReport(html)
-      const tokenCheck = await checkToken()
-      setHasToken(tokenCheck)
-      setStatus('done')
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Upload failed. Please try again.')
-      setStatus('error')
-    }
-
-    if (fileRef.current) fileRef.current.value = ''
+    sessionStorage.setItem('pending_transcript_name', file.name)
+    window.location.href = '/login?redirect=/app/dashboard&action=parse'
   }
 
-  function handlePrint() {
-    if (!hasToken) return
-    window.print()
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    handleFile(e.target.files?.[0] ?? null)
+  }
+
+  function handleDrop(e: React.DragEvent) {
+    e.preventDefault()
+    setDragging(false)
+    handleFile(e.dataTransfer.files?.[0] ?? null)
   }
 
   return (
     <div className={styles.parserWrapper}>
-
-      {status === 'idle' && (
-        <div className={styles.parserLoading}>
-          <p className={styles.parserLoadingText} style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.25rem' }}>
-            Upload a Transcript — Get a Plain-English Report
-          </p>
-          <p className={styles.parserLoadingText}>
-            No account needed for a preview. Upload your IRS transcript PDF and see it parsed instantly.
-          </p>
-          <input
-            ref={fileRef}
-            type="file"
-            accept="application/pdf"
-            onChange={handleUpload}
-            style={{ display: 'none' }}
-            id="transcript-upload"
-          />
-          <div style={{ display: 'flex', gap: '1rem', marginTop: '1.25rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <label htmlFor="transcript-upload" className={styles.btnPrimary} style={{ cursor: 'pointer' }}>
-              Upload Transcript PDF →
-            </label>
-            <a href="/login" className={styles.btnSecondary}>
-              Sign In for Full Reports
-            </a>
-          </div>
-          <p className={styles.parserLoadingText} style={{ marginTop: '0.875rem', fontSize: '0.75rem' }}>
-            PDF processed securely. Transcript data is never stored without your consent.
-          </p>
+      <div
+        className={styles.parserLoading}
+        onDragOver={e => { e.preventDefault(); setDragging(true) }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={handleDrop}
+        style={dragging ? { borderColor: 'var(--accent)', background: 'rgba(20,184,166,0.04)' } : {}}
+      >
+        <div style={{
+          width: 56,
+          height: 56,
+          borderRadius: 12,
+          background: 'rgba(20,184,166,0.12)',
+          border: '1px solid rgba(20,184,166,0.3)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: '0.5rem',
+        }}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="1.5" strokeLinecap="round">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="12" y1="18" x2="12" y2="12"/>
+            <polyline points="9 15 12 12 15 15"/>
+          </svg>
         </div>
-      )}
 
-      {status === 'uploading' && (
-        <div className={styles.parserLoading}>
-          <span className={styles.spinner} aria-hidden="true" />
-          <p className={styles.parserLoadingText}>Parsing transcript…</p>
+        <p className={styles.parserLoadingText} style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.25rem' }}>
+          Upload a Transcript — Get a Plain-English Report
+        </p>
+        <p className={styles.parserLoadingText}>
+          Drop your IRS transcript PDF here or click to upload. Sign in to parse and save reports.
+        </p>
+
+        <input
+          ref={fileRef}
+          type="file"
+          accept="application/pdf"
+          onChange={handleChange}
+          style={{ display: 'none' }}
+          id="transcript-upload"
+        />
+        <div style={{ display: 'flex', gap: '1rem', marginTop: '1.25rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+          <label htmlFor="transcript-upload" className={styles.btnPrimary} style={{ cursor: 'pointer' }}>
+            Upload Transcript PDF →
+          </label>
+          <a href="/login" className={styles.btnSecondary}>
+            Sign In for Full Reports
+          </a>
         </div>
-      )}
 
-      {status === 'auth' && (
-        <div className={styles.parserLoading}>
-          <p className={styles.parserLoadingText} style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text)', marginBottom: '0.25rem' }}>
-            Sign in to use the parser
-          </p>
-          <p className={styles.parserLoadingText}>
-            Create a free account to upload transcripts and generate plain-English reports.
-          </p>
-          <div style={{ display: 'flex', gap: '1rem', marginTop: '1.25rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <a href="/login" className={styles.btnPrimary}>Sign In Free →</a>
-            <button className={styles.btnSecondary} onClick={() => setStatus('idle')}>Try Again</button>
-          </div>
-        </div>
-      )}
-
-      {status === 'error' && (
-        <div className={styles.parserLoading}>
-          <p style={{ color: '#f87171', fontSize: '0.9rem' }}>{error}</p>
-          <button
-            className={styles.btnSecondary}
-            onClick={() => { setStatus('idle'); setError(null) }}
-            style={{ marginTop: '1rem' }}
-          >
-            Try Again
-          </button>
-        </div>
-      )}
-
-      {status === 'done' && report && (
-        <div style={{ width: '100%' }}>
-          {/* Report action bar */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '0.875rem 1.5rem',
-            background: 'var(--surface)',
-            borderBottom: '1px solid var(--surface-border)',
-            flexWrap: 'wrap',
-            gap: '0.75rem',
-          }}>
-            <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text)' }}>
-              Report generated
-            </span>
-            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-              <button
-                className={styles.btnSecondary}
-                style={{ fontSize: '0.8125rem', padding: '0.4rem 1rem' }}
-                onClick={() => { setStatus('idle'); setReport(null) }}
-              >
-                Upload Another
-              </button>
-              {hasToken ? (
-                <button
-                  className={styles.btnPrimary}
-                  style={{ fontSize: '0.8125rem', padding: '0.4rem 1rem' }}
-                  onClick={handlePrint}
-                >
-                  Print Report
-                </button>
-              ) : (
-                <a
-                  href="/pricing"
-                  className={styles.btnPrimary}
-                  style={{ fontSize: '0.8125rem', padding: '0.4rem 1rem' }}
-                >
-                  Purchase Tokens to Save & Print →
-                </a>
-              )}
-            </div>
-          </div>
-          {/* Report output */}
-          <div
-            className={styles.parserRoot}
-            dangerouslySetInnerHTML={{ __html: report }}
-          />
-        </div>
-      )}
-
+        <p className={styles.parserLoadingText} style={{ marginTop: '0.875rem', fontSize: '0.75rem' }}>
+          Free account required. No credit card needed. Transcript data never stored without consent.
+        </p>
+      </div>
     </div>
   )
 }

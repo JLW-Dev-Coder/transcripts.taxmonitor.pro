@@ -7,23 +7,17 @@ import styles from './ResourceLayout.module.css'
 export default function ResourceLayout({
   resource,
   children,
-  accentOverride,
 }: {
   resource: Resource
   children: React.ReactNode
-  accentOverride?: string
 }) {
   const categoryLabel = resource.category
     .replace(/-/g, ' ')
     .replace(/\b\w/g, c => c.toUpperCase())
 
-  const accentStyle = accentOverride
-    ? { '--accent': accentOverride, '--accent-light': 'rgba(245,158,11,0.1)', '--accent-border': 'rgba(245,158,11,0.3)' } as React.CSSProperties
-    : {}
-
   return (
     <div className={styles.wrapper}>
-      <main className={styles.main} style={accentStyle}>
+      <main className={styles.main}>
         <nav className={styles.breadcrumb} aria-label="Breadcrumb">
           <Link href="/resources/" className={styles.bcLink}>Resources</Link>
           <span className={styles.bcSep}>/</span>

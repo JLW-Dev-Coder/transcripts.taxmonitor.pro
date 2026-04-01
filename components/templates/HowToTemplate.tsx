@@ -3,11 +3,20 @@ import ResourceLayout from '../ResourceLayout'
 
 export default function HowToTemplate({ data }: { data: Resource }) {
   return (
-    <ResourceLayout resource={data} accentOverride="#f59e0b">
+    <ResourceLayout resource={data}>
       <div dangerouslySetInnerHTML={{ __html: data.content }} />
 
-      <h2 style={{ color: '#f9fafb', borderTopColor: '#f59e0b' }}>Automate This Process</h2>
-      <p>
+      <h2 style={{
+        fontSize: '1.35rem',
+        fontWeight: 700,
+        color: '#f9fafb',
+        margin: '2rem 0 0.75rem',
+        paddingTop: '2rem',
+        borderTop: '1px solid #f59e0b',
+      }}>
+        Automate This Process
+      </h2>
+      <p style={{ fontSize: '1rem', color: '#9ca3af', lineHeight: 1.75, marginBottom: '1rem' }}>
         Instead of following these steps manually for every client, use the
         Transcript Tax Monitor Pro parser to handle transcript interpretation
         automatically. Upload a PDF and get a complete plain-English report
@@ -19,11 +28,12 @@ export default function HowToTemplate({ data }: { data: Resource }) {
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: '1rem',
-        background: 'rgba(245,158,11,0.06)',
-        border: '1px solid rgba(245,158,11,0.2)',
+        background: 'rgba(245,158,11,0.07)',
+        border: '1px solid rgba(245,158,11,0.25)',
         borderRadius: 10,
-        padding: '0.875rem 1rem',
-        marginTop: '1.5rem',
+        padding: '0.875rem 1.125rem',
+        marginTop: '0.5rem',
+        flexWrap: 'wrap',
       }}>
         <span style={{ fontSize: '0.875rem', color: '#f9fafb', fontWeight: 500 }}>
           Skip the manual steps — parse in seconds
@@ -31,9 +41,9 @@ export default function HowToTemplate({ data }: { data: Resource }) {
         <a href="/login" style={{
           background: '#f59e0b',
           color: '#000',
-          fontSize: '0.75rem',
-          fontWeight: 600,
-          padding: '6px 14px',
+          fontSize: '0.8125rem',
+          fontWeight: 700,
+          padding: '0.5rem 1.125rem',
           borderRadius: 9999,
           textDecoration: 'none',
           whiteSpace: 'nowrap',
