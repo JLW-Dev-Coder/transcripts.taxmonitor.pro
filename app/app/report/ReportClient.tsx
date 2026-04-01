@@ -26,13 +26,31 @@ function buildReportHtml(rd: any, logoDataUrl: string | null): string {
     return `<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #e5e7eb;font-size:13px;${bold ? 'font-weight:800;border-top:2px solid #7c3aed;margin-top:6px;' : ''}"><span style="color:${bold ? '#0b0a14' : '#374151'}">${label}</span><span style="font-weight:${bold ? '800' : '600'};color:${bold ? '#7c3aed' : '#0b0a14'}">${value}</span></div>`
   }
 
+  function getCodeDesc(code: string): string {
+    const d: Record<string,string> = {'150':'Tax return filed','276':'Penalty for late payment','196':'Interest charged','460':'Extension of time to file','971':'Notice issued','530':'Currently not collectible','500':'Installment agreement','582':'Federal tax lien','810':'Refund freeze','570':'Additional liability pending','846':'Refund issued','806':'Withholding credit'}
+    return d[code] || `TC ${code}`
+  }
+
+  const isWageIncome = rd?.transcriptType === 'wage-income'
+  const isRecordOfAccount = rd?.transcriptType === 'record-of-account'
+
+  const headerTitle = isReturn ? 'Tax Return Transcript Report'
+    : isWageIncome ? 'Wage & Income Transcript Report'
+    : isRecordOfAccount ? 'Record of Account Report'
+    : 'IRS Account Transcript Report'
+
+  const headerSub = isReturn ? 'Form 1040 Return Analysis'
+    : isWageIncome ? 'W-2 & 1099 Analysis'
+    : isRecordOfAccount ? 'Account + Return Combined Analysis'
+    : 'Account Transaction Analysis'
+
   const headerHtml = `
     <div class="report-page">
       <div class="page-content">
         <div class="report-header">
           <div class="header-left">
-            <h1>${isReturn ? 'Tax Return Transcript Report' : 'IRS Account Transcript Report'}</h1>
-            <p>${isReturn ? 'Form 1040 Return Analysis' : 'Account Transaction Analysis'}</p>
+            <h1>${headerTitle}</h1>
+            <p>${headerSub}</p>
           </div>
           <div class="header-right">${logo}</div>
         </div>
@@ -200,6 +218,209 @@ function buildReportHtml(rd: any, logoDataUrl: string | null): string {
     </div>
     ` : ''}
     `
+  }
+
+  // ── WAGE & INCOME report ──
+  if (isWageIncome) {
+    const sum    = rd?.summary || {}
+    const w2s    = rd?.w2Forms || []
+    const b1099s = rd?.b1099Forms || []
+
+    const w2Rows = w2s.map((w: any) => `
+      <div class="section" style="page-break-inside:avoid;break-inside:avoid;">
+        <div class="section-title">W-2 — ${w.employer || 'Employer'}</div>
+        <div class="info-grid">
+          ${infoBlock('EIN', w.ein)}
+          ${infoBlock('Submission Type', w.submissionType)}
+          ${infoBlock('Wages & Tips', w.wages)}
+          ${infoBlock('Federal Tax Withheld', w.fedWithheld)}
+          ${infoBlock('Social Security Wages', w.ssWages)}
+          ${infoBlock('SS Tax Withheld', w.ssTax)}
+          ${infoBlock('Medicare Wages', w.medicareWages)}
+          ${infoBlock('Medicare Tax Withheld', w.medicareTax)}
+        </div>
+      </div>`).join('')
+
+    const b1099Rows = b1099s.map((b: any, i: number) => `
+      <tr>
+        <td>${i + 1}</td>
+        <td>${b.dateSold}</td>
+        <td style="font-size:11px;">${b.description}</td>
+        <td>${b.gainType}</td>
+        <td>${b.proceeds}</td>
+        <td>${b.costBasis}</td>
+        <td style="font-weight:800;color:${b.gainLoss.startsWith('-') ? '#dc2626' : '#059669'}">${b.gainLoss}</td>
+      </tr>`).join('')
+
+    return headerHtml + `
+        <div class="section">
+          <div class="section-title">Summary</div>
+          <div class="status-grid">
+            ${statusCard('W-2 Forms', String(sum.totalW2s || 0))}
+            ${statusCard('1099-B Forms', String(sum.total1099Bs || 0))}
+            ${statusCard('Total Wages', sum.totalWages)}
+          </div>
+          <div class="status-grid" style="grid-template-columns:repeat(2,1fr)">
+            ${statusCard('Federal Withheld', sum.totalFedWithheld)}
+            ${statusCard('Net Capital Gain/Loss', sum.totalGainLoss, parseFloat(sum.totalGainLoss?.replace(/[^0-9.-]/g, '') || '0') < 0 ? 'attention' : 'low')}
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">What This Means</div>
+          <div class="summary-box">
+            This Wage and Income transcript shows ${sum.totalW2s} W-2 form${sum.totalW2s !== 1 ? 's' : ''} with total wages of <strong>${sum.totalWages}</strong> and federal withholding of <strong>${sum.totalFedWithheld}</strong>. ${sum.total1099Bs > 0 ? `There ${sum.total1099Bs === 1 ? 'is' : 'are'} ${sum.total1099Bs} Form 1099-B transaction${sum.total1099Bs !== 1 ? 's' : ''} with total proceeds of ${sum.totalProceeds} and a net gain/loss of ${sum.totalGainLoss}.` : 'No 1099-B transactions were reported.'}
+          </div>
+        </div>
+
+        ${w2Rows}
+
+        ${b1099s.length > 0 ? `
+          <div class="section">
+            <div class="section-title">Form 1099-B — Investment Transactions</div>
+            <div style="overflow-x:auto;">
+              <table class="transaction-table">
+                <thead><tr><th>#</th><th>Date Sold</th><th>Description</th><th>Term</th><th>Proceeds</th><th>Basis</th><th>Gain/Loss</th></tr></thead>
+                <tbody>${b1099Rows}</tbody>
+              </table>
+            </div>
+          </div>` : ''}
+
+        <div class="report-footer">
+          <span>This report is confidential and for the named taxpayer and representative only.</span>
+          <span>Generated ${reportDate}</span>
+        </div>
+      </div>
+    </div>`
+  }
+
+  // ── RECORD OF ACCOUNT report ──
+  if (isRecordOfAccount) {
+    const acct = rd?.accountBalance || {}
+    const inc  = rd?.income || {}
+    const tax  = rd?.taxAndCredits || {}
+    const pay  = rd?.payments || {}
+    const owe  = rd?.refundOrOwed || {}
+    const schC = rd?.scheduleC || {}
+    const se   = rd?.selfEmploymentTax || {}
+    const roaTransactions: any[] = rd?.transactions || []
+
+    const hasBalance    = parseFloat((acct.balance || '$0').replace(/[^0-9.]/g, '')) > 0
+    const hasPenalties  = parseFloat((acct.accruedPenalty || '$0').replace(/[^0-9.]/g, '')) > 0
+    const riskClass     = hasBalance ? (hasPenalties ? 'attention' : 'moderate') : 'low'
+    const riskLabel     = hasBalance ? (hasPenalties ? 'Action Required' : 'Balance Due') : 'Clean'
+
+    const timelineHtml = roaTransactions.map((tx: any) => `
+      <div class="timeline-item">
+        <div><div class="timeline-date">${tx.date || '—'}</div><div class="timeline-code">TC ${tx.code || '—'}</div></div>
+        <div><div class="timeline-description">${tx.description || getCodeDesc(tx.code)}</div><div class="timeline-impact">${tx.amount || '—'}</div></div>
+      </div>`).join('')
+
+    return headerHtml + `
+        <div class="section">
+          <div class="section-title">Account Balance</div>
+          <div class="status-grid">
+            ${statusCard('Balance Due', acct.balance, riskClass)}
+            ${statusCard('Accrued Interest', acct.accruedInt, hasPenalties ? 'moderate' : '')}
+            ${statusCard('Accrued Penalty', acct.accruedPenalty, hasPenalties ? 'attention' : '')}
+          </div>
+          <div class="status-grid" style="grid-template-columns:repeat(2,1fr)">
+            ${statusCard('Payoff Amount', acct.payoffAmount, hasBalance ? 'attention' : 'low')}
+            ${statusCard('Status', riskLabel, riskClass)}
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">What This Means</div>
+          <div class="summary-box">
+            ${hasBalance
+              ? `This account shows a balance of <strong>${acct.balance}</strong> for tax year ${taxpayer.taxYear}. With accrued interest of ${acct.accruedInt} and penalties of ${acct.accruedPenalty}, the total payoff amount is <strong>${acct.payoffAmount}</strong>. ${hasPenalties ? '<strong>Immediate action is recommended.</strong> Penalties and interest continue to accrue daily.' : 'Contact the IRS or consider an installment agreement to resolve this balance.'}`
+              : `This account shows a clean status for tax year ${taxpayer.taxYear} with no outstanding balance.`
+            }
+          </div>
+        </div>
+
+        ${roaTransactions.length > 0 ? `
+          <div class="section">
+            <div class="section-title">Account History — ${roaTransactions.length} Transactions</div>
+            <div class="timeline">${timelineHtml}</div>
+          </div>` : ''}
+
+        <div class="report-footer">
+          <span>Confidential — for named taxpayer and representative only.</span>
+          <span>Generated ${reportDate}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="report-page">
+      <div class="page-content">
+        <div class="report-header">
+          <div class="header-left"><h1>Return Detail</h1><p>Income, Tax & Balance Breakdown</p></div>
+          <div class="header-right">${logoDataUrl ? `<img src="${logoDataUrl}" style="max-width:120px;height:auto;" />` : ''}</div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Income</div>
+          <div style="background:#f9fafb;padding:16px;border-radius:10px;border-left:4px solid #7c3aed;">
+            ${lineRow('Total Wages', inc.totalWages)}
+            ${lineRow('Business Income (Schedule C)', inc.businessIncome)}
+            ${lineRow('Total Income', inc.totalIncome)}
+            ${lineRow('Adjusted Gross Income', inc.adjustedGrossIncome, true)}
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Tax Calculation</div>
+          <div style="background:#f9fafb;padding:16px;border-radius:10px;border-left:4px solid #7c3aed;">
+            ${lineRow('Taxable Income', tax.taxableIncome)}
+            ${lineRow('Tentative Tax', tax.tentativeTax)}
+            ${lineRow('Self-Employment Tax', tax.selfEmploymentTax)}
+            ${lineRow('Total Credits', tax.totalCredits)}
+            ${lineRow('Total Tax Liability', tax.totalTaxLiability, true)}
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Payments & Resolution</div>
+          <div style="background:#f9fafb;padding:16px;border-radius:10px;border-left:4px solid #7c3aed;">
+            ${lineRow('Federal Tax Withheld', pay.federalWithheld)}
+            ${lineRow('Estimated Payments', pay.estimatedPayments)}
+            ${lineRow('Total Payments', pay.totalPayments)}
+            ${lineRow('Tax Liability', tax.totalTaxLiability)}
+            ${lineRow('Amount Owed', owe.amountOwed)}
+            ${lineRow('Payoff Amount (with accruals)', acct.payoffAmount, true)}
+          </div>
+        </div>
+
+        ${schC.grossReceipts && schC.grossReceipts !== '$0.00' ? `
+          <div class="section">
+            <div class="section-title">Schedule C Summary</div>
+            <div style="background:#f9fafb;padding:16px;border-radius:10px;border-left:4px solid #7c3aed;">
+              ${lineRow('Gross Receipts', schC.grossReceipts)}
+              ${lineRow('Home Office Expense', schC.homeOfficeExpense)}
+              ${lineRow('Net Profit', schC.netProfit, true)}
+            </div>
+          </div>` : ''}
+
+        <div class="section">
+          <div class="section-title">Practitioner Notes</div>
+          <div class="summary-box">
+            <strong>Balance of ${acct.balance}</strong> with total payoff of ${acct.payoffAmount} as of ${taxpayer.requestDate || reportDate}.
+            ${roaTransactions.some((t: any) => t.code === '530') ? '<strong>Currently Not Collectible (CNC) status active</strong> — collection is suspended. Monitor for status change.' : ''}
+            ${roaTransactions.some((t: any) => t.code === '500') ? '<strong>Installment agreement on record.</strong>' : ''}
+            ${roaTransactions.some((t: any) => t.code === '582') ? '<strong>Federal tax lien filed.</strong> Advise client on lien discharge or subordination options.' : ''}
+            ${roaTransactions.some((t: any) => t.code === '971') ? `${roaTransactions.filter((t: any) => t.code === '971').length} notice(s) issued — verify client received and responded.` : ''}
+            No estimated tax payments made for this period — consider advising on quarterly estimates.
+          </div>
+        </div>
+
+        <div class="report-footer">
+          <span>For IRS code definitions, consult IRS Publication 1546.</span>
+          <span>Generated ${reportDate}</span>
+        </div>
+      </div>
+    </div>`
   }
 
   // ── ACCOUNT TRANSCRIPT report ──

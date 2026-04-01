@@ -333,7 +333,10 @@ export default function DashboardClient() {
     }
 
     // ── Detect transcript type ──
-    const isReturnTranscript = /Form 1040 Tax Return Transcript/i.test(text)
+    const isReturnTranscript  = /Form 1040 Tax Return Transcript/i.test(text)
+    const isRecordOfAccount   = /Form 1040 Record of Account/i.test(text)
+    const isWageAndIncome     = /Wage and Income Transcript/i.test(text)
+    const isAccountTranscript = !isReturnTranscript && !isRecordOfAccount && !isWageAndIncome
 
     // ── Universal metadata ──
     const ssnMatch       = text.match(/SSN[^:]*:\s*(XXX-XX-\d{4}|\d{3}-\d{2}-\d{4})/i)
@@ -357,10 +360,16 @@ export default function DashboardClient() {
       return m ? '$' + m[1] : '$0.00'
     }
 
-    function extractVal(label: string): string {
+    function extractVal(label: string, src?: string): string {
       const re = new RegExp(label + '[:\\s]+([^\\n\\r$]+)', 'i')
-      const m  = text.match(re)
+      const m  = (src || text).match(re)
       return m ? m[1].trim() : '—'
+    }
+
+    function extractAmtFrom(label: string, src: string): string {
+      const re = new RegExp(label + '[:\\s]+\\$?([\\d,\\.]+)', 'i')
+      const m  = src.match(re)
+      return m ? '$' + m[1] : '$0.00'
     }
 
     if (isReturnTranscript) {
@@ -437,6 +446,180 @@ export default function DashboardClient() {
         },
         metadata: {
           transcriptType: 'Form 1040 Tax Return Transcript',
+          requestDate,
+          parsedAt: new Date().toISOString(),
+        },
+      }
+      setJsonText(JSON.stringify(parsed, null, 2))
+      return
+    }
+
+    // ── WAGE & INCOME TRANSCRIPT parsing ──
+    if (isWageAndIncome) {
+      const w2Forms: any[] = []
+      const w2Sections = text.split(/Form W-2 Wage and Tax Statement/gi).slice(1)
+      for (const section of w2Sections) {
+        const emp = section.match(/Employer[:\s]*\n[^\n]*\n[^\n]*\n([A-Z][A-Z\s&]+)/)?.[1]?.trim()
+        const ein = section.match(/Employer Identification Number[^:]*:\s*(XX-XXX\d+|\d{2}-\d{7})/i)?.[1]
+        w2Forms.push({
+          employer:   emp || extractVal('Employer', section) || '—',
+          ein:        ein || '—',
+          wages:      extractAmtFrom('Wages, Tips and Other Compensation', section),
+          fedWithheld:extractAmtFrom('Federal Income Tax Withheld', section),
+          ssWages:    extractAmtFrom('Social Security Wages', section),
+          ssTax:      extractAmtFrom('Social Security Tax Withheld', section),
+          medicareWages: extractAmtFrom('Medicare Wages and Tips', section),
+          medicareTax:   extractAmtFrom('Medicare Tax Withheld', section),
+          submissionType: section.match(/Submission Type:\s*([^\n]+)/i)?.[1]?.trim() || '—',
+        })
+      }
+
+      const b1099Forms: any[] = []
+      const b1099Sections = text.split(/Form 1099-B/gi).slice(1)
+      for (const section of b1099Sections) {
+        const proceeds  = extractAmtFrom('Proceeds', section)
+        const costBasis = extractAmtFrom('Cost or Basis', section)
+        const proceedsNum = parseFloat(proceeds.replace(/[^0-9.-]/g, '')) || 0
+        const costNum     = parseFloat(costBasis.replace(/[^0-9.-]/g, '')) || 0
+        const gainLoss    = (proceedsNum - costNum).toFixed(2)
+        b1099Forms.push({
+          payer:          section.match(/(?:XX-XXX\d+)\s+([A-Z][A-Z\s&]+)/)?.[1]?.trim() || '—',
+          fin:            section.match(/Payer's Federal Identification Number[^:]*:\s*(XX-XXX\d+|\d{2}-\d{7})/i)?.[1] || '—',
+          dateSold:       section.match(/Date Sold or Disposed:\s*(\d{2}-\d{2}-\d{4})/i)?.[1] || '—',
+          dateAcquired:   section.match(/Date acquired:\s*(\d{2}-\d{2}-\d{4})/i)?.[1] || '—',
+          proceeds,
+          costBasis,
+          gainLoss:       gainLoss.startsWith('-') ? `-$${gainLoss.slice(1)}` : `$${gainLoss}`,
+          description:    section.match(/Description:\s*([^\n]+)/i)?.[1]?.trim() || '—',
+          gainType:       section.match(/Type of gain or loss:\s*([^\n]+)/i)?.[1]?.trim() || '—',
+          accountNumber:  section.match(/Account Number:\s*([^\n]+)/i)?.[1]?.trim() || '—',
+        })
+      }
+
+      const totalWages   = w2Forms.reduce((s: number, w: any) => s + parseFloat(w.wages.replace(/[^0-9.]/g, '') || '0'), 0)
+      const totalFedWH   = w2Forms.reduce((s: number, w: any) => s + parseFloat(w.fedWithheld.replace(/[^0-9.]/g, '') || '0'), 0)
+      const totalProceeds = b1099Forms.reduce((s: number, b: any) => s + parseFloat(b.proceeds.replace(/[^0-9.]/g, '') || '0'), 0)
+      const totalBasis    = b1099Forms.reduce((s: number, b: any) => s + parseFloat(b.costBasis.replace(/[^0-9.]/g, '') || '0'), 0)
+
+      const parsed = {
+        transcriptType: 'wage-income',
+        taxpayer: {
+          ssn:           ssnMatch?.[1] || '—',
+          taxYear,
+          requestDate,
+          trackingNumber: trackingMatch?.[1] || '—',
+        },
+        w2Forms,
+        b1099Forms,
+        summary: {
+          totalW2s:        w2Forms.length,
+          total1099Bs:     b1099Forms.length,
+          totalWages:      `$${totalWages.toFixed(2)}`,
+          totalFedWithheld:`$${totalFedWH.toFixed(2)}`,
+          totalProceeds:   `$${totalProceeds.toFixed(2)}`,
+          totalBasis:      `$${totalBasis.toFixed(2)}`,
+          totalGainLoss:   `$${(totalProceeds - totalBasis).toFixed(2)}`,
+        },
+        transactions: [],
+        balances: { assessedTax: '', payments: '', credits: '', balance: '' },
+        metadata: { transcriptType: 'Wage and Income Transcript', requestDate, parsedAt: new Date().toISOString() },
+      }
+      setJsonText(JSON.stringify(parsed, null, 2))
+      return
+    }
+
+    // ── RECORD OF ACCOUNT parsing ──
+    if (isRecordOfAccount) {
+      const transactions: any[] = []
+      const txSection = text.match(/TRANSACTIONS[\s\S]*?(?=SSN provided:|$)/i)?.[0] || ''
+      const txLines   = txSection.split('\n')
+      for (const line of txLines) {
+        const trimmed = line.trim()
+        if (!trimmed) continue
+        const p = trimmed.match(/^(\d{3})\s+(.+?)\s+(\d{2}-\d{2}-\d{4})\s+([\$\-]?[\d,]+\.\d{2})\s*$/)
+        if (p) {
+          transactions.push({ code: p[1], date: p[3], description: p[2].trim(), amount: p[4], impact: p[2].trim() })
+          continue
+        }
+        const p2 = trimmed.match(/^(\d{3})\s+(.+?)\s+\d{11,}\s+\d{8}\s+(\d{2}-\d{2}-\d{4})\s+([\$\-]?[\d,]+\.\d{2})\s*$/)
+        if (p2) {
+          transactions.push({ code: p2[1], date: p2[3], description: p2[2].trim(), amount: p2[4], impact: p2[2].trim() })
+          continue
+        }
+        const p3 = trimmed.match(/^(\d{3})\s{2,}([A-Za-z].+?)\s{2,}(\d{2}-\d{2}-\d{4})\s+([\$\-]?[\d,]+\.\d{2})/)
+        if (p3) {
+          transactions.push({ code: p3[1], date: p3[3], description: p3[2].trim(), amount: p3[4], impact: p3[2].trim() })
+        }
+      }
+
+      const acctBalance    = text.match(/Account balance:\s*\$([\d,\.]+)/i)?.[1]
+      const accruedInt     = text.match(/Accrued interest:\s*\$([\d,\.]+)/i)?.[1]
+      const accruedPenalty = text.match(/Accrued penalty:\s*\$([\d,\.]+)/i)?.[1]
+      const payoffAmt      = text.match(/Account balance plus accruals[^:]*:\s*\$([\d,\.]+)/i)?.[1]
+
+      const parsed = {
+        transcriptType: 'record-of-account',
+        taxpayer: {
+          ssn:           ssnMatch?.[1] || '—',
+          taxYear,
+          requestDate,
+          filingStatus:  filingStatusMatch?.[1] || '—',
+          formNumber:    formMatch?.[1] || '1040',
+          cyclePosted:   cycleMatch?.[1] || '—',
+          receivedDate:  receivedMatch?.[1] || '—',
+          trackingNumber: trackingMatch?.[1] || '—',
+        },
+        accountBalance: {
+          balance:      acctBalance ? `$${acctBalance}` : '$0.00',
+          accruedInt:   accruedInt  ? `$${accruedInt}`  : '$0.00',
+          accruedPenalty: accruedPenalty ? `$${accruedPenalty}` : '$0.00',
+          payoffAmount: payoffAmt   ? `$${payoffAmt}`   : '$0.00',
+        },
+        transactions,
+        income: {
+          totalWages:          extractAmt('Total wages'),
+          businessIncome:      extractAmt('Business income or loss \\(Schedule C\\):'),
+          totalIncome:         extractAmt('Total income:'),
+          adjustedGrossIncome: extractAmt('Adjusted gross income:'),
+        },
+        taxAndCredits: {
+          taxableIncome:     extractAmt('Taxable income:'),
+          tentativeTax:      extractAmt('Tentative tax:'),
+          selfEmploymentTax: extractAmt('Self employment tax:'),
+          totalTaxLiability: extractAmt('Total tax liability taxpayer figures:'),
+          totalCredits:      extractAmt('Total credits:'),
+          standardDeduction: extractAmt('Standard deduction per computer'),
+        },
+        payments: {
+          federalWithheld:   extractAmt('Federal income tax withheld:'),
+          estimatedPayments: extractAmt('Estimated tax payments:'),
+          totalPayments:     extractAmt('Total payments:'),
+        },
+        refundOrOwed: {
+          amountOwed: extractAmt('Amount you owe:'),
+          balanceDue: extractAmt('Balance due\\/overpayment using taxpayer figure per computer'),
+        },
+        scheduleC: {
+          grossReceipts:     extractAmt('Gross receipts or sales:'),
+          totalExpenses:     extractAmt('Total expenses:'),
+          homeOfficeExpense: extractAmt('Expense for business use of home:'),
+          netProfit:         extractAmt('Schedule C net profit or loss per computer'),
+          naicsCode:         extractVal('North American Industry Classification System'),
+        },
+        selfEmploymentTax: {
+          totalSETax:        extractAmt('Total Self-Employment tax per computer'),
+          seIncome:          extractAmt('Total Self-Employment income:'),
+          socialSecurityTax: extractAmt('Self-Employment Social Security tax computer'),
+          medicareTax:       extractAmt('Self-Employment Medicare tax per computer'),
+        },
+        balances: {
+          assessedTax: extractAmt('Total assessment per computer'),
+          payments:    extractAmt('Total payments:'),
+          credits:     extractAmt('Total credits:'),
+          balance:     acctBalance ? `$${acctBalance}` : '$0.00',
+        },
+        metadata: {
+          transcriptType: 'Form 1040 Record of Account',
           requestDate,
           parsedAt: new Date().toISOString(),
         },
