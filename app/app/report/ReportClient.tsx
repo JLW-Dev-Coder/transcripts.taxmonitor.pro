@@ -6,6 +6,33 @@ import { Suspense } from 'react'
 
 const API = 'https://api.virtuallaunch.pro'
 
+const CODE_DESC_CACHE: Record<string, string> = {}
+
+async function fetchCodeDescription(code: string): Promise<string> {
+  if (CODE_DESC_CACHE[code]) return CODE_DESC_CACHE[code]
+
+  try {
+    const res = await fetch(`/resources/irs-code-${code}-meaning.json`, { cache: 'force-cache' })
+    if (!res.ok) return getCodeDescFallback(code)
+    const data = await res.json()
+    const desc = data?.description || ''
+    const cleaned = desc
+      .replace(/^IRS (?:transaction )?[Cc]ode \d+\s*(?:Meaning\s*)?[-–]?\s*/i, '')
+      .replace(/\s*[–-]\s*For Tax Professionals\.?$/i, '')
+      .replace(/\.$/, '')
+      .trim()
+    CODE_DESC_CACHE[code] = cleaned || getCodeDescFallback(code)
+    return CODE_DESC_CACHE[code]
+  } catch {
+    return getCodeDescFallback(code)
+  }
+}
+
+function getCodeDescFallback(code: string): string {
+  const d: Record<string,string> = {'150':'Tax return filed','276':'Penalty for late payment','196':'Interest charged','460':'Extension of time to file','971':'Notice issued','530':'Currently not collectible','500':'Installment agreement','582':'Federal tax lien','810':'Refund freeze','570':'Additional liability pending','846':'Refund issued','806':'Withholding credit'}
+  return d[code] || `TC ${code}`
+}
+
 function buildReportHtml(rd: any, logoDataUrl: string | null): string {
   const isReturn  = rd?.transcriptType === 'return'
   const reportDate = new Date().toLocaleDateString()
@@ -27,8 +54,7 @@ function buildReportHtml(rd: any, logoDataUrl: string | null): string {
   }
 
   function getCodeDesc(code: string): string {
-    const d: Record<string,string> = {'150':'Tax return filed','276':'Penalty for late payment','196':'Interest charged','460':'Extension of time to file','971':'Notice issued','530':'Currently not collectible','500':'Installment agreement','582':'Federal tax lien','810':'Refund freeze','570':'Additional liability pending','846':'Refund issued','806':'Withholding credit'}
-    return d[code] || `TC ${code}`
+    return CODE_DESC_CACHE[code] || getCodeDescFallback(code)
   }
 
   const isWageIncome = rd?.transcriptType === 'wage-income'
@@ -165,7 +191,7 @@ function buildReportHtml(rd: any, logoDataUrl: string | null): string {
         </div>
 
         <div class="report-footer">
-          <span>For IRS code definitions, consult IRS Publication 1546.</span>
+          <span>For IRS code definitions, see <a href="https://transcript.taxmonitor.pro/resources/transcript-codes/" style="color:#7c3aed;">transcript.taxmonitor.pro/resources/transcript-codes/</a> or IRS Publication 1546.</span>
           <span>Generated ${reportDate}</span>
         </div>
       </div>
@@ -310,11 +336,14 @@ function buildReportHtml(rd: any, logoDataUrl: string | null): string {
     const riskClass     = hasBalance ? (hasPenalties ? 'attention' : 'moderate') : 'low'
     const riskLabel     = hasBalance ? (hasPenalties ? 'Action Required' : 'Balance Due') : 'Clean'
 
-    const timelineHtml = roaTransactions.map((tx: any) => `
+    const timelineHtml = roaTransactions.map((tx: any) => {
+      const impact = CODE_DESC_CACHE[tx.code] || getCodeDesc(tx.code)
+      return `
       <div class="timeline-item">
         <div><div class="timeline-date">${tx.date || '—'}</div><div class="timeline-code">TC ${tx.code || '—'}</div></div>
-        <div><div class="timeline-description">${tx.description || getCodeDesc(tx.code)}</div><div class="timeline-impact">${tx.amount || '—'}</div></div>
-      </div>`).join('')
+        <div><div class="timeline-description">${tx.description || '—'}</div><div class="timeline-impact">${impact}</div></div>
+      </div>`
+    }).join('')
 
     return headerHtml + `
         <div class="section">
@@ -416,7 +445,7 @@ function buildReportHtml(rd: any, logoDataUrl: string | null): string {
         </div>
 
         <div class="report-footer">
-          <span>For IRS code definitions, consult IRS Publication 1546.</span>
+          <span>For IRS code definitions, see <a href="https://transcript.taxmonitor.pro/resources/transcript-codes/" style="color:#7c3aed;">transcript.taxmonitor.pro/resources/transcript-codes/</a> or IRS Publication 1546.</span>
           <span>Generated ${reportDate}</span>
         </div>
       </div>
@@ -432,19 +461,25 @@ function buildReportHtml(rd: any, logoDataUrl: string | null): string {
   const hasAcctPenalty = parseFloat((acctBal.accruedPenalty || '$0').replace(/[^0-9.]/g, '')) > 0
   const acctRiskClass  = hasAcctBalance ? (hasAcctPenalty ? 'attention' : 'moderate') : 'low'
 
-  const timelineHtml = transactions.map((tx: any) => `
+  const timelineHtml = transactions.map((tx: any) => {
+    const impact = CODE_DESC_CACHE[tx.code] || getCodeDesc(tx.code)
+    return `
     <div class="timeline-item">
       <div><div class="timeline-date">${tx.date || '—'}</div><div class="timeline-code">TC ${tx.code || '—'}</div></div>
-      <div><div class="timeline-description">${tx.description || '—'}</div><div class="timeline-impact">${tx.impact || tx.amount || '—'}</div></div>
-    </div>`).join('')
+      <div><div class="timeline-description">${tx.description || '—'}</div><div class="timeline-impact">${impact}</div></div>
+    </div>`
+  }).join('')
 
-  const tableRowsHtml = transactions.map((tx: any) => `
+  const tableRowsHtml = transactions.map((tx: any) => {
+    const impact = CODE_DESC_CACHE[tx.code] || getCodeDesc(tx.code)
+    return `
     <tr>
       <td class="code-column">${tx.code || '—'}</td>
       <td>${tx.date || '—'}</td>
       <td>${tx.description || '—'}</td>
-      <td style="font-size:12px;color:#6b7280;line-height:1.5;">${getCodeDesc(tx.code)}</td>
-    </tr>`).join('')
+      <td style="font-size:12px;color:#374151;line-height:1.5;">${impact}</td>
+    </tr>`
+  }).join('')
 
   return headerHtml + `
         <div class="section">
@@ -522,7 +557,7 @@ function buildReportHtml(rd: any, logoDataUrl: string | null): string {
           ${lineRow('Payoff Amount', acctBal.payoffAmount || '—', true)}
         </div>
         <div class="report-footer">
-          <span>For IRS code definitions, consult IRS Publication 1546.</span>
+          <span>For IRS code definitions, see <a href="https://transcript.taxmonitor.pro/resources/transcript-codes/" style="color:#7c3aed;">transcript.taxmonitor.pro/resources/transcript-codes/</a> or IRS Publication 1546.</span>
           <span>Generated ${reportDate}</span>
         </div>
       </div>
@@ -554,6 +589,13 @@ function ReportInner() {
         }
         const data = await res.json()
         const rd   = data.report_data || data
+
+        // Pre-fetch IRS code descriptions for transaction-based transcripts
+        if (rd?.transactions?.length > 0) {
+          const uniqueCodes = Array.from(new Set((rd.transactions as any[]).map((t: any) => t.code)))
+          await Promise.all(uniqueCodes.map(fetchCodeDescription))
+        }
+
         const logo = localStorage.getItem('tm_brand_logo') || null
         setReportHtml(buildReportHtml(rd, logo))
         setStatus('done')
