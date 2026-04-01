@@ -16,6 +16,7 @@ export const metadata: Metadata = {
   description: 'IRS transcript analysis tool for tax professionals.',
   icons: {
     icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
   },
 }
 

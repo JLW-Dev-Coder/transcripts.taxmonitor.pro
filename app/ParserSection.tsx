@@ -33,19 +33,25 @@ export default function ParserSection() {
         credentials: 'include',
       })
 
+      if (res.status === 401 || res.status === 403) {
+        window.location.href = '/login'
+        return
+      }
+
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
-        const msg = res.status === 401
-          ? 'Please sign in to use the parser.'
-          : data?.message || `Error ${res.status}`
-        throw new Error(msg)
+        throw new Error(data?.message || `Upload failed (${res.status})`)
       }
 
       const data = await res.json()
       setReport(data?.html || data?.report || JSON.stringify(data, null, 2))
       setStatus('done')
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Upload failed. Please try again.')
+      if (err instanceof TypeError && err.message === 'Failed to fetch') {
+        setError('Unable to reach the server. Please sign in and try again.')
+      } else {
+        setError(err instanceof Error ? err.message : 'Upload failed. Please try again.')
+      }
       setStatus('error')
     }
   }

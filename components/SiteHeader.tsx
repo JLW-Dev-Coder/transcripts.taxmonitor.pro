@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 
 const RESOURCES_LINKS = [
@@ -24,6 +24,16 @@ export default function SiteHeader() {
   const [drawerOpen,    setDrawerOpen]    = useState(false);
   const [resourcesOpen, setResourcesOpen] = useState(false);
   const [mobileResOpen, setMobileResOpen] = useState(false);
+  const resourcesTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function openResources() {
+    if (resourcesTimeout.current) clearTimeout(resourcesTimeout.current);
+    setResourcesOpen(true);
+  }
+
+  function closeResources() {
+    resourcesTimeout.current = setTimeout(() => setResourcesOpen(false), 150);
+  }
 
   return (
     <>
@@ -67,8 +77,8 @@ export default function SiteHeader() {
           {/* Resources dropdown */}
           <div
             style={{ position: "relative" }}
-            onMouseEnter={() => setResourcesOpen(true)}
-            onMouseLeave={() => setResourcesOpen(false)}
+            onMouseEnter={openResources}
+            onMouseLeave={closeResources}
           >
             <button style={{
               display: "flex", alignItems: "center", gap: "0.25rem",
@@ -85,25 +95,30 @@ export default function SiteHeader() {
             </button>
 
             {resourcesOpen && (
-              <div style={{
-                position: "absolute", top: "calc(100% + 8px)", left: "50%",
-                transform: "translateX(-50%)",
-                background: "var(--surface, #111827)",
-                border: "1px solid var(--surface-border, #1f2937)",
-                borderRadius: 12, minWidth: 240,
-                boxShadow: "0 16px 40px rgba(0,0,0,0.4)",
-                overflow: "hidden",
-              }}>
+              <div
+                onMouseEnter={openResources}
+                onMouseLeave={closeResources}
+                style={{
+                  position: "absolute", top: "calc(100% + 4px)", left: "50%",
+                  transform: "translateX(-50%)",
+                  background: "var(--surface, #111827)",
+                  border: "1px solid var(--surface-border, #1f2937)",
+                  borderRadius: 12, minWidth: 240,
+                  boxShadow: "0 16px 40px rgba(0,0,0,0.4)",
+                  overflow: "hidden",
+                }}>
                 {RESOURCES_LINKS.map(link => (
-                  <Link key={link.href} href={link.href} style={{
-                    display: "block", padding: "0.75rem 1.25rem",
-                    fontSize: "0.875rem", fontWeight: 500,
-                    color: "var(--text, #f9fafb)", textDecoration: "none",
-                    borderBottom: "1px solid var(--surface-border, #1f2937)",
-                    transition: "background 150ms ease",
-                  }}
-                  onMouseEnter={e => (e.currentTarget.style.background = "rgba(20,184,166,0.08)")}
-                  onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                  <Link key={link.href} href={link.href}
+                    onClick={() => setResourcesOpen(false)}
+                    style={{
+                      display: "block", padding: "0.75rem 1.25rem",
+                      fontSize: "0.875rem", fontWeight: 500,
+                      color: "var(--text, #f9fafb)", textDecoration: "none",
+                      borderBottom: "1px solid var(--surface-border, #1f2937)",
+                      transition: "background 150ms ease",
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.background = "rgba(20,184,166,0.08)")}
+                    onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                   >{link.label}</Link>
                 ))}
               </div>
