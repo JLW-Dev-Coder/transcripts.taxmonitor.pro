@@ -91,31 +91,15 @@ export default function DashboardClient() {
         const sessionData = data.session || data
 
         const accountId = sessionData.account_id || ''
-        const userEmail = sessionData.email || email || ''
+        const userEmail  = sessionData.email || email || ''
+        const bal        = sessionData.transcript_tokens ?? sessionData.balance ?? 0
 
         setSession({
-          email: userEmail,
+          email:   userEmail,
           tokenId: accountId,
-          balance: 0,
+          balance: bal,
         })
-
-        // Fetch token balance separately
-        if (accountId) {
-          try {
-            const tokenRes = await fetch(
-              `${WORKER_BASE}/v1/tokens/balance/${accountId}`,
-              { credentials: 'include' }
-            )
-            if (tokenRes.ok) {
-              const tokenData = await tokenRes.json()
-              const bal = tokenData.transcript_tokens ?? tokenData.balance ?? 0
-              setBalance(bal)
-              setSession(prev => prev ? { ...prev, balance: bal } : prev)
-            }
-          } catch {
-            // silently fail — balance stays 0
-          }
-        }
+        setBalance(bal)
       } catch {
         sessionStorage.removeItem('ttmp_session_id')
         sessionStorage.removeItem('ttmp_email')
