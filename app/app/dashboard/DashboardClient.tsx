@@ -722,7 +722,9 @@ export default function DashboardClient() {
         const proceedsNum = parseFloat(bAmt('Proceeds').replace(/[^0-9.]/g, '')) || 0
         const basisNum    = parseFloat(bAmt('Cost or Basis').replace(/[^0-9.]/g, '')) || 0
         const netGL       = proceedsNum - basisNum
-        const gainLossStr = netGL < 0 ? `-$${Math.abs(netGL).toFixed(2)}` : `$${netGL.toFixed(2)}`
+        const gainLossStr = netGL < 0
+          ? `-$${Math.abs(netGL).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+          : `$${netGL.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 
         const descMatch = section.match(/Description:\s*([^\n]+?)(?:\s{2,}|Second Notice|Date acquired)/i)
         const rawDesc   = descMatch?.[1]?.trim() || '—'
@@ -765,11 +767,11 @@ export default function DashboardClient() {
         summary: {
           totalW2s:         w2Forms.length,
           total1099Bs:      b1099Forms.length,
-          totalWages:       `$${totalWages.toFixed(2)}`,
-          totalFedWithheld: `$${totalFedWH.toFixed(2)}`,
-          totalProceeds:    `$${totalProceeds.toFixed(2)}`,
-          totalBasis:       `$${totalBasis.toFixed(2)}`,
-          totalGainLoss:    `$${(totalProceeds - totalBasis).toFixed(2)}`,
+          totalWages:       `$${totalWages.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+          totalFedWithheld: `$${totalFedWH.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+          totalProceeds:    `$${totalProceeds.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+          totalBasis:       `$${totalBasis.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+          totalGainLoss:    `$${(totalProceeds - totalBasis).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
         },
         transactions: [],
         balances: { assessedTax: '', payments: '', credits: '', balance: '' },
@@ -802,7 +804,10 @@ export default function DashboardClient() {
         const code    = roaMatch[1]
         const rawDesc = roaMatch[2].trim()
         const date    = roaMatch[3]
-        const amount  = roaMatch[4].startsWith('$') ? roaMatch[4] : '$' + roaMatch[4]
+        const rawAmount = roaMatch[4]
+        const amount = rawAmount.startsWith('$') || rawAmount.startsWith('-$')
+          ? rawAmount
+          : '$' + rawAmount
 
         if (code === 'COD' || rawDesc.includes('EXPLANATION')) continue
 
@@ -921,7 +926,10 @@ export default function DashboardClient() {
       const code    = acctMatch[1]
       const rawDesc = acctMatch[2].trim()
       const date    = acctMatch[3]
-      const amount  = acctMatch[4].startsWith('$') ? acctMatch[4] : '$' + acctMatch[4]
+      const rawAmount = acctMatch[4]
+      const amount = rawAmount.startsWith('$') || rawAmount.startsWith('-$')
+        ? rawAmount
+        : '$' + rawAmount
 
       if (code === 'COD' || rawDesc.includes('EXPLANATION')) continue
 
@@ -990,7 +998,6 @@ export default function DashboardClient() {
         processingDate:      procDateMatch?.[1] || '—',
         returnDueDate:       returnDueMatch?.[1] || '—',
       },
-      filingInfo: { returnType: returnTypeMatch?.[1] || '—', filingStatus: '', cyclePosted: '' },
       metadata: { transcriptType: 'Account Transcript', requestDate, parsedAt: new Date().toISOString() },
     }
     setJsonText(JSON.stringify(parsed, null, 2))
