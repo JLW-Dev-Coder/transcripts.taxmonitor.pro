@@ -24,7 +24,7 @@ function ReportInner() {
     async function load() {
       try {
         const sessionId = sessionStorage.getItem('ttmp_session_id')
-        const res = await fetch(`${API}/v1/transcripts/report?r=${reportId}`, {
+        const res = await fetch(`${API}/v1/transcripts/report/data?r=${reportId}`, {
           credentials: 'include',
           headers: sessionId ? { 'Authorization': `Bearer ${sessionId}` } : {},
         })
