@@ -22,8 +22,8 @@ export default function ResourceLayout({
     : {}
 
   return (
-    <div className={styles.wrapper} style={accentStyle}>
-      <main className={styles.main}>
+    <div className={styles.wrapper}>
+      <main className={styles.main} style={accentStyle}>
         <nav className={styles.breadcrumb} aria-label="Breadcrumb">
           <Link href="/resources/" className={styles.bcLink}>Resources</Link>
           <span className={styles.bcSep}>/</span>
