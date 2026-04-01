@@ -17,6 +17,118 @@ interface Session {
 
 type Step = 1 | 2 | 3
 
+function getCodeDescription(code: string): string {
+  const CODES: Record<string, string> = {
+    '000': 'Establishment of tax module',
+    '011': 'Entity created by TC 011',
+    '014': 'Address change',
+    '015': 'Address change — international',
+    '020': 'Name change',
+    '036': 'Reactivate tax module',
+    '054': 'Amended return filed',
+    '076': 'Duplicate return filed',
+    '150': 'Tax return filed — liability established',
+    '151': 'Tax return filed — liability reduced',
+    '152': 'Tax return filed — no liability',
+    '160': 'Failure-to-file penalty assessed',
+    '161': 'Failure-to-file penalty abated',
+    '166': 'Failure-to-pay penalty assessed',
+    '167': 'Failure-to-pay penalty abated',
+    '170': 'Estimated tax penalty assessed',
+    '171': 'Estimated tax penalty abated',
+    '196': 'Interest assessed',
+    '197': 'Interest abated',
+    '290': 'Additional tax assessed',
+    '291': 'Tax decreased',
+    '295': 'Additional tax reduced',
+    '300': 'Additional tax assessed — examination',
+    '301': 'Tax decreased — examination',
+    '320': 'Failure-to-file penalty assessed — examination',
+    '321': 'Failure-to-file penalty abated — examination',
+    '336': 'Failure-to-pay penalty assessed — examination',
+    '340': 'Estimated tax penalty assessed — examination',
+    '360': 'Interest assessed — examination',
+    '370': 'Credit transferred from another module',
+    '400': 'Earned income credit applied',
+    '402': 'Earned income credit reversed',
+    '403': 'Earned income credit applied',
+    '404': 'Earned income credit reversed',
+    '405': 'Amended return filed — tax assessed',
+    '420': 'Examination of tax return initiated',
+    '421': 'Examination of tax return closed — no change',
+    '424': 'Examination referral — return examined',
+    '425': 'Examination referral reversed',
+    '430': 'Estimated tax payment',
+    '460': 'Extension of time to file granted',
+    '470': 'Collection action suspended',
+    '480': 'Offer in compromise pending',
+    '481': 'Offer in compromise rejected',
+    '482': 'Offer in compromise accepted',
+    '494': 'Offer in compromise — suspension of collection',
+    '500': 'Installment agreement granted',
+    '503': 'Installment agreement terminated',
+    '520': 'Collection suspended — litigation',
+    '521': 'Collection suspension released',
+    '530': 'Currently not collectible status',
+    '531': 'Currently not collectible status released',
+    '534': 'Currently not collectible — unable to locate',
+    '570': 'Additional liability pending — hold on refund',
+    '571': 'Resolved additional liability — hold released',
+    '582': 'Federal tax lien filed',
+    '583': 'Federal tax lien released',
+    '590': 'Statute of limitations extended',
+    '591': 'Statute of limitations extension released',
+    '600': 'Penalty for underpayment of estimated tax',
+    '601': 'Penalty for underpayment abated',
+    '605': 'Failure-to-pay penalty',
+    '606': 'Failure-to-pay penalty abated',
+    '610': 'Remittance with return',
+    '650': 'Payment received',
+    '660': 'Additional payment received',
+    '670': 'Payment applied',
+    '680': 'Designated payment',
+    '690': 'Penalty credit applied',
+    '700': 'Credit applied from another period',
+    '710': 'Excess collection applied',
+    '716': 'Credit transferred to another module',
+    '720': 'Refundable credit applied',
+    '730': 'Backup withholding credit',
+    '740': 'Undelivered refund returned',
+    '766': 'Credit to account — refundable credit',
+    '767': 'Credit reversed',
+    '768': 'Earned income credit applied',
+    '769': 'Earned income credit reversed',
+    '770': 'Interest credited to account',
+    '771': 'Interest reversed',
+    '776': 'Interest assessed',
+    '777': 'Interest reversed',
+    '780': 'Offer in compromise — partial payment',
+    '800': 'Withholding credit applied',
+    '806': 'Federal tax withholding credit applied',
+    '807': 'Withholding credit reversed',
+    '810': 'Refund freeze',
+    '811': 'Refund freeze released',
+    '820': 'Credit transferred to another account',
+    '821': 'Credit transfer reversed',
+    '826': 'Credit transferred — overpayment applied to balance',
+    '830': 'Overpayment credit waived',
+    '840': 'Manual refund issued',
+    '841': 'Manual refund reversed',
+    '843': 'Refund abatement',
+    '846': 'Refund issued',
+    '847': 'Refund reversed',
+    '898': 'Refund applied to non-tax debt (TOP offset)',
+    '899': 'Reversal of TOP offset',
+    '971': 'Notice issued to taxpayer',
+    '972': 'Notice rescinded',
+    '976': 'Duplicate return filed — sequenced',
+    '977': 'Amended return filed — sequenced',
+    '983': 'Refund held — identity theft',
+    '990': 'Statute of limitations expiration date extended',
+  }
+  return CODES[code] || `IRS Transaction Code ${code}`
+}
+
 export default function DashboardClient() {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
@@ -220,27 +332,75 @@ export default function DashboardClient() {
       text = extracted
     }
 
-    const transactions: { code: string; date: string; description: string; amount: string }[] = []
-    const txPattern = /(\d{3})\s+(\d{2}-\d{2}-\d{4})\s+([^$\n]+?)\s+(\$[\d,]+\.\d{2})/g
-    let match
-    while ((match = txPattern.exec(text)) !== null) {
-      transactions.push({ code: match[1], date: match[2], description: match[3].trim(), amount: match[4] })
+    const transactions: { code: string; date: string; description: string; amount: string; impact: string }[] = []
+
+    const lines = text.split('\n')
+    for (const line of lines) {
+      const trimmed = line.trim()
+      if (!trimmed) continue
+
+      // Pattern 1: code date description amount
+      // e.g. "150  01-15-2024  Tax return filed  $1,234.56"
+      const p1 = trimmed.match(/^(\d{2,4})\s+(\d{2}-\d{2}-\d{4})\s+(.+?)\s+([\$\-]?[\d,]+\.\d{2})\s*$/)
+      if (p1) {
+        transactions.push({
+          code: p1[1],
+          date: p1[2],
+          description: p1[3].trim(),
+          amount: p1[4],
+          impact: p1[3].trim(),
+        })
+        continue
+      }
+
+      // Pattern 2: code date amount (no description)
+      const p2 = trimmed.match(/^(\d{2,4})\s+(\d{2}-\d{2}-\d{4})\s+([\$\-]?[\d,]+\.\d{2})\s*$/)
+      if (p2) {
+        transactions.push({
+          code: p2[1],
+          date: p2[2],
+          description: getCodeDescription(p2[1]),
+          amount: p2[3],
+          impact: getCodeDescription(p2[1]),
+        })
+        continue
+      }
+
+      // Pattern 3: code spaces date (amount at end or zero)
+      const p3 = trimmed.match(/^(\d{2,4})\s{2,}(\d{2}-\d{2}-\d{4})\s{2,}(.+)$/)
+      if (p3) {
+        const rest = p3[3].trim()
+        const amtMatch = rest.match(/([\$\-]?[\d,]+\.\d{2})\s*$/)
+        const amount = amtMatch ? amtMatch[1] : '$0.00'
+        const desc = amtMatch ? rest.replace(amtMatch[0], '').trim() : rest
+        transactions.push({
+          code: p3[1],
+          date: p3[2],
+          description: desc || getCodeDescription(p3[1]),
+          amount,
+          impact: desc || getCodeDescription(p3[1]),
+        })
+      }
     }
 
+    // Extract metadata
     const taxYearMatch = text.match(/TAX\s+PERIOD[:\s]+(\d{4})/i) || text.match(/\b(20\d{2})\b/)
     const taxYear = taxYearMatch ? taxYearMatch[1] : ''
-
-    const balanceMatch = text.match(/ACCOUNT\s+BALANCE[:\s]+([\$\d,.]+)/i)
+    const balanceMatch = text.match(/ACCOUNT\s+BALANCE[:\s]+([\$\-]?[\d,.]+)/i)
     const balanceAmount = balanceMatch ? balanceMatch[1] : ''
-
-    const returnTypeMatch = text.match(/RETURN\s+TYPE[:\s]+([A-Z0-9-]+)/i)
+    const returnTypeMatch = text.match(/RETURN\s+TYPE[:\s]+([A-Z0-9\-]+)/i)
     const returnType = returnTypeMatch ? returnTypeMatch[1] : ''
 
     const parsed = {
       taxpayer: { name: '', ssn: '', address: '', taxYear },
       filingInfo: { returnType, filingStatus: '', cyclePosted: '' },
       transactions,
-      balances: { assessedTax: '', payments: '', credits: '', balance: balanceAmount },
+      balances: {
+        assessedTax: '',
+        payments: '',
+        credits: '',
+        balance: balanceAmount,
+      },
       metadata: {
         transcriptType: '',
         requestDate: '',

@@ -217,7 +217,13 @@ function ReportInner() {
         <div ref={containerRef} dangerouslySetInnerHTML={{ __html: reportHtml }} />
       </div>
 
-      <style>{`@media print{.sticky{display:none!important}body{background:#fff!important}}`}</style>
+      <style>{`
+  @media print {
+    nav, [style*="position: sticky"], [style*="position:sticky"] { display: none !important; }
+    body { background: #fff !important; margin: 0 !important; }
+    html { background: #fff !important; }
+  }
+`}</style>
     </div>
   )
 }
@@ -261,7 +267,18 @@ const REPORT_CSS = `
   .balance-row:last-child .balance-amount{font-size:16px;color:#0b0a14;}
   .report-footer{margin-top:40px;padding-top:16px;border-top:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:11px;color:#9ca3af;}
   @media(max-width:640px){.page-content{padding:28px}.info-grid,.status-grid{grid-template-columns:1fr}.timeline-item{grid-template-columns:1fr;gap:10px}.balance-row{grid-template-columns:1fr}.balance-amount{text-align:left}}
-  @media print{.report-page{margin:0;box-shadow:none;border-radius:0}.page-content{padding:.75in}}
+  @media print {
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    .report-page { margin: 0; box-shadow: none; border-radius: 0; page-break-after: always; break-after: page; }
+    .page-content { padding: .75in; }
+    .section { page-break-inside: avoid; break-inside: avoid; }
+    .timeline-item { page-break-inside: avoid; break-inside: avoid; }
+    .status-grid { page-break-inside: avoid; break-inside: avoid; }
+    .info-grid { page-break-inside: avoid; break-inside: avoid; }
+    .balance-box { page-break-inside: avoid; break-inside: avoid; }
+    .report-header { page-break-inside: avoid; break-inside: avoid; }
+    .summary-box { page-break-inside: avoid; break-inside: avoid; }
+  }
 `
 
 export default function ReportClient() {
