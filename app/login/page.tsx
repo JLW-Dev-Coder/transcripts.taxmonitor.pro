@@ -38,7 +38,10 @@ export default function LoginPage() {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({
+          email,
+          redirectUri: 'https://transcript.taxmonitor.pro/app/dashboard',
+        }),
       })
 
       if (!res.ok) {
