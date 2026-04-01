@@ -35,7 +35,10 @@ export default function ParserSection() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
-        throw new Error(data?.message || `Error ${res.status}`)
+        const msg = res.status === 401
+          ? 'Please sign in to use the parser.'
+          : data?.message || `Error ${res.status}`
+        throw new Error(msg)
       }
 
       const data = await res.json()
@@ -52,7 +55,7 @@ export default function ParserSection() {
       {status === 'idle' && (
         <div className={styles.parserLoading}>
           <p className={styles.parserLoadingText}>
-            Upload an IRS transcript PDF to generate a plain-English report instantly.
+            Upload an IRS transcript PDF — get a plain-English report in seconds.
           </p>
           <input
             ref={fileRef}
@@ -62,15 +65,16 @@ export default function ParserSection() {
             style={{ display: 'none' }}
             id="transcript-upload"
           />
-          <label
-            htmlFor="transcript-upload"
-            className={styles.btnPrimary}
-            style={{ cursor: 'pointer', marginTop: '1rem' }}
-          >
-            Upload Transcript PDF →
-          </label>
+          <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <label htmlFor="transcript-upload" className={styles.btnPrimary} style={{ cursor: 'pointer' }}>
+              Upload Transcript PDF →
+            </label>
+            <a href="/login" className={styles.btnSecondary}>
+              Sign In to Save Reports
+            </a>
+          </div>
           <p className={styles.parserLoadingText} style={{ marginTop: '0.75rem', fontSize: '0.8rem' }}>
-            Sign in required. Transcript data never leaves your session.
+            Transcript data is processed securely and never stored without your consent.
           </p>
         </div>
       )}
@@ -85,13 +89,19 @@ export default function ParserSection() {
       {status === 'error' && (
         <div className={styles.parserLoading}>
           <p className={styles.parserLoadingText} style={{ color: '#f87171' }}>{error}</p>
-          <button
-            className={styles.btnSecondary}
-            onClick={() => { setStatus('idle'); setError(null); }}
-            style={{ marginTop: '1rem' }}
-          >
-            Try Again
-          </button>
+          {error?.includes('401') || error?.includes('sign in') ? (
+            <a href="/login" className={styles.btnPrimary} style={{ marginTop: '1rem' }}>
+              Sign In to Use Parser →
+            </a>
+          ) : (
+            <button
+              className={styles.btnSecondary}
+              onClick={() => { setStatus('idle'); setError(null); }}
+              style={{ marginTop: '1rem' }}
+            >
+              Try Again
+            </button>
+          )}
         </div>
       )}
 
