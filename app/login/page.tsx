@@ -42,12 +42,8 @@ export default function LoginPage() {
   }
 
   function handleGoogleSignIn() {
-    // VLP worker starts the OAuth flow and will redirect back to
-    // transcript.taxmonitor.pro/auth/google/callback via the state param
-    const params = new URLSearchParams({
-      redirect_uri: 'https://transcript.taxmonitor.pro/auth/google/callback',
-    })
-    window.location.href = `${API}/v1/auth/google/start?${params}`
+    const returnTo = encodeURIComponent('https://transcript.taxmonitor.pro/app/dashboard/')
+    window.location.href = `https://api.virtuallaunch.pro/v1/auth/google/start?return_to=${returnTo}`
   }
 
   return (
