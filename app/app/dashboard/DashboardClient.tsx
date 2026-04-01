@@ -113,9 +113,15 @@ export default function DashboardClient() {
   const handleRefreshBalance = async () => {
     if (!session?.tokenId) return
     try {
+      const sessionId = sessionStorage.getItem('ttmp_session_id')
       const tokenRes = await fetch(
         `${WORKER_BASE}/v1/tokens/balance/${session.tokenId}`,
-        { credentials: 'include' }
+        {
+          headers: {
+            ...(sessionId ? { 'Authorization': `Bearer ${sessionId}` } : {}),
+          },
+          credentials: 'include',
+        }
       )
       if (tokenRes.ok) {
         const tokenData = await tokenRes.json()
@@ -153,7 +159,14 @@ export default function DashboardClient() {
   }
 
   const handleSignOut = async () => {
-    await fetch(`${WORKER_BASE}/v1/auth/logout`, { method: 'POST', credentials: 'include' })
+    const sessionId = sessionStorage.getItem('ttmp_session_id')
+    await fetch(`${WORKER_BASE}/v1/auth/logout`, {
+      method: 'POST',
+      headers: {
+        ...(sessionId ? { 'Authorization': `Bearer ${sessionId}` } : {}),
+      },
+      credentials: 'include',
+    })
     sessionStorage.removeItem('ttmp_session_id')
     sessionStorage.removeItem('ttmp_email')
     window.location.href = '/login/'
@@ -241,9 +254,13 @@ export default function DashboardClient() {
   const handleSavePreview = async () => {
     if (!session || !jsonText) return
     setPreviewStatus('Saving preview...')
+    const sessionId = sessionStorage.getItem('ttmp_session_id')
     const res = await fetch(`${WORKER_BASE}/v1/transcripts/preview`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(sessionId ? { 'Authorization': `Bearer ${sessionId}` } : {}),
+      },
       credentials: 'include',
       body: JSON.stringify({ reportData: JSON.parse(jsonText) }),
     })
@@ -262,9 +279,13 @@ export default function DashboardClient() {
   const handleEmailReport = async () => {
     if (!session || !reportEventId || !reportUrl || !emailInput) return
     setEmailStatus('Sending...')
+    const sessionId = sessionStorage.getItem('ttmp_session_id')
     const res = await fetch(`${WORKER_BASE}/forms/transcript/report-email`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(sessionId ? { 'Authorization': `Bearer ${sessionId}` } : {}),
+      },
       credentials: 'include',
       body: JSON.stringify({ email: emailInput, eventId: reportEventId, reportUrl, tokenId: session.tokenId }),
     })
