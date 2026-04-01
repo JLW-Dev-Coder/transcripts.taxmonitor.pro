@@ -34,11 +34,11 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      const res = await fetch('/api/transcripts/magic-link/request', {
+      const res = await fetch('https://api.virtuallaunch.pro/v1/auth/magic-link/request', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, redirect }),
+        body: JSON.stringify({ email }),
       })
 
       if (!res.ok) {

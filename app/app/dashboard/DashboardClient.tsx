@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import styles from './dashboard.module.css'
 import { getTokenBalance, getTokenPricing, purchaseTokens, type TokenPackage } from '@/lib/api'
 
-const WORKER_BASE = 'https://transcripts-tax-monitor-pro-api.txdev.workers.dev'
+const WORKER_BASE = 'https://api.virtuallaunch.pro'
 const PDFJS_VERSION = '3.11.174'
 
 interface Session {
@@ -69,7 +69,7 @@ export default function DashboardClient() {
     // Fetch session
     ;(async () => {
       try {
-        const res = await fetch(`${WORKER_BASE}/api/transcripts/me`, { credentials: 'include' })
+        const res = await fetch(`${WORKER_BASE}/v1/auth/session`, { credentials: 'include' })
         const data = await res.json()
         if (res.ok && data.ok) {
           setSession({ email: data.user.email, tokenId: data.user.tokenId, balance: data.user.balance })
@@ -121,7 +121,7 @@ export default function DashboardClient() {
   }
 
   const handleSignOut = async () => {
-    await fetch(`${WORKER_BASE}/api/transcripts/sign-out`, { method: 'POST', credentials: 'include' })
+    await fetch(`${WORKER_BASE}/v1/auth/logout`, { method: 'POST', credentials: 'include' })
     router.replace('/login')
   }
 
@@ -207,7 +207,7 @@ export default function DashboardClient() {
   const handleSavePreview = async () => {
     if (!session || !jsonText) return
     setPreviewStatus('Saving preview...')
-    const res = await fetch(`${WORKER_BASE}/api/transcripts/preview`, {
+    const res = await fetch(`${WORKER_BASE}/v1/transcripts/preview`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
