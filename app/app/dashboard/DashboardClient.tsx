@@ -253,8 +253,11 @@ export default function DashboardClient() {
 
   const handleSavePreview = async () => {
     if (!session || !jsonText) return
-    setPreviewStatus('Saving preview...')
+    setPreviewStatus('Saving report...')
+
     const sessionId = sessionStorage.getItem('ttmp_session_id')
+    const eventId = crypto.randomUUID()
+
     const res = await fetch(`${WORKER_BASE}/v1/transcripts/preview`, {
       method: 'POST',
       headers: {
@@ -262,17 +265,23 @@ export default function DashboardClient() {
         ...(sessionId ? { 'Authorization': `Bearer ${sessionId}` } : {}),
       },
       credentials: 'include',
-      body: JSON.stringify({ reportData: JSON.parse(jsonText) }),
+      body: JSON.stringify({
+        event_id: eventId,
+        report_data: JSON.parse(jsonText),
+      }),
     })
+
     const data = await res.json()
-    if (res.ok) {
-      setReportEventId(data.eventId)
-      setReportUrl(data.reportUrl)
+
+    if (res.ok && data.ok) {
+      setReportEventId(data.event_id)
+      setReportUrl(data.report_url)
       setPreviewSaved(true)
-      setBalance(data.balance)
-      setPreviewStatus('Preview saved. 1 credit used.')
+      setBalance(data.balance_after ?? 0)
+      setSession(prev => prev ? { ...prev, balance: data.balance_after ?? 0 } : prev)
+      setPreviewStatus(`Report saved. 1 token used. ${data.balance_after} tokens remaining.`)
     } else {
-      setPreviewStatus(data.error || 'Failed to save preview.')
+      setPreviewStatus(data.message || data.error || 'Failed to save report.')
     }
   }
 
