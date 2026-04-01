@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import type { Metadata } from 'next'
 import styles from './section-7216.module.css'
 import { CopyBlock, ComplianceChecklist } from './Section7216Client'
@@ -30,35 +29,6 @@ const SIGNATURE_REQUIREMENTS = `TAXPAYER ACKNOWLEDGMENT AND SIGNATURE I have rea
 export default function Section7216Page() {
   return (
     <div className={styles.page}>
-      {/* Nav */}
-      <nav className={styles.nav}>
-        <div className={styles.navInner}>
-          <Link href="/" className={styles.navBrand}>
-            <span className={styles.navLogo}>TM</span>
-            <div className={styles.navBrandText}>
-              <div className={styles.navBrandName}>Transcript.Tax Monitor Pro</div>
-              <div className={styles.navBrandSub}>Free IRS Transcript Code Guide</div>
-            </div>
-          </Link>
-          <Link href="/" className={styles.navBack}>
-            <svg
-              width="20"
-              height="20"
-              aria-hidden="true"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-            Back
-          </Link>
-        </div>
-      </nav>
-
       {/* Hero */}
       <section className={styles.hero}>
         <h1 className={styles.heroH1}>How We Safeguard and Enhance Research with AI Tools</h1>
@@ -239,21 +209,6 @@ export default function Section7216Page() {
             Purchase &amp; Download – $2.99
           </a>
         </div>
-
-        {/* Footer */}
-        <footer className={styles.footer}>
-          <p className={styles.footerNoticeLabel}>Compliance Notice:</p>
-          <p className={styles.footerNotice}>
-            If you believe your tax return information has been disclosed or used improperly without authorization, contact the Treasury Inspector General for Tax Administration (TIGTA) at{' '}
-            <strong>1-800-366-4484</strong> or email{' '}
-            <a href="mailto:complaints@tigta.treas.gov" className={styles.footerEmail}>
-              complaints@tigta.treas.gov
-            </a>.
-          </p>
-          <p className={styles.footerCopy}>
-            &copy; <span suppressHydrationWarning>{new Date().getFullYear()}</span> Transcript.Tax Monitor Pro. All rights reserved. This resource is for informational purposes only and does not constitute legal advice.
-          </p>
-        </footer>
 
       </div>
     </div>

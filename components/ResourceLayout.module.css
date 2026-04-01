@@ -46,6 +46,11 @@
 
 .content li { margin-bottom: 0.4rem; }
 
+.content img, .content svg {
+  max-width: 100%;
+  height: auto;
+}
+
 .content table {
   width: 100%;
   border-collapse: collapse;

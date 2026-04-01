@@ -21,40 +21,7 @@ export const metadata: Metadata = {
 export default function RefundPage() {
   return (
     <div className={styles.page}>
-      <header className={styles.header}>
-        <div className={styles.headerInner}>
-          <Link href="/" className={styles.closeBtn} aria-label="Close">
-            <svg
-              width="32"
-              height="32"
-              aria-hidden="true"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M18 6L6 18" />
-              <path d="M6 6l12 12" />
-            </svg>
-          </Link>
-        </div>
-      </header>
-
       <main className={styles.main}>
-        <div className={styles.brand}>
-          <Link href="/" className={styles.brandLink} aria-label="Transcript.Tax Monitor Pro">
-            <div className={styles.brandLogo}>
-              <span className={styles.brandLogoText}>TM</span>
-            </div>
-            <div className={styles.brandInfo}>
-              <p className={styles.brandName}>Transcript.Tax Monitor Pro</p>
-              <p className={styles.brandOwner}>Owned by Lenore, Inc.</p>
-            </div>
-          </Link>
-        </div>
-
         <div className={styles.titleBlock}>
           <h1 className={styles.pageTitle}>Refund Policy</h1>
           <p className={styles.lastUpdated}>Last updated: March 7, 2026</p>
@@ -64,7 +31,7 @@ export default function RefundPage() {
           <section className={styles.section}>
             <p className={styles.body}>
               This Refund Policy applies to purchases made on Transcript.Tax Monitor Pro, including transcript credit packs and related digital access purchases. If you need help, use{' '}
-              <Link href="/contact" className={styles.accentLink}>Contact Support</Link>.
+              <Link href="/contact/" className={styles.accentLink}>Contact Support</Link>.
             </p>
           </section>
 
@@ -110,7 +77,7 @@ export default function RefundPage() {
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>E. How to Request a Refund</h2>
             <ol className={styles.listOrdered}>
-              <li>Submit a request through <Link href="/contact" className={styles.accentLink}>Contact Support</Link>.</li>
+              <li>Submit a request through <Link href="/contact/" className={styles.accentLink}>Contact Support</Link>.</li>
               <li>Include your account email and approximate purchase date and time.</li>
               <li>If available, include the receipt details and any relevant token, report, or transaction identifiers.</li>
             </ol>
@@ -131,19 +98,6 @@ export default function RefundPage() {
           </section>
         </div>
       </main>
-
-      <footer className={styles.footer}>
-        <div className={styles.footerInner}>
-          <p className={styles.footerCopy}>
-            &copy; <span suppressHydrationWarning>{new Date().getFullYear()}</span> Transcript.Tax Monitor Pro. All rights reserved.
-          </p>
-          <div className={styles.footerLinks}>
-            <Link href="/legal/privacy" className={styles.footerLink}>Privacy Policy</Link>
-            <Link href="/legal/refund" className={styles.footerLink}>Refund Policy</Link>
-            <Link href="/legal/terms" className={styles.footerLink}>Terms of Service</Link>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }

@@ -3,27 +3,27 @@ import styles from './SiteFooter.module.css';
 
 const PLATFORM_LINKS = [
   { label: 'About',        href: '#about'        },
-  { label: 'Contact',      href: '/contact'      },
+  { label: 'Contact',      href: '/contact/'     },
   { label: 'Features',     href: '#features'     },
   { label: 'How It Works', href: '#how-it-works' },
-  { label: 'Pricing',      href: '/pricing'      },
-  { label: 'Resources',    href: '/resources'    },
+  { label: 'Pricing',      href: '/pricing/'     },
+  { label: 'Resources',    href: '/resources/'   },
 ];
 
 const RESOURCE_LINKS = [
-  { label: 'Affiliates',      href: '/affiliates',                             external: false },
+  { label: 'Affiliates',      href: '/affiliates/',                            external: false },
   { label: 'Developers VLP',  href: 'https://developers.virtuallaunch.pro',    external: true  },
   { label: 'Games VLP',       href: 'https://games.virtuallaunch.pro',         external: true  },
-  { label: 'Support',         href: '/contact',                                external: false },
+  { label: 'Support',         href: '/contact/',                               external: false },
   { label: 'Tax Monitor Pro', href: 'https://taxmonitor.pro',                  external: true  },
   { label: 'Tax Tools Arcade',href: 'https://taxtools.taxmonitor.pro',         external: true  },
   { label: 'Virtual Launch Pro', href: 'https://virtuallaunch.pro',            external: true  },
 ];
 
 const LEGAL_LINKS = [
-  { label: 'Privacy Policy',   href: '/legal/privacy' },
-  { label: 'Refund Policy',    href: '/legal/refund'  },
-  { label: 'Terms of Service', href: '/legal/terms'   },
+  { label: 'Privacy Policy',   href: '/legal/privacy/' },
+  { label: 'Refund Policy',    href: '/legal/refund/'  },
+  { label: 'Terms of Service', href: '/legal/terms/'   },
 ];
 
 export default function SiteFooter() {
@@ -43,8 +43,8 @@ export default function SiteFooter() {
             in seconds — with every transaction code explained and recommendations included.
           </p>
           <div className={styles.ctaRow}>
-            <Link href="/login" className={styles.btnPrimary}>Try Free</Link>
-            <Link href="/pricing" className={styles.btnSecondary}>View Pricing</Link>
+            <Link href="/login/" className={styles.btnPrimary}>Try Free</Link>
+            <Link href="/pricing/" className={styles.btnSecondary}>View Pricing</Link>
           </div>
         </div>
 
@@ -82,7 +82,7 @@ export default function SiteFooter() {
         <span className={styles.bottomLeft}>© 2026 Lenore, Inc.</span>
         <span className={styles.bottomLeft}>
           Earn 20% on every referral —{' '}
-          <a href="/affiliates" className={styles.affiliateLink}>Join the Affiliate Program</a>
+          <a href="/affiliates/" className={styles.affiliateLink}>Join the Affiliate Program</a>
         </span>
       </div>
     </footer>

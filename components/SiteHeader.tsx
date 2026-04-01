@@ -4,10 +4,10 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 
 const RESOURCES_LINKS = [
-  { label: "IRS Phone Numbers",              href: "/resources/irs-phone-numbers"                          },
-  { label: "IRS Transaction Codes Guide",    href: "/resources/how-to-understand-irs-transaction-codes"   },
-  { label: "Section 7216 AI Consent",        href: "/magnets/section-7216"                                },
-  { label: "All Resources",                  href: "/resources"                                            },
+  { label: "IRS Phone Numbers",              href: "/resources/irs-phone-numbers/"                         },
+  { label: "IRS Transaction Codes Guide",    href: "/resources/how-to-understand-irs-transaction-codes/"   },
+  { label: "Section 7216 AI Consent",        href: "/magnets/section-7216/"                                },
+  { label: "All Resources",                  href: "/resources/"                                           },
 ];
 
 const NAV_LINKS = [
@@ -15,7 +15,7 @@ const NAV_LINKS = [
   { label: "Features",     href: "#features"     },
   { label: "How It Works", href: "#how-it-works" },
   { label: "Pricing",      href: "#pricing"      },
-  { label: "Contact",      href: "/contact"      },
+  { label: "Contact",      href: "/contact/"     },
 ];
 
 const ACCENT = "#14b8a6";
@@ -41,15 +41,19 @@ export default function SiteHeader() {
         position: "relative",
         zIndex: 1000,
         height: "var(--header-height, 68px)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "0 var(--page-gutter, clamp(1.25rem, 5vw, 3rem))",
-        maxWidth: "var(--max-width, 1280px)",
-        margin: "0 auto",
         width: "100%",
         background: "transparent",
       }}>
+       <div style={{
+         maxWidth: "var(--max-width, 1280px)",
+         margin: "0 auto",
+         width: "100%",
+         padding: "0 var(--page-gutter, clamp(1.25rem, 5vw, 3rem))",
+         display: "flex",
+         alignItems: "center",
+         justifyContent: "space-between",
+         height: "100%",
+       }}>
 
         {/* Logo */}
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: "0.625rem", textDecoration: "none" }}>
@@ -125,12 +129,12 @@ export default function SiteHeader() {
             )}
           </div>
 
-          <Link href="/login" style={{
+          <Link href="/login/" style={{
             fontSize: "0.875rem", fontWeight: 500,
             color: "var(--text-muted, #9ca3af)", textDecoration: "none",
           }}>Log In</Link>
 
-          <Link href="/login" style={{
+          <Link href="/login/" style={{
             fontSize: "0.875rem", fontWeight: 600, color: "#000",
             background: ACCENT, padding: "0.5rem 1.125rem",
             borderRadius: 9999, textDecoration: "none",
@@ -153,6 +157,7 @@ export default function SiteHeader() {
             <line x1="3" y1="18" x2="21" y2="18"/>
           </svg>
         </button>
+       </div>
       </header>
 
       {/* Mobile drawer */}
@@ -208,13 +213,13 @@ export default function SiteHeader() {
 
             <div style={{ height: 1, background: "var(--surface-border, #1f2937)", margin: "0.5rem 0" }} />
 
-            <Link href="/login" onClick={() => setDrawerOpen(false)} style={{
+            <Link href="/login/" onClick={() => setDrawerOpen(false)} style={{
               fontSize: "1rem", fontWeight: 500,
               color: "var(--text-muted, #9ca3af)", textDecoration: "none",
               padding: "0.625rem 0.75rem",
             }}>Log In</Link>
 
-            <Link href="/login" onClick={() => setDrawerOpen(false)} style={{
+            <Link href="/login/" onClick={() => setDrawerOpen(false)} style={{
               fontSize: "1rem", fontWeight: 600, color: "#000",
               background: ACCENT, padding: "0.75rem 1rem",
               borderRadius: 9999, textDecoration: "none", textAlign: "center",
