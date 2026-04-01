@@ -60,10 +60,10 @@ function buildReportHtml(rd: any, logoDataUrl: string | null): string {
           <div class="info-grid">
             ${infoBlock('SSN', taxpayer.ssn)}
             ${infoBlock('Tax Period Ending', taxpayer.taxYear ? '12/31/' + taxpayer.taxYear : '—')}
-            ${infoBlock('Filing Status', taxpayer.filingStatus)}
-            ${infoBlock('Form Number', taxpayer.formNumber)}
-            ${infoBlock('Received Date', taxpayer.receivedDate)}
-            ${infoBlock('Cycle Posted', taxpayer.cyclePosted)}
+            ${rd?.transcriptType !== 'wage-income' ? infoBlock('Filing Status', taxpayer.filingStatus) : ''}
+            ${rd?.transcriptType !== 'wage-income' ? infoBlock('Form Number', taxpayer.formNumber) : ''}
+            ${rd?.transcriptType !== 'account' && rd?.transcriptType !== 'wage-income' ? infoBlock('Received Date', taxpayer.receivedDate) : ''}
+            ${rd?.transcriptType !== 'account' && rd?.transcriptType !== 'wage-income' ? infoBlock('Cycle Posted', taxpayer.cyclePosted) : ''}
             ${infoBlock('Request Date', taxpayer.requestDate || rd?.metadata?.requestDate)}
             ${infoBlock('Tracking Number', taxpayer.trackingNumber)}
           </div>
@@ -443,7 +443,7 @@ function buildReportHtml(rd: any, logoDataUrl: string | null): string {
       <td class="code-column">${tx.code || '—'}</td>
       <td>${tx.date || '—'}</td>
       <td>${tx.description || '—'}</td>
-      <td>${tx.impact || tx.amount || '—'}</td>
+      <td style="font-size:12px;color:#6b7280;line-height:1.5;">${getCodeDesc(tx.code)}</td>
     </tr>`).join('')
 
   return headerHtml + `
@@ -511,7 +511,7 @@ function buildReportHtml(rd: any, logoDataUrl: string | null): string {
         <div class="section">
           <div class="section-title">Transaction Code Details</div>
           <table class="transaction-table">
-            <thead><tr><th>TC Code</th><th>Date</th><th>Description</th><th>Amount</th></tr></thead>
+            <thead><tr><th>TC Code</th><th>Date</th><th>Description</th><th>Impact</th></tr></thead>
             <tbody>${tableRowsHtml}</tbody>
           </table>
         </div>
@@ -582,7 +582,7 @@ function ReportInner() {
   )
 
   return (
-    <div style={{ background: '#020617', minHeight: '100vh' }}>
+    <div style={{ background: '#020617', minHeight: '100vh' }} className="report-outer">
       {/* Toolbar */}
       <div style={{ position: 'sticky', top: 0, zIndex: 50, borderBottom: '1px solid rgba(30,41,59,0.6)', background: 'rgba(2,6,23,0.9)', backdropFilter: 'blur(12px)', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
         <a href="https://transcript.taxmonitor.pro/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
@@ -663,8 +663,10 @@ const REPORT_CSS = `
   @media(max-width:640px){.page-content{padding:28px}.info-grid,.status-grid{grid-template-columns:1fr}.timeline-item{grid-template-columns:1fr;gap:10px}.balance-row{grid-template-columns:1fr}.balance-amount{text-align:left}}
   @media print {
     * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    .report-page { margin: 0; box-shadow: none; border-radius: 0; page-break-after: always; break-after: page; }
-    .page-content { padding: .75in; }
+    body, html { background: #fff !important; }
+    .report-outer { background: #fff !important; }
+    .report-page { box-shadow: none !important; border-radius: 0 !important; margin: 0 !important; page-break-after: always; break-after: page; }
+    .page-content { padding: .75in !important; }
     .section { page-break-inside: avoid; break-inside: avoid; }
     .timeline-item { page-break-inside: avoid; break-inside: avoid; }
     .status-grid { page-break-inside: avoid; break-inside: avoid; }
@@ -672,6 +674,8 @@ const REPORT_CSS = `
     .balance-box { page-break-inside: avoid; break-inside: avoid; }
     .report-header { page-break-inside: avoid; break-inside: avoid; }
     .summary-box { page-break-inside: avoid; break-inside: avoid; }
+    .transaction-table { page-break-inside: auto; }
+    .transaction-table tr { page-break-inside: avoid; break-inside: avoid; }
   }
 `
 
