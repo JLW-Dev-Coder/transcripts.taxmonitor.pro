@@ -19,112 +19,313 @@ type Step = 1 | 2 | 3
 
 function getCodeDescription(code: string): string {
   const CODES: Record<string, string> = {
+    // Entity codes
     '000': 'Establishment of tax module',
-    '011': 'Entity created by TC 011',
+    '011': 'Entity created',
+    '012': 'Entity updated',
+    '013': 'Entity updated — name change',
     '014': 'Address change',
     '015': 'Address change — international',
+    '016': 'Employer identification number (EIN) change',
+    '017': 'Spouse SSN change',
+    '018': 'Entity updated — SSN change',
     '020': 'Name change',
+    '021': 'Name change — corporation',
+    '022': 'Entity concealment',
+    '030': 'Entity updated — filing requirement change',
     '036': 'Reactivate tax module',
-    '054': 'Amended return filed',
+    '037': 'Reactivate tax module — delinquent return',
+    '050': 'Module blocked from automated collection',
+    '051': 'Module unblocked from automated collection',
+    '054': 'Amended return filed — TC 54',
+    '060': 'Taxpayer has been identified for ACS',
+    '062': 'Installment agreement established via ACS',
+    '063': 'Installment agreement defaulted via ACS',
+    '065': 'Balance due notice issued via ACS',
     '076': 'Duplicate return filed',
-    '150': 'Tax return filed — liability established',
-    '151': 'Tax return filed — liability reduced',
-    '152': 'Tax return filed — no liability',
-    '160': 'Failure-to-file penalty assessed',
+    '077': 'Amended return filed — TC 77',
+    '080': 'Entity updated — bankruptcy',
+    '081': 'Bankruptcy discharged',
+    '082': 'Bankruptcy dismissed',
+    '090': 'Penalty suspension — disaster relief',
+    '091': 'Penalty suspension lifted',
+    '098': 'Delete entity',
+    // Filing and assessment
+    '150': 'Tax return filed — tax liability established',
+    '151': 'Tax return filed — tax liability reduced',
+    '152': 'Tax return filed — no tax liability',
+    '154': 'Supplemental assessment',
+    '160': 'Failure-to-file (FTF) penalty assessed',
     '161': 'Failure-to-file penalty abated',
-    '166': 'Failure-to-pay penalty assessed',
+    '162': 'Failure-to-file penalty abated — tax court',
+    '163': 'Failure-to-file penalty abated — disaster',
+    '165': 'Penalty for failure to deposit',
+    '166': 'Failure-to-pay (FTP) penalty assessed',
     '167': 'Failure-to-pay penalty abated',
+    '168': 'Failure-to-pay penalty abated — tax court',
     '170': 'Estimated tax penalty assessed',
     '171': 'Estimated tax penalty abated',
-    '196': 'Interest assessed',
+    '172': 'Estimated tax penalty abated — tax court',
+    '176': 'Penalty for failure to deposit — abated',
+    '177': 'Penalty for failure to deposit — abated',
+    '180': 'Deposit penalty — pre-assessed',
+    '186': 'Deposit penalty assessed',
+    '190': 'Accuracy-related penalty assessed',
+    '191': 'Accuracy-related penalty abated',
+    '192': 'Accuracy-related penalty abated — tax court',
+    '196': 'Interest charged for late payment',
     '197': 'Interest abated',
+    '198': 'Interest abated — tax court',
+    '199': 'Interest assessed — restricted',
+    // Additional assessments
+    '240': 'Miscellaneous penalty assessed',
+    '241': 'Miscellaneous penalty abated',
+    '270': 'Failure-to-pay penalty assessed',
+    '271': 'Failure-to-pay penalty abated',
+    '272': 'Failure-to-pay penalty abated — tax court',
+    '276': 'Failure-to-pay penalty assessed',
+    '277': 'Failure-to-pay penalty abated',
+    '280': 'Penalty for underpayment of corporate estimated tax',
+    '281': 'Penalty for underpayment abated',
     '290': 'Additional tax assessed',
     '291': 'Tax decreased',
-    '295': 'Additional tax reduced',
+    '294': 'Additional tax assessed — math error',
+    '295': 'Additional tax assessment reduced',
+    '298': 'Tax increased — correction of error',
+    '299': 'Tax decreased — correction of error',
+    // Examination
     '300': 'Additional tax assessed — examination',
     '301': 'Tax decreased — examination',
+    '304': 'Additional assessment — partial agreement',
+    '305': 'Tax decrease — partial agreement',
+    '308': 'Additional assessment — unallowable items',
+    '309': 'Tax decrease — unallowable items',
+    '310': 'Additional tax assessed — automated underreporter',
+    '311': 'Tax decreased — automated underreporter',
     '320': 'Failure-to-file penalty assessed — examination',
     '321': 'Failure-to-file penalty abated — examination',
-    '336': 'Failure-to-pay penalty assessed — examination',
-    '340': 'Estimated tax penalty assessed — examination',
+    '322': 'Failure-to-file penalty abated — tax court',
+    '330': 'Additional tax — failure to file',
+    '336': 'Failure-to-pay penalty — examination',
+    '337': 'Failure-to-pay penalty abated — examination',
+    '340': 'Estimated tax penalty — examination',
+    '341': 'Estimated tax penalty abated — examination',
+    '350': 'Failure to deposit penalty — examination',
     '360': 'Interest assessed — examination',
+    '361': 'Interest abated — examination',
+    '365': 'Delinquency penalty — Tax Court case',
+    '366': 'Penalty waiver — Tax Court case',
     '370': 'Credit transferred from another module',
+    '371': 'Credit transfer reversed',
+    // Collections and credits
     '400': 'Earned income credit applied',
     '402': 'Earned income credit reversed',
-    '403': 'Earned income credit applied',
-    '404': 'Earned income credit reversed',
+    '403': 'Earned income credit applied — examination',
+    '404': 'Earned income credit reversed — examination',
     '405': 'Amended return filed — tax assessed',
+    '406': 'Amended return abated',
+    '410': 'Investment credit applied',
+    '411': 'Investment credit reversed',
     '420': 'Examination of tax return initiated',
-    '421': 'Examination of tax return closed — no change',
+    '421': 'Examination closed — no change',
+    '422': 'Examination closed — no change',
     '424': 'Examination referral — return examined',
     '425': 'Examination referral reversed',
+    '428': 'Examination initiated — field exam',
     '430': 'Estimated tax payment',
+    '431': 'Estimated tax payment reversed',
+    '432': 'Estimated tax payment applied',
+    '440': 'Payment of deferred tax',
     '460': 'Extension of time to file granted',
+    '461': 'Extension of time to file denied',
+    '462': 'Extension of time to file — automatic',
     '470': 'Collection action suspended',
-    '480': 'Offer in compromise pending',
+    '471': 'Collection action suspension released',
+    '472': 'Collection action suspended — Tax Court',
+    '480': 'Offer in compromise (OIC) pending',
     '481': 'Offer in compromise rejected',
     '482': 'Offer in compromise accepted',
-    '494': 'Offer in compromise — suspension of collection',
+    '483': 'Offer in compromise withdrawn',
+    '484': 'Offer in compromise — revised amount',
+    '485': 'Offer in compromise — default',
+    '486': 'Offer in compromise — returned',
+    '490': 'OIC — collection suspended',
+    '491': 'OIC — collection suspension released',
+    '494': 'Offer in compromise — collection suspension',
     '500': 'Installment agreement granted',
+    '501': 'Installment agreement modified',
+    '502': 'Installment agreement — Tax Court',
     '503': 'Installment agreement terminated',
-    '520': 'Collection suspended — litigation',
-    '521': 'Collection suspension released',
-    '530': 'Currently not collectible status',
-    '531': 'Currently not collectible status released',
-    '534': 'Currently not collectible — unable to locate',
-    '570': 'Additional liability pending — hold on refund',
-    '571': 'Resolved additional liability — hold released',
-    '582': 'Federal tax lien filed',
+    '504': 'Installment agreement — notice of default',
+    '505': 'Installment agreement reinstated',
+    '506': 'Installment agreement — payroll deduction',
+    '520': 'Collection suspended — pending litigation',
+    '521': 'Collection suspension released — litigation',
+    '522': 'Collection suspended — innocent spouse',
+    '523': 'Collection suspension released — innocent spouse',
+    '524': 'Collection suspended — combat zone',
+    '530': 'Currently not collectible (CNC) — hardship',
+    '531': 'CNC status released',
+    '532': 'CNC — unable to locate taxpayer',
+    '533': 'CNC — unable to contact taxpayer',
+    '534': 'CNC — unable to locate',
+    '535': 'CNC — death of taxpayer',
+    '536': 'CNC — no assets / income below threshold',
+    '537': 'CNC — taxpayer out of country',
+    '540': 'Military deferral',
+    '541': 'Military deferral released',
+    '550': 'Summons issued',
+    '560': 'Jeopardy assessment',
+    '570': 'Additional liability pending — refund hold',
+    '571': 'Additional liability resolved — hold released',
+    '572': 'Additional liability resolved — hold released',
+    '580': 'Notice of levy filed',
+    '581': 'Notice of levy released',
+    '582': 'Federal tax lien (FTL) filed',
     '583': 'Federal tax lien released',
+    '584': 'Federal tax lien — withdrawal',
+    '585': 'Federal tax lien — subordination',
+    '586': 'Federal tax lien — discharge',
     '590': 'Statute of limitations extended',
-    '591': 'Statute of limitations extension released',
+    '591': 'Statute extension released',
+    '592': 'Statute of limitations — litigation hold',
+    '593': 'Statute — litigation hold released',
+    '599': 'Statute of limitations — extended by consent',
     '600': 'Penalty for underpayment of estimated tax',
-    '601': 'Penalty for underpayment abated',
+    '601': 'Estimated tax penalty abated',
+    '602': 'Estimated tax penalty abated — Tax Court',
     '605': 'Failure-to-pay penalty',
     '606': 'Failure-to-pay penalty abated',
-    '610': 'Remittance with return',
+    '607': 'Failure-to-pay penalty abated — Tax Court',
+    '608': 'Statute of limitations expired — no liability',
+    '610': 'Payment submitted with return',
+    '611': 'Payment with return reversed',
+    '620': 'Regular payment received',
+    '621': 'Regular payment reversed',
+    '630': 'Tax deposit received',
+    '640': 'Tax deposit received — late',
     '650': 'Payment received',
-    '660': 'Additional payment received',
-    '670': 'Payment applied',
-    '680': 'Designated payment',
+    '651': 'Payment reversed',
+    '660': 'Estimated tax payment received',
+    '661': 'Estimated tax payment reversed',
+    '670': 'Payment applied to balance due',
+    '671': 'Payment reversed',
+    '672': 'Designated payment applied',
+    '676': 'Payment — credit elect',
+    '680': 'Designated payment applied',
+    '681': 'Designated payment reversed',
     '690': 'Penalty credit applied',
-    '700': 'Credit applied from another period',
-    '710': 'Excess collection applied',
-    '716': 'Credit transferred to another module',
+    '691': 'Penalty credit reversed',
+    '694': 'Refund applied to next year\'s estimated tax',
+    '695': 'Refund credit elect reversed',
+    '700': 'Credit transferred to this module',
+    '701': 'Credit transfer reversed',
+    '706': 'Credit transferred from another year',
+    '710': 'Excess collection credit applied',
+    '711': 'Excess collection credit reversed',
+    '716': 'Credit transferred out of this module',
+    '717': 'Credit transfer reversed',
+    '718': 'Credit transferred — court ordered',
     '720': 'Refundable credit applied',
-    '730': 'Backup withholding credit',
-    '740': 'Undelivered refund returned',
-    '766': 'Credit to account — refundable credit',
+    '721': 'Refundable credit reversed',
+    '722': 'Earned income credit applied',
+    '724': 'Earned income credit reversed',
+    '730': 'Backup withholding credit applied',
+    '731': 'Backup withholding reversed',
+    '736': 'Interest on overpayment — credited',
+    '740': 'Undelivered refund check returned',
+    '741': 'Returned refund check cancelled',
+    '742': 'Undelivered refund — reissued',
+    '745': 'Identity theft — refund frozen',
+    '760': 'Earned income credit applied — examination',
+    '761': 'Earned income credit reversed — examination',
+    '762': 'Earned income credit — disallowed',
+    '763': 'Earned income credit — disallowed',
+    '764': 'Earned income credit applied',
+    '765': 'Earned income credit reversed',
+    '766': 'Credit to your account (refundable credit)',
     '767': 'Credit reversed',
     '768': 'Earned income credit applied',
     '769': 'Earned income credit reversed',
     '770': 'Interest credited to account',
     '771': 'Interest reversed',
-    '776': 'Interest assessed',
+    '772': 'Interest on overpayment credited',
+    '776': 'Interest assessed on balance due',
     '777': 'Interest reversed',
-    '780': 'Offer in compromise — partial payment',
+    '780': 'OIC — partial payment applied',
+    '781': 'OIC — partial payment reversed',
+    '790': 'Credit applied from OIC',
     '800': 'Withholding credit applied',
-    '806': 'Federal tax withholding credit applied',
+    '801': 'Withholding credit reversed',
+    '806': 'Federal income tax withholding credit applied',
     '807': 'Withholding credit reversed',
-    '810': 'Refund freeze',
+    '808': 'Withholding credit — W-2 mismatch',
+    '810': 'Refund freeze — refund held',
     '811': 'Refund freeze released',
+    '812': 'Refund cancelled — re-issued',
     '820': 'Credit transferred to another account',
     '821': 'Credit transfer reversed',
-    '826': 'Credit transferred — overpayment applied to balance',
+    '824': 'Credit transferred — duplicate return',
+    '826': 'Credit transferred — overpayment applied to balance due',
+    '827': 'Credit transfer reversed',
+    '828': 'Credit applied — backup withholding',
     '830': 'Overpayment credit waived',
+    '832': 'Overpayment applied to another year',
+    '836': 'Overpayment credit applied — prior year',
     '840': 'Manual refund issued',
     '841': 'Manual refund reversed',
-    '843': 'Refund abatement',
+    '842': 'Manual refund — non-receipt reissued',
+    '843': 'Abatement of penalty or interest',
+    '844': 'Penalty abatement — first time',
     '846': 'Refund issued',
     '847': 'Refund reversed',
+    '848': 'Refund — supplemental',
+    '850': 'Overpayment applied to non-tax debt (TOP)',
+    '851': 'TOP offset reversed',
+    '856': 'Overpayment applied — child support',
+    '857': 'Child support offset reversed',
+    '860': 'Overpayment applied — state income tax',
+    '870': 'Waiver of restrictions on assessment',
+    '880': 'Penalty waiver — reasonable cause',
+    '881': 'Penalty waiver — statutory exception',
+    '882': 'Penalty waiver — administrative waiver',
+    '890': 'Penalty waiver granted',
     '898': 'Refund applied to non-tax debt (TOP offset)',
-    '899': 'Reversal of TOP offset',
+    '899': 'TOP offset reversal',
+    '900': 'Penalty waiver — IRS error',
+    '910': 'Penalty suspended — disaster',
+    '911': 'Penalty suspension released',
+    '916': 'Penalty suspended — innocent spouse',
+    '917': 'Penalty suspension released — innocent spouse',
+    '920': 'IRS error — account adjustment',
+    '921': 'IRS error — account adjustment reversed',
+    '922': 'IRS error — duplicate assessment',
+    '930': 'Installment agreement payment received',
+    '931': 'Installment agreement payment reversed',
+    '960': 'Power of attorney (POA) on file',
+    '961': 'Power of attorney revoked',
+    '970': 'Additional tax return filed',
     '971': 'Notice issued to taxpayer',
     '972': 'Notice rescinded',
-    '976': 'Duplicate return filed — sequenced',
-    '977': 'Amended return filed — sequenced',
+    '976': 'Duplicate return filed — unpostable',
+    '977': 'Amended return filed — TC 977',
+    '978': 'Amended return filed — unpostable',
+    '979': 'Amended return accepted',
     '983': 'Refund held — identity theft',
-    '990': 'Statute of limitations expiration date extended',
+    '984': 'Identity theft hold released',
+    '985': 'Erroneous refund — assessment',
+    '986': 'Erroneous refund — abatement',
+    '988': 'Duplicate return filed — assessment',
+    '990': 'Statute extended — consent',
+    '991': 'Statute extension — litigation',
+    '992': 'Statute extension — bankruptcy',
+    '993': 'Statute extension — foreign tax credit',
+    '994': 'Statute extension — foreign corporation',
+    '995': 'Statute extension — innocent spouse',
+    '996': 'Statute extension — combat zone',
+    '997': 'Statute extension — financial disability',
+    '998': 'Statute extension — collection',
+    '999': 'Statute extension — other',
   }
   return CODES[code] || `IRS Transaction Code ${code}`
 }
@@ -338,46 +539,55 @@ export default function DashboardClient() {
     const isWageAndIncome     = /Wage and Income Transcript/i.test(text)
     const isAccountTranscript = !isReturnTranscript && !isRecordOfAccount && !isWageAndIncome
 
+    // ── Normalise text — collapse multiple spaces to single space ──
+    const norm = text.replace(/\s{2,}/g, ' ')
+
+    // ── Whitespace-tolerant extraction helpers ──
+    function amt(label: string): string {
+      const pattern = label.split(' ').map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\\s+')
+      const re = new RegExp(pattern + '\\s*:\\s*\\$?([\\d,]+\\.\\d{2})', 'i')
+      const m  = norm.match(re)
+      return m ? '$' + m[1] : '$0.00'
+    }
+
+    function val(label: string): string {
+      const pattern = label.split(' ').map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\\s+')
+      const re = new RegExp(pattern + '\\s*:\\s*([^\\n\\r$\\d][^\\n\\r]*)', 'i')
+      const m  = norm.match(re)
+      return m ? m[1].trim().split(/\s{2,}/)[0].trim() : '—'
+    }
+
+    function amtDirect(label: string): string {
+      const words = label.split(/\s+/)
+      const pattern = words.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('[\\s\\S]{0,30}?')
+      const re = new RegExp(pattern + '[\\s\\S]{0,10}?\\$?([\\d,]+\\.\\d{2})', 'i')
+      const m  = norm.match(re)
+      return m ? '$' + m[1] : '$0.00'
+    }
+
     // ── Universal metadata ──
-    const ssnMatch       = text.match(/SSN[^:]*:\s*(XXX-XX-\d{4}|\d{3}-\d{2}-\d{4})/i)
-    const nameMatch      = text.match(/(?:JAMI|JAMES|JOHN|JANE|[A-Z]{2,}\s+[A-Z]?\s*[A-Z]{2,})\s+\d{4}/)?.[0]
-      || text.match(/(?:taxpayer name|name)[:\s]+([A-Z][A-Z\s]+)/i)?.[1]
-    const taxPeriodMatch = text.match(/Tax Period(?:\s+Ending|\s+Requested)?[:\s]+(?:\d{2}-\d{2}-)?(\d{4})/i)
-      || text.match(/Report\s+for\s+Tax\s+Period\s+Ending[:\s]+\d{2}-\d{2}-(\d{4})/i)
-    const taxYear = taxPeriodMatch?.[1] || ''
-    const requestDateMatch = text.match(/Request Date[:\s]+(\d{2}-\d{2}-\d{4})/i)
-    const requestDate    = requestDateMatch?.[1] || ''
-    const cycleMatch     = text.match(/Cycle posted[:\s]+(\d+)/i)
-    const receivedMatch  = text.match(/Received date[:\s]+(\d{2}-\d{2}-\d{4})/i)
-    const filingStatusMatch = text.match(/Filing status[:\s]+(\w+)/i)
-    const formMatch      = text.match(/Taxpayer Form number[:\s]+([\w-]+)/i)
-    const trackingMatch  = text.match(/Tracking Number[:\s]+(\d+)/i)
-
-    function extractAmt(label: string): string {
-      const re = new RegExp(label + '[:\\s]+\\$?([\\d,\\.]+)', 'i')
-      const m  = text.match(re)
-      return m ? '$' + m[1] : '$0.00'
-    }
-
-    function extractVal(label: string, src?: string): string {
-      const re = new RegExp(label + '[:\\s]+([^\\n\\r$]+)', 'i')
-      const m  = (src || text).match(re)
-      return m ? m[1].trim() : '—'
-    }
-
-    function extractAmtFrom(label: string, src: string): string {
-      const re = new RegExp(label + '[:\\s]+\\$?([\\d,\\.]+)', 'i')
-      const m  = src.match(re)
-      return m ? '$' + m[1] : '$0.00'
-    }
+    const ssnMatch        = norm.match(/SSN[^:]*:\s*(XXX-XX-\d{4}|\d{3}-\d{2}-\d{4})/i)
+    const taxPeriodMatch  = norm.match(/Tax Period(?:\s+Ending|\s+Requested)?:\s*\d{2}-\d{2}-(\d{4})/i)
+      || norm.match(/Report for Tax Period Ending:\s*\d{2}-\d{2}-(\d{4})/i)
+    const taxYear         = taxPeriodMatch?.[1] || ''
+    const requestDateMatch = norm.match(/Request Date:\s*(\d{2}-\d{2}-\d{4})/i)
+    const requestDate     = requestDateMatch?.[1] || ''
+    const cycleMatch      = norm.match(/Cycle posted:\s*(\d+)/i)
+    const receivedMatch   = norm.match(/Received date:\s*(\d{2}-\d{2}-\d{4})/i)
+    const filingStatusMatch = norm.match(/Filing status:\s*(\w+)/i)
+    const formMatch       = norm.match(/(?:Taxpayer )?Form number:\s*([\w-]+)/i)
+    const trackingMatch   = norm.match(/Tracking Number:\s*(\d+)/i)
+    const ssnProvided     = norm.match(/SSN provided:\s*(XXX-XX-\d{4})/i)
+      || norm.match(/Taxpayer Identification Number:\s*(XXX-XX-\d{4})/i)
+    const nameMatch       = norm.match(/(?:XXX-XX-\d{4})\s+([A-Z][A-Z\s]+?)(?:\s+\d{3,}|\s+[A-Z]\s)/)?.[1]?.trim()
 
     if (isReturnTranscript) {
       // ── RETURN TRANSCRIPT parsing ──
       const parsed = {
         transcriptType: 'return',
         taxpayer: {
-          ssn:          ssnMatch?.[1] || '—',
-          name:         nameMatch?.replace(/\d{4}.*/, '').trim() || '—',
+          ssn:          ssnProvided?.[1] || ssnMatch?.[1] || '—',
+          name:         nameMatch || '—',
           taxYear,
           requestDate,
           filingStatus: filingStatusMatch?.[1] || '—',
@@ -387,61 +597,61 @@ export default function DashboardClient() {
           trackingNumber: trackingMatch?.[1] || '—',
         },
         income: {
-          totalWages:            extractAmt('Total wages'),
-          businessIncome:        extractAmt('Business income or loss \\(Schedule C\\):'),
-          totalIncome:           extractAmt('Total income:'),
-          adjustedGrossIncome:   extractAmt('Adjusted gross income:'),
-          scheduleEIC_SelfEmploymentIncome: extractAmt('Schedule EIC Self-employment income per computer'),
+          totalWages:          amt('Total wages'),
+          businessIncome:      amtDirect('Business income or loss Schedule C'),
+          totalIncome:         amt('Total income'),
+          adjustedGrossIncome: amt('Adjusted gross income'),
+          scheduleEIC_SelfEmploymentIncome: amtDirect('Schedule EIC Self-employment income per computer'),
         },
         adjustments: {
-          selfEmploymentTaxDeduction: extractAmt('Self-employment tax deduction:'),
-          qualifiedBusinessIncome:    extractAmt('Qualified business income deduction:'),
-          totalAdjustments:           extractAmt('Total adjustments:'),
+          selfEmploymentTaxDeduction: amtDirect('Self-employment tax deduction'),
+          qualifiedBusinessIncome:    amtDirect('Qualified business income deduction'),
+          totalAdjustments:           amt('Total adjustments'),
         },
         taxAndCredits: {
-          taxableIncome:        extractAmt('Taxable income:'),
-          tentativeTax:         extractAmt('Tentative tax:'),
-          selfEmploymentTax:    extractAmt('Self employment tax:'),
-          totalTaxLiability:    extractAmt('Total tax liability taxpayer figures:'),
-          incomeTaxAfterCredits: extractAmt('Income tax after credits per computer'),
-          standardDeduction:    extractAmt('Standard deduction per computer'),
-          totalCredits:         extractAmt('Total credits:'),
+          taxableIncome:        amt('Taxable income'),
+          tentativeTax:         amt('Tentative tax'),
+          selfEmploymentTax:    amtDirect('Self employment tax'),
+          totalTaxLiability:    amtDirect('Total tax liability taxpayer figures'),
+          incomeTaxAfterCredits: amtDirect('Income tax after credits per computer'),
+          standardDeduction:    amtDirect('Standard deduction per computer'),
+          totalCredits:         amt('Total credits'),
         },
         payments: {
-          federalWithheld:   extractAmt('Federal income tax withheld:'),
-          estimatedPayments: extractAmt('Estimated tax payments:'),
-          totalPayments:     extractAmt('Total payments:'),
+          federalWithheld:   amtDirect('Federal income tax withheld'),
+          estimatedPayments: amt('Estimated tax payments'),
+          totalPayments:     amt('Total payments'),
         },
         refundOrOwed: {
-          amountOwed:        extractAmt('Amount you owe:'),
-          balanceDue:        extractAmt('Balance due\\/overpayment using taxpayer figure per computer'),
-          estimatedPenalty:  extractAmt('Estimated tax penalty:'),
+          amountOwed:       amt('Amount you owe'),
+          balanceDue:       amtDirect('Balance due overpayment using taxpayer figure per computer'),
+          estimatedPenalty: amt('Estimated tax penalty'),
         },
         scheduleC: {
-          grossReceipts:     extractAmt('Gross receipts or sales:'),
-          totalExpenses:     extractAmt('Total expenses:'),
-          homeOfficeExpense: extractAmt('Expense for business use of home:'),
-          netProfit:         extractAmt('Schedule C net profit or loss per computer'),
-          naicsCode:         extractVal('North American Industry Classification System'),
-          accountMethod:     extractVal('Account method'),
+          grossReceipts:     amtDirect('Gross receipts or sales'),
+          totalExpenses:     amt('Total expenses'),
+          homeOfficeExpense: amtDirect('Expense for business use of home'),
+          netProfit:         amtDirect('Schedule C net profit or loss per computer'),
+          naicsCode:         val('North American Industry Classification System'),
+          accountMethod:     val('Account method'),
         },
         selfEmploymentTax: {
-          totalSETax:        extractAmt('Total Self-Employment tax per computer'),
-          seIncome:          extractAmt('Total Self-Employment income:'),
-          socialSecurityTax: extractAmt('Self-Employment Social Security tax computer'),
-          medicareTax:       extractAmt('Self-Employment Medicare tax per computer'),
+          totalSETax:        amtDirect('Total Self-Employment tax per computer'),
+          seIncome:          amtDirect('Total Self-Employment income'),
+          socialSecurityTax: amtDirect('Self-Employment Social Security tax computer'),
+          medicareTax:       amtDirect('Self-Employment Medicare tax per computer'),
         },
         qualifiedBusinessIncome: {
-          qbiComponent:      extractAmt('Qualified business income component:'),
-          totalQBI:          extractAmt('Total qualified business income or loss:'),
-          deduction:         extractAmt('Form 8995 net capital gains'),
+          qbiComponent:      amt('Qualified business income component'),
+          totalQBI:          amt('Total qualified business income or loss'),
+          deduction:         amt('Form 8995 net capital gains'),
         },
         transactions: [],
         balances: {
-          assessedTax: extractAmt('Total assessment per computer'),
-          payments:    extractAmt('Total payments:'),
-          credits:     extractAmt('Total credits:'),
-          balance:     extractAmt('Amount you owe:'),
+          assessedTax: amt('Total assessment per computer'),
+          payments:    amt('Total payments'),
+          credits:     amt('Total credits'),
+          balance:     amt('Amount you owe'),
         },
         metadata: {
           transcriptType: 'Form 1040 Tax Return Transcript',
@@ -456,54 +666,92 @@ export default function DashboardClient() {
     // ── WAGE & INCOME TRANSCRIPT parsing ──
     if (isWageAndIncome) {
       const w2Forms: any[] = []
-      const w2Sections = text.split(/Form W-2 Wage and Tax Statement/gi).slice(1)
-      for (const section of w2Sections) {
-        const emp = section.match(/Employer[:\s]*\n[^\n]*\n[^\n]*\n([A-Z][A-Z\s&]+)/)?.[1]?.trim()
-        const ein = section.match(/Employer Identification Number[^:]*:\s*(XX-XXX\d+|\d{2}-\d{7})/i)?.[1]
-        w2Forms.push({
-          employer:   emp || extractVal('Employer', section) || '—',
-          ein:        ein || '—',
-          wages:      extractAmtFrom('Wages, Tips and Other Compensation', section),
-          fedWithheld:extractAmtFrom('Federal Income Tax Withheld', section),
-          ssWages:    extractAmtFrom('Social Security Wages', section),
-          ssTax:      extractAmtFrom('Social Security Tax Withheld', section),
-          medicareWages: extractAmtFrom('Medicare Wages and Tips', section),
-          medicareTax:   extractAmtFrom('Medicare Tax Withheld', section),
-          submissionType: section.match(/Submission Type:\s*([^\n]+)/i)?.[1]?.trim() || '—',
-        })
-      }
-
       const b1099Forms: any[] = []
-      const b1099Sections = text.split(/Form 1099-B/gi).slice(1)
-      for (const section of b1099Sections) {
-        const proceeds  = extractAmtFrom('Proceeds', section)
-        const costBasis = extractAmtFrom('Cost or Basis', section)
-        const proceedsNum = parseFloat(proceeds.replace(/[^0-9.-]/g, '')) || 0
-        const costNum     = parseFloat(costBasis.replace(/[^0-9.-]/g, '')) || 0
-        const gainLoss    = (proceedsNum - costNum).toFixed(2)
-        b1099Forms.push({
-          payer:          section.match(/(?:XX-XXX\d+)\s+([A-Z][A-Z\s&]+)/)?.[1]?.trim() || '—',
-          fin:            section.match(/Payer's Federal Identification Number[^:]*:\s*(XX-XXX\d+|\d{2}-\d{7})/i)?.[1] || '—',
-          dateSold:       section.match(/Date Sold or Disposed:\s*(\d{2}-\d{2}-\d{4})/i)?.[1] || '—',
-          dateAcquired:   section.match(/Date acquired:\s*(\d{2}-\d{2}-\d{4})/i)?.[1] || '—',
-          proceeds,
-          costBasis,
-          gainLoss:       gainLoss.startsWith('-') ? `-$${gainLoss.slice(1)}` : `$${gainLoss}`,
-          description:    section.match(/Description:\s*([^\n]+)/i)?.[1]?.trim() || '—',
-          gainType:       section.match(/Type of gain or loss:\s*([^\n]+)/i)?.[1]?.trim() || '—',
-          accountNumber:  section.match(/Account Number:\s*([^\n]+)/i)?.[1]?.trim() || '—',
+
+      const w2Splits = norm.split(/Form W-2 Wage and Tax Statement/gi)
+      for (let i = 1; i < w2Splits.length; i++) {
+        const s = w2Splits[i]
+        const nextForm = s.search(/Form (W-2|1099)/i)
+        const section  = nextForm > 0 ? s.slice(0, nextForm) : s
+
+        const w2Amt = (label: string): string => {
+          const pattern = label.split(' ').map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\\s+')
+          const re = new RegExp(pattern + '\\s*:\\s*\\$?([\\d,]+\\.\\d{2})', 'i')
+          const m  = section.match(re)
+          return m ? '$' + m[1] : '$0.00'
+        }
+
+        const einMatch  = section.match(/Employer Identification Number[^:]*:\s*(XX-XXX\d+|\d{2}-\d{7})/i)
+        const empMatch  = section.match(/(?:XX-XXX\d+|\d{2}-\d{7})\s+([A-Z][A-Z0-9\s&]+?)(?:\s{2,}|\s+\d{4,}|Employee)/i)
+        const subMatch  = section.match(/Submission Type:\s*([^\n]+?)(?:\s{2,}|$)/i)
+
+        w2Forms.push({
+          employer:       empMatch?.[1]?.trim() || '—',
+          ein:            einMatch?.[1] || '—',
+          wages:          w2Amt('Wages, Tips and Other Compensation'),
+          fedWithheld:    w2Amt('Federal Income Tax Withheld'),
+          ssWages:        w2Amt('Social Security Wages'),
+          ssTax:          w2Amt('Social Security Tax Withheld'),
+          medicareWages:  w2Amt('Medicare Wages and Tips'),
+          medicareTax:    w2Amt('Medicare Tax Withheld'),
+          submissionType: subMatch?.[1]?.trim() || '—',
         })
       }
 
-      const totalWages   = w2Forms.reduce((s: number, w: any) => s + parseFloat(w.wages.replace(/[^0-9.]/g, '') || '0'), 0)
-      const totalFedWH   = w2Forms.reduce((s: number, w: any) => s + parseFloat(w.fedWithheld.replace(/[^0-9.]/g, '') || '0'), 0)
+      const b1099Splits = norm.split(/Form 1099-B Proceeds from Broker/gi)
+      for (let i = 1; i < b1099Splits.length; i++) {
+        const s = b1099Splits[i]
+        const nextForm = s.search(/Form (W-2|1099)/i)
+        const section  = nextForm > 0 ? s.slice(0, nextForm) : s
+
+        const bAmt = (label: string): string => {
+          const pattern = label.split(' ').map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\\s+')
+          const re = new RegExp(pattern + '\\s*:\\s*\\$?([\\d,]+\\.\\d{2})', 'i')
+          const m  = section.match(re)
+          return m ? '$' + m[1] : '$0.00'
+        }
+
+        const bVal = (label: string): string => {
+          const pattern = label.split(' ').map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\\s+')
+          const re = new RegExp(pattern + '\\s*:\\s*([^\\n$]+?)(?:\\s{2,}|$)', 'i')
+          const m  = section.match(re)
+          return m ? m[1].trim() : '—'
+        }
+
+        const proceedsNum = parseFloat(bAmt('Proceeds').replace(/[^0-9.]/g, '')) || 0
+        const basisNum    = parseFloat(bAmt('Cost or Basis').replace(/[^0-9.]/g, '')) || 0
+        const netGL       = proceedsNum - basisNum
+        const gainLossStr = netGL < 0 ? `-$${Math.abs(netGL).toFixed(2)}` : `$${netGL.toFixed(2)}`
+
+        const descMatch = section.match(/Description:\s*([^\n]+?)(?:\s{2,}|Second Notice|Date acquired)/i)
+        const rawDesc   = descMatch?.[1]?.trim() || '—'
+
+        b1099Forms.push({
+          payer:           bVal('Payer\'s Federal Identification Number').replace(/XX-XXX\d+\s*/i, '').trim() || '—',
+          fin:             section.match(/Federal Identification Number[^:]*:\s*(XX-XXX\d+|\d{2}-\d{9})/i)?.[1] || '—',
+          accountNumber:   section.match(/Account Number:\s*([\w\d]+)/i)?.[1] || '—',
+          dateSold:        section.match(/Date Sold or Disposed:\s*(\d{2}-\d{2}-\d{4})/i)?.[1] || '—',
+          dateAcquired:    section.match(/Date acquired:\s*(\d{2}-\d{2}-\d{4})/i)?.[1] || '—',
+          proceeds:        bAmt('Proceeds'),
+          costBasis:       bAmt('Cost or Basis'),
+          gainLoss:        gainLossStr,
+          description:     rawDesc,
+          gainType:        bVal('Type of gain or loss'),
+          noncovered:      bVal('Noncovered Security Indicator'),
+          fatca:           section.match(/FATCA Filing Requirement:\s*([^\n]+?)(?:\s{2,}|$)/i)?.[1]?.trim() || '—',
+          form8949:        bVal('Applicable Check Box on Form 8949'),
+        })
+      }
+
+      const totalWages    = w2Forms.reduce((s: number, w: any) => s + parseFloat(w.wages.replace(/[^0-9.]/g, '') || '0'), 0)
+      const totalFedWH    = w2Forms.reduce((s: number, w: any) => s + parseFloat(w.fedWithheld.replace(/[^0-9.]/g, '') || '0'), 0)
       const totalProceeds = b1099Forms.reduce((s: number, b: any) => s + parseFloat(b.proceeds.replace(/[^0-9.]/g, '') || '0'), 0)
       const totalBasis    = b1099Forms.reduce((s: number, b: any) => s + parseFloat(b.costBasis.replace(/[^0-9.]/g, '') || '0'), 0)
 
       const parsed = {
         transcriptType: 'wage-income',
         taxpayer: {
-          ssn:           ssnMatch?.[1] || '—',
+          ssn:    ssnProvided?.[1] || ssnMatch?.[1] || norm.match(/TIN Provided:\s*(XXX-XX-\d{4})/i)?.[1] || '—',
           taxYear,
           requestDate,
           trackingNumber: trackingMatch?.[1] || '—',
@@ -511,17 +759,21 @@ export default function DashboardClient() {
         w2Forms,
         b1099Forms,
         summary: {
-          totalW2s:        w2Forms.length,
-          total1099Bs:     b1099Forms.length,
-          totalWages:      `$${totalWages.toFixed(2)}`,
-          totalFedWithheld:`$${totalFedWH.toFixed(2)}`,
-          totalProceeds:   `$${totalProceeds.toFixed(2)}`,
-          totalBasis:      `$${totalBasis.toFixed(2)}`,
-          totalGainLoss:   `$${(totalProceeds - totalBasis).toFixed(2)}`,
+          totalW2s:         w2Forms.length,
+          total1099Bs:      b1099Forms.length,
+          totalWages:       `$${totalWages.toFixed(2)}`,
+          totalFedWithheld: `$${totalFedWH.toFixed(2)}`,
+          totalProceeds:    `$${totalProceeds.toFixed(2)}`,
+          totalBasis:       `$${totalBasis.toFixed(2)}`,
+          totalGainLoss:    `$${(totalProceeds - totalBasis).toFixed(2)}`,
         },
         transactions: [],
         balances: { assessedTax: '', payments: '', credits: '', balance: '' },
-        metadata: { transcriptType: 'Wage and Income Transcript', requestDate, parsedAt: new Date().toISOString() },
+        metadata: {
+          transcriptType: 'Wage and Income Transcript',
+          requestDate,
+          parsedAt: new Date().toISOString(),
+        },
       }
       setJsonText(JSON.stringify(parsed, null, 2))
       return
@@ -532,38 +784,56 @@ export default function DashboardClient() {
       const transactions: any[] = []
       const txSection = text.match(/TRANSACTIONS[\s\S]*?(?=SSN provided:|$)/i)?.[0] || ''
       const txLines   = txSection.split('\n')
+
+      const cleanDesc = (raw: string, code: string): string => {
+        return raw
+          .replace(/\b\d{8}\b/g, '')
+          .replace(/\b\d{5}-\d{3}-\d{5}-\d{1,2}\b/g, '')
+          .replace(/\b(NOTICE\d+|CP\s+\d+)\b/gi, '')
+          .replace(/\b00\b/g, '')
+          .replace(/\s{2,}/g, ' ')
+          .trim() || getCodeDescription(code)
+      }
+
       for (const line of txLines) {
         const trimmed = line.trim()
         if (!trimmed) continue
         const p = trimmed.match(/^(\d{3})\s+(.+?)\s+(\d{2}-\d{2}-\d{4})\s+([\$\-]?[\d,]+\.\d{2})\s*$/)
         if (p) {
-          transactions.push({ code: p[1], date: p[3], description: p[2].trim(), amount: p[4], impact: p[2].trim() })
+          transactions.push({ code: p[1], date: p[3], description: cleanDesc(p[2], p[1]), amount: p[4], impact: cleanDesc(p[2], p[1]) })
           continue
         }
         const p2 = trimmed.match(/^(\d{3})\s+(.+?)\s+\d{11,}\s+\d{8}\s+(\d{2}-\d{2}-\d{4})\s+([\$\-]?[\d,]+\.\d{2})\s*$/)
         if (p2) {
-          transactions.push({ code: p2[1], date: p2[3], description: p2[2].trim(), amount: p2[4], impact: p2[2].trim() })
+          transactions.push({ code: p2[1], date: p2[3], description: cleanDesc(p2[2], p2[1]), amount: p2[4], impact: cleanDesc(p2[2], p2[1]) })
           continue
         }
         const p3 = trimmed.match(/^(\d{3})\s{2,}([A-Za-z].+?)\s{2,}(\d{2}-\d{2}-\d{4})\s+([\$\-]?[\d,]+\.\d{2})/)
         if (p3) {
-          transactions.push({ code: p3[1], date: p3[3], description: p3[2].trim(), amount: p3[4], impact: p3[2].trim() })
+          transactions.push({ code: p3[1], date: p3[3], description: cleanDesc(p3[2], p3[1]), amount: p3[4], impact: cleanDesc(p3[2], p3[1]) })
+          continue
+        }
+        const p4 = trimmed.match(/^(\d{3})\s+(.+?)\s+(\d{2}-\d{2}-\d{4})\s+(-\$[\d,]+\.\d{2})\s*$/)
+        if (p4) {
+          transactions.push({ code: p4[1], date: p4[3], description: cleanDesc(p4[2], p4[1]), amount: p4[4], impact: cleanDesc(p4[2], p4[1]) })
+          continue
         }
       }
 
-      const acctBalance    = text.match(/Account balance:\s*\$([\d,\.]+)/i)?.[1]
-      const accruedInt     = text.match(/Accrued interest:\s*\$([\d,\.]+)/i)?.[1]
-      const accruedPenalty = text.match(/Accrued penalty:\s*\$([\d,\.]+)/i)?.[1]
-      const payoffAmt      = text.match(/Account balance plus accruals[^:]*:\s*\$([\d,\.]+)/i)?.[1]
+      const acctBalance    = norm.match(/Account balance:\s*\$([\d,\.]+)/i)?.[1]
+      const accruedInt     = norm.match(/Accrued interest:\s*\$([\d,\.]+)/i)?.[1]
+      const accruedPenalty = norm.match(/Accrued penalty:\s*\$([\d,\.]+)/i)?.[1]
+      const payoffAmt      = norm.match(/Account balance plus accruals[^:]*:\s*\$([\d,\.]+)/i)?.[1]
 
       const parsed = {
         transcriptType: 'record-of-account',
         taxpayer: {
-          ssn:           ssnMatch?.[1] || '—',
+          ssn:           ssnProvided?.[1] || ssnMatch?.[1] || '—',
+          name:          nameMatch || '—',
           taxYear,
           requestDate,
           filingStatus:  filingStatusMatch?.[1] || '—',
-          formNumber:    formMatch?.[1] || '1040',
+          formNumber:    formMatch?.[1] || norm.match(/Form Number:\s*([\w-]+)/i)?.[1] || '—',
           cyclePosted:   cycleMatch?.[1] || '—',
           receivedDate:  receivedMatch?.[1] || '—',
           trackingNumber: trackingMatch?.[1] || '—',
@@ -576,45 +846,45 @@ export default function DashboardClient() {
         },
         transactions,
         income: {
-          totalWages:          extractAmt('Total wages'),
-          businessIncome:      extractAmt('Business income or loss \\(Schedule C\\):'),
-          totalIncome:         extractAmt('Total income:'),
-          adjustedGrossIncome: extractAmt('Adjusted gross income:'),
+          totalWages:          amt('Total wages'),
+          businessIncome:      amtDirect('Business income or loss Schedule C'),
+          totalIncome:         amt('Total income'),
+          adjustedGrossIncome: amt('Adjusted gross income'),
         },
         taxAndCredits: {
-          taxableIncome:     extractAmt('Taxable income:'),
-          tentativeTax:      extractAmt('Tentative tax:'),
-          selfEmploymentTax: extractAmt('Self employment tax:'),
-          totalTaxLiability: extractAmt('Total tax liability taxpayer figures:'),
-          totalCredits:      extractAmt('Total credits:'),
-          standardDeduction: extractAmt('Standard deduction per computer'),
+          taxableIncome:     amt('Taxable income'),
+          tentativeTax:      amt('Tentative tax'),
+          selfEmploymentTax: amtDirect('Self employment tax'),
+          totalTaxLiability: amtDirect('Total tax liability taxpayer figures'),
+          totalCredits:      amt('Total credits'),
+          standardDeduction: amtDirect('Standard deduction per computer'),
         },
         payments: {
-          federalWithheld:   extractAmt('Federal income tax withheld:'),
-          estimatedPayments: extractAmt('Estimated tax payments:'),
-          totalPayments:     extractAmt('Total payments:'),
+          federalWithheld:   amtDirect('Federal income tax withheld'),
+          estimatedPayments: amt('Estimated tax payments'),
+          totalPayments:     amt('Total payments'),
         },
         refundOrOwed: {
-          amountOwed: extractAmt('Amount you owe:'),
-          balanceDue: extractAmt('Balance due\\/overpayment using taxpayer figure per computer'),
+          amountOwed: amt('Amount you owe'),
+          balanceDue: amtDirect('Balance due overpayment using taxpayer figure per computer'),
         },
         scheduleC: {
-          grossReceipts:     extractAmt('Gross receipts or sales:'),
-          totalExpenses:     extractAmt('Total expenses:'),
-          homeOfficeExpense: extractAmt('Expense for business use of home:'),
-          netProfit:         extractAmt('Schedule C net profit or loss per computer'),
-          naicsCode:         extractVal('North American Industry Classification System'),
+          grossReceipts:     amtDirect('Gross receipts or sales'),
+          totalExpenses:     amt('Total expenses'),
+          homeOfficeExpense: amtDirect('Expense for business use of home'),
+          netProfit:         amtDirect('Schedule C net profit or loss per computer'),
+          naicsCode:         val('North American Industry Classification System'),
         },
         selfEmploymentTax: {
-          totalSETax:        extractAmt('Total Self-Employment tax per computer'),
-          seIncome:          extractAmt('Total Self-Employment income:'),
-          socialSecurityTax: extractAmt('Self-Employment Social Security tax computer'),
-          medicareTax:       extractAmt('Self-Employment Medicare tax per computer'),
+          totalSETax:        amtDirect('Total Self-Employment tax per computer'),
+          seIncome:          amtDirect('Total Self-Employment income'),
+          socialSecurityTax: amtDirect('Self-Employment Social Security tax computer'),
+          medicareTax:       amtDirect('Self-Employment Medicare tax per computer'),
         },
         balances: {
-          assessedTax: extractAmt('Total assessment per computer'),
-          payments:    extractAmt('Total payments:'),
-          credits:     extractAmt('Total credits:'),
+          assessedTax: amt('Total assessment per computer'),
+          payments:    amt('Total payments'),
+          credits:     amt('Total credits'),
           balance:     acctBalance ? `$${acctBalance}` : '$0.00',
         },
         metadata: {
@@ -630,6 +900,17 @@ export default function DashboardClient() {
     // ── ACCOUNT TRANSCRIPT parsing (transaction codes) ──
     const transactions: any[] = []
     const lines = text.split('\n')
+
+    const cleanDescAcct = (raw: string, code: string): string => {
+      return raw
+        .replace(/\b\d{8}\b/g, '')
+        .replace(/\b\d{5}-\d{3}-\d{5}-\d{1,2}\b/g, '')
+        .replace(/\b(NOTICE\d+|CP\s+\d+)\b/gi, '')
+        .replace(/\b00\b/g, '')
+        .replace(/\s{2,}/g, ' ')
+        .trim() || getCodeDescription(code)
+    }
+
     for (const line of lines) {
       const trimmed = line.trim()
       if (!trimmed) continue
@@ -637,55 +918,57 @@ export default function DashboardClient() {
       // Must start with a 3-digit transaction code
       if (!/^\d{3}\s/.test(trimmed)) continue
 
-      // Extract the date — always MM-DD-YYYY format
+      // Pattern 1: code desc date amount
       const dateMatch = trimmed.match(/(\d{2}-\d{2}-\d{4})\s+([\-]?\$[\d,]+\.\d{2})\s*$/)
-      if (!dateMatch) continue
+      if (dateMatch) {
+        const date   = dateMatch[1]
+        const amount = dateMatch[2]
+        const code   = trimmed.slice(0, 3)
+        const middle = trimmed.slice(3, trimmed.lastIndexOf(dateMatch[0])).trim()
+        const description = cleanDescAcct(middle, code)
+        transactions.push({ code, date, amount, description, impact: description })
+        continue
+      }
 
-      const date   = dateMatch[1]
-      const amount = dateMatch[2]
-      const code   = trimmed.slice(0, 3)
-
-      // Everything between code and date is description + optional cycle data
-      let middle = trimmed.slice(3, trimmed.lastIndexOf(dateMatch[0])).trim()
-
-      // Remove cycle numbers (8-digit numbers like 20221605)
-      middle = middle.replace(/\b\d{8}\b/g, '').trim()
-
-      // Remove IRS document reference numbers like 90211-509-61036-2
-      middle = middle.replace(/\b\d{5}-\d{3}-\d{5}-\d{1,2}\b/g, '').trim()
-
-      // Remove notice codes like NOTICE1444, CP   0014
-      middle = middle.replace(/\b(NOTICE\d+|CP\s+\d+)\b/gi, '').trim()
-
-      // Collapse multiple spaces
-      const description = middle.replace(/\s{2,}/g, ' ').trim() || getCodeDescription(code)
-
-      transactions.push({
-        code,
-        date,
-        amount,
-        description,
-        impact: description,
-      })
+      // Pattern 2: code desc date negative-amount
+      const p4 = trimmed.match(/^(\d{3})\s+(.+?)\s+(\d{2}-\d{2}-\d{4})\s+(-\$[\d,]+\.\d{2})\s*$/)
+      if (p4) {
+        transactions.push({
+          code: p4[1], date: p4[3],
+          description: cleanDescAcct(p4[2], p4[1]),
+          amount: p4[4], impact: cleanDescAcct(p4[2], p4[1]),
+        })
+        continue
+      }
     }
 
-    const balanceMatch       = text.match(/Account\s+balance[:\s]+\$?([\d,\.]+)/i)
-    const acctBalanceMatch   = text.match(/Account\s+balance:\s*\$([\d,\.]+)/i)
-    const accruedIntMatch    = text.match(/Accrued\s+interest:\s*\$([\d,\.]+)/i)
-    const accruedPenMatch    = text.match(/Accrued\s+penalty:\s*\$([\d,\.]+)/i)
-    const payoffMatch        = text.match(/Account\s+balance\s+plus\s+accruals[^:]*:\s*\$([\d,\.]+)/i)
-    const returnTypeMatch    = text.match(/RETURN\s+TYPE[:\s]+([A-Z0-9\-]+)/i)
+    const balanceMatch       = norm.match(/Account\s+balance[:\s]+\$?([\d,\.]+)/i)
+    const acctBalanceMatch   = norm.match(/Account\s+balance:\s*\$([\d,\.]+)/i)
+    const accruedIntMatch    = norm.match(/Accrued\s+interest:\s*\$([\d,\.]+)/i)
+    const accruedPenMatch    = norm.match(/Accrued\s+penalty:\s*\$([\d,\.]+)/i)
+    const payoffMatch        = norm.match(/Account\s+balance\s+plus\s+accruals[^:]*:\s*\$([\d,\.]+)/i)
+    const returnTypeMatch    = norm.match(/RETURN\s+TYPE[:\s]+([A-Z0-9\-]+)/i)
 
-    const filingStatusMatch2 = text.match(/Filing\s+status[:\s]+(\w+)/i)
-    const agiMatch           = text.match(/Adjusted\s+gross\s+income[:\s]+\$([\d,\.]+)/i)
-    const taxableIncMatch    = text.match(/Taxable\s+income[:\s]+\$([\d,\.]+)/i)
-    const taxPerReturnMatch  = text.match(/Tax\s+per\s+return[:\s]+\$([\d,\.]+)/i)
-    const procDateMatch      = text.match(/Processing\s+date[:\s]+(\d{2}-\d{2}-\d{4})/i)
-    const returnDueMatch     = text.match(/Return\s+due\s+date[^:]*:\s*(\d{2}-\d{2}-\d{4})/i)
+    const filingStatusMatch2 = norm.match(/Filing\s+status[:\s]+(\w+)/i)
+    const agiMatch           = norm.match(/Adjusted\s+gross\s+income[:\s]+\$?([\d,\.]+)/i)
+    const taxableIncMatch    = norm.match(/Taxable\s+income[:\s]+\$?([\d,\.]+)/i)
+    const taxPerReturnMatch  = norm.match(/Tax\s+per\s+return[:\s]+\$?([\d,\.]+)/i)
+    const procDateMatch      = norm.match(/Processing\s+date[:\s]+(\d{2}-\d{2}-\d{4})/i)
+    const returnDueMatch     = norm.match(/Return\s+due\s+date[^:]*:\s*(\d{2}-\d{2}-\d{4})/i)
 
     const parsed = {
       transcriptType: 'account',
-      taxpayer: { ssn: ssnMatch?.[1] || '—', name: '—', taxYear, requestDate, filingStatus: filingStatusMatch?.[1] || '—', formNumber: formMatch?.[1] || '—', cyclePosted: cycleMatch?.[1] || '—', receivedDate: receivedMatch?.[1] || '—', trackingNumber: trackingMatch?.[1] || '—' },
+      taxpayer: {
+        ssn:           ssnProvided?.[1] || ssnMatch?.[1] || '—',
+        name:          nameMatch || '—',
+        taxYear,
+        requestDate,
+        filingStatus:  filingStatusMatch?.[1] || '—',
+        formNumber:    formMatch?.[1] || norm.match(/Form Number:\s*([\w-]+)/i)?.[1] || '—',
+        cyclePosted:   cycleMatch?.[1] || '—',
+        receivedDate:  receivedMatch?.[1] || '—',
+        trackingNumber: trackingMatch?.[1] || '—',
+      },
       transactions,
       balances: {
         assessedTax: '',
