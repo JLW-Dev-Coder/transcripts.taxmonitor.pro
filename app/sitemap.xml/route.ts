@@ -1,5 +1,7 @@
 import { getAllResources } from '@/lib/getAllResources'
 
+export const dynamic = 'force-static'
+
 const CANONICAL_BASE = 'https://transcript.taxmonitor.pro'
 
 export async function GET() {
