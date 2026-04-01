@@ -632,8 +632,8 @@ export default function DashboardClient() {
           totalExpenses:     amt('Total expenses'),
           homeOfficeExpense: amtDirect('Expense for business use of home'),
           netProfit:         amtDirect('Schedule C net profit or loss per computer'),
-          naicsCode:         val('North American Industry Classification System'),
-          accountMethod:     val('Account method'),
+          naicsCode:         norm.match(/(?:NAICS|North American Industry Classification System)[^:]*:\s*(\d{6})/i)?.[1] || '—',
+          accountMethod:     norm.match(/Account\s+method:\s*(Cash|Accrual|Other)/i)?.[1] || '—',
         },
         selfEmploymentTax: {
           totalSETax:        amtDirect('Total Self-Employment tax per computer'),
@@ -683,7 +683,7 @@ export default function DashboardClient() {
 
         const einMatch  = section.match(/Employer Identification Number[^:]*:\s*(XX-XXX\d+|\d{2}-\d{7})/i)
         const empMatch  = section.match(/(?:XX-XXX\d+|\d{2}-\d{7})\s+([A-Z][A-Z0-9\s&]+?)(?:\s{2,}|\s+\d{4,}|Employee)/i)
-        const subMatch  = section.match(/Submission Type:\s*([^\n]+?)(?:\s{2,}|$)/i)
+        const subMatch  = section.match(/Submission\s+Type:\s*(Original\s+(?:document|W2)|Corrected|Amended)/i)
 
         w2Forms.push({
           employer:       empMatch?.[1]?.trim() || '—',
@@ -736,10 +736,13 @@ export default function DashboardClient() {
           costBasis:       bAmt('Cost or Basis'),
           gainLoss:        gainLossStr,
           description:     rawDesc,
-          gainType:        bVal('Type of gain or loss'),
-          noncovered:      bVal('Noncovered Security Indicator'),
-          fatca:           section.match(/FATCA Filing Requirement:\s*([^\n]+?)(?:\s{2,}|$)/i)?.[1]?.trim() || '—',
-          form8949:        bVal('Applicable Check Box on Form 8949'),
+          gainType:        section.match(/Type of gain or loss:\s*(Long-term|Short-term)/i)?.[1] || '—',
+          noncovered:      section.match(/Noncovered Security Indicator:\s*(Nothing checked|Covered|Noncovered)/i)?.[1] || '—',
+          fatca:           section.match(/FATCA Filing Requirement:\s*(Box not checked|Box checked)/i)?.[1] || '—',
+          form8949:        (() => {
+            const m = section.match(/Applicable Check Box on Form 8949:\s*([^\n]+?)(?:\s{2,}|Loss is|$)/i)
+            return m ? m[1].trim().slice(0, 60) : '—'
+          })(),
         })
       }
 
@@ -873,7 +876,7 @@ export default function DashboardClient() {
           totalExpenses:     amt('Total expenses'),
           homeOfficeExpense: amtDirect('Expense for business use of home'),
           netProfit:         amtDirect('Schedule C net profit or loss per computer'),
-          naicsCode:         val('North American Industry Classification System'),
+          naicsCode:         norm.match(/(?:NAICS|North American Industry Classification System)[^:]*:\s*(\d{6})/i)?.[1] || '—',
         },
         selfEmploymentTax: {
           totalSETax:        amtDirect('Total Self-Employment tax per computer'),
@@ -918,8 +921,11 @@ export default function DashboardClient() {
       // Must start with a 3-digit transaction code
       if (!/^\d{3}\s/.test(trimmed)) continue
 
-      // Pattern 1: code desc date amount
-      const dateMatch = trimmed.match(/(\d{2}-\d{2}-\d{4})\s+([\-]?\$[\d,]+\.\d{2})\s*$/)
+      // Pattern 1: code desc date amount (with or without $ sign)
+      let dateMatch = trimmed.match(/(\d{2}-\d{2}-\d{4})\s+([\-]?\$[\d,]+\.\d{2})\s*$/)
+      if (!dateMatch) {
+        dateMatch = trimmed.match(/(\d{2}-\d{2}-\d{4})\s+([\-]?[\d,]+\.\d{2})\s*$/)
+      }
       if (dateMatch) {
         const date   = dateMatch[1]
         const amount = dateMatch[2]
