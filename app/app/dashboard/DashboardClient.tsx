@@ -438,7 +438,10 @@ export default function DashboardClient() {
       )
       if (tokenRes.ok) {
         const tokenData = await tokenRes.json()
-        const bal = tokenData.transcript_tokens ?? tokenData.balance ?? 0
+        const bal = tokenData.balance?.transcriptTokens
+          ?? tokenData.transcript_tokens
+          ?? tokenData.balance
+          ?? 0
         setBalance(bal)
         setSession(prev => prev ? { ...prev, balance: bal } : prev)
       }
