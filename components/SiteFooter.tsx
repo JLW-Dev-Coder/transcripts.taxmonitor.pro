@@ -2,12 +2,12 @@ import Link from 'next/link';
 import styles from './SiteFooter.module.css';
 
 const PLATFORM_LINKS = [
-  { label: 'About',        href: '#about'        },
-  { label: 'Contact',      href: '/contact/'     },
-  { label: 'Features',     href: '#features'     },
-  { label: 'How It Works', href: '#how-it-works' },
-  { label: 'Pricing',      href: '/pricing/'     },
-  { label: 'Resources',    href: '/resources/'   },
+  { label: 'About',        href: '/about/'        },
+  { label: 'Contact',      href: '/contact/'      },
+  { label: 'Features',     href: '/features/'     },
+  { label: 'How It Works', href: '/#how-it-works' },
+  { label: 'Pricing',      href: '/pricing/'      },
+  { label: 'Resources',    href: '/resources/'    },
 ];
 
 const RESOURCE_LINKS = [
