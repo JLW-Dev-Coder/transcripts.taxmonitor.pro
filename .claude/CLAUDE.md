@@ -44,8 +44,8 @@ transcript.taxmonitor.pro/
 ├── scale/
 │   ├── prospects/              ← source CSVs (gitignored)
 │   ├── batches/                ← generated JSON batches (committed)
-│   ├── instantly/
-│   │   └── email1/             ← Instantly import CSVs (committed)
+│   ├── gmail/
+│   │   └── email1/             ← Gmail import CSVs (committed)
 │   └── generate-batch.js
 ├── app/
 │   └── asset/[slug]/           ← asset page route
@@ -87,10 +87,15 @@ Do not modify original columns. Only append tracking columns.
 | email_1_prepared_at | ISO timestamp — Email 1 generated |
 | email_2_prepared_at | ISO timestamp — Email 2 generated |
 | email_3_prepared_at | ISO timestamp — Email 3 generated |
+| email_1_sent_at | ISO timestamp — set by VLP Worker after send |
+| email_2_scheduled_for | ISO date — when Email 2 should be sent |
+| email_2_sent_at | ISO timestamp — set by VLP Worker after send |
 
 ---
 
-## Daily Batch Generation
+## Daily batch generation — what this repo does
+
+This repo prepares sending queues. The VLP Worker cron sends them.
 
 ### Selection logic (mandatory, in order)
 
@@ -101,6 +106,16 @@ Do not modify original columns. Only append tracking columns.
 5. Select: first 50 eligible records
 
 If fewer than 50 eligible: process all remaining, log the count.
+
+### Steps
+
+1. Run batch generation (produces scale/batches/ and scale/gmail/ files)
+2. Push email1 queue to R2: `vlp-scale/send-queue/email1-pending.json`
+3. Push asset pages to R2: `vlp-scale/asset-pages/{slug}.json` per prospect
+4. VLP Worker cron fires daily at 14:00 UTC — reads queue, sends, updates state
+
+This repo does not call Gmail API directly.
+This repo does not send email.
 
 ### Outputs
 
@@ -127,8 +142,8 @@ Per-prospect:
 }
 ```
 
-**2. Instantly import CSV**
-Path: `scale/instantly/email1/YYYY-MM-DD-batch.csv`
+**2. Gmail import CSV**
+Path: `scale/gmail/email1/YYYY-MM-DD-batch.csv`
 Columns (exactly): `email, first_name, subject, body`
 - No extra columns
 - RFC-4180 compliant
@@ -136,6 +151,23 @@ Columns (exactly): `email, first_name, subject, body`
 
 **3. Updated source CSV**
 Write email_1_prepared_at timestamp back to source CSV after each batch.
+
+### R2 push commands (run after each batch)
+
+Push email1 queue:
+```
+node scale/push-email1-queue.js scale/gmail/email1/{YYYY-MM-DD}-batch.csv
+```
+
+Push asset pages:
+```
+node scale/push-asset-pages.js scale/batches/scale-batch-{YYYY-MM-DD}.json
+```
+
+Push Email 2 queue (run when Email 2 batch is generated):
+```
+node scale/push-email2-queue.js scale/batches/scale-batch-{YYYY-MM-DD}.json
+```
 
 ---
 
@@ -199,8 +231,9 @@ R2 key: vlp-scale/asset-pages/{slug}.json
 
 Each session:
 1. Generate next 50 Email 1 records
-2. Check asset page route status
+2. Push email1 queue + asset pages to R2
 3. Generate Email 2 for prospects from 2–3 days prior
+4. Push email2 queue to R2
 
 ---
 
