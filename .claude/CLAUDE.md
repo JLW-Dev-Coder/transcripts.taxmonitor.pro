@@ -1,9 +1,9 @@
-# CLAUDE.md — transcript.taxmonitor.pro (TTMP)
+# CLAUDE.md — transcript.taxmonitor.pro
 
-This file is read by Claude Code at the start of every session in this repo.
-Do not delete or move it. Keep it updated as the system evolves.
+Read at the start of every Claude Code session in this repo.
+Do not delete. Keep updated as the system evolves.
 
-Last updated: 2026-04-01
+Last updated: 2026-04-02
 
 ---
 
@@ -12,168 +12,217 @@ Last updated: 2026-04-01
 **Transcript Tax Monitor Pro (TTMP)**
 - Domain: transcript.taxmonitor.pro
 - Product: IRS transcript PDF → plain-English analysis report
-- Pricing: Token-based — 10 tokens/$19, 25/$29, 100/$129
-- Audience: 750,000+ U.S. tax professionals (CPAs, EAs, tax attorneys)
+- Pricing: 10 tokens/$19, 25/$29, 100/$129
+- Audience: U.S. tax professionals (CPAs, EAs, tax attorneys)
 - Brand color: Teal #14b8a6
 - Stack: Next.js, Tailwind CSS, Cloudflare Pages
 - Backend: api.virtuallaunch.pro (VLP Worker) — no backend changes in this repo
 
 ---
 
-## Repo structure (key paths)
+## Terminology
+
+| Do NOT use | Use instead |
+|------------|-------------|
+| audit page | asset page |
+| audit | practice analysis |
+| /audit/{slug} | /asset/{slug} |
+| audit_page (schema key) | asset_page |
+
+"Asset" is the canonical term across all copy, routes, schema keys, and filenames.
+Terminology rule only — URL routes and schema keys updated as files are touched.
+
+---
+
+## Repo structure
 
 ```
 transcript.taxmonitor.pro/
-
 ├── .claude/
-│   ├── CLAUDE.md/             ← you are here
+│   └── CLAUDE.md
+├── SCALE.md                    ← reference doc only, not logic source
 ├── scale/
-│   ├── prospects/             ← uploaded CSVs go here (input)
-│   ├── batches/               ← generated JSON batches go here (output)
-│   └── Instantly/             ← generated Instantly CSVs go here (output)
+│   ├── prospects/              ← source CSVs (gitignored)
+│   ├── batches/                ← generated JSON batches (committed)
+│   ├── instantly/
+│   │   └── email1/             ← Instantly import CSVs (committed)
+│   └── generate-batch.js
 ├── app/
-│   └── audit/[slug]/          ← audit page route (to be built)
+│   └── asset/[slug]/           ← asset page route
 └── public/
-    └── tools/code-lookup/     ← free IRS code lookup tool (to be built)
+    └── tools/code-lookup/
 ```
 
 ---
 
-## SCALE Pipeline — Batch Generator
+## Source CSV Schema
 
-The SCALE system converts prospect CSVs into personalized outreach packages.
+Single source of truth:
+`scale/prospects/IRS_FOIA_SORTED_-_results-20260401-195853.csv`
 
-### To run a batch
+Do not modify original columns. Only append tracking columns.
 
-1. Pull 50 prospects/rows from the prospect CSV in `scale/prospects/` (copy from upload or paste directly)
-2. Run: `node scale/generate-batch.js scale/prospects/{filename}.csv`
-3. Outputs are written to:
-   - `scale/batches/scale-batch-{YYYY-MM-DD}.json` — full data for R2 + audit pages
-   - `scale/instantly/instantly-import-email1-{YYYY-MM-DD}.csv` — Instantly import, Email 1
+### Canonical columns
 
-### Sender identity
-All email signatures use: **Jamie L Williams**
-All email footers: Transcript Tax Monitor Pro / transcript.taxmonitor.pro
+| Column | Notes |
+|--------|-------|
+| LAST_NAME | Uppercase |
+| First_NAME | Mixed case |
+| DBA | Firm/practice name |
+| BUS_ADDR_CITY | City |
+| BUS_ST_CODE | 2-letter state |
+| WEBSITE | Raw website string |
+| BUS_PHNE_NBR | Phone (not used in output) |
+| PROFESSION | EA, CPA, JD |
+| domain_clean | Sanitized domain (www stripped, lowercase) |
+| email_found | Delivery address |
+| email_status | valid or invalid |
+| firm_bucket | solo_brand, local_firm, national_firm |
+| send_today | Legacy field — not used in selection logic |
 
-### Input CSV columns (mapped automatically)
+### Tracking columns (append if missing)
 
-| Column name(s) | Field |
-|----------------|-------|
-| First_NAME, first_name, name (first word) | First name |
-| LAST_NAME, last_name, name (remaining) | Last name |
-| PROFESSION, credential | Credential (EA, CPA, JD) |
-| BUS_ADDR_CITY, city | City |
-| BUS_ST_CODE, state | State |
-| email_found, email | Email address |
-| DBA, firm, firm_name | Firm/DBA name |
-| WEBSITE, website | Website (optional) |
-| firm_bucket | `solo_brand` / `local_firm` / `national_firm` |
-| send_today | If column exists, only process rows where value = `yes` |
+| Column | Set when |
+|--------|----------|
+| email_1_prepared_at | ISO timestamp — Email 1 generated |
+| email_2_prepared_at | ISO timestamp — Email 2 generated |
+| email_3_prepared_at | ISO timestamp — Email 3 generated |
 
-### Output JSON schema (per prospect)
+---
 
+## Daily Batch Generation
+
+### Selection logic (mandatory, in order)
+
+1. Filter: email_found is not empty, not "undefined", not NaN
+2. Filter: email_status is not "invalid"
+3. Filter: email_1_prepared_at is empty
+4. Sort: ascending by domain_clean (nulls last)
+5. Select: first 50 eligible records
+
+If fewer than 50 eligible: process all remaining, log the count.
+
+### Outputs
+
+**1. JSON batch**
+Path: `scale/batches/scale-batch-{YYYY-MM-DD}.json`
+
+Schema key: `asset_page` (not audit_page)
+
+Per-prospect:
 ```json
 {
-  "slug": "jamie-williams-san-diego-ca",
-  "email": "jwilliams@example.com",
-  "name": "Jamie Williams",
+  "slug": "...",
+  "email": "...",
+  "name": "...",
   "credential": "EA",
-  "city": "San Diego",
-  "state": "CA",
-  "firm": "Williams Tax Services",
+  "city": "...",
+  "state": "...",
+  "firm": "...",
   "firm_bucket": "solo_brand",
-  "website": "williamstax.com",
-  "audit_page": {
-    "headline": "Jamie, here's what 20 minutes per transcript is costing Williams Tax Services",
-    "subheadline": "A practice audit for Enrolled Agents who work with IRS transcripts",
-    "workflow_gaps": ["...", "...", "..."],
-    "time_savings_weekly": "6.7 hours",
-    "time_savings_annual": "348 hours",
-    "revenue_opportunity": "$34,800–$104,400/yr in recovered billable time",
-    "tool_preview_codes": ["971", "846", "570"],
-    "cta_pricing_url": "https://transcript.taxmonitor.pro/pricing",
-    "cta_booking_url": "https://cal.com/vlp/ttmp-discovery",
-    "cta_learn_more_url": "https://transcript.taxmonitor.pro"
-  },
+  "domain_clean": "...",
+  "asset_page": { ... },
   "email_1": { "subject": "...", "body": "..." },
   "email_2": { "subject": "...", "body": "..." }
 }
 ```
 
-### Time savings by credential
+**2. Instantly import CSV**
+Path: `scale/instantly/email1/YYYY-MM-DD-batch.csv`
+Columns (exactly): `email, first_name, subject, body`
+- No extra columns
+- RFC-4180 compliant
+- Jamie L Williams always in signature — never a placeholder
 
-| Credential | Hrs/week | Hrs/year | Revenue range |
-|------------|----------|----------|---------------|
+**3. Updated source CSV**
+Write email_1_prepared_at timestamp back to source CSV after each batch.
+
+---
+
+## Time Savings & Revenue by Credential
+
+| Credential | Hrs/week | Hrs/year | Revenue opportunity |
+|------------|----------|----------|---------------------|
 | EA | 6.7 | 348 | $34,800–$104,400/yr |
 | CPA | 5.0 | 260 | $39,000–$104,000/yr |
 | JD/Attorney | 3.3 | 174 | $34,800–$87,000/yr |
-
-### Personalization rules
-
-**solo_brand** (EA runs their own named practice):
-- Subject: `"{First} — EAs running {DBA} spend 6+ hours/week on this"`
-- Headline: `"{First}, here's what 20 minutes per transcript is costing {DBA}"`
-
-**local_firm** (EA works at a multi-person firm):
-- Subject: `"{First} — EAs in {City} are spending 6+ hours/week on this"`
-- Headline: `"{First}, here's what 20 minutes per transcript is costing your {City} practice"`
+| Unknown | 5.0 | 260 | $39,000–$104,000/yr |
 
 ---
 
-## Audit Page Route
+## Personalization Rules
 
-Audit pages are served at: `transcript.taxmonitor.pro/audit/[slug]`
+**solo_brand:**
+- Subject: "{First} — {PROFESSION}s running {DBA} spend {hrs}+ hours/week on this"
+- Headline: "{First}, here's what 20 minutes per transcript is costing {DBA}"
 
-The page reads its data from R2:
-- Bucket: `virtuallaunch-pro`
-- Key pattern: `vlp-scale/audit-pages/{slug}.json`
+**local_firm:**
+- Subject: "{First} — {PROFESSION}s in {City} are spending {hrs}+ hours/week on this"
+- Headline: "{First}, here's what 20 minutes per transcript is costing your {City} practice"
 
-To push a batch to R2 (after generating):
-```bash
-node scale/push-to-r2.js scale/batches/scale-batch-{YYYY-MM-DD}.json
+**Slug:** `{first}-{last}-{city}-{state}` — lowercase, hyphens, strip titles
+Dedup: append -2, -3 on collision.
+
+---
+
+## Email Signatures
+
+```
+—
+Jamie L Williams
+Transcript Tax Monitor Pro
+transcript.taxmonitor.pro
 ```
 
-The audit page UI is in `app/audit/[slug]/page.jsx`.
-See design spec in `scale/AUDIT-PAGE-DESIGN.md` when that file exists.
+Never use [Your name]. Always resolved to Jamie L Williams.
 
 ---
 
-## Tone & Voice
+## Asset Page Route
 
-- Direct — no fluff, state the benefit immediately
-- Professional but accessible — tax professionals are the audience, assume intelligence
-- Specific — real numbers (hours, prices, timeframes), vague claims undermine trust
-- Problem-first — lead with the pain point, follow with the solution
-- No emoji anywhere in email copy or audit page content
-- No exclamation marks in professional copy
+URL: transcript.taxmonitor.pro/asset/[slug]
+R2 key: vlp-scale/asset-pages/{slug}.json
 
 ---
 
-## What NOT to do in this repo
+## Email 2 Rules
 
-- Do not add backend routes — all API calls go to api.virtuallaunch.pro
-- Do not modify the VLP Worker from this repo
-- Do not hardcode API keys — all secrets are in Cloudflare Pages env vars
-- Do not commit prospect CSV files containing real emails to git
-  (keep them in scale/prospects/ which is .gitignored)
+- Timing: 2–3 days after Email 1
+- Subject: "Quick asset generated for your firm, {First} — {N} hours/yr on the table"
+- Must reference prior email and "quick practice analysis generated for your firm"
+- Lead with asset page URL
+- CTAs: pricing + booking
+
+---
+
+## Daily Loop
+
+Each session:
+1. Generate next 50 Email 1 records
+2. Check asset page route status
+3. Generate Email 2 for prospects from 2–3 days prior
+
+---
+
+## SCALE.md
+
+Reference documentation only. When SCALE.md conflicts with CLAUDE.md, CLAUDE.md wins.
+
+---
+
+## Hard constraints
+
+- Never commit CSVs with real emails (scale/prospects/ is gitignored)
+- No backend routes in this repo
+- No hardcoded secrets
+- Never output email: "undefined"
+- Minimum 50 Email 1 records/day — flag if source exhausted
 
 ---
 
 ## Related repos
 
-| Repo | Path | Purpose |
-|------|------|---------|
-| VLP Worker | C:\Users\britn\OneDrive\virtuallaunch.pro | Backend API, R2 writes |
-| TMP | C:\Users\britn\OneDrive\taxmonitor.pro-site | Taxpayer-facing platform |
-| VLP hub | C:\Users\britn\OneDrive\virtuallaunch.pro\web | Auth, billing, affiliates |
-
----
-
-## Recordkeeping
-
-Every batch run should produce two files committed to this repo:
-- `scale/batches/scale-batch-{YYYY-MM-DD}.json`
-- `scale/instantly/instantly-import-email1-{YYYY-MM-DD}.csv`
-
-This creates a full audit trail: who was contacted, when, with what copy.
-Do not delete old batch files.
+| Repo | Path |
+|------|------|
+| VLP Worker | C:\Users\britn\OneDrive\virtuallaunch.pro |
+| TMP | C:\Users\britn\OneDrive\taxmonitor.pro-site |
