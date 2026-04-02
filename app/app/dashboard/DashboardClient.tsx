@@ -354,6 +354,8 @@ export default function DashboardClient() {
   const [pricingPackages, setPricingPackages] = useState<TokenPackage[]>([])
   const [purchaseLoading, setPurchaseLoading] = useState<string | null>(null)
   const [modalError, setModalError] = useState('')
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [pathname, setPathname] = useState('')
 
   const pdfjsRef = useRef<any>(null)
   const pdfFileRef = useRef<File | null>(null)
@@ -421,6 +423,10 @@ export default function DashboardClient() {
         setLoading(false)
       }
     })()
+  }, [])
+
+  useEffect(() => {
+    setPathname(window.location.pathname)
   }, [])
 
   const handleRefreshBalance = async () => {
@@ -1090,52 +1096,148 @@ export default function DashboardClient() {
   }
 
   if (loading) {
-    return <div className={styles.loadingState}>Loading dashboard...</div>
+    return (
+      <div className={styles.loadingState}>
+        <span className={styles.spinner} />
+      </div>
+    )
   }
+
+  const initials = session?.email
+    ? session.email.slice(0, 2).toUpperCase()
+    : 'TT'
+
+  const navLinks = [
+    { href: '/app/dashboard/', label: 'Dashboard', icon: (
+      <svg className={styles.navIcon} viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="2" width="6" height="6" rx="1.5"/><rect x="10" y="2" width="6" height="6" rx="1.5"/><rect x="2" y="10" width="6" height="6" rx="1.5"/><rect x="10" y="10" width="6" height="6" rx="1.5"/></svg>
+    )},
+    { href: '/app/reports/', label: 'Reports', icon: (
+      <svg className={styles.navIcon} viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M3 4.5h12M3 9h8M3 13.5h5"/></svg>
+    )},
+    { href: '/app/receipts/', label: 'Receipts', icon: (
+      <svg className={styles.navIcon} viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="3" width="14" height="12" rx="2"/><path d="M6 8h6M6 11.5h4"/></svg>
+    )},
+  ]
+
+  const accountLinks = [
+    { href: '/app/token-usage/', label: 'Token Usage', icon: (
+      <svg className={styles.navIcon} viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="9" cy="9" r="3"/><path d="M9 2v2M9 14v2M2 9h2M14 9h2"/></svg>
+    )},
+    { href: '/app/calendar/', label: 'Calendar', icon: (
+      <svg className={styles.navIcon} viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="3" width="14" height="13" rx="2"/><path d="M6 2v2M12 2v2M2 8h14"/></svg>
+    )},
+    { href: '/app/affiliate/', label: 'Affiliate', icon: (
+      <svg className={styles.navIcon} viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="5" cy="9" r="2.5"/><circle cx="13" cy="5" r="2.5"/><circle cx="13" cy="13" r="2.5"/><path d="M7.3 8.2l3.4-2M7.3 9.8l3.4 2"/></svg>
+    )},
+    { href: '/app/support/', label: 'Support', icon: (
+      <svg className={styles.navIcon} viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="9" cy="9" r="7"/><path d="M9 6a2 2 0 011.9 2.6c-.3.8-1.9 2.4-1.9 2.4"/><circle cx="9" cy="14" r=".5" fill="currentColor"/></svg>
+    )},
+  ]
 
   return (
     <div className={styles.appShell}>
+
       {/* Sidebar */}
-      <aside className={styles.sidebar}>
+      <aside className={`${styles.sidebar} ${sidebarCollapsed ? styles.sidebarCollapsed : ''}`}>
+
+        {/* Brand */}
         <div className={styles.sidebarBrand}>
-          <span className={styles.brandMark}>TM</span>
-          <div>
-            <div className={styles.brandName}>Transcript.Tax Monitor Pro</div>
-            <div className={styles.brandSub}>Dashboard</div>
+          <div className={styles.sidebarLogoGroup}>
+            <span className={styles.brandMark}>TT</span>
+            {!sidebarCollapsed && (
+              <div>
+                <div className={styles.brandName}>Transcript Tax Monitor</div>
+                <div className={styles.brandSub}>Pro Dashboard</div>
+              </div>
+            )}
           </div>
+          {!sidebarCollapsed && (
+            <button
+              type="button"
+              className={styles.collapseBtn}
+              onClick={() => setSidebarCollapsed(true)}
+              title="Collapse sidebar"
+            >
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <path d="M7 2L4 6l3 4"/>
+              </svg>
+            </button>
+          )}
+          {sidebarCollapsed && (
+            <button
+              type="button"
+              className={styles.sidebarCollapsedToggle}
+              onClick={() => setSidebarCollapsed(false)}
+              title="Expand sidebar"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <path d="M6 3l5 5-5 5"/>
+              </svg>
+            </button>
+          )}
         </div>
 
+        {/* Nav */}
         <nav className={styles.sidebarNav}>
-          <Link href="/app/dashboard" className={`${styles.navLink} ${styles.navLinkActive}`}><span className={styles.navDot} />Dashboard</Link>
-          <Link href="/app/account" className={styles.navLink}><span className={styles.navDot} />Account</Link>
-          <Link href="/app/reports" className={styles.navLink}><span className={styles.navDot} />Reports</Link>
-          <Link href="/app/receipts" className={styles.navLink}><span className={styles.navDot} />Receipts</Link>
-          <Link href="/app/support" className={styles.navLink}><span className={styles.navDot} />Support</Link>
-          <Link href="/app/token-usage" className={styles.navLink}><span className={styles.navDot} />Token Usage</Link>
-          <Link href="/app/calendar" className={styles.navLink}><span className={styles.navDot} />Calendar</Link>
-          <Link href="/app/affiliate" className={styles.navLink}><span className={styles.navDot} />Affiliate</Link>
+          {!sidebarCollapsed && <div className={styles.navSection}>Workspace</div>}
+          {sidebarCollapsed && <div style={{ height: 20 }} />}
+          {navLinks.map(({ href, label, icon }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`${styles.navLink} ${pathname === href || pathname === href.slice(0,-1) ? styles.navLinkActive : ''}`}
+              title={sidebarCollapsed ? label : undefined}
+            >
+              {icon}
+              <span className={styles.navLabel}>{label}</span>
+            </Link>
+          ))}
+          {!sidebarCollapsed && <div className={styles.navSection}>Account</div>}
+          {sidebarCollapsed && <div style={{ height: 20 }} />}
+          {accountLinks.map(({ href, label, icon }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`${styles.navLink} ${pathname === href || pathname === href.slice(0,-1) ? styles.navLinkActive : ''}`}
+              title={sidebarCollapsed ? label : undefined}
+            >
+              {icon}
+              <span className={styles.navLabel}>{label}</span>
+            </Link>
+          ))}
         </nav>
 
+        {/* User profile footer */}
         <div className={styles.sidebarFooter}>
+          <div className={styles.userRow} title={session?.email}>
+            <div className={styles.userAvatar}>{initials}</div>
+            <div className={styles.userInfo}>
+              <div className={styles.userEmail}>{session?.email}</div>
+              <div className={styles.userPlan}>{balance} token{balance !== 1 ? 's' : ''} remaining</div>
+            </div>
+          </div>
           <button type="button" onClick={handleSignOut} className={styles.signOutBtn}>
             Sign Out
           </button>
         </div>
       </aside>
 
-      {/* Main shell */}
+      {/* Main */}
       <div className={styles.mainShell}>
+
         {/* Topbar */}
         <header className={styles.topbar}>
           <div className={styles.topbarLeft}>
-            <span className={styles.topbarTitle}>Dashboard</span>
-            {session && <span className={styles.topbarEmail}>{session.email}</span>}
+            <span className={styles.breadcrumbHome}>TTMP</span>
+            <span className={styles.breadcrumbSep}>/</span>
+            <span className={styles.breadcrumbPage}>Dashboard</span>
           </div>
           <div className={styles.topbarRight}>
-            <span className={`${styles.tokenBadge} ${balance > 0 ? styles.tokenBadgeGreen : styles.tokenBadgeAmber}`}>
-              {balance > 0 ? `${balance} tokens` : '0 tokens'}
-            </span>
-            <button type="button" onClick={handleRefreshBalance} className={styles.btnSecondary}>
+            <div className={`${styles.tokenPill} ${balance > 0 ? styles.tokenPillGreen : styles.tokenPillAmber}`}>
+              <span className={styles.tokenDot} />
+              {balance} token{balance !== 1 ? 's' : ''}
+            </div>
+            <button type="button" onClick={handleRefreshBalance} className={styles.btnSmall}>
               Refresh
             </button>
             <button type="button" onClick={handleOpenPurchaseModal} className={styles.btnPrimary}>
@@ -1144,163 +1246,133 @@ export default function DashboardClient() {
           </div>
         </header>
 
-        {/* Main content */}
+        {/* Content */}
         <main className={styles.workspaceContent}>
-          <div className={styles.parserCard}>
 
-              {/* Step tabs */}
-              <div className={styles.parserSteps}>
-                {([1, 2, 3] as Step[]).map((s) => {
-                  const labels: Record<Step, { title: string; copy: string }> = {
-                    1: { title: 'Check App Balance', copy: 'Check your available credits' },
-                    2: { title: 'Upload Transcript PDF', copy: 'Choose your transcript' },
-                    3: { title: 'Outputs', copy: 'Preview and email' },
-                  }
-                  return (
-                    <button
-                      key={s}
-                      type="button"
-                      className={`${styles.parserStep} ${step === s ? styles.parserStepActive : ''} ${step > s ? styles.parserStepDone : ''}`}
-                      onClick={() => setStep(s)}
-                    >
-                      <span className={styles.parserStepBadge}>{step > s ? '✓' : s}</span>
-                      <div>
-                        <div className={styles.parserStepTitle}>{labels[s].title}</div>
-                        <p className={styles.parserStepCopy}>{labels[s].copy}</p>
-                      </div>
-                    </button>
-                  )
-                })}
-              </div>
-
-              {/* Panel 1 */}
-              {step === 1 && (
-                <div className={styles.parserSection}>
-                  <div className={styles.panelGrid}>
-                    <div>
-                      <label className={styles.parserFormLabel}>Signed-in Account</label>
-                      <input
-                        type="text"
-                        value={session?.email ?? ''}
-                        className={styles.parserInput}
-                        disabled
-                        readOnly
-                      />
-                      <p className={styles.parserNote}>Saving a preview consumes 1 credit from your balance.</p>
-                    </div>
-
-                    <div>
-                      <label className={styles.parserFormLabel}>Token Balance</label>
-                      <div className={styles.tokenWidgetRow}>
-                        <span className={`${styles.tokenBadge} ${balance > 0 ? styles.tokenBadgeGreen : styles.tokenBadgeAmber}`}>
-                          {balance > 0 ? `${balance} tokens remaining` : '0 tokens — purchase to continue'}
-                        </span>
-                        <button type="button" onClick={handleRefreshBalance} className={styles.btnSecondary}>
-                          Refresh
-                        </button>
-                        <button type="button" onClick={handleOpenPurchaseModal} className={styles.btnPrimary}>
-                          Buy Tokens
-                        </button>
-                      </div>
-                      {balance === 0 && (
-                        <p className={styles.noTokensMsg}>No tokens remaining. Purchase tokens to analyze transcripts.</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Panel 2 */}
-              {step === 2 && (
-                <div className={styles.parserSection}>
-                  <div className={styles.logoSection}>
-                    <label className={styles.parserFormLabel}>Firm Logo (Optional)</label>
-                    <div className={styles.logoActions}>
-                      <label className={styles.btnSecondary} style={{ cursor: 'pointer' }}>
-                        <span>Choose File</span>
-                        <input
-                          ref={logoInputRef}
-                          type="file"
-                          accept="image/*"
-                          className={styles.hiddenInput}
-                          onChange={handleLogoChange}
-                        />
-                      </label>
-                      {logoDataUrl && (
-                        <button type="button" onClick={handleRemoveLogo} className={styles.btnDanger}>
-                          Remove Logo
-                        </button>
-                      )}
-                    </div>
-                    <span className={styles.parserNote} style={{ display: 'inline-block', marginTop: 10 }}>
-                      {logoFileName || 'No file chosen'}
-                    </span>
-
-                    {logoDataUrl && (
-                      <div className={styles.logoPreview}>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={logoDataUrl} alt="Saved firm logo preview" className={styles.logoPreviewImage} />
-                        <div>
-                          <div className={styles.logoPreviewName}>Saved logo</div>
-                          <p className={styles.parserNote}>
-                            This logo will stay available on this device until you remove it.
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    <p className={styles.parserNote}>
-                      For best results upload a 600×600 PNG (SVG/JPG ok). Your logo can stay saved on this device until you remove it.
-                    </p>
-                  </div>
-
-                  <div
-                    className={`${styles.parserUploadZone} ${dragging ? styles.parserUploadZoneDragging : ''}`}
-                    role="button"
-                    tabIndex={0}
-                    aria-label="Upload transcript PDF"
-                    onClick={() => fileInputRef.current?.click()}
-                    onKeyDown={(e) => e.key === 'Enter' && fileInputRef.current?.click()}
-                    onDragOver={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                    onDrop={handleDrop}
-                  >
-                    <div className={styles.uploadZoneIcon}>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                        <polyline points="14 2 14 8 20 8"/>
-                        <line x1="12" y1="18" x2="12" y2="12"/>
-                        <polyline points="9 15 12 12 15 15"/>
-                      </svg>
-                    </div>
-                    <div className={styles.uploadZoneTitle}>Drop IRS transcript PDF here</div>
-                    <div className={styles.uploadZoneSub}>Or click to browse — Account, Return, Wage &amp; Income transcripts accepted</div>
-                    {pdfFileName && <span className={styles.uploadZoneFile}>{pdfFileName}</span>}
-                  </div>
-
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="application/pdf,.pdf"
-                    className={styles.hiddenInput}
-                    onChange={(e) => {
-                      const file = e.target.files?.[0]
-                      if (file) handlePdfFile(file)
-                    }}
-                  />
-                </div>
-              )}
-
-              {/* Panel 3 — placeholder for step nav */}
-              {step === 3 && (
-                <div className={styles.parserSection}>
-                  <p className={styles.parserNote}>Use the output panel below to extract, parse, and email reports.</p>
-                </div>
-              )}
+          {/* Stat cards */}
+          <div className={styles.statRow}>
+            <div className={styles.statCard}>
+              <div className={styles.statLabel}>Available tokens</div>
+              <div className={`${styles.statValue} ${balance > 0 ? styles.statValueTeal : styles.statValueAmber}`}>{balance}</div>
+            </div>
+            <div className={styles.statCard}>
+              <div className={styles.statLabel}>Reports saved</div>
+              <div className={styles.statValue}>—</div>
+            </div>
+            <div className={styles.statCard}>
+              <div className={styles.statLabel}>Account</div>
+              <div className={`${styles.statValue} ${styles.statValueSmall}`}>{session?.email}</div>
+            </div>
           </div>
 
-          {/* Always-visible output panel */}
-          <div className={styles.outputCard} style={{ marginTop: 12 }}>
+          {/* Parser card */}
+          <div className={styles.parserCard}>
+
+            {/* Flow steps — visual only, not clickable tabs */}
+            <div className={styles.flowHeader}>
+              <div className={styles.flowStep}>
+                <span className={`${styles.stepBadge} ${styles.stepBadgeDone}`}>✓</span>
+                <div>
+                  <div className={`${styles.stepTitle} ${styles.stepTitleActive}`}>Balance</div>
+                  <div className={styles.stepSub}>{balance} tokens</div>
+                </div>
+              </div>
+              <div className={styles.flowConnector} />
+              <div className={styles.flowStep}>
+                <span className={`${styles.stepBadge} ${pdfReady ? styles.stepBadgeDone : styles.stepBadgeActive}`}>
+                  {pdfReady ? '✓' : '2'}
+                </span>
+                <div>
+                  <div className={`${styles.stepTitle} ${styles.stepTitleActive}`}>Upload PDF</div>
+                  <div className={styles.stepSub}>{pdfFileName || 'Choose transcript'}</div>
+                </div>
+              </div>
+              <div className={styles.flowConnector} />
+              <div className={styles.flowStep}>
+                <span className={`${styles.stepBadge} ${previewSaved ? styles.stepBadgeDone : rawText ? styles.stepBadgeActive : styles.stepBadgeIdle}`}>
+                  {previewSaved ? '✓' : '3'}
+                </span>
+                <div>
+                  <div className={`${styles.stepTitle} ${rawText ? styles.stepTitleActive : ''}`}>Output</div>
+                  <div className={styles.stepSub}>Report &amp; email</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Upload panel */}
+            <div className={styles.parserSection}>
+              <div
+                className={`${styles.parserUploadZone} ${dragging ? styles.parserUploadZoneDragging : ''}`}
+                role="button"
+                tabIndex={0}
+                aria-label="Upload transcript PDF"
+                onClick={() => fileInputRef.current?.click()}
+                onKeyDown={(e) => e.key === 'Enter' && fileInputRef.current?.click()}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+              >
+                <div className={styles.uploadZoneIcon}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="12" y1="18" x2="12" y2="12"/>
+                    <polyline points="9 15 12 12 15 15"/>
+                  </svg>
+                </div>
+                <div className={styles.uploadZoneTitle}>Drop IRS transcript PDF here</div>
+                <div className={styles.uploadZoneSub}>Account · Return · Wage &amp; Income · Record of Account</div>
+                {pdfFileName && <span className={styles.uploadZoneFile}>{pdfFileName}</span>}
+              </div>
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="application/pdf,.pdf"
+                className={styles.hiddenInput}
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) handlePdfFile(file)
+                }}
+              />
+
+              {/* Logo upload */}
+              <div className={styles.logoSection}>
+                <span className={styles.sectionLabel}>Firm Logo (optional)</span>
+                <div className={styles.logoActions}>
+                  <label className={styles.btnSecondary} style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center' }}>
+                    Choose File
+                    <input
+                      ref={logoInputRef}
+                      type="file"
+                      accept="image/*"
+                      className={styles.hiddenInput}
+                      onChange={handleLogoChange}
+                    />
+                  </label>
+                  {logoDataUrl && (
+                    <button type="button" onClick={handleRemoveLogo} className={styles.btnDanger}>
+                      Remove Logo
+                    </button>
+                  )}
+                  <span className={styles.parserNote}>{logoFileName || 'No file chosen — logo appears on saved reports'}</span>
+                </div>
+                {logoDataUrl && (
+                  <div className={styles.logoPreview}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={logoDataUrl} alt="Firm logo" className={styles.logoPreviewImage} />
+                    <div>
+                      <div className={styles.logoPreviewName}>Saved logo</div>
+                      <p className={styles.parserNote}>Stays on this device until removed.</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Output card — always visible */}
+          <div className={styles.outputCard}>
             <p className={styles.outputCardTitle}>Output</p>
             <div className={styles.parserActionRow}>
               <button
@@ -1369,50 +1441,35 @@ export default function DashboardClient() {
                   className={styles.btnPrimary}
                   disabled={!previewSaved || !emailInput}
                   onClick={handleEmailReport}
+                  style={{ padding: '10px 20px' }}
                 >
                   Send link
                 </button>
               </div>
               {emailStatus !== 'Not ready.' && (
-                <p className={styles.parserNote} style={{ marginTop: 6 }}>{emailStatus}</p>
+                <p className={styles.parserNote} style={{ marginTop: 8 }}>{emailStatus}</p>
               )}
             </div>
           </div>
+
         </main>
       </div>
 
-      {/* Token Purchase Modal */}
+      {/* Purchase modal — unchanged */}
       {purchaseModalOpen && (
         <div className={styles.modalOverlay} onClick={() => setPurchaseModalOpen(false)}>
           <div className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <div className={styles.modalTitle}>Purchase Tokens</div>
-              <button
-                type="button"
-                className={styles.modalClose}
-                onClick={() => setPurchaseModalOpen(false)}
-                aria-label="Close"
-              >
-                ✕
-              </button>
+              <button type="button" className={styles.modalClose} onClick={() => setPurchaseModalOpen(false)} aria-label="Close">✕</button>
             </div>
-
-            {pricingPackages.length === 0 && !modalError && (
-              <p className={styles.parserNote}>Loading packages...</p>
-            )}
-
+            {pricingPackages.length === 0 && !modalError && <p className={styles.parserNote}>Loading packages...</p>}
             {modalError && <p className={styles.modalError}>{modalError}</p>}
-
             {pricingPackages.length > 0 && (
               <div className={styles.packageGrid}>
                 {pricingPackages.map((pkg) => (
-                  <div
-                    key={pkg.price_id}
-                    className={`${styles.packageCard} ${pkg.badge === 'Popular' ? styles.packageCardPopular : ''}`}
-                  >
-                    {pkg.badge && (
-                      <div className={styles.packagePopularBadge}>{pkg.badge}</div>
-                    )}
+                  <div key={pkg.price_id} className={`${styles.packageCard} ${pkg.badge === 'Popular' ? styles.packageCardPopular : ''}`}>
+                    {pkg.badge && <div className={styles.packagePopularBadge}>{pkg.badge}</div>}
                     <div className={styles.packageLabel}>{pkg.label}</div>
                     <div className={styles.packageTokens}>{pkg.tokens}</div>
                     <div className={styles.packageTokensLabel}>tokens</div>
