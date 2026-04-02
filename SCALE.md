@@ -9,7 +9,7 @@ Last updated: 2026-04-01
 Send first outreach emails today. Convert first TTMP token sale this week. Use the next 3 months to grow the pipeline, enrich assets, and collect social proof.
 
 - **Analytics** — track every touchpoint from email send to Stripe payment
-- **Magnets** — free IRS code lookup tool + personalized audit pages
+- **Magnets** — free IRS code lookup tool + personalized asset pages
 - **Outreach** — email first, social second, proof compounds over time
 - **Tech** — $147/mo (Claude Max $100 + Instantly Growth $47)
 - **Workflow** — you source and scrub, Claude generates, Worker serves, Instantly delivers, you close
@@ -37,7 +37,7 @@ Send first outreach emails today. Convert first TTMP token sale this week. Use t
 
 | Tool | Plan | Cost | Purpose |
 |---|---|---|---|
-| Claude | Max | $100/mo | Batch asset generation from CSV/JSON uploads — audit page data + email copy per prospect. Also platform dev/design. |
+| Claude | Max | $100/mo | Batch asset generation from CSV/JSON uploads — asset page data + email copy per prospect. Also platform dev/design. |
 | Instantly | Growth | $47/mo | Email delivery (1K contacts/mo, 5K emails/mo), campaign sending, and inbox management. |
 | Cal.com | Free | $0 | Booking links for discovery and demo calls. |
 | Google Meet | Free | $0 | Video calls for booked prospects. |
@@ -56,10 +56,10 @@ Send first outreach emails today. Convert first TTMP token sale this week. Use t
 | Step | Owner | Action | Output |
 |---|---|---|---|
 | 1. Source | You | Scrub public emails from NAEA, state boards, LinkedIn | CSV/JSON file |
-| 2. Generate | Claude | Process uploaded file — produce audit page data + email copy per prospect | JSON file |
-| 3. Store | You / Worker | Push JSON to R2 (or repo file Worker reads) | Audit pages live at `/audit/{slug}` |
-| 4. Send | Instantly | Deliver Email 1 with CTA linking to audit page | Tracked sends |
-| 5. Track | Worker | Log audit page views, CTA clicks | D1 analytics |
+| 2. Generate | Claude | Process uploaded file — produce asset page data + email copy per prospect | JSON file |
+| 3. Store | You / Worker | Push JSON to R2 (or repo file Worker reads) | Asset pages live at `/asset/{slug}` |
+| 4. Send | Instantly | Deliver Email 1 with CTA linking to asset page | Tracked sends |
+| 5. Track | Worker | Log asset page views, CTA clicks | D1 analytics |
 | 6. Follow up | Instantly | Automated Email 2 after delay | Tracked sends |
 | 7. Close | You | Take booked calls on Google Meet, demo TTMP, close sale | Stripe payment |
 
@@ -71,21 +71,21 @@ Send first outreach emails today. Convert first TTMP token sale this week. Use t
 
 1. **Instantly account on Growth plan** — domain verified, sender configured
 2. **Email 1 copy loaded in Instantly** — personalized per prospect (Claude-generated)
-3. **Audit pages live** — Worker serves `/audit/{slug}` from R2, or use existing TTMP pages as CTA fallback
-4. **Free IRS code lookup tool** — public page on TTMP, linked from audit pages and email signatures
+3. **Asset pages live** — Worker serves `/asset/{slug}` from R2, or use existing TTMP pages as CTA fallback
+4. **Free IRS code lookup tool** — public page on TTMP, linked from asset pages and email signatures
 5. **Cal.com booking link** — "TTMP Discovery Call" event created
 
-### If the audit page Worker route isn't ready yet
+### If the asset page Worker route isn't ready yet
 
-Send emails today anyway. Link the CTA to your existing TTMP marketing page or pricing page. A good email with a link to your live site converts better than a perfect email you send next week. Build the personalized audit pages this week and switch the links in Email 2.
+Send emails today anyway. Link the CTA to your existing TTMP marketing page or pricing page. A good email with a link to your live site converts better than a perfect email you send next week. Build the personalized asset pages this week and switch the links in Email 2.
 
 ### Immediate sequence
 
 1. You provide 20–30 prospect CSV to Claude now
 2. Claude generates Email 1 copy per prospect (subject + body)
 3. You load into Instantly and send today
-4. Claude generates audit page JSON in parallel — you push to R2 when ready
-5. Email 2 goes out via Instantly automation 3–5 days later, linking to audit pages
+4. Claude generates asset page JSON in parallel — you push to R2 when ready
+5. Email 2 goes out via Instantly automation 3–5 days later, linking to asset pages
 
 ---
 
@@ -96,11 +96,11 @@ Send emails today anyway. Link the CTA to your existing TTMP marketing page or p
 **Email 1 — Offer value**
 - Personalized subject line referencing their credential and city
 - Body: pain point → free tool offer → CTA
-- CTA: "See your practice audit" → `/audit/{slug}` (or TTMP site if audit pages aren't live yet)
+- CTA: "See your practice analysis" → `/asset/{slug}` (or TTMP site if asset pages aren't live yet)
 - Worker logs CTA click
 
-**Audit Page — Personalized asset (Worker-served)**
-- URL: `transcript.taxmonitor.pro/audit/{slug}`
+**Asset Page — Personalized asset (Worker-served)**
+- URL: `transcript.taxmonitor.pro/asset/{slug}`
 - Content: workflow gaps, time savings estimate, revenue opportunity, embedded tool preview
 - CTA 1: "Add this to my practice" → pricing page
 - CTA 2: "Let's talk about your caseload" → Cal.com booking
@@ -108,9 +108,9 @@ Send emails today anyway. Link the CTA to your existing TTMP marketing page or p
 - Worker logs all CTA clicks per slug
 
 **Email 2 — Follow-up (Instantly automation, 3–5 day delay)**
-- References audit page
+- References asset page
 - Adds urgency or new angle
-- CTA 1: audit page link
+- CTA 1: asset page link
 - CTA 2: Cal.com booking link
 
 ### Engine 2 — Social (starts this week, parallel to email)
@@ -131,11 +131,11 @@ Send emails today anyway. Link the CTA to your existing TTMP marketing page or p
 
 ### Free Tool — IRS Code Lookup
 
-Public page on TTMP, no login required. Enter a transaction code, get a plain-English explanation. Referenced in email signatures, social bios, DM conversations, and audit pages.
+Public page on TTMP, no login required. Enter a transaction code, get a plain-English explanation. Referenced in email signatures, social bios, DM conversations, and asset pages.
 
-### Personalized Audit Page
+### Personalized Asset Page
 
-Hosted at `transcript.taxmonitor.pro/audit/{slug}`. Generated by Claude from CSV input:
+Hosted at `transcript.taxmonitor.pro/asset/{slug}`. Generated by Claude from CSV input:
 
 | Input | Used for |
 |---|---|
@@ -145,7 +145,7 @@ Hosted at `transcript.taxmonitor.pro/audit/{slug}`. Generated by Claude from CSV
 | email | Instantly delivery target |
 | website (optional) | Reference their existing online presence |
 
-Audit page shows: practice workflow gaps, estimated weekly/annual time savings, revenue opportunity (time saved x billing rate range), interactive tool preview, and 3 CTAs (pricing, booking, learn more).
+Asset page shows: practice workflow gaps, estimated weekly/annual time savings, revenue opportunity (time saved x billing rate range), interactive tool preview, and 3 CTAs (pricing, booking, learn more).
 
 ---
 
@@ -180,7 +180,7 @@ JSON with one object per prospect:
     {
       "slug": "sarah-chen-austin-tx",
       "email": "schen@example.com",
-      "audit_page": {
+      "asset_page": {
         "headline": "Sarah, here's what 20 minutes per transcript is costing your practice",
         "workflow_gaps": [
           "Manual IRS code translation — ~20 min/client",
@@ -197,11 +197,11 @@ JSON with one object per prospect:
       },
       "email_1": {
         "subject": "Sarah — you're spending 3+ hours/week translating IRS codes",
-        "body": "Plain text email body with CTA link to /audit/sarah-chen-austin-tx"
+        "body": "Plain text email body with CTA link to /asset/sarah-chen-austin-tx"
       },
       "email_2": {
-        "subject": "Your practice audit is ready — 182 hours/yr on the table",
-        "body": "Follow-up body referencing audit page with booking CTA"
+        "subject": "Your practice analysis is ready — 182 hours/yr on the table",
+        "body": "Follow-up body referencing asset page with booking CTA"
       }
     }
   ]
@@ -222,7 +222,7 @@ JSON with one object per prospect:
 
 **Email (Instantly):** sends, opens, CTA clicks, bounces, unsubscribes, complaints, inbound replies
 
-**Engagement (Worker):** audit page views per slug, CTA clicks per slug (which CTA), landing page views
+**Engagement (Worker):** asset page views per slug, CTA clicks per slug (which CTA), landing page views
 
 **Bookings (Cal.com):** bookings created, cancellations, reschedules, attended calls
 
@@ -239,7 +239,7 @@ First emails go out today. Everything below is about compounding results.
 ### Weeks 1–4: Establish the loop
 
 - Send to initial 20–30 prospects, iterate on copy from real open/click data
-- Build and deploy audit page Worker route + R2 storage if not ready day 1
+- Build and deploy asset page Worker route + R2 storage if not ready day 1
 - First booked calls and conversions
 - Begin FB/LinkedIn engagement
 - Scrape next 50–100 prospects from public directories
@@ -250,7 +250,7 @@ First emails go out today. Everything below is about compounding results.
 - Document first 1–2 case studies from converted customers
 - Build review/testimonial collection form
 - A/B test Email 2 delay timing (3 vs 5 vs 7 days)
-- Refine audit page content based on CTA click patterns
+- Refine asset page content based on CTA click patterns
 
 ### Weeks 9–12: Compound
 
