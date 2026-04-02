@@ -5,8 +5,8 @@
 /* Badge */
 .badge {
   display: inline-block;
-  background: rgba(124, 58, 237, 0.15);
-  border: 1px solid rgba(124, 58, 237, 0.4);
+  background: rgba(20, 184, 166, 0.12);
+  border: 1px solid rgba(20, 184, 166, 0.35);
   color: var(--accent);
   font-size: 0.8rem;
   font-weight: 700;
@@ -279,8 +279,8 @@
   font-size: 0.8rem;
   color: var(--text-muted);
   padding: 0.4rem 0.75rem;
-  background: rgba(124, 58, 237, 0.08);
-  border: 1px solid rgba(124, 58, 237, 0.2);
+  background: rgba(20, 184, 166, 0.08);
+  border: 1px solid rgba(20, 184, 166, 0.2);
   border-radius: 6px;
 }
 

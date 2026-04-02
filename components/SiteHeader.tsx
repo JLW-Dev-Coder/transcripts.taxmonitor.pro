@@ -4,18 +4,20 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 
 const RESOURCES_LINKS = [
-  { label: "IRS Phone Numbers",              href: "/resources/irs-phone-numbers/"                         },
-  { label: "IRS Transaction Codes Guide",    href: "/resources/how-to-understand-irs-transaction-codes/"   },
-  { label: "Section 7216 AI Consent",        href: "/magnets/section-7216/"                                },
-  { label: "All Resources",                  href: "/resources/"                                           },
+  { label: "Help Center",                    href: "/resources/help-center/"                              },
+  { label: "IRS Phone Numbers",              href: "/resources/irs-phone-numbers/"                        },
+  { label: "IRS Transaction Codes Guide",    href: "/resources/how-to-understand-irs-transaction-codes/"  },
+  { label: "Transcript Codes Database",      href: "/resources/transcript-codes/"                         },
+  { label: "Section 7216 AI Consent",        href: "/magnets/section-7216/"                               },
+  { label: "All Resources",                  href: "/resources/"                                          },
 ];
 
 const NAV_LINKS = [
-  { label: "About",        href: "#about"        },
-  { label: "Features",     href: "#features"     },
-  { label: "How It Works", href: "#how-it-works" },
-  { label: "Pricing",      href: "#pricing"      },
-  { label: "Contact",      href: "/contact/"     },
+  { label: "About",        href: "/about/"        },
+  { label: "Features",     href: "/features/"     },
+  { label: "How It Works", href: "/#how-it-works" },
+  { label: "Pricing",      href: "/pricing/"      },
+  { label: "Contact",      href: "/contact/"      },
 ];
 
 const ACCENT = "#14b8a6";
