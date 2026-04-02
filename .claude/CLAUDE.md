@@ -30,7 +30,7 @@ transcript.taxmonitor.pro/
 ├── scale/
 │   ├── prospects/             ← uploaded CSVs go here (input)
 │   ├── batches/               ← generated JSON batches go here (output)
-│   └── brevo/                 ← generated Brevo CSVs go here (output)
+│   └── Instantly/             ← generated Instantly CSVs go here (output)
 ├── app/
 │   └── audit/[slug]/          ← audit page route (to be built)
 └── public/
@@ -49,7 +49,7 @@ The SCALE system converts prospect CSVs into personalized outreach packages.
 2. Run: `node scale/generate-batch.js scale/prospects/{filename}.csv`
 3. Outputs are written to:
    - `scale/batches/scale-batch-{YYYY-MM-DD}.json` — full data for R2 + audit pages
-   - `scale/brevo/instantly-import-email1-{YYYY-MM-DD}.csv` — Instantly import, Email 1
+   - `scale/instantly/instantly-import-email1-{YYYY-MM-DD}.csv` — Instantly import, Email 1
 
 ### Sender identity
 All email signatures use: **Jamie L Williams**
@@ -173,7 +173,7 @@ See design spec in `scale/AUDIT-PAGE-DESIGN.md` when that file exists.
 
 Every batch run should produce two files committed to this repo:
 - `scale/batches/scale-batch-{YYYY-MM-DD}.json`
-- `scale/brevo/brevo-import-email1-{YYYY-MM-DD}.csv`
+- `scale/instantly/instantly-import-email1-{YYYY-MM-DD}.csv`
 
 This creates a full audit trail: who was contacted, when, with what copy.
 Do not delete old batch files.
