@@ -146,15 +146,35 @@ export default function PricingPage() {
                 <summary style={{
                   cursor: 'pointer', listStyle: 'none',
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  gap: '1rem',
                   fontWeight: 600, color: 'var(--text, #f9fafb)', fontSize: '0.9375rem',
                 }}>
                   {faq.q}
-                  <span style={{ color: 'var(--text-muted, #9ca3af)', fontSize: '1.25rem', lineHeight: 1 }}>⌄</span>
+                  <span style={{
+                    width: 28, height: 28, borderRadius: 8, flexShrink: 0,
+                    background: 'rgba(20,184,166,0.1)',
+                    border: '1px solid rgba(20,184,166,0.2)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#14b8a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M2 5l5 5 5-5"/>
+                    </svg>
+                  </span>
                 </summary>
                 <p style={{ marginTop: '0.875rem', fontSize: '0.9rem', color: 'var(--text-muted, #9ca3af)', lineHeight: 1.7 }}>{faq.a}</p>
               </details>
             ))}
           </div>
+          <style>{`
+            details[open] summary span svg {
+              transform: rotate(180deg);
+            }
+            details summary span svg {
+              transition: transform 200ms ease;
+            }
+            details summary::-webkit-details-marker { display: none; }
+            details summary::marker { display: none; }
+          `}</style>
         </div>
       </section>
 
