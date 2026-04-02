@@ -4,6 +4,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { parse } = require('csv-parse/sync');
 
 const R2_KEY = 'vlp-scale/send-queue/email1-pending.json';
 const API_BASE = 'https://api.virtuallaunch.pro';
@@ -18,26 +19,6 @@ function loadToken() {
   } catch (_) {}
   console.error('Error: R2_CANONICAL_WRITE_TOKEN not found in environment or .env file');
   process.exit(1);
-}
-
-function parseCsv(raw) {
-  const lines = raw.split(/\r?\n/).filter(l => l.trim());
-  if (lines.length < 2) return [];
-  const headers = lines[0].split(',').map(h => h.trim());
-  return lines.slice(1).map(line => {
-    const values = [];
-    let current = '';
-    let inQuotes = false;
-    for (const ch of line) {
-      if (ch === '"') { inQuotes = !inQuotes; continue; }
-      if (ch === ',' && !inQuotes) { values.push(current); current = ''; continue; }
-      current += ch;
-    }
-    values.push(current);
-    const obj = {};
-    headers.forEach((h, i) => { obj[h] = (values[i] || '').trim(); });
-    return obj;
-  });
 }
 
 async function r2Get(token) {
@@ -71,11 +52,17 @@ async function main() {
 
   const token = loadToken();
   const raw = fs.readFileSync(csvPath, 'utf8');
-  const newRecords = parseCsv(raw).map(r => ({
-    email: r.email,
-    first_name: r.first_name,
-    subject: r.subject,
-    body: r.body,
+  const parsed = parse(raw, {
+    columns: true,
+    skip_empty_lines: true,
+    relax_quotes: true,
+    trim: true,
+  });
+  const newRecords = parsed.map(r => ({
+    email: r.EMAIL,
+    first_name: r.FIRSTNAME,
+    subject: r.SUBJECT,
+    body: r.BODY,
     queued_at: new Date().toISOString(),
   }));
 
