@@ -3,6 +3,7 @@ import styles from './section-7216.module.css'
 import { CopyBlock, ComplianceChecklist } from './Section7216Client'
 import SiteHeader from '@/components/SiteHeader'
 import SiteFooter from '@/components/SiteFooter'
+import CtaBand from '@/components/CtaBand'
 
 const CANONICAL_BASE = 'https://transcript.taxmonitor.pro'
 
@@ -203,24 +204,14 @@ export default function Section7216Page() {
           </a>
         </div>
 
-        {/* CTA section */}
-        <div className={styles.ctaSection}>
-          <h2 className={styles.ctaTitle}>Turn transcripts into clear answers</h2>
-          <p className={styles.ctaDesc}>
-            Use this guidance to interpret client transcripts quickly, summarize findings clearly,
-            and decide next steps. When you need a clean client-ready deliverable, generate a
-            transcript analysis report in minutes.
-          </p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '1.5rem' }}>
-            <a href="/#how-it-works" className={styles.ctaBtn}>
-              Start Generating Transcript Reports
-            </a>
-            <a href="/resources/transcript-codes/" className={styles.ctaBtnSecondary}
-              style={{ display: 'inline-flex', alignItems: 'center', padding: '0.75rem 1.5rem', borderRadius: 10, border: '1px solid rgba(20,184,166,0.3)', color: '#14b8a6', textDecoration: 'none', fontWeight: 600, fontSize: '0.9375rem' }}>
-              Browse Code Database
-            </a>
-          </div>
-        </div>
+        <CtaBand
+          title="Turn transcripts into clear answers"
+          body="Use this guidance to interpret client transcripts quickly. When you need a clean client-ready deliverable, generate a transcript analysis report in minutes."
+          primaryLabel="Start Generating Transcript Reports"
+          primaryHref="/#how-it-works"
+          secondaryLabel="Browse Code Database"
+          secondaryHref="/resources/transcript-codes/"
+        />
 
       </div>
     </div>

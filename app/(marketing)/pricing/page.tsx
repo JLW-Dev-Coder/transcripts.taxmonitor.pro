@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import CtaBand from '@/components/CtaBand'
 
 export const metadata: Metadata = {
   title: 'Pricing | Transcript Tax Monitor Pro',
@@ -178,26 +179,14 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section style={{ padding: '5rem 1.5rem', textAlign: 'center' }}>
-        <div style={{ maxWidth: 520, margin: '0 auto' }}>
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.03em', color: 'var(--text, #f9fafb)', marginBottom: '0.75rem' }}>
-            Ready to{' '}<span style={{ color: '#14b8a6' }}>start?</span>
-          </h2>
-          <p style={{ fontSize: '1rem', color: 'var(--text-muted, #9ca3af)', lineHeight: 1.7, marginBottom: '2rem' }}>
-            Parse for free, then buy tokens when you need client-ready reports.
-          </p>
-          <Link href="/app/dashboard/" style={{
-            display: 'inline-flex', alignItems: 'center',
-            background: '#14b8a6', color: '#000',
-            fontWeight: 700, fontSize: '1.125rem',
-            padding: '0.875rem 2.25rem', borderRadius: 12, textDecoration: 'none',
-          }}>Try the Parser →</Link>
-          <p style={{ marginTop: '1rem', fontSize: '0.8125rem', color: 'var(--text-muted, #9ca3af)', opacity: 0.6 }}>
-            No account required to parse. Tokens needed only to save reports.
-          </p>
-        </div>
-      </section>
+      <CtaBand
+        title="Ready to start?"
+        body="Parse for free, then buy tokens when you need client-ready reports. No account required to begin."
+        primaryLabel="Try the Parser"
+        primaryHref="/app/dashboard/"
+        secondaryLabel="View Pricing"
+        secondaryHref="/pricing/"
+      />
 
     </div>
   )

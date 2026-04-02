@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import CtaBand from '@/components/CtaBand'
 
 export const metadata: Metadata = {
   title: 'Features | Transcript Tax Monitor Pro',
@@ -333,33 +334,14 @@ export default function FeaturesPage() {
         </div>
       </section>
 
-      {/* CTA band */}
-      <section style={{ padding: '5rem 1.5rem', textAlign: 'center' }}>
-        <div style={{ maxWidth: 640, margin: '0 auto' }}>
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.03em', color: 'var(--text, #f9fafb)', marginBottom: '0.75rem' }}>
-            Ready to clean up your transcript workflow?
-          </h2>
-          <p style={{ color: 'var(--text-muted, #9ca3af)', fontSize: '1rem', lineHeight: 1.7, marginBottom: '2rem' }}>
-            Parse for free. Buy tokens when you need to save a client-ready report.
-          </p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/pricing/" style={{
-              display: 'inline-flex', alignItems: 'center',
-              background: '#14b8a6', color: '#000',
-              fontWeight: 700, fontSize: '1rem',
-              padding: '0.75rem 1.75rem', borderRadius: 10, textDecoration: 'none',
-            }}>See Pricing</Link>
-            <Link href="/app/dashboard/" style={{
-              display: 'inline-flex', alignItems: 'center',
-              background: 'var(--surface, #111827)',
-              border: '1px solid var(--surface-border, #1f2937)',
-              color: 'var(--text, #f9fafb)',
-              fontWeight: 600, fontSize: '1rem',
-              padding: '0.75rem 1.75rem', borderRadius: 10, textDecoration: 'none',
-            }}>Try the Parser</Link>
-          </div>
-        </div>
-      </section>
+      <CtaBand
+        title="Ready to clean up your transcript workflow?"
+        body="Parse for free. Buy tokens when you need to save a client-ready report. No subscription required."
+        primaryLabel="See Pricing"
+        primaryHref="/pricing/"
+        secondaryLabel="Try the Parser"
+        secondaryHref="/app/dashboard/"
+      />
 
     </div>
   )

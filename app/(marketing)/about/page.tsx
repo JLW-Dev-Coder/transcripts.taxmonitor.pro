@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import type { Metadata } from 'next'
 import styles from './page.module.css'
+import CtaBand from '@/components/CtaBand'
 
 const CANONICAL_BASE = 'https://transcript.taxmonitor.pro'
 
@@ -195,27 +196,14 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* CTA Band */}
-      <section className={styles.ctaBand}>
-        <div className={styles.ctaBandInner}>
-          <h2 className={styles.ctaBandTitle}>Ready to clean up your transcript workflow?</h2>
-          <p className={styles.ctaBandSub}>
-            Use Transcript.Tax Monitor Pro to turn raw IRS transcript data into polished
-            explanations your clients can actually follow.
-          </p>
-          <div className={styles.ctaBandActions}>
-            <Link href="/pricing" className={styles.btnPrimary}>See Pricing</Link>
-            <a
-              href="/magnets/lead-magnet.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.btnSecondary}
-            >
-              Get the Free Guide
-            </a>
-          </div>
-        </div>
-      </section>
+      <CtaBand
+        title="Ready to clean up your transcript workflow?"
+        body="Use Transcript Tax Monitor Pro to turn raw IRS transcript data into polished explanations your clients can actually follow."
+        primaryLabel="See Pricing"
+        primaryHref="/pricing/"
+        secondaryLabel="Get the Free Guide"
+        secondaryHref="/magnets/lead-magnet/"
+      />
 
     </div>
   )

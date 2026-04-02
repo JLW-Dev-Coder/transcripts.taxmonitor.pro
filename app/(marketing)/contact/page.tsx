@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import ContactForm from './ContactForm'
 import styles from './contact.module.css'
+import CtaBand from '@/components/CtaBand'
 
 const CANONICAL_BASE = 'https://transcript.taxmonitor.pro'
 
@@ -24,27 +25,14 @@ export default function ContactPage() {
     <div className={styles.page}>
       <ContactForm />
 
-      {/* CTA Band */}
-      <section className={styles.ctaBand}>
-        <div className={styles.ctaBandInner}>
-          <h2 className={styles.ctaBandTitle}>Want answers before opening a ticket?</h2>
-          <p className={styles.ctaBandSub}>
-            Many transcript workflow questions are solved faster by checking the product flow first.
-            If the issue is still blocking you, send the ticket and we&apos;ll handle it.
-          </p>
-          <div className={styles.ctaBandActions}>
-            <Link href="/#how-it-works" className={styles.btnPrimary}>
-              See How It Works
-            </Link>
-            <Link href="/pricing" className={styles.btnSecondary}>
-              View Pricing
-            </Link>
-          </div>
-          <p className={styles.ctaNote}>
-            Credits available instantly • Support replies by email • Transcript-focused help
-          </p>
-        </div>
-      </section>
+      <CtaBand
+        title="Need to analyze a transcript first?"
+        body="While you wait for a response, use the parser to turn any IRS transcript into a plain-English report in seconds."
+        primaryLabel="Try the Parser"
+        primaryHref="/app/dashboard/"
+        secondaryLabel="Browse Resources"
+        secondaryHref="/resources/"
+      />
     </div>
   )
 }
