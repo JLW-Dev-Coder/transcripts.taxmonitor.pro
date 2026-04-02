@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import CtaBand from '@/components/CtaBand'
 import ParserSection from './ParserSection'
 import PricingSection from './PricingSection'
 import styles from './page.module.css'
@@ -270,27 +270,14 @@ export default function HomePage() {
       </section>
 
       {/* 8. BOTTOM CTA BAND */}
-      <section className={styles.ctaBand}>
-        <div className={styles.ctaBandInner}>
-          <h2 className={styles.ctaBandTitle}>Ready to Transform Your Transcript Workflow?</h2>
-          <p className={styles.ctaBandSub}>
-            Proactive transcript monitoring built specifically for tax professionals.
-          </p>
-          <div className={styles.ctaBandActions}>
-            <a
-              href="https://transcript.taxmonitor.pro/magnets/lead-magnet.html"
-              className={styles.btnPrimary}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Get Your Free Guide First →
-            </a>
-            <Link href="/login" className={styles.btnSecondary}>
-              Sign In Free
-            </Link>
-          </div>
-        </div>
-      </section>
+      <CtaBand
+        title="Ready to transform your transcript workflow?"
+        body="Upload a client's IRS transcript PDF and get a plain-English analysis report in seconds — with every transaction code explained and recommendations included."
+        primaryLabel="Try the Parser Free"
+        primaryHref="/app/dashboard/"
+        secondaryLabel="Get the Free Guide"
+        secondaryHref="/magnets/lead-magnet/"
+      />
 
     </div>
   )
