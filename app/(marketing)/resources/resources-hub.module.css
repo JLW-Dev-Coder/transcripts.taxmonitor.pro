@@ -152,7 +152,7 @@
 .card:hover {
   border-color: var(--accent);
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.12);
+  box-shadow: 0 8px 24px rgba(20, 184, 166, 0.12);
 }
 
 .cardTitle {
@@ -224,8 +224,8 @@
   overflow: hidden;
   position: relative;
   background:
-    radial-gradient(1200px 220px at 50% 0%, rgba(167, 139, 250, 0.28), transparent 60%),
-    linear-gradient(180deg, rgba(124, 58, 237, 0.34) 0%, rgba(124, 58, 237, 0.18) 45%, rgba(15, 15, 26, 0.12) 100%);
+    radial-gradient(1200px 220px at 50% 0%, rgba(94, 234, 212, 0.28), transparent 60%),
+    linear-gradient(180deg, rgba(20, 184, 166, 0.34) 0%, rgba(20, 184, 166, 0.18) 45%, rgba(15, 15, 26, 0.12) 100%);
 }
 
 .ctaBand::after {
@@ -236,7 +236,7 @@
   bottom: -70px;
   height: 180px;
   border-radius: 999px;
-  background: rgba(124, 58, 237, 0.25);
+  background: rgba(20, 184, 166, 0.25);
   filter: blur(26px);
   opacity: 0.9;
   pointer-events: none;
@@ -268,7 +268,7 @@
 }
 
 .ctaBtnPrimary {
-  background: #ffffff;
+  background: var(--accent);
   color: #0b1220;
   font-weight: 800;
   padding: 0.875rem 1.75rem;
@@ -280,15 +280,15 @@
 }
 
 .ctaBtnPrimary:hover {
-  background: rgba(255, 255, 255, 0.92);
+  background: var(--accent-hover);
   transform: translateY(-2px);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
 }
 
 .ctaBtnSecondary {
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid rgba(20, 184, 166, 0.4);
   font-weight: 800;
   padding: 0.875rem 1.75rem;
   border-radius: var(--radius);
@@ -298,8 +298,8 @@
 }
 
 .ctaBtnSecondary:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(20, 184, 166, 0.1);
+  border-color: var(--accent);
   transform: translateY(-2px);
 }
 
