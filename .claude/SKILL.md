@@ -3,7 +3,7 @@ name: vlp-scale-batch-generator
 description: >
   Processes a CSV or JSON file of tax professional prospects (CPAs, EAs, tax attorneys)
   and generates a complete outreach JSON package per prospect — including personalized
-  Email 1, Email 2, and full audit page data — ready for Instantly.ai delivery and R2 storage.
+  Email 1, Email 2, and full audit page data — ready for Gmail API delivery and R2 storage.
   Use this skill ANY TIME the user uploads a CSV or mentions prospects, leads, outreach,
   batch emails, asset pages, TTMP emails, or SCALE pipeline. Also triggers for phrases like
   "process my leads", "generate emails", "build asset pages", or "run the batch".
@@ -14,7 +14,7 @@ description: >
 
 Converts a prospect CSV into a complete outreach package per day:
 1. `scale-batch-{YYYY-MM-DD}.json` — full data for R2 / asset pages
-2. `scale/instantly/email1/YYYY-MM-DD-batch.csv` — Instantly.ai import, Email 1
+2. `scale/gmail/email1/YYYY-MM-DD-batch.csv` — sending queue for Gmail cron
 
 Sender: **Jamie L Williams** — never use placeholders.
 Terminology: use **asset page** and **practice analysis** — never "audit".
@@ -143,9 +143,9 @@ transcript.taxmonitor.pro
 Path: `/mnt/user-data/outputs/scale-batch-{YYYY-MM-DD}.json`
 (In repo: `scale/batches/scale-batch-{YYYY-MM-DD}.json`)
 
-### Instantly CSV
-Path: `/mnt/user-data/outputs/instantly-import-email1-{YYYY-MM-DD}.csv`
-(In repo: `scale/instantly/email1/{YYYY-MM-DD}-batch.csv`)
+### Gmail CSV
+Path: `/mnt/user-data/outputs/gmail-email1-{YYYY-MM-DD}.csv`
+(In repo: `scale/gmail/email1/{YYYY-MM-DD}-batch.csv`)
 
 Columns exactly: `email, first_name, subject, body`
 - No extra columns
@@ -166,7 +166,7 @@ Remaining eligible: {N}
 Days of pipeline remaining: {N}
 
 NEXT STEPS:
-1. Import instantly-import-email1-{date}.csv into Instantly.ai → send today
+1. Run Gmail cron to send gmail-email1-{date}.csv → send today
 2. Push scale-batch-{date}.json to R2: vlp-scale/asset-pages/{slug}.json
 3. Email 2 queued for: {date + 3 days}
 4. New prospect CSV needed by: {date when source exhausted}
