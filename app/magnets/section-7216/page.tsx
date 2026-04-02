@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import styles from './section-7216.module.css'
 import { CopyBlock, ComplianceChecklist } from './Section7216Client'
+import SiteHeader from '@/components/SiteHeader'
+import SiteFooter from '@/components/SiteFooter'
 
 const CANONICAL_BASE = 'https://transcript.taxmonitor.pro'
 
@@ -28,6 +30,8 @@ const SIGNATURE_REQUIREMENTS = `TAXPAYER ACKNOWLEDGMENT AND SIGNATURE I have rea
 
 export default function Section7216Page() {
   return (
+    <>
+    <SiteHeader />
     <div className={styles.page}>
       {/* Hero */}
       <section className={styles.hero}>
@@ -220,5 +224,7 @@ export default function Section7216Page() {
 
       </div>
     </div>
+    <SiteFooter />
+    </>
   )
 }
