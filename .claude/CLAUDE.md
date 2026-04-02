@@ -1,139 +1,179 @@
-# Transcript Tax Monitor Pro — Claude Context
+# CLAUDE.md — transcript.taxmonitor.pro (TTMP)
 
-## Role
-Frontend only. No backend logic. All API calls go to https://api.virtuallaunch.pro
+This file is read by Claude Code at the start of every session in this repo.
+Do not delete or move it. Keep it updated as the system evolves.
 
-## Stack
-- Next.js 15 (App Router) + TypeScript
-- CSS Modules only — no Tailwind, no inline styles
-- Font: Raleway via next/font/google (variable: --font-raleway)
-- Hosting: Cloudflare Pages via OpenNext
-- Build output: .open-next/assets
+Last updated: 2026-04-01
 
-## Build Commands
+---
+
+## What this repo is
+
+**Transcript Tax Monitor Pro (TTMP)**
+- Domain: transcript.taxmonitor.pro
+- Product: IRS transcript PDF → plain-English analysis report
+- Pricing: Token-based — 10 tokens/$19, 25/$29, 100/$129
+- Audience: 750,000+ U.S. tax professionals (CPAs, EAs, tax attorneys)
+- Brand color: Teal #14b8a6
+- Stack: Next.js, Tailwind CSS, Cloudflare Pages
+- Backend: api.virtuallaunch.pro (VLP Worker) — no backend changes in this repo
+
+---
+
+## Repo structure (key paths)
+
+```
+transcript.taxmonitor.pro/
+
+├── .claude/
+│   ├── CLAUDE.md/             ← you are here
+├── scale/
+│   ├── prospects/             ← uploaded CSVs go here (input)
+│   ├── batches/               ← generated JSON batches go here (output)
+│   └── brevo/                 ← generated Brevo CSVs go here (output)
+├── app/
+│   └── audit/[slug]/          ← audit page route (to be built)
+└── public/
+    └── tools/code-lookup/     ← free IRS code lookup tool (to be built)
+```
+
+---
+
+## SCALE Pipeline — Batch Generator
+
+The SCALE system converts prospect CSVs into personalized outreach packages.
+
+### To run a batch
+
+1. Pull 50 prospects/rows from the prospect CSV in `scale/prospects/` (copy from upload or paste directly)
+2. Run: `node scale/generate-batch.js scale/prospects/{filename}.csv`
+3. Outputs are written to:
+   - `scale/batches/scale-batch-{YYYY-MM-DD}.json` — full data for R2 + audit pages
+   - `scale/brevo/instantly-import-email1-{YYYY-MM-DD}.csv` — Instantly import, Email 1
+
+### Sender identity
+All email signatures use: **Jamie L Williams**
+All email footers: Transcript Tax Monitor Pro / transcript.taxmonitor.pro
+
+### Input CSV columns (mapped automatically)
+
+| Column name(s) | Field |
+|----------------|-------|
+| First_NAME, first_name, name (first word) | First name |
+| LAST_NAME, last_name, name (remaining) | Last name |
+| PROFESSION, credential | Credential (EA, CPA, JD) |
+| BUS_ADDR_CITY, city | City |
+| BUS_ST_CODE, state | State |
+| email_found, email | Email address |
+| DBA, firm, firm_name | Firm/DBA name |
+| WEBSITE, website | Website (optional) |
+| firm_bucket | `solo_brand` / `local_firm` / `national_firm` |
+| send_today | If column exists, only process rows where value = `yes` |
+
+### Output JSON schema (per prospect)
+
+```json
+{
+  "slug": "jamie-williams-san-diego-ca",
+  "email": "jwilliams@example.com",
+  "name": "Jamie Williams",
+  "credential": "EA",
+  "city": "San Diego",
+  "state": "CA",
+  "firm": "Williams Tax Services",
+  "firm_bucket": "solo_brand",
+  "website": "williamstax.com",
+  "audit_page": {
+    "headline": "Jamie, here's what 20 minutes per transcript is costing Williams Tax Services",
+    "subheadline": "A practice audit for Enrolled Agents who work with IRS transcripts",
+    "workflow_gaps": ["...", "...", "..."],
+    "time_savings_weekly": "6.7 hours",
+    "time_savings_annual": "348 hours",
+    "revenue_opportunity": "$34,800–$104,400/yr in recovered billable time",
+    "tool_preview_codes": ["971", "846", "570"],
+    "cta_pricing_url": "https://transcript.taxmonitor.pro/pricing",
+    "cta_booking_url": "https://cal.com/vlp/ttmp-discovery",
+    "cta_learn_more_url": "https://transcript.taxmonitor.pro"
+  },
+  "email_1": { "subject": "...", "body": "..." },
+  "email_2": { "subject": "...", "body": "..." }
+}
+```
+
+### Time savings by credential
+
+| Credential | Hrs/week | Hrs/year | Revenue range |
+|------------|----------|----------|---------------|
+| EA | 6.7 | 348 | $34,800–$104,400/yr |
+| CPA | 5.0 | 260 | $39,000–$104,000/yr |
+| JD/Attorney | 3.3 | 174 | $34,800–$87,000/yr |
+
+### Personalization rules
+
+**solo_brand** (EA runs their own named practice):
+- Subject: `"{First} — EAs running {DBA} spend 6+ hours/week on this"`
+- Headline: `"{First}, here's what 20 minutes per transcript is costing {DBA}"`
+
+**local_firm** (EA works at a multi-person firm):
+- Subject: `"{First} — EAs in {City} are spending 6+ hours/week on this"`
+- Headline: `"{First}, here's what 20 minutes per transcript is costing your {City} practice"`
+
+---
+
+## Audit Page Route
+
+Audit pages are served at: `transcript.taxmonitor.pro/audit/[slug]`
+
+The page reads its data from R2:
+- Bucket: `virtuallaunch-pro`
+- Key pattern: `vlp-scale/audit-pages/{slug}.json`
+
+To push a batch to R2 (after generating):
 ```bash
-npm run dev          # Local dev
-npm run build        # Next.js build
-npm run cf:build     # OpenNext Cloudflare build
-npm run deploy       # Deploy to Cloudflare Pages
-npm run preview      # Preview deployment
+node scale/push-to-r2.js scale/batches/scale-batch-{YYYY-MM-DD}.json
 ```
 
-## Deploy Config
-- wrangler.toml: pages_build_output_dir = ".open-next/assets"
-- open-next.config.ts: defineCloudflareConfig({})
-- pages:build script: opennextjs-cloudflare build (no manual cp commands)
+The audit page UI is in `app/audit/[slug]/page.jsx`.
+See design spec in `scale/AUDIT-PAGE-DESIGN.md` when that file exists.
 
-## VLP API
-Base URL: https://api.virtuallaunch.pro
-Auth: vlp_session HttpOnly cookie (credentials: 'include' on all fetch calls)
+---
 
-## Key Route Mappings
-/v1/auth/magic-link/request
-/v1/auth/magic-link/verify
-/v1/auth/session
-/v1/auth/logout
-/v1/transcripts/preview
-/v1/transcripts/reports
-/v1/transcripts/report
-/v1/transcripts/report-email
-/v1/transcripts/report-link
-/v1/transcripts/report-data
-/v1/checkout/sessions
-/v1/checkout/status
-/v1/tokens/balance/{account_id}
-/v1/tokens/consume
-/v1/pricing/transcripts
-/v1/support/tickets
+## Tone & Voice
 
-## File Structure
-```
-app/
-  page.tsx                        → / (homepage with parser)
-  layout.tsx                      → root layout (SiteHeader + SiteFooter)
-  globals.css                     → CSS variables + base styles
-  ParserSection.tsx               → PDF upload → VLP API → report
-  PricingSection.tsx              → Pricing cards
-  page.module.css                 → Homepage styles
-  about/page.tsx
-  contact/page.tsx
-  demo/page.tsx
-  login/page.tsx
-  pricing/page.tsx
-  product/page.tsx
-  resources/page.tsx
-  resources/[slug]/page.tsx       → Dynamic resource pages
-  app/dashboard/page.tsx
-  app/affiliate/page.tsx
-  legal/privacy/page.tsx
-  legal/refund/page.tsx
-  legal/terms/page.tsx
-  magnets/lead-magnet/page.tsx
-  magnets/section-7216/page.tsx
-  magnets/guide/page.tsx
+- Direct — no fluff, state the benefit immediately
+- Professional but accessible — tax professionals are the audience, assume intelligence
+- Specific — real numbers (hours, prices, timeframes), vague claims undermine trust
+- Problem-first — lead with the pain point, follow with the solution
+- No emoji anywhere in email copy or audit page content
+- No exclamation marks in professional copy
 
-components/
-  SiteHeader.tsx                  → Sticky nav, mobile drawer
-  SiteFooter.tsx + module.css     → Dark footer, 4 columns
-  SupportModal.tsx                → Cal.com popup embed
-  LegalPage.tsx                   → Privacy/Terms/Refunds renderer
-  CTA.tsx + module.css
-  ResourceLayout.tsx + module.css
-  Sidebar.tsx + module.css
-  templates/
-    IRSCodeTemplate.tsx
-    ExplainerTemplate.tsx
-    ComparisonTemplate.tsx
-    HowToTemplate.tsx
-    SalesTemplate.tsx
+---
 
-content/resources/                → JSON files for resource pages
-public/
-  favicon.svg                     → TT mark, teal #14b8a6
-  design-tokens.css               → CSS variable reference
-```
+## What NOT to do in this repo
 
-## CSS Variables (set in globals.css)
-```css
---accent:        #14b8a6
---accent-light:  #f0fdfa
---accent-dark:   #0f766e
---accent-hover:  #0f766e
---accent-text:   #0d6e66
---accent-border: #99f6e4
---bg:            #0a0f1e      (dark default)
---surface:       #111827
---surface-border:#1f2937
---text:          #f9fafb
---text-muted:    #9ca3af
---radius:        10px
---max-width:     1280px
---header-height: 68px
---font-raleway:  set via next/font/google
-```
+- Do not add backend routes — all API calls go to api.virtuallaunch.pro
+- Do not modify the VLP Worker from this repo
+- Do not hardcode API keys — all secrets are in Cloudflare Pages env vars
+- Do not commit prospect CSV files containing real emails to git
+  (keep them in scale/prospects/ which is .gitignored)
 
-## Platform Identity
-- Name: Transcript Tax Monitor
-- Short: TTMP
-- Logo mark: TT
-- Accent: #14b8a6 (teal)
-- Cal.com support: tax-monitor-pro/tax-monitor-transcript-support (10m)
-- Legal entity: Lenore, Inc
-- Legal email: legal@taxmonitor.pro
+---
 
-## Resource Pages
-- Content lives in /content/resources/*.json
-- 5 template types only: irs-code, explainer, comparison, how-to, sales
-- generateStaticParams() required — no runtime fetches
-- No "use client" on resource pages
-- CTA injected after intro, after content, in sidebar
+## Related repos
 
-## Hard Rules
-- Never create a Worker in this repo
-- Never add backend logic
-- All fetch() calls → https://api.virtuallaunch.pro with credentials: 'include'
-- CSS Modules only — no Tailwind
-- No .html files in /app
-- No 6th template type
-- No markdown conversion of HTML content
-- No CMS or database
+| Repo | Path | Purpose |
+|------|------|---------|
+| VLP Worker | C:\Users\britn\OneDrive\virtuallaunch.pro | Backend API, R2 writes |
+| TMP | C:\Users\britn\OneDrive\taxmonitor.pro-site | Taxpayer-facing platform |
+| VLP hub | C:\Users\britn\OneDrive\virtuallaunch.pro\web | Auth, billing, affiliates |
+
+---
+
+## Recordkeeping
+
+Every batch run should produce two files committed to this repo:
+- `scale/batches/scale-batch-{YYYY-MM-DD}.json`
+- `scale/brevo/brevo-import-email1-{YYYY-MM-DD}.csv`
+
+This creates a full audit trail: who was contacted, when, with what copy.
+Do not delete old batch files.
