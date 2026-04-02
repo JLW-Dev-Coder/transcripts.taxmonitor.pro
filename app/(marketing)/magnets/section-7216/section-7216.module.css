@@ -93,9 +93,8 @@
 .hero {
   padding: 5rem 1.5rem;
   text-align: center;
-  border-bottom: 2px solid var(--accent);
   background:
-    radial-gradient(ellipse 70% 50% at 50% -10%, rgba(124, 58, 237, 0.18), transparent 55%),
+    radial-gradient(ellipse 70% 50% at 50% -10%, rgba(20, 184, 166, 0.12), transparent 55%),
     var(--bg);
 }
 
@@ -141,7 +140,7 @@
 
 .card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 32px rgba(124, 58, 237, 0.12);
+  box-shadow: 0 12px 32px rgba(20, 184, 166, 0.12);
 }
 
 .cardTitle {
@@ -186,7 +185,7 @@
 
 /* ── Consent block ────────────────────────────────────── */
 .consentBlock {
-  background: rgba(124, 58, 237, 0.05);
+  background: rgba(20, 184, 166, 0.05);
   border: 1px solid var(--accent);
   border-radius: var(--radius);
   padding: 1rem;
@@ -336,7 +335,7 @@
 }
 
 .checklistItem:hover {
-  background: rgba(124, 58, 237, 0.06);
+  background: rgba(20, 184, 166, 0.06);
 }
 
 .checklistBox {
@@ -389,17 +388,18 @@
 }
 
 .refLink:hover {
-  color: #c4b5fd;
+  color: #99f6e4;
   text-decoration: underline;
 }
 
 /* ── CTA section ──────────────────────────────────────── */
 .ctaSection {
   text-align: center;
-  padding: 2.5rem 1.5rem;
+  padding: 3rem 2rem;
   margin: 2.5rem 0;
-  border-top: 2px solid var(--accent);
-  border-bottom: 2px solid var(--accent);
+  background: rgba(20, 184, 166, 0.06);
+  border: 1px solid rgba(20, 184, 166, 0.2);
+  border-radius: 16px;
 }
 
 .ctaTitle {
@@ -417,24 +417,32 @@
 }
 
 .ctaBtn {
-  display: inline-block;
-  background: var(--accent);
-  color: #fff;
-  padding: 1rem 2.5rem;
-  border-radius: var(--radius);
-  font-size: 1.05rem;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 1.75rem;
+  border-radius: 10px;
+  background: #14b8a6;
+  color: #000;
+  font-weight: 700;
+  font-size: 0.9375rem;
   text-decoration: none;
-  transition: background 0.2s, transform 0.2s;
-  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.3);
+  transition: opacity 150ms ease;
 }
+.ctaBtn:hover { opacity: 0.88; text-decoration: none; }
 
-.ctaBtn:hover {
-  background: var(--accent-hover);
-  transform: translateY(-2px);
+.ctaBtnSecondary {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  border: 1px solid rgba(20, 184, 166, 0.3);
+  color: #14b8a6;
   text-decoration: none;
-  color: #fff;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  transition: opacity 150ms ease;
 }
+.ctaBtnSecondary:hover { opacity: 0.88; text-decoration: none; }
 
 /* ── Footer ───────────────────────────────────────────── */
 .footer {
@@ -466,7 +474,7 @@
 }
 
 .footerEmail:hover {
-  color: #c4b5fd;
+  color: #99f6e4;
   text-decoration: underline;
 }
 

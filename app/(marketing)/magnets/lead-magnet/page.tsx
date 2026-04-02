@@ -1,5 +1,7 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import SiteHeader from '@/components/SiteHeader'
+import SiteFooter from '@/components/SiteFooter'
 import styles from './lead-magnet.module.css'
 import LeadMagnetForm from './LeadMagnetForm'
 
@@ -41,34 +43,7 @@ const CHECKS = [
 export default function LeadMagnetPage() {
   return (
     <div className={styles.page}>
-      {/* Nav */}
-      <nav className={styles.nav}>
-        <div className={styles.navInner}>
-          <Link href="/" className={styles.navBrand}>
-            <span className={styles.navLogo}>TM</span>
-            <div className={styles.navBrandText}>
-              <div className={styles.navBrandName}>Transcript.Tax Monitor Pro</div>
-              <div className={styles.navBrandSub}>Free IRS Transcript Code Guide</div>
-            </div>
-          </Link>
-          <Link href="/" className={styles.navBack}>
-            <svg
-              width="20"
-              height="20"
-              aria-hidden="true"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-            Back
-          </Link>
-        </div>
-      </nav>
+      <SiteHeader />
 
       {/* Hero */}
       <section className={styles.hero}>
@@ -124,18 +99,7 @@ export default function LeadMagnetPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className={styles.footer}>
-        <div className={styles.footerInner}>
-          <p className={styles.footerCopy}>
-            &copy; <span suppressHydrationWarning>{new Date().getFullYear()}</span> Transcript.Tax Monitor Pro. All rights reserved.
-          </p>
-          <div className={styles.footerLinks}>
-            <Link href="/legal/privacy" className={styles.footerLink}>Privacy Policy</Link>
-            <Link href="/legal/terms" className={styles.footerLink}>Terms of Service</Link>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   )
 }

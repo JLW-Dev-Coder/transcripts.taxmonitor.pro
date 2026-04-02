@@ -201,13 +201,21 @@ export default function Section7216Page() {
 
         {/* CTA section */}
         <div className={styles.ctaSection}>
-          <h2 className={styles.ctaTitle}>Ready to Implement AI Consent?</h2>
+          <h2 className={styles.ctaTitle}>Turn transcripts into clear answers</h2>
           <p className={styles.ctaDesc}>
-            Download the complete AI Consent Flyer + PDF guide for your tax firm. All templates are ready to customize and print.
+            Use this guidance to interpret client transcripts quickly, summarize findings clearly,
+            and decide next steps. When you need a clean client-ready deliverable, generate a
+            transcript analysis report in minutes.
           </p>
-          <a href="#" className={styles.ctaBtn}>
-            Purchase &amp; Download – $2.99
-          </a>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '1.5rem' }}>
+            <a href="/#how-it-works" className={styles.ctaBtn}>
+              Start Generating Transcript Reports
+            </a>
+            <a href="/resources/transcript-codes/" className={styles.ctaBtnSecondary}
+              style={{ display: 'inline-flex', alignItems: 'center', padding: '0.75rem 1.5rem', borderRadius: 10, border: '1px solid rgba(20,184,166,0.3)', color: '#14b8a6', textDecoration: 'none', fontWeight: 600, fontSize: '0.9375rem' }}>
+              Browse Code Database
+            </a>
+          </div>
         </div>
 
       </div>
