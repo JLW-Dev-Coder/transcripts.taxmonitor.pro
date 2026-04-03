@@ -129,10 +129,11 @@ npm run dev
 | Script | Purpose |
 |--------|---------|
 | `npm run dev` | Local development server |
-| `npm run cf:build` | Production build (OpenNext adapter for Cloudflare Pages) |
-| `npm run pages:build` | Alias for `cf:build` |
-| `npm run deploy` | Deploy `.open-next/assets` to Cloudflare Pages |
-| `npm run preview` | Local preview of Cloudflare Pages build |
+| `npm run cf:build` | Production build (OpenNext adapter for Cloudflare Workers) |
+| `npm run deploy` | Build + deploy to Cloudflare Workers |
+| `npm run preview` | Build + local preview with Wrangler |
+
+Deploys automatically via GitHub Actions on push to `main`.
 
 ---
 
@@ -153,9 +154,9 @@ node scale/push-email2-queue.js scale/batches/scale-batch-{YYYY-MM-DD}.json
 
 ## 10. Deployment
 
-- **Platform:** Cloudflare Pages
-- **Trigger:** Git push to main
-- **Build:** Static generation at deploy time
+- **Platform:** Cloudflare Workers
+- **Trigger:** Git push to main (via GitHub Actions)
+- **Build:** `npm run cf:build` → `wrangler deploy`
 - **Canonical base:** `https://transcript.taxmonitor.pro`
 
 ---

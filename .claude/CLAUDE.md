@@ -8,7 +8,7 @@ Last updated: 2026-04-03
 **Repo:** transcript.taxmonitor.pro
 **Product:** Transcript Tax Monitor Pro (TTMP)
 **Domain:** transcript.taxmonitor.pro
-**Stack:** Next.js · Tailwind CSS · Cloudflare Pages
+**Stack:** Next.js · Tailwind CSS · Cloudflare Workers
 **Backend:** api.virtuallaunch.pro (VLP Worker) — no backend changes in this repo
 
 ---
@@ -61,13 +61,14 @@ transcript.taxmonitor.pro/
 
 ## Build Commands
 
-- `npm run cf:build` — canonical production build: runs `@opennextjs/cloudflare build`, then copies `worker.js` into `assets/_worker.js` so Cloudflare Pages serves it
-- `npm run pages:build` — alias for `cf:build` (Cloudflare Pages calls this)
-- `npm run deploy` — deploys `.open-next/assets` to Cloudflare Pages
-- Build output directory: `.open-next/assets` (set in `wrangler.toml`)
-- Worker entry point: `.open-next/assets/_worker.js` (copied from `.open-next/worker.js` by `cf:build`)
-- `next build` alone is NOT sufficient — it does not invoke the OpenNext adapter
-- The OpenNext adapter targets Workers by default; the post-build copy step bridges it to Pages
+- `npm run cf:build` — production build (runs `@opennextjs/cloudflare build`)
+- `npm run deploy` — build + deploy to Cloudflare Workers
+- `npm run preview` — build + local preview with Wrangler dev server
+- Build output: `.open-next/` (worker at `worker.js`, static assets at `assets/`)
+- Deploys via GitHub Actions on push to `main` (`.github/workflows/deploy.yml`)
+- Worker name: `transcript-taxmonitor-pro`
+- Static assets served via `[assets]` binding in `wrangler.toml`
+- No R2, KV, or D1 bindings — all data fetched client-side from `api.virtuallaunch.pro`
 
 ---
 
