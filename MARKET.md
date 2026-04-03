@@ -1,154 +1,205 @@
-# MARKET.md (Transcript.Tax Monitor Pro — Parser-Only)
-
-## Build Status
-
-- **Scaffold complete:** no
-- **Existing required files:** 0
-- **Missing required files:** 16
-- **Missing:**
-  - app/resources/[slug]/page.tsx
-  - app/pricing/page.tsx
-  - app/demo/page.tsx
-  - app/login/page.tsx
-  - app/sitemap.xml/route.ts
-  - components/ResourceLayout.tsx
-  - components/CTA.tsx
-  - components/Sidebar.tsx
-  - components/templates/IRSCodeTemplate.tsx
-  - components/templates/ExplainerTemplate.tsx
-  - components/templates/ComparisonTemplate.tsx
-  - components/templates/HowToTemplate.tsx
-  - components/templates/SalesTemplate.tsx
-  - lib/getResource.ts
-  - lib/getAllResources.ts
-  - lib/templateRouter.ts
-- **Content files found:** none yet (517 HTML files in /resources/ await migration to /content/resources/*.json)
-- **Last updated by Claude:** 2026-03-27
-
-## 1) What this product is
-**Transcript.Tax Monitor Pro** is a **local IRS transcript parsing and reporting automation tool** built for tax professionals. It:
-- ingests IRS transcript files (PDF).
-- extracts IRS transaction codes and structured data.
-- interprets codes into plain-English summaries.
-- generates *client-ready branded reports*.  
-All processing runs locally in the browser; **no PDFs are uploaded to a server**. :contentReference[oaicite:1]{index=1}
-
-**Core promise:** turn intimidating IRS transcript PDFs into **usable, shareable, client reports in seconds** with no manual code translation. :contentReference[oaicite:2]{index=2}
+# MARKET.md — Transcript Tax Monitor Pro (TTMP)
+Last updated: 2026-04-03
 
 ---
 
-## 2) Target audience (ICP)
-### Primary (alphabetical)
-- **CPA firms (small & mid)** — Frequent transcript review work, need consistency.
-- **Enrolled Agents & tax resolution specialists** — Heavy reliance on transcript interpretation.
-- **Tax attorneys** — Need accurate, plain-language reports for client files.
+## 1. Identity
 
-### Secondary (alphabetical)
-- **Administrative staff & firms’ support personnel** — Simplify internal workflows.
-- **Developers & automation integrators** — Want structured insertable transcript data.
-
-Revenue motion: one-time credits purchase for parsing, not subscription. :contentReference[oaicite:3]{index=3}
+**Product:** Transcript Tax Monitor Pro (TTMP)
+**Domain:** transcript.taxmonitor.pro
+**Category:** IRS transcript analysis and reporting automation
+**Tagline:** Transcript automation for tax professionals
+**One-liner:** Upload a client's IRS transcript PDF and get a plain-English analysis report in seconds — every transaction code explained, recommendations included.
 
 ---
 
-## 3) Core problems solved
-### Pain points (alphabetical)
-- **Billable time wasted** interpreting transcript codes manually.
-- **Client confusion** over cryptic IRS transaction codes.
-- **Inconsistent interpretation** across staff.
-- **No native structured output** for other practice tools.
+## 2. What This Product Is
 
-### Value delivered (alphabetical)
-- **Branded client reports** that reduce back-and-forth explanations.
-- **Data extraction for practice workflows** (CSV/JSON usable).
-- **Consistent interpretation** using IRS code rules.
-- **Local processing** — client data stays on the user’s device. :contentReference[oaicite:4]{index=4}
+A browser-based tool for U.S. tax professionals that:
+- Accepts an IRS transcript PDF as input
+- Extracts transaction codes and structured data locally (no server upload)
+- Interprets codes into plain-English explanations
+- Generates a branded, client-ready report
+
+All processing runs in the browser. No PDF is ever uploaded to a server.
 
 ---
 
-## 4) Market context & trends
-### Transcript pain is real
-IRS transcripts are notorious for cryptic transaction codes that tax pros routinely consult forums to decode — which demonstrates real user frustration: “What does 150/806 mean?” is a common question online. :contentReference[oaicite:5]{index=5}
+## 3. What This Product Is NOT
 
-### Fragmented tooling for transcripts
-- Some practice suites pull transcripts for you (e.g., built-into tax return software). :contentReference[oaicite:6]{index=6}  
-- Some services combine retrieval + monitoring + summaries. :contentReference[oaicite:7]{index=7}  
-- Few focus *exclusively on parsing + interpretation* with local privacy.
-
-This creates a niche for tools that handle **just the transcript interpretation step** without pulling or storing any data externally. :contentReference[oaicite:8]{index=8}
+- Not a transcript retrieval tool
+- Not a transcript monitoring service
+- Not a CRM or case management system
+- Not targeting consumers or non-tax professionals
 
 ---
 
-## 5) Competitive landscape
-### Closest alternatives (alphabetical)
-- **Cloud or suite tools with transcript features** — Include IRS transcript retrieval and summaries (e.g., Intuit ProConnect, Canopy). :contentReference[oaicite:9]{index=9}
-- **Transcript automation platforms** — APIs or web services that fetch transcripts and sometimes summarize (e.g., PitBullTax). :contentReference[oaicite:10]{index=10}
-- **Consumer/AI analysis tools** — Lower-tier “upload and explain” offerings, usually not pro-grade.
+## 4. Ideal Customer Profile (ICP)
 
-**Differentiator:** This product runs local browser parsing with **no server upload** and focuses solely on *accurate extraction & report output* for tax pros. :contentReference[oaicite:11]{index=11}
+**Primary:**
 
----
+| Role | Behavior | Buying trigger |
+|------|----------|----------------|
+| Enrolled Agent (EA) | Reviews 15–20 transcripts/week for resolution cases | High volume, margin pressure |
+| CPA | Reviews 10–15 transcripts/week for compliance and planning | Needs consistency across staff |
+| Tax Attorney | Reviews 5–10 transcripts/week for client file preparation | Needs client-ready summaries |
 
-## 6) Differentiators that matter
-### Core (alphabetical)
-- **Branded outputs** — Add firm logo/colors into client reports. :contentReference[oaicite:12]{index=12}
-- **Local privacy/security** — Runs entirely on the user’s machine. :contentReference[oaicite:13]{index=13}
-- **Fast performance** — Seconds to parse typical IRS transcript PDFs. :contentReference[oaicite:14]{index=14}
-- **Structured extraction** — Enables CSV/JSON output for downstream use. :contentReference[oaicite:15]{index=15}
+**Firm size:** Solo practitioners and small to mid-size firms.
 
-Other tools often lock data behind server storage or bundle parsing into larger (and more expensive) suites.
+**Do not target:** Consumers, bookkeepers without transcript work, large enterprise firms with existing enterprise tooling.
 
 ---
 
-## 7) Pricing model signals
-### What the site suggests
-- **One-off credits** unlock parsing workflows. :contentReference[oaicite:16]{index=16}
+## 5. Core Pain (Problem Statement)
 
-This model aligns with buyers who want **pay-per-use parsing** rather than subscription, which removes friction for low-volume practices.
+Manual transcript interpretation costs tax professionals:
+- ~20 minutes per transcript
+- 5–7 hours/week (EA benchmark: 6.7 hrs/week; CPA: 5.0 hrs/week)
+- 260–348 hours/year per professional
+- $34,800–$104,400/year in recovered billable time — at current billing rates
 
-Broad pricing models to consider (alphabetical):
-- **Credit-based per parse**
-- **Per-report one-time purchase**
-- **Volume bundles for frequent users**
-
----
-
-## 8) Go-to-market (aligned with buyer behavior)
-### Channels (alphabetical)
-- **Demo walkthrough pages** — Show raw PDF → parsed output in real time.
-- **SEO content** — Transcript code guides, sample interpretations, help pages.
-- **Referral partnerships** — Connect with practice software and tax community influencers.
-- **Tax blogs / communities** — Use real Q&A from forums to educate and attract professionals.
-
-### Messaging (alphabetical)
-- **“Readable IRS reports in minutes.”**
-- **“Stop rewriting the same codes.”**
-- **“Built for tax pros who interpret transcripts.”**
-- **“Local parsing, no data upload.”**
+Secondary pains:
+- Inconsistent interpretation across staff
+- Repeated explanation of the same codes to clients
+- No structured output usable in other practice tools
 
 ---
 
-## 9) Risks & challenges
-### Structural (alphabetical)
-- **IRS variation:** Transcript formats change by year/type. Tools must stay updated. :contentReference[oaicite:17]{index=17}
-- **Expectation creep:** Users may expect retrieval or monitoring features and ask for stuff you don’t provide.
-- **File quality issues:** Scanned or low-quality transcripts may fail to parse.
+## 6. Current Alternatives (Status Quo)
 
-### Competitive (alphabetical)
-- Suite tools with integrated transcript access can bundle reports at no extra cost.
-- Enterprise offerings could undercut simple parser pricing if they bundle more value.
-
----
-
-## 10) Suggested content assets (alphabetical)
-- **Before/after transcript samples** — shows raw vs. parsed.
-- **IRS code glossary** — standalone SEO asset for traffic.
-- **Tutorial videos** — walk through parsing workflow.
-- **Security & privacy page** — emphasizes local parsing advantage.
+| Alternative | Limitation |
+|-------------|------------|
+| Manual IRS code lookup (docs, forums) | Slow, inconsistent, requires expertise |
+| Internal templates/notes | Not automated, not scalable |
+| Junior staff delegation | Error-prone, still requires review |
+| Practice suite bundled tools (e.g. Intuit, Canopy) | Bundled cost, retrieval-first, limited interpretation depth |
+| Generic AI upload tools | Not pro-grade, no branded output, privacy concerns |
 
 ---
 
-## 11) Cited sources
-- Public Transcript.Tax Monitor Pro homepage features and claims. :contentReference[oaicite:18]{index=18}  
-- Competitive transcript tools like PitBullTax and built-into practice suites (Intuit). :contentReference[oaicite:19]{index=19}  
-- Community discussion showing real transcript confusion (Reddit). :contentReference[oaicite:20]{index=20}
+## 7. Differentiation
+
+| vs. Status Quo | vs. Competitors |
+|----------------|-----------------|
+| Eliminates manual interpretation time | Local processing — no PDF upload |
+| Removes repeated client explanations | Focused tool — not a bloated suite |
+| Standardizes output across staff | Structured output (CSV/JSON usable downstream) |
+| Generates branded client-ready report | Seconds per transcript vs. minutes manually |
+
+---
+
+## 8. Offer
+
+**Model:** Credit-based. No subscription required.
+
+| Package | Credits | Price |
+|---------|---------|-------|
+| Starter | 10 | $19 |
+| Standard | 25 | $29 |
+| Volume | 100 | $129 |
+
+**Entry point:** Free IRS code lookup tool — no account required.
+
+---
+
+## 9. Canonical Messaging
+
+**Core message:** Turn IRS transcripts into clear, client-ready reports in seconds.
+
+**Supporting messages (use as written):**
+- Stop spending 20 minutes per transcript
+- Replace manual code lookup entirely
+- Deliver consistent, branded client reports
+- Keep all data local — no uploads
+
+**Proof points (use specific numbers — never vague):**
+- 6.7 hours/week saved (EA benchmark)
+- 260–348 hours/year recovered
+- $34,800–$104,400+ in recovered billable time
+- Seconds per transcript vs. manual workflow
+
+---
+
+## 10. Objection Responses
+
+| Objection | Response |
+|-----------|----------|
+| "I already have a system" | Your system still requires manual interpretation. This removes that step entirely. |
+| "This won't save much time" | At ~20 minutes per transcript, even 10/week = 3+ hours saved weekly. |
+| "Not worth switching" | No switching required. This replaces only the interpretation step. |
+| "I don't want to upload client data" | All processing is local. Nothing is uploaded or stored externally. |
+
+---
+
+## 11. Conversion Paths
+
+**Primary (SEO-driven):**
+IRS code page → free code lookup tool → asset page (practice analysis) → pricing or booking
+
+**Secondary (cold email):**
+Cold email → asset page → demo / booking
+
+**CTA types in use:**
+- Try free tool (no account)
+- View practice analysis (personalized asset page)
+- Book walkthrough (Cal.com)
+- View pricing
+
+---
+
+## 12. Content Strategy
+
+| Content type | Purpose |
+|--------------|---------|
+| IRS code pages (400+) | High-intent SEO — people searching specific codes |
+| Transcript explainers | Broader SEO — "how to read" queries |
+| How-to guides | Long-tail SEO — workflow-specific queries |
+| Before/after examples | Demonstrates value visually |
+| Asset pages (/asset/{slug}) | Personalized cold outreach conversion |
+| Free code lookup tool | Zero-friction entry point |
+
+---
+
+## 13. Tone and Voice
+
+Source of truth: MARKET.md (VLP ecosystem, section "Tone & Voice Guidelines")
+
+- Direct — no fluff, state the benefit immediately
+- Professional but accessible — written for tax professionals, assume intelligence
+- Specific — real numbers always (token counts, prices, timeframes)
+- Problem-first — lead with the pain point, follow with the solution
+- No emoji in body copy
+
+---
+
+## 14. Competitive Landscape
+
+| Category | Examples | TTMP position |
+|----------|----------|---------------|
+| Practice suites with transcript bundled | Intuit ProConnect, Canopy | TTMP is unbundled, faster, local |
+| Transcript automation platforms | PitBullTax | TTMP is local, report-focused |
+| Generic AI upload tools | Various | TTMP is pro-grade, structured output |
+
+**Key differentiator:** Local browser parsing with no server upload, focused exclusively on interpretation + branded report output.
+
+---
+
+## 15. Metrics That Matter
+
+- SEO traffic volume by page template
+- Free tool usage rate
+- Asset page engagement (views, CTA clicks by type)
+- Booking conversion rate
+- Credits purchased per user
+- Revenue per cohort (email outreach vs. organic)
+
+---
+
+## 16. Glossary
+
+| Term | Definition |
+|------|------------|
+| asset page | Personalized page showing time savings and practice analysis for a specific firm |
+| practice analysis | Breakdown of transcript workflow inefficiencies and their financial impact |
+| transcript monitoring | Ongoing IRS transcript change tracking — NOT part of this product |
+| transcript retrieval | Pulling transcripts from IRS systems — NOT part of this product |

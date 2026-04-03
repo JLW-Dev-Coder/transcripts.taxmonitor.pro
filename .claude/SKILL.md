@@ -1,84 +1,103 @@
----
-name: vlp-scale-batch-generator
-description: >
-  Processes a CSV or JSON file of tax professional prospects (CPAs, EAs, tax attorneys)
-  and generates a complete outreach JSON package per prospect — including personalized
-  Email 1, Email 2, and full audit page data — ready for Gmail API delivery and R2 storage.
-  Use this skill ANY TIME the user uploads a CSV or mentions prospects, leads, outreach,
-  batch emails, asset pages, TTMP emails, or SCALE pipeline. Also triggers for phrases like
-  "process my leads", "generate emails", "build asset pages", or "run the batch".
-  This skill is the engine of the VLP SCALE client acquisition system.
----
-
-# VLP SCALE Batch Generator
-
-Converts a prospect CSV into a complete outreach package per day:
-1. `scale-batch-{YYYY-MM-DD}.json` — full data for R2 / asset pages
-2. `scale/gmail/email1/YYYY-MM-DD-batch.csv` — sending queue for Gmail cron
-
-Sender: **Jamie L Williams** — never use placeholders.
-Terminology: use **asset page** and **practice analysis** — never "audit".
+# SKILL.md — vlp-scale-batch-generator
+Last updated: 2026-04-03
+Version: 1.1
 
 ---
 
-## Canonical CSV Schema
+## 1. Identity
 
-Source: `scale/prospects/IRS_FOIA_SORTED_-_results-20260401-195853.csv`
-Do not modify original columns. Append tracking columns only.
-
-| Column | Notes |
-|--------|-------|
-| LAST_NAME | |
-| First_NAME | |
-| DBA | Firm/practice name |
-| BUS_ADDR_CITY | City |
-| BUS_ST_CODE | 2-letter state |
-| WEBSITE | Raw |
-| BUS_PHNE_NBR | Not used in output |
-| PROFESSION | EA, CPA, JD |
-| domain_clean | Sanitized domain |
-| email_found | Delivery address |
-| email_status | valid / invalid |
-| firm_bucket | solo_brand / local_firm / national_firm |
-| send_today | Legacy — not used in selection logic |
-
-Tracking columns (append if missing):
-- email_1_prepared_at
-- email_2_prepared_at
-- email_3_prepared_at
+**Skill:** vlp-scale-batch-generator
+**Owner:** transcript.taxmonitor.pro
+**Purpose:** Convert a prospect CSV into a deterministic daily outreach package — JSON batch, Gmail import CSV, and tracking column updates.
 
 ---
 
-## Step 1 — Selection Logic
+## 2. What This Skill Does
 
-1. Filter: email_found not empty, not "undefined", not NaN
-2. Filter: email_status not "invalid"
-3. Filter: email_1_prepared_at is empty
-4. Sort: ascending by domain_clean (nulls last)
-5. Select: first 50 eligible records (if fewer, process all and log count)
+Produces per session:
+1. `scale/batches/scale-batch-{YYYY-MM-DD}.json` — full prospect data for R2 / asset pages
+2. `scale/gmail/email1/{YYYY-MM-DD}-batch.csv` — Gmail import queue for VLP Worker cron
+
+Does NOT:
+- Call Gmail API
+- Push to R2
+- Send email
+- Schedule Email 2
+- Enrich or scrape data
+- Modify backend behavior
 
 ---
 
-## Step 2 — Per-Prospect Generation
+## 3. Input Contract
 
-### Slug
-`{first}-{last}-{city}-{state}` — lowercase, hyphens, strip titles (Dr./Mr./Jr.)
-Dedup: append -2, -3 on collision.
+**Source file (required):**
+`scale/prospects/IRS_FOIA_SORTED_-_results-20260401-195853.csv`
 
-### Time savings by credential
+**Required fields per record:**
+
+| Field | Type | Notes |
+|-------|------|-------|
+| First_NAME | string | Mixed case |
+| LAST_NAME | string | Uppercase |
+| DBA | string | Firm name |
+| BUS_ADDR_CITY | string | City |
+| BUS_ST_CODE | string | 2-letter state |
+| PROFESSION | string | EA / CPA / JD |
+| domain_clean | string | Sanitized domain |
+| email_found | string | Delivery address |
+| email_status | string | valid / invalid |
+| firm_bucket | string | solo_brand / local_firm / national_firm |
+| email_1_prepared_at | string | Empty = eligible |
+
+---
+
+## 4. Preconditions — Halt if Any Fail
+
+Before processing a single record, verify:
+- Source CSV exists at canonical path
+- All required columns are present
+- At least 1 eligible record exists after filtering
+
+If any condition fails: halt immediately, do not produce partial output, report the failure reason.
+
+---
+
+## 5. Selection Logic (mandatory, exact order)
+
+1. `email_found` is not empty, not `"undefined"`, not NaN
+2. `email_status` is not `"invalid"`
+3. `email_1_prepared_at` is empty
+4. Sort ascending by `domain_clean` (nulls last)
+5. Select first 50 records
+
+If fewer than 50 eligible: process all remaining and log exact count.
+If zero eligible: halt and report pipeline exhaustion.
+
+---
+
+## 6. Per-Record Processing (in order)
+
+### 6.1 Generate slug
+
+Format: `{first}-{last}-{city}-{state}`
+Rules: lowercase, hyphen-separated, strip titles (Dr./Mr./Jr./Sr.)
+Dedup: append `-2`, `-3` on slug collision within the batch.
+
+### 6.2 Determine time savings by credential
 
 | Credential | Hrs/week | Hrs/year | Revenue opportunity |
 |------------|----------|----------|---------------------|
 | EA | 6.7 | 348 | $34,800–$104,400/yr |
 | CPA | 5.0 | 260 | $39,000–$104,000/yr |
-| JD/Attorney | 3.3 | 174 | $34,800–$87,000/yr |
-| Unknown | 5.0 | 260 | $39,000–$104,000/yr |
+| JD | 3.3 | 174 | $34,800–$87,000/yr |
+| Unknown / blank | 5.0 | 260 | $39,000–$104,000/yr |
 
-### Asset page object (key: `asset_page` — not `audit_page`)
+### 6.3 Build asset_page object
 
+Schema key must be `asset_page` — never `audit_page`.
 ```json
 {
-  "headline": "{First}, here's what 20 minutes per transcript is costing {DBA or city practice}",
+  "headline": "...",
   "subheadline": "A practice analysis for {Enrolled Agents/CPAs} who work with IRS transcripts",
   "workflow_gaps": ["...", "...", "..."],
   "time_savings_weekly": "6.7 hours",
@@ -91,93 +110,176 @@ Dedup: append -2, -3 on collision.
 }
 ```
 
-Asset page URL: `https://transcript.taxmonitor.pro/asset/{slug}`
-
-### Personalization by firm_bucket
+### 6.4 Apply personalization by firm_bucket
 
 **solo_brand:**
-- Subject: "{First} — {PROFESSION}s running {DBA} spend {hrs}+ hours/week on this"
-- Headline: "{First}, here's what 20 minutes per transcript is costing {DBA}"
+- Subject: `{First} — {PROFESSION}s running {DBA} spend {hrs}+ hours/week on this`
+- Headline: `{First}, here's what 20 minutes per transcript is costing {DBA}`
 
 **local_firm:**
-- Subject: "{First} — {PROFESSION}s in {City} are spending {hrs}+ hours/week on this"
-- Headline: "{First}, here's what 20 minutes per transcript is costing your {City} practice"
+- Subject: `{First} — {PROFESSION}s in {City} are spending {hrs}+ hours/week on this`
+- Headline: `{First}, here's what 20 minutes per transcript is costing your {City} practice`
 
-### Email 1 body structure (plain text)
+**national_firm:** use local_firm pattern with city substitution.
 
-```
-{First},
+### 6.5 Generate Email 1 body (plain text)
 
-[Pain — 20 min/transcript, X hrs/week, Y hrs/year — 2 sentences]
+Structure (in order):
+1. Pain — 20 min/transcript, X hrs/week, Y hrs/year — 2 sentences
+2. Tool pitch — seconds, plain-English report, $19/10 analyses — 2 sentences
+3. Free code lookup CTA with URL
+4. Asset page URL
+5. Booking CTA with URL
+6. Signature (exact, mandatory)
 
-[Tool pitch — seconds, plain-English report, $19/10 analyses — 2 sentences]
-
-Here's a free IRS code lookup to try first, no account needed:
-https://transcript.taxmonitor.pro/tools/code-lookup
-
-And here's a quick practice analysis I put together for {firm or city practice}:
-https://transcript.taxmonitor.pro/asset/{slug}
-
-If any of this lands, I'd be glad to show you a live analysis on a real transcript — 15 minutes on Google Meet.
-https://cal.com/vlp/ttmp-discovery
-
+Signature:
 —
 Jamie L Williams
 Transcript Tax Monitor Pro
 transcript.taxmonitor.pro
-```
 
-### Email 2 body structure
+Never use a placeholder. Always resolve to Jamie L Williams.
 
-- Subject: "Quick asset generated for your firm, {First} — {N} hours/yr on the table"
-- Reference prior email: "I sent you a note a few days ago..."
-- Reference asset: "quick practice analysis generated for your firm"
-- Lead with asset page URL
-- CTAs: pricing + booking
+### 6.6 Generate Email 2 body (plain text)
 
----
+Structure (in order):
+1. Reference prior email ("I sent you a note a few days ago...")
+2. Reference asset page ("quick practice analysis generated for your firm")
+3. Asset page URL (lead with this)
+4. Pricing CTA
+5. Booking CTA
+6. Same signature as Email 1
 
-## Step 3 — Output Files
+Subject: `Quick asset generated for your firm, {First} — {N} hours/yr on the table`
 
-### JSON batch
-Path: `/mnt/user-data/outputs/scale-batch-{YYYY-MM-DD}.json`
-(In repo: `scale/batches/scale-batch-{YYYY-MM-DD}.json`)
+### 6.7 Update tracking state
 
-### Gmail CSV
-Path: `/mnt/user-data/outputs/gmail-email1-{YYYY-MM-DD}.csv`
-(In repo: `scale/gmail/email1/{YYYY-MM-DD}-batch.csv`)
-
-Columns exactly: `email, first_name, subject, body`
-- No extra columns
-- RFC-4180 — body field quoted, contains newlines
-- Jamie L Williams in every signature
-
-### Updated source CSV
-Write email_1_prepared_at = ISO timestamp back to source after batch.
+Set `email_1_prepared_at` = ISO timestamp in source CSV immediately after the record is processed.
 
 ---
 
-## Step 4 — Present and Summarize
+## 7. Output Contract
 
-Present both output files. Then print:
+### 7.1 JSON batch
+
+**Path:** `scale/batches/scale-batch-{YYYY-MM-DD}.json`
+
+Per-prospect schema:
+```json
+{
+  "slug": "string",
+  "email": "string",
+  "name": "string",
+  "credential": "EA | CPA | JD",
+  "city": "string",
+  "state": "string",
+  "firm": "string",
+  "firm_bucket": "solo_brand | local_firm | national_firm",
+  "domain_clean": "string",
+  "asset_page": { ... },
+  "email_1": { "subject": "string", "body": "string" },
+  "email_2": { "subject": "string", "body": "string" }
+}
 ```
-Batch complete — {N} prospects
+
+### 7.2 Gmail import CSV
+
+**Path:** `scale/gmail/email1/{YYYY-MM-DD}-batch.csv`
+
+Columns (exactly — no extras, no reordering): `email, first_name, subject, body`
+
+Constraints:
+- RFC-4180 compliant
+- Body field quoted
+- Body may contain newlines
+- Signature must resolve to Jamie L Williams — never a placeholder
+
+### 7.3 Source CSV update
+
+Write `email_1_prepared_at` = ISO timestamp to source CSV immediately after each record is processed. Do not batch this write to the end — write per record so partial runs are recoverable.
+
+---
+
+## 8. Failure Handling
+
+| Condition | Action |
+|-----------|--------|
+| Source CSV missing | Halt. Report path expected. |
+| Required columns missing | Halt. List missing columns. |
+| Zero eligible records | Halt. Report pipeline exhaustion. |
+| `email_found` is empty / "undefined" / NaN | Skip record. Log. |
+| `email_status` == "invalid" | Skip record. Log. |
+| Slug collision | Append -2, -3. Log. |
+| Batch produces fewer than 50 | Process all remaining. Log exact count. Continue. |
+
+Never produce partial output silently. Always report skips and errors.
+
+---
+
+## 9. Completion Report (required after every run)
+
+Print after every batch:
+Batch complete — {N} prospects processed
+Skipped: {N} (list reasons)
+Errors: {N} (list reasons)
 Remaining eligible: {N}
 Days of pipeline remaining: {N}
-
 NEXT STEPS:
-1. Run Gmail cron to send gmail-email1-{date}.csv → send today
-2. Push scale-batch-{date}.json to R2: vlp-scale/asset-pages/{slug}.json
-3. Email 2 queued for: {date + 3 days}
-4. New prospect CSV needed by: {date when source exhausted}
-```
+
+Run Gmail cron to send gmail-email1-{date}.csv → send today
+Push scale-batch-{date}.json to R2: vlp-scale/asset-pages/{slug}.json
+Email 2 queued for: {date + 3 days}
+New prospect CSV needed by: {date when source exhausted}
+
 
 ---
 
-## Tone Rules
+## 10. Hard Constraints
 
-- Direct, no fluff
-- No emoji anywhere
-- No exclamation marks
-- Problem-first
-- Specific numbers always
+- Never modify original CSV columns
+- Never output `email: "undefined"` or any invalid email value
+- Never invent schema fields not defined in this document
+- Never call Gmail API, R2, or VLP Worker directly
+- Never proceed past a precondition failure
+- Always use `asset_page` — never `audit_page`
+- Always resolve signature to Jamie L Williams
+- Always follow selection order exactly as specified
+
+---
+
+## 11. Golden Case Example
+
+**Input record:**
+```json
+{
+  "First_NAME": "John",
+  "LAST_NAME": "DOE",
+  "BUS_ADDR_CITY": "Austin",
+  "BUS_ST_CODE": "TX",
+  "PROFESSION": "EA",
+  "domain_clean": "example.com",
+  "email_found": "john@example.com",
+  "email_status": "valid",
+  "firm_bucket": "solo_brand",
+  "DBA": "Doe Tax Services",
+  "email_1_prepared_at": ""
+}
+```
+
+**Expected output (partial):**
+```json
+{
+  "slug": "john-doe-austin-tx",
+  "email": "john@example.com",
+  "credential": "EA",
+  "asset_page": {
+    "headline": "John, here's what 20 minutes per transcript is costing Doe Tax Services",
+    "time_savings_weekly": "6.7 hours",
+    "time_savings_annual": "348 hours",
+    "revenue_opportunity": "$34,800–$104,400/yr in recovered billable time"
+  },
+  "email_1": {
+    "subject": "John — EAs running Doe Tax Services spend 6.7+ hours/week on this"
+  }
+}
+```
