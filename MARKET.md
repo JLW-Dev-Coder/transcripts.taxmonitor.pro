@@ -33,7 +33,7 @@
 - generates *client-ready branded reports*.  
 All processing runs locally in the browser; **no PDFs are uploaded to a server**. :contentReference[oaicite:1]{index=1}
 
-**Core promise:** turn intimidating IRS transcript PDFs into **usable, shareable, client reports in minutes** with no manual code translation. :contentReference[oaicite:2]{index=2}
+**Core promise:** turn intimidating IRS transcript PDFs into **usable, shareable, client reports in seconds** with no manual code translation. :contentReference[oaicite:2]{index=2}
 
 ---
 
