@@ -17,12 +17,14 @@ export default function AssetPageClient({ data, slug }: Props) {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#0d1210', color: '#e8ede9', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       {/* Nav */}
-      <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 32px', borderBottom: '1px solid #1e2e28' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#1a9e78', display: 'inline-block' }} />
-          <span style={{ fontWeight: 600, fontSize: '16px' }}>Transcript Tax Monitor Pro</span>
+      <nav style={{ borderBottom: '1px solid #1e2e28' }}>
+        <div style={{ maxWidth: '720px', margin: '0 auto', padding: '20px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#1a9e78', display: 'inline-block' }} />
+            <span style={{ fontWeight: 600, fontSize: '16px' }}>Transcript Tax Monitor Pro</span>
+          </div>
+          <span style={{ color: '#7a9688', fontSize: '14px' }}>transcript.taxmonitor.pro</span>
         </div>
-        <span style={{ color: '#7a9688', fontSize: '14px' }}>transcript.taxmonitor.pro</span>
       </nav>
 
       <main style={{ maxWidth: '720px', margin: '0 auto', padding: '48px 24px 80px' }}>
@@ -142,17 +144,11 @@ export default function AssetPageClient({ data, slug }: Props) {
       </main>
 
       {/* Footer */}
-      <footer style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '20px 32px',
-        borderTop: '1px solid #1e2e28',
-        color: '#7a9688',
-        fontSize: '13px',
-      }}>
-        <span>Prepared for {d.firm} · {d.city}, {d.state}</span>
-        <span>transcript.taxmonitor.pro</span>
+      <footer style={{ borderTop: '1px solid #1e2e28' }}>
+        <div style={{ maxWidth: '720px', margin: '0 auto', padding: '20px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#7a9688', fontSize: '13px' }}>
+          <span>Prepared for {d.firm} · {d.city}, {d.state}</span>
+          <span>transcript.taxmonitor.pro</span>
+        </div>
       </footer>
     </div>
   )
