@@ -6,13 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "pages:build": "node build.mjs",
-    "deploy": "npx wrangler pages deploy .open-next/assets --project-name=transcript-taxmonitor-pro-site",
-    "preview": "npx wrangler pages dev"
+    "pages:build": "next build",
+    "deploy": "npx wrangler pages deploy out --project-name=transcript-taxmonitor-pro-site",
+    "cf:build": "next build",
+    "preview": "npx wrangler pages dev out"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "latest",
-    "csv-parse": "^6.2.1",
     "next": "^15.2.4",
     "react": "^19",
     "react-dom": "^19"
