@@ -1,3 +1,4 @@
+/asset/*  /asset/_/index.html  200
 /magnets/lead-magnet.html    /magnets/lead-magnet/    301
 /magnets/section-7216-dislcosure.html    /magnets/section-7216/    301
 /resources/index.html    /resources/    301
@@ -11,3 +12,4 @@
 /magnets/guide.html    /magnets/guide/    301
 /app/dashboard.html    /app/dashboard/    301
 /app-dashboard.html    /app/dashboard/    301
+
