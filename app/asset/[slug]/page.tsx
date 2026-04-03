@@ -14,7 +14,7 @@ async function getAssetData(slug: string) {
     `${workerUrl}/v1/r2/${encodeURIComponent(key)}`,
     {
       headers: { Authorization: `Bearer ${token}` },
-      next: { revalidate: 3600 },
+      cache: 'no-store',
     }
   )
 
