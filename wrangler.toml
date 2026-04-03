@@ -1,12 +1,8 @@
-main = ".open-next/worker.js"
 name = "transcript-taxmonitor-pro-site"
 compatibility_date = "2024-12-30"
 compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
+pages_build_output_dir = ".open-next/assets"
 
-[assets]
-directory = ".open-next/assets"
-binding = "ASSETS"
-
-[[services]]
-binding = "WORKER_SELF_REFERENCE"
-service = "transcript-taxmonitor-pro-site"
+[[pages_functions]]
+[vars]
+R2_CANONICAL_WRITE_TOKEN = ""
