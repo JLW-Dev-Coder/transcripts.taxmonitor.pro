@@ -13,7 +13,6 @@ const CODE_LABELS: Record<string, string> = {
 
 export default function AssetPageClient({ data, slug }: Props) {
   const d = data as any
-  const a = d.asset_page
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#0d1210', color: '#e8ede9', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
@@ -40,21 +39,21 @@ export default function AssetPageClient({ data, slug }: Props) {
             fontWeight: 500,
             marginBottom: '20px',
           }}>
-            Practice asset — {credentialLabel(d.credential)}
+            Practice asset — {d.firm || 'Tax Professional'}
           </span>
           <h1 style={{ fontSize: '28px', fontWeight: 700, lineHeight: 1.3, margin: '0 0 12px' }}>
-            {a.headline}
+            {d.headline}
           </h1>
           <p style={{ fontSize: '16px', color: '#7a9688', margin: 0, lineHeight: 1.5 }}>
-            {a.subheadline}
+            {d.subheadline}
           </p>
         </div>
 
         {/* Metric row */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '48px' }}>
-          <MetricCard label="Time saved per week" value={a.time_savings_weekly} />
-          <MetricCard label="Time saved per year" value={a.time_savings_annual} />
-          <MetricCard label="Revenue opportunity" value={a.revenue_opportunity} />
+          <MetricCard label="Time saved per week" value={d.time_savings_weekly} />
+          <MetricCard label="Time saved per year" value={d.time_savings_annual} />
+          <MetricCard label="Revenue opportunity" value={d.revenue_opportunity} />
         </div>
 
         {/* Workflow gaps */}
@@ -63,7 +62,7 @@ export default function AssetPageClient({ data, slug }: Props) {
             Workflow gaps identified
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            {a.workflow_gaps.map((gap: string, i: number) => (
+            {d.workflow_gaps.map((gap: string, i: number) => (
               <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                 <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#1a9e78', flexShrink: 0, marginTop: '7px' }} />
                 <span style={{ fontSize: '15px', lineHeight: 1.5 }}>{gap}</span>
@@ -81,7 +80,7 @@ export default function AssetPageClient({ data, slug }: Props) {
             Codes this tool handles instantly
           </h2>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-            {a.tool_preview_codes.map((code: string) => (
+            {d.tool_preview_codes.map((code: string) => (
               <span key={code} style={{
                 display: 'inline-block',
                 padding: '8px 14px',
@@ -99,7 +98,7 @@ export default function AssetPageClient({ data, slug }: Props) {
 
         {/* CTAs */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '64px' }}>
-          <a href={a.cta_pricing_url} style={{
+          <a href={d.cta_pricing_url} style={{
             display: 'block',
             textAlign: 'center',
             padding: '14px 24px',
@@ -112,7 +111,7 @@ export default function AssetPageClient({ data, slug }: Props) {
           }}>
             Add this to my practice
           </a>
-          <a href={a.cta_booking_url} style={{
+          <a href={d.cta_booking_url} style={{
             display: 'block',
             textAlign: 'center',
             padding: '14px 24px',
@@ -126,7 +125,7 @@ export default function AssetPageClient({ data, slug }: Props) {
           }}>
             Talk about my caseload — book 15 min
           </a>
-          <a href={a.cta_learn_more_url} style={{
+          <a href={d.cta_learn_more_url} style={{
             display: 'block',
             textAlign: 'center',
             padding: '14px 24px',
