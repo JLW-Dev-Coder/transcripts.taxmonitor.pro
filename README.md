@@ -129,13 +129,12 @@ npm run dev
 | Script | Purpose |
 |--------|---------|
 | `npm run dev` | Local development server |
-| `npm run cf:build` | Production build (next-on-pages for Cloudflare Pages) |
-| `npm run pages:build` | Alias for `cf:build` (Pages calls this) |
-| `npm run deploy` | Build + deploy to Cloudflare Pages |
-| `npm run preview` | Local preview with Wrangler Pages dev |
+| `npm run cf:build` | Production build (OpenNext for Cloudflare Workers) |
+| `npm run deploy` | Build + deploy to Cloudflare Workers |
+| `npm run preview` | Build + local preview with Wrangler |
 
-Deploys automatically via Cloudflare Pages on push to `main`.
-Adapter: `@cloudflare/next-on-pages` (matches VLP, TTTMP, DVLP).
+Deploys automatically via GitHub Actions on push to `main`.
+Adapter: `@opennextjs/cloudflare` (Cloudflare's recommended Next.js adapter).
 
 ---
 

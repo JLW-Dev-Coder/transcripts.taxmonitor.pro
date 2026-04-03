@@ -8,7 +8,7 @@ Last updated: 2026-04-03
 **Repo:** transcript.taxmonitor.pro
 **Product:** Transcript Tax Monitor Pro (TTMP)
 **Domain:** transcript.taxmonitor.pro
-**Stack:** Next.js · Tailwind CSS · Cloudflare Pages
+**Stack:** Next.js · Tailwind CSS · Cloudflare Workers
 **Backend:** api.virtuallaunch.pro (VLP Worker) — no backend changes in this repo
 
 ---
@@ -61,15 +61,17 @@ transcript.taxmonitor.pro/
 
 ## Build Commands
 
-- `npm run cf:build` — production build (runs `vercel build` + `@cloudflare/next-on-pages`)
-- `npm run pages:build` — alias for `cf:build` (Cloudflare Pages calls this)
-- `npm run deploy` — build + deploy to Cloudflare Pages
-- `npm run preview` — local preview with Wrangler Pages dev server
-- Build output: `.vercel/output/static` (set in `wrangler.toml` as `pages_build_output_dir`)
-- Adapter: `@cloudflare/next-on-pages` (same as VLP, TTTMP, DVLP)
-- Deploys via Cloudflare Pages auto-deploy on push to `main`
-- No R2, KV, or D1 bindings — all data fetched client-side from `api.virtuallaunch.pro`
-- Note: `cf:build` runs `vercel build --yes` as a separate step because `@cloudflare/next-on-pages` cannot spawn `npx vercel build` on Windows — this does not affect the Cloudflare Pages Linux build environment
+- `npm run cf:build` — production build (runs `@opennextjs/cloudflare build`)
+- `npm run pages:build` — alias for `cf:build`
+- `npm run deploy` — build + deploy to Cloudflare Workers
+- `npm run preview` — build + local preview with Wrangler dev server
+- Build output: `.open-next/` (worker at `worker.js`, static assets at `assets/`)
+- Deploys via GitHub Actions on push to `main` (`.github/workflows/deploy.yml`)
+- Adapter: `@opennextjs/cloudflare` (OpenNext — Cloudflare's recommended adapter)
+- Incremental cache: KV-backed (`NEXT_INC_CACHE_KV` binding in `wrangler.toml`)
+- Worker name: `transcript-taxmonitor-pro`
+- No R2 or D1 bindings — all data fetched client-side from `api.virtuallaunch.pro`
+- `@cloudflare/next-on-pages` is deprecated by Cloudflare — do not switch back to it
 
 ---
 
