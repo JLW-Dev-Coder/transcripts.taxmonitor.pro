@@ -73,7 +73,3 @@ Both Claude roles report to the owner.
 ```
 
 ---
-
-**On reporting back:**
-
-Once Repo Claude finishes, paste its output here. I'll review against the prompt line by line and give you a clear status: what was completed correctly, what needs a follow-up prompt, and what to verify manually before Email 2 sends.

@@ -112,7 +112,7 @@ export default function HomePage() {
           <div className={styles.heroContent}>
             <div className={styles.badge}>Built for 750,000+ U.S. Tax Professionals</div>
             <h1 className={styles.heroTitle}>
-              Transform IRS Transcripts Into Professional Reports in Minutes
+              Transform IRS Transcripts Into Professional Reports in Seconds
             </h1>
             <p className={styles.heroSub}>
               The only automation tool tax professionals need to parse, interpret, and present
