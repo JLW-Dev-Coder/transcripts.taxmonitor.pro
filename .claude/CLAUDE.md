@@ -59,6 +59,16 @@ transcript.taxmonitor.pro/
 
 ---
 
+## Build Commands
+
+- `npm run cf:build` — canonical production build (runs `@opennextjs/cloudflare build`)
+- `npm run pages:build` — alias for `cf:build` (Cloudflare Pages calls this)
+- `npm run deploy` — deploys `.open-next/assets` to Cloudflare Pages
+- Build output directory: `.open-next/assets` (set in `wrangler.toml`)
+- `next build` alone is NOT sufficient — it does not invoke the OpenNext adapter
+
+---
+
 ## 5. Source CSV
 
 **Canonical file:**

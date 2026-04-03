@@ -124,6 +124,16 @@ npm install
 npm run dev
 ```
 
+### Build Commands
+
+| Script | Purpose |
+|--------|---------|
+| `npm run dev` | Local development server |
+| `npm run cf:build` | Production build (OpenNext adapter for Cloudflare Pages) |
+| `npm run pages:build` | Alias for `cf:build` |
+| `npm run deploy` | Deploy `.open-next/assets` to Cloudflare Pages |
+| `npm run preview` | Local preview of Cloudflare Pages build |
+
 ---
 
 ## 9. Commands

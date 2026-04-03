@@ -6,10 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "pages:build": "next build",
-    "deploy": "npx wrangler pages deploy out --project-name=transcript-taxmonitor-pro-site",
-    "cf:build": "next build",
-    "preview": "npx wrangler pages dev out"
+    "cf:build": "npx @opennextjs/cloudflare build",
+    "pages:build": "npm run cf:build",
+    "deploy": "npx wrangler pages deploy .open-next/assets --project-name=transcript-taxmonitor-pro-site",
+    "preview": "npx wrangler pages dev .open-next/assets"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "latest",
