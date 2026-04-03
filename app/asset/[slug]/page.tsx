@@ -1,11 +1,32 @@
-import AssetClient from './AssetClient'
+import { notFound } from 'next/navigation'
+import AssetPageClient from './AssetClient'
 
-export function generateStaticParams() {
-  return [{ slug: '_' }]
+interface Props {
+  params: Promise<{ slug: string }>
 }
 
-export const dynamicParams = false
+async function getAssetData(slug: string) {
+  const workerUrl = process.env.NEXT_PUBLIC_API_BASE ?? 'https://api.virtuallaunch.pro'
+  const token = process.env.R2_CANONICAL_WRITE_TOKEN
+  const key = `vlp-scale/asset-pages/${slug}.json`
 
-export default async function AssetPage() {
-  return <AssetClient />
+  const res = await fetch(
+    `${workerUrl}/v1/r2/${encodeURIComponent(key)}`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      next: { revalidate: 3600 },
+    }
+  )
+
+  if (!res.ok) return null
+  return res.json()
+}
+
+export const dynamic = 'force-dynamic'
+
+export default async function AssetPage({ params }: Props) {
+  const { slug } = await params
+  const data = await getAssetData(slug)
+  if (!data) notFound()
+  return <AssetPageClient data={data} slug={slug} />
 }

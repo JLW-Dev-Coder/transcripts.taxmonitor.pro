@@ -1,28 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-
-interface AssetData {
-  headline: string
-  subheadline: string
-  workflow_gaps: string[]
-  time_savings_weekly: string
-  time_savings_annual: string
-  revenue_opportunity: string
-  tool_preview_codes: string[]
-  cta_pricing_url: string
-  cta_booking_url: string
-  cta_learn_more_url: string
-}
-
-interface ProspectData {
+interface Props {
+  data: Record<string, unknown>
   slug: string
-  name: string
-  credential: string
-  city: string
-  state: string
-  firm: string
-  asset_page: AssetData
 }
 
 const CODE_LABELS: Record<string, string> = {
@@ -31,27 +11,9 @@ const CODE_LABELS: Record<string, string> = {
   '570': 'Additional account action pending',
 }
 
-export default function AssetClient() {
-  const [data, setData] = useState<ProspectData | null>(null)
-  const [error, setError] = useState(false)
-
-  useEffect(() => {
-    const parts = window.location.pathname.replace(/\/$/, '').split('/')
-    const slug = parts[parts.length - 1]
-    if (!slug || slug === '_') { setError(true); return }
-    fetch(`https://api.virtuallaunch.pro/scale/asset-page/${slug}`)
-      .then((res) => {
-        if (!res.ok) throw new Error('Not found')
-        return res.json()
-      })
-      .then(setData)
-      .catch(() => setError(true))
-  }, [])
-
-  if (error) return <NotFound />
-  if (!data) return <Loading />
-
-  const a = data.asset_page
+export default function AssetPageClient({ data, slug }: Props) {
+  const d = data as any
+  const a = d.asset_page
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#0d1210', color: '#e8ede9', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
@@ -78,7 +40,7 @@ export default function AssetClient() {
             fontWeight: 500,
             marginBottom: '20px',
           }}>
-            Practice asset — {credentialLabel(data.credential)}
+            Practice asset — {credentialLabel(d.credential)}
           </span>
           <h1 style={{ fontSize: '28px', fontWeight: 700, lineHeight: 1.3, margin: '0 0 12px' }}>
             {a.headline}
@@ -101,7 +63,7 @@ export default function AssetClient() {
             Workflow gaps identified
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            {a.workflow_gaps.map((gap, i) => (
+            {a.workflow_gaps.map((gap: string, i: number) => (
               <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                 <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#1a9e78', flexShrink: 0, marginTop: '7px' }} />
                 <span style={{ fontSize: '15px', lineHeight: 1.5 }}>{gap}</span>
@@ -119,7 +81,7 @@ export default function AssetClient() {
             Codes this tool handles instantly
           </h2>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-            {a.tool_preview_codes.map((code) => (
+            {a.tool_preview_codes.map((code: string) => (
               <span key={code} style={{
                 display: 'inline-block',
                 padding: '8px 14px',
@@ -190,7 +152,7 @@ export default function AssetClient() {
         color: '#7a9688',
         fontSize: '13px',
       }}>
-        <span>Prepared for {data.firm} · {data.city}, {data.state}</span>
+        <span>Prepared for {d.firm} · {d.city}, {d.state}</span>
         <span>transcript.taxmonitor.pro</span>
       </footer>
     </div>
@@ -220,19 +182,3 @@ function credentialLabel(c: string): string {
   }
 }
 
-function Loading() {
-  return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#0d1210', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <span style={{ color: '#7a9688', fontSize: '15px' }}>Loading...</span>
-    </div>
-  )
-}
-
-function NotFound() {
-  return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#0d1210', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '12px' }}>
-      <span style={{ color: '#e8ede9', fontSize: '20px', fontWeight: 600 }}>Page not found</span>
-      <span style={{ color: '#7a9688', fontSize: '14px' }}>This practice analysis is not available.</span>
-    </div>
-  )
-}
