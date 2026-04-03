@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "cf:build": "npx @opennextjs/cloudflare build",
+    "cf:build": "npx @opennextjs/cloudflare build && node -e \"require('fs').copyFileSync('.open-next/worker.js','.open-next/assets/_worker.js')\"",
     "pages:build": "npm run cf:build",
     "deploy": "npx wrangler pages deploy .open-next/assets --project-name=transcript-taxmonitor-pro-site",
     "preview": "npx wrangler pages dev .open-next/assets"

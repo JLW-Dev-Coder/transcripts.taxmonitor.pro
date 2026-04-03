@@ -61,11 +61,13 @@ transcript.taxmonitor.pro/
 
 ## Build Commands
 
-- `npm run cf:build` — canonical production build (runs `@opennextjs/cloudflare build`)
+- `npm run cf:build` — canonical production build: runs `@opennextjs/cloudflare build`, then copies `worker.js` into `assets/_worker.js` so Cloudflare Pages serves it
 - `npm run pages:build` — alias for `cf:build` (Cloudflare Pages calls this)
 - `npm run deploy` — deploys `.open-next/assets` to Cloudflare Pages
 - Build output directory: `.open-next/assets` (set in `wrangler.toml`)
+- Worker entry point: `.open-next/assets/_worker.js` (copied from `.open-next/worker.js` by `cf:build`)
 - `next build` alone is NOT sufficient — it does not invoke the OpenNext adapter
+- The OpenNext adapter targets Workers by default; the post-build copy step bridges it to Pages
 
 ---
 
