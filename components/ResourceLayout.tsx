@@ -19,16 +19,13 @@ export default function ResourceLayout({
     <div className={styles.wrapper}>
       <main className={styles.main}>
         <nav className={styles.breadcrumb} aria-label="Breadcrumb">
+          <Link href="/" className={styles.bcLink}>Home</Link>
+          <span className={styles.bcSep}>/</span>
           <Link href="/resources/" className={styles.bcLink}>Resources</Link>
           <span className={styles.bcSep}>/</span>
-          {resource.category === 'transaction-code' ? (
+          {resource.category === 'transaction-code' && (
             <>
               <Link href="/resources/transcript-codes/" className={styles.bcLink}>IRS Codes</Link>
-              <span className={styles.bcSep}>/</span>
-            </>
-          ) : (
-            <>
-              <Link href="/resources/" className={styles.bcLink}>Guides</Link>
               <span className={styles.bcSep}>/</span>
             </>
           )}

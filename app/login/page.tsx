@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import styles from './page.module.css'
 
 const API = 'https://api.virtuallaunch.pro'
 
@@ -47,65 +48,30 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: '#0a0f1e',
-      padding: '2rem 1rem',
-    }}>
-      <div style={{
-        width: '100%',
-        maxWidth: 420,
-        background: '#111827',
-        border: '1px solid #1f2937',
-        borderRadius: 16,
-        padding: '2.5rem 2rem',
-      }}>
+    <div className={styles.wrapper}>
+      <div className={styles.card}>
 
         {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{
-            width: 48, height: 48, borderRadius: 12,
-            background: '#14b8a6',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            margin: '0 auto 0.875rem',
-            fontSize: 16, fontWeight: 700, color: '#000',
-          }}>TT</div>
-          <h1 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#f9fafb', margin: '0 0 0.25rem' }}>
-            Sign in to Transcript Tax Monitor
-          </h1>
-          <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>
-            No password required
-          </p>
+        <div className={styles.logoBlock}>
+          <div className={styles.logoMark}>TT</div>
+          <h1 className={styles.heading}>Sign in to your account</h1>
+          <p className={styles.subheading}>No password required</p>
         </div>
 
         {submitted ? (
-          <div style={{ textAlign: 'center' }}>
-            <div style={{
-              width: 48, height: 48, borderRadius: '50%',
-              background: 'rgba(20,184,166,0.12)',
-              border: '1px solid rgba(20,184,166,0.3)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              margin: '0 auto 1rem',
-            }}>
+          <div className={styles.successBlock}>
+            <div className={styles.successIcon}>
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M4 10l4 4 8-8" stroke="#14b8a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
-            <p style={{ fontSize: '1rem', fontWeight: 600, color: '#f9fafb', marginBottom: '0.5rem' }}>
-              Check your email
-            </p>
-            <p style={{ fontSize: '0.875rem', color: '#9ca3af', lineHeight: 1.6, marginBottom: '1.5rem' }}>
-              We sent a sign-in link to <strong style={{ color: '#f9fafb' }}>{email}</strong>. Check your inbox and click the link to continue.
+            <p className={styles.successTitle}>Check your email</p>
+            <p className={styles.successBody}>
+              We sent a sign-in link to <strong>{email}</strong>. Check your inbox and click the link to continue.
             </p>
             <button
               onClick={() => { setSubmitted(false); setEmail('') }}
-              style={{
-                fontSize: '0.875rem', color: '#14b8a6',
-                background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-              }}
+              className={styles.linkButton}
             >
               Use a different email
             </button>
@@ -113,21 +79,7 @@ export default function LoginPage() {
         ) : (
           <>
             {/* Google Sign In */}
-            <button
-              onClick={handleGoogleSignIn}
-              style={{
-                width: '100%',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.625rem',
-                background: '#ffffff', color: '#111827',
-                border: '1px solid #e5e7eb', borderRadius: 10,
-                padding: '0.75rem 1rem',
-                fontSize: '0.9375rem', fontWeight: 600,
-                cursor: 'pointer', marginBottom: '1.25rem',
-                transition: 'background 150ms ease',
-              }}
-              onMouseEnter={e => (e.currentTarget.style.background = '#f9fafb')}
-              onMouseLeave={e => (e.currentTarget.style.background = '#ffffff')}
-            >
+            <button onClick={handleGoogleSignIn} className={styles.googleBtn}>
               <svg width="18" height="18" viewBox="0 0 18 18">
                 <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
                 <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z"/>
@@ -138,68 +90,48 @@ export default function LoginPage() {
             </button>
 
             {/* Divider */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
-              <div style={{ flex: 1, height: 1, background: '#1f2937' }} />
-              <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>or sign in with email</span>
-              <div style={{ flex: 1, height: 1, background: '#1f2937' }} />
+            <div className={styles.divider}>
+              <div className={styles.dividerLine} />
+              <span className={styles.dividerText}>or sign in with email</span>
+              <div className={styles.dividerLine} />
             </div>
 
             {/* Magic link form */}
             <form onSubmit={handleMagicLink}>
-              <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: '#d1d5db', marginBottom: '0.5rem' }}>
-                Email address
-              </label>
+              <label className={styles.label}>Email address</label>
               <input
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 required
-                style={{
-                  width: '100%', marginBottom: '0.75rem',
-                  background: '#0a0f1e', border: '1px solid #1f2937',
-                  borderRadius: 10, color: '#f9fafb',
-                  fontSize: '0.9375rem', padding: '0.75rem 1rem',
-                  outline: 'none', fontFamily: 'inherit',
-                  boxSizing: 'border-box',
-                }}
-                onFocus={e => (e.currentTarget.style.borderColor = '#14b8a6')}
-                onBlur={e => (e.currentTarget.style.borderColor = '#1f2937')}
+                className={styles.input}
               />
 
-              {error && (
-                <p style={{ fontSize: '0.8125rem', color: '#f87171', marginBottom: '0.75rem' }}>
-                  {error}
-                </p>
-              )}
+              {error && <p className={styles.error}>{error}</p>}
 
               <button
                 type="submit"
                 disabled={loading || !email}
-                style={{
-                  width: '100%',
-                  background: loading || !email ? '#0f766e' : '#14b8a6',
-                  color: '#000', fontWeight: 700,
-                  fontSize: '0.9375rem', padding: '0.75rem 1rem',
-                  border: 'none', borderRadius: 10, cursor: loading ? 'wait' : 'pointer',
-                  opacity: !email ? 0.6 : 1,
-                  transition: 'background 150ms ease',
-                  fontFamily: 'inherit',
-                }}
+                className={`${styles.submitBtn} ${loading ? styles.submitBtnLoading : ''}`}
               >
-                {loading ? 'Sending…' : 'Send Magic Link'}
+                {loading ? 'Sending...' : 'Send Magic Link'}
               </button>
             </form>
           </>
         )}
 
         {/* Footer */}
-        <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-          <p style={{ fontSize: '0.75rem', color: '#4b5563', lineHeight: 1.6 }}>
+        <div className={styles.cardFooter}>
+          <p className={styles.legalText}>
             By signing in you agree to our{' '}
-            <Link href="/legal/terms/" style={{ color: '#6b7280', textDecoration: 'underline' }}>Terms</Link>
+            <Link href="/legal/terms/">Terms</Link>
             {' '}and{' '}
-            <Link href="/legal/privacy/" style={{ color: '#6b7280', textDecoration: 'underline' }}>Privacy Policy</Link>.
+            <Link href="/legal/privacy/">Privacy Policy</Link>.
+          </p>
+          <p className={styles.createAccount}>
+            Don&apos;t have an account?{' '}
+            <a href="https://virtuallaunch.pro/register">Create one free</a>
           </p>
         </div>
 

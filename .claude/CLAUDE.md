@@ -177,7 +177,7 @@ Dedup: append `-2`, `-3` on collision.
   "revenue_opportunity": "$34,800–$104,400/yr in recovered billable time",
   "tool_preview_codes": ["971", "846", "570"],
   "cta_pricing_url": "https://transcript.taxmonitor.pro/pricing",
-  "cta_booking_url": "https://cal.com/vlp/ttmp-discovery",
+  "cta_booking_url": "https://cal.com/vlp/ttmp-discovery?slug={slug}",
   "cta_learn_more_url": "https://transcript.taxmonitor.pro"
 }
 ```
@@ -193,7 +193,7 @@ https://transcript.taxmonitor.pro/tools/code-lookup
 And here's a quick practice analysis I put together for {firm or city practice}:
 https://transcript.taxmonitor.pro/asset/{slug}
 If any of this lands, I'd be glad to show you a live analysis on a real transcript — 15 minutes on Google Meet.
-https://cal.com/vlp/ttmp-discovery
+https://cal.com/vlp/ttmp-discovery?slug={slug}
 —
 Jamie L Williams
 Transcript Tax Monitor Pro
@@ -263,11 +263,27 @@ node scale/push-asset-pages.js scale/batches/scale-batch-{YYYY-MM-DD}-{N}.json
 
 # Push Email 2 queue (when Email 2 batch is generated)
 node scale/push-email2-queue.js scale/batches/scale-batch-{YYYY-MM-DD}-{N}.json
+
+# Push batch history manifest (append entry)
+node scale/push-batch-history.js scale/batches/scale-batch-{YYYY-MM-DD}-{N}.json
+
+# Push updated master CSV
+node scale/push-master-csv.js
+
+# Push prospect email-to-slug index (append entries)
+node scale/push-prospect-index.js scale/batches/scale-batch-{YYYY-MM-DD}-{N}.json
 ```
 
-R2 keys:
-- Email 1 queue: `vlp-scale/send-queue/email1-pending.json`
-- Asset pages: `vlp-scale/asset-pages/{slug}.json`
+### R2 Key Inventory
+
+| R2 Key | Type | Script |
+|--------|------|--------|
+| `vlp-scale/send-queue/email1-pending.json` | Merge-append | `push-email1-queue.js` |
+| `vlp-scale/send-queue/email2-pending.json` | Merge-append | `push-email2-queue.js` |
+| `vlp-scale/asset-pages/{slug}.json` | One per prospect | `push-asset-pages.js` |
+| `vlp-scale/batch-history.json` | Append array | `push-batch-history.js` |
+| `vlp-scale/prospects/master.csv` | Overwrite | `push-master-csv.js` |
+| `vlp-scale/prospect-index.json` | Merge-append object | `push-prospect-index.js` |
 
 ---
 
@@ -299,6 +315,9 @@ R2 key: `vlp-scale/asset-pages/{slug}.json`
    - `scale/gmail/email1/{YYYY-MM-DD}-{N}-batch.csv` — Gmail import CSV
 4. Push email1 queue to R2
 5. Push asset pages to R2
+6. Push batch history manifest to R2
+7. Push updated master CSV to R2
+8. Push prospect email-to-slug index to R2
 
 ---
 

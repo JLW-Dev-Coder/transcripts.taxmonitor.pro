@@ -119,7 +119,7 @@ Schema key must be `asset_page` — never `audit_page`.
   "revenue_opportunity": "$34,800–$104,400/yr in recovered billable time",
   "tool_preview_codes": ["971", "846", "570"],
   "cta_pricing_url": "https://transcript.taxmonitor.pro/pricing",
-  "cta_booking_url": "https://cal.com/vlp/ttmp-discovery",
+  "cta_booking_url": "https://cal.com/vlp/ttmp-discovery?slug={slug}",
   "cta_learn_more_url": "https://transcript.taxmonitor.pro"
 }
 ```
@@ -153,7 +153,7 @@ And here's a quick practice analysis I put together for {DBA title-cased OR "you
 https://transcript.taxmonitor.pro/asset/{slug}
 
 If any of this lands, I'd be glad to show you a live analysis on a real transcript — 15 minutes on Google Meet.
-https://cal.com/vlp/ttmp-discovery
+https://cal.com/vlp/ttmp-discovery?slug={slug}
 
 —
 Jamie L Williams, EA
@@ -257,6 +257,9 @@ NEXT STEPS:
 
 Run Gmail cron to send gmail-email1-{date}.csv → send today
 Push scale-batch-{date}.json to R2: vlp-scale/asset-pages/{slug}.json
+Push batch history manifest to R2: vlp-scale/batch-history.json
+Push updated master CSV to R2: vlp-scale/prospects/master.csv
+Push prospect index to R2: vlp-scale/prospect-index.json
 Email 2 queued for: {date + 3 days}
 New prospect CSV needed by: {date when source exhausted}
 

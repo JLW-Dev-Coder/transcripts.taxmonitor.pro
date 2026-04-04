@@ -24,7 +24,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="shortcut icon" href="/favicon.svg" />
       </head>
-      <body>{children}</body>
+      <body>
+        <div id="page-loader" className="page-loader" aria-hidden="true" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.addEventListener('load',function(){var l=document.getElementById('page-loader');if(l)l.classList.add('loaded')})`,
+          }}
+        />
+        {children}
+      </body>
     </html>
   )
 }

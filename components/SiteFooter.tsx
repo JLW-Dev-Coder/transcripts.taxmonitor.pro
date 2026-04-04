@@ -11,7 +11,7 @@ const PLATFORM_LINKS = [
 ];
 
 const RESOURCE_LINKS = [
-  { label: 'Affiliates',      href: '/affiliates/',                            external: false },
+  { label: 'Affiliates',      href: '/affiliate',                            external: false },
   { label: 'Developers VLP',  href: 'https://developers.virtuallaunch.pro',    external: true  },
   { label: 'Games VLP',       href: 'https://games.virtuallaunch.pro',         external: true  },
   { label: 'Support',         href: '/contact/',                               external: false },
@@ -82,7 +82,7 @@ export default function SiteFooter() {
         <span className={styles.bottomLeft}>© 2026 Lenore, Inc.</span>
         <span className={styles.bottomLeft}>
           Earn 20% on every referral —{' '}
-          <a href="/affiliates/" className={styles.affiliateLink}>Join the Affiliate Program</a>
+          <a href="/affiliate" className={styles.affiliateLink}>Join the Affiliate Program</a>
         </span>
       </div>
     </footer>

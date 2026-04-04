@@ -163,6 +163,35 @@
   margin-top: 0.5rem;
 }
 
+/* ── Bottom bar ─────────────────────────────── */
+.bottomBar {
+  max-width: 1200px;
+  margin: 2rem auto 0;
+  padding: 1rem 1.5rem 0;
+  border-top: 1px solid var(--surface-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.bottomText {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.affiliateLink {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.15s;
+}
+.affiliateLink:hover {
+  color: var(--text);
+  text-decoration: none;
+}
+
 /* ── Responsive ──────────────────────────────── */
 @media (max-width: 900px) {
   .inner {
