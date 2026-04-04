@@ -6,9 +6,9 @@
 
 ## 6a — Header Mega Menu (test in browser)
 
-- [ ] Hover/click Resources in the header — mega menu appears
-- [ ] Mega menu has 3 columns: Discover, Explore, Tools & Extras
-- [ ] CTA section shows "Need human review..." text and "Free Guide" button
+- [x] Hover/click Resources in the header — mega menu appears
+- [X] Mega menu has 3 columns: Discover, Explore, Tools & Extras
+- [ ] CTA section shows "Need human review..." text and "Free Guide" button <---Should be 3 columns not 4.
 - [ ] Log In button is visible in the mega menu
 - [ ] Click each link in the Discover column — confirm each page loads
 - [ ] Click each link in the Explore column — confirm each page loads
