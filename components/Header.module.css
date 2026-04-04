@@ -66,9 +66,10 @@
 .nav {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1.75rem;
   font-size: 0.875rem;
   flex: 1;
+  margin-left: 1.5rem;
 }
 
 .nav > a {
