@@ -62,7 +62,21 @@ If any condition fails: halt immediately, do not produce partial output, report 
 
 ---
 
+## Pre-step — Run the orchestrator
+
+Before generating any copy, run:
+```
+node scale/generate-batch.js
+```
+
+This produces `scale/batches/batch-selection-{YYYY-MM-DD}.json` containing the selected records with slugs, credentials, and time savings data already populated. Use this file as the input for copy generation. Do not re-read the master CSV directly for copy generation.
+
+---
+
 ## 5. Selection Logic (mandatory, exact order)
+
+Source: the master CSV in `scale/prospects/` (the file starting with `IRS`).
+Never read from `new-prospects.csv` — that is the human intake file.
 
 1. `email_found` is not empty, not `"undefined"`, not NaN
 2. `email_status` is not `"invalid"`
@@ -124,33 +138,48 @@ Schema key must be `asset_page` — never `audit_page`.
 
 ### 6.5 Generate Email 1 body (plain text)
 
-Structure (in order):
-1. Pain — 20 min/transcript, X hrs/week, Y hrs/year — 2 sentences
-2. Tool pitch — seconds, plain-English report, $19/10 analyses — 2 sentences
-3. Free code lookup CTA with URL
-4. Asset page URL
-5. Booking CTA with URL
-6. Signature (exact, mandatory)
+Exact template:
+```
+Hi {First},
 
-Signature:
+I built a tool that turns IRS transcripts into plain-English reports in seconds — specifically for {EAs/CPAs/attorneys} who are done spending 20 minutes per client translating transaction codes manually. I'm an EA myself, so I built it from the same frustration.
+
+At {hrs} hours per week, that adds up to {annual hrs} hours a year of work that should take seconds. Transcript Tax Monitor Pro handles it for $19 per 10 analyses, with nothing to install.
+
+Here's a free IRS code lookup to try first, no account needed:
+https://transcript.taxmonitor.pro/tools/code-lookup
+
+And here's a quick practice analysis I put together for {DBA title-cased OR "your " + City title-cased + " practice"}:
+https://transcript.taxmonitor.pro/asset/{slug}
+
+If any of this lands, I'd be glad to show you a live analysis on a real transcript — 15 minutes on Google Meet.
+https://cal.com/vlp/ttmp-discovery
+
 —
-Jamie L Williams
-Transcript Tax Monitor Pro
+Jamie L Williams, EA
+Founder, Transcript Tax Monitor Pro
 transcript.taxmonitor.pro
+```
 
-Never use a placeholder. Always resolve to Jamie L Williams.
+Credential mapping for intro line: EA → "EAs", CPA → "CPAs", ATTY/JD → "attorneys"
+Firm reference: solo_brand → title-cased DBA, local_firm → "your {City title-cased} practice"
+Credibility line ("I'm an EA myself...") is mandatory in every Email 1.
+
+Never use a placeholder. Always resolve signature to Jamie L Williams, EA.
 
 ### 6.6 Generate Email 2 body (plain text)
 
-Structure (in order):
-1. Reference prior email ("I sent you a note a few days ago...")
-2. Reference asset page ("quick practice analysis generated for your firm")
-3. Asset page URL (lead with this)
-4. Pricing CTA
-5. Booking CTA
-6. Same signature as Email 1
-
 Subject: `Quick asset generated for your firm, {First} — {N} hours/yr on the table`
+
+Structure (in order):
+1. Greeting: "Hi {First},"
+2. Reference prior email ("I sent you a note a few days ago...")
+3. Credibility line ("I'm an EA myself, so I built it from the same frustration.")
+4. Asset page reference with URL (lead with this)
+5. Revenue figure + tool pitch
+6. Booking CTA
+7. Pricing CTA
+8. Same signature as Email 1
 
 ### 6.7 Update tracking state
 

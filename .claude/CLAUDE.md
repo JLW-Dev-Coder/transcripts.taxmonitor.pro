@@ -109,6 +109,23 @@ transcript.taxmonitor.pro/
 | email_2_scheduled_for | ISO date — when Email 2 should send |
 | email_2_sent_at | ISO timestamp — set by VLP Worker after send |
 
+### Two-file intake workflow
+
+Humans never edit the master CSV directly. New prospects are added through:
+
+1. Human exports enriched rows from Google Sheets into `scale/prospects/new-prospects.csv`
+2. Human runs `node scale\scripts\merge-intake.js` from the repo root (PowerShell)
+3. The merge script validates, deduplicates, and appends rows to the master CSV
+4. The merge script archives the intake file and truncates it to headers only
+
+The merge script checks for a lockfile (`scale/prospects/.batch-in-progress`) before writing. If the lockfile exists, the merge refuses to run. The batch generation script creates this lockfile at start and removes it on completion.
+
+File paths:
+- Intake: `scale/prospects/new-prospects.csv`
+- Master: `scale/prospects/IRS*.csv` (single file, auto-detected)
+- Archive: `scale/prospects/archive/intake-{YYYY-MM-DD}.csv`
+- Lockfile: `scale/prospects/.batch-in-progress`
+
 ---
 
 ## 6. Selection Logic (mandatory, in exact order)
@@ -271,12 +288,15 @@ R2 key: `vlp-scale/asset-pages/{slug}.json`
 
 ## 12. Daily Operational Loop
 
-Each session in order:
-1. Generate next 50 Email 1 records
-2. Update source CSV with `email_1_prepared_at`
-3. Push email1 queue + asset pages to R2
-4. Generate Email 2 for prospects from 2–3 days prior
-5. Push email2 queue to R2
+### Steps
+
+1. Run `node scale/generate-batch.js` — selects next 50 eligible records, generates slugs, writes selection file, stamps tracking
+2. Claude Code reads `scale/batches/batch-selection-{YYYY-MM-DD}.json` and generates personalized copy per SKILL.md
+3. Claude Code writes final outputs:
+   - `scale/batches/scale-batch-{YYYY-MM-DD}.json` — full batch with asset pages and email copy
+   - `scale/gmail/email1/{YYYY-MM-DD}-batch.csv` — Gmail import CSV
+4. Push email1 queue to R2
+5. Push asset pages to R2
 
 ---
 
