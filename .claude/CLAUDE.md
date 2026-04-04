@@ -218,7 +218,9 @@ transcript.taxmonitor.pro
 ## 8. Output Files
 
 ### JSON batch
-**Path:** `scale/batches/scale-batch-{YYYY-MM-DD}.json`
+**Path:** `scale/batches/scale-batch-{YYYY-MM-DD}-{N}.json`
+
+Multiple batches per day are supported. The sequence number `{N}` starts at 1 and increments for each batch run on the same date.
 
 Per-prospect schema:
 ```json
@@ -239,7 +241,7 @@ Per-prospect schema:
 ```
 
 ### Gmail import CSV
-**Path:** `scale/gmail/email1/{YYYY-MM-DD}-batch.csv`
+**Path:** `scale/gmail/email1/{YYYY-MM-DD}-{N}-batch.csv`
 
 Columns (exactly, no extras): `email, first_name, subject, body`
 - RFC-4180 compliant
@@ -254,13 +256,13 @@ Write `email_1_prepared_at` ISO timestamp to source CSV immediately after each b
 ## 9. R2 Push Commands (run after each batch)
 ```bash
 # Push email1 queue
-node scale/push-email1-queue.js scale/gmail/email1/{YYYY-MM-DD}-batch.csv
+node scale/push-email1-queue.js scale/gmail/email1/{YYYY-MM-DD}-{N}-batch.csv
 
 # Push asset pages
-node scale/push-asset-pages.js scale/batches/scale-batch-{YYYY-MM-DD}.json
+node scale/push-asset-pages.js scale/batches/scale-batch-{YYYY-MM-DD}-{N}.json
 
 # Push Email 2 queue (when Email 2 batch is generated)
-node scale/push-email2-queue.js scale/batches/scale-batch-{YYYY-MM-DD}.json
+node scale/push-email2-queue.js scale/batches/scale-batch-{YYYY-MM-DD}-{N}.json
 ```
 
 R2 keys:
@@ -291,10 +293,10 @@ R2 key: `vlp-scale/asset-pages/{slug}.json`
 ### Steps
 
 1. Run `node scale/generate-batch.js` — selects next 50 eligible records, generates slugs, writes selection file, stamps tracking
-2. Claude Code reads `scale/batches/batch-selection-{YYYY-MM-DD}.json` and generates personalized copy per SKILL.md
+2. Claude Code reads `scale/batches/batch-selection-{YYYY-MM-DD}-{N}.json` and generates personalized copy per SKILL.md
 3. Claude Code writes final outputs:
-   - `scale/batches/scale-batch-{YYYY-MM-DD}.json` — full batch with asset pages and email copy
-   - `scale/gmail/email1/{YYYY-MM-DD}-batch.csv` — Gmail import CSV
+   - `scale/batches/scale-batch-{YYYY-MM-DD}-{N}.json` — full batch with asset pages and email copy
+   - `scale/gmail/email1/{YYYY-MM-DD}-{N}-batch.csv` — Gmail import CSV
 4. Push email1 queue to R2
 5. Push asset pages to R2
 

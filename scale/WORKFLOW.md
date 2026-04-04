@@ -52,7 +52,19 @@ Notes:
 
 ---
 
+## Active Google Sheet
+
+The current working sheet with 66K+ shaped records from BigQuery:
+
+[IRS FOIA Shaped — Google Sheets](https://docs.google.com/spreadsheets/d/1r9lkdOKj3Dcfh_tppN2NfORH0jTQBLYCXuElYnn2m7w/edit?gid=2106429687#gid=2106429687)
+
+This sheet already has the Apps Script installed and initial processing (Clean domains, Normalize phone numbers, Classify firm buckets) completed. To refill the pipeline, start at **Step 8** — you do not need to re-run BigQuery or repeat Steps 1-7 until this sheet is exhausted.
+
+---
+
 ## Phase 1 — Source Data from BigQuery
+
+These steps only need to run once per BigQuery export. If the active Google Sheet above still has unprocessed rows, skip to Step 8.
 
 ### Step 1 — Open BigQuery
 
@@ -84,6 +96,8 @@ Open the generated Google Sheet. Verify the header row matches the Required Outp
 
 ## Phase 2 — Sheet Setup and Initial Processing
 
+These steps only need to run once per new Google Sheet. If using the active sheet above, skip to Step 8.
+
 ### Step 5 — Add the Apps Script
 
 In Google Sheets, go to **Extensions → Apps Script**.
@@ -102,7 +116,7 @@ Return to the sheet and refresh the page.
 
 After refresh, the custom menu appears as **Lead Tools** with three submenus:
 
-* **Prepare** — Clean domains, Mark email_status, Validate email-domain match
+* **Prepare** — Clean domains, Normalize phone numbers, Mark email_status, Validate email-domain match
 * **Classify** — Classify firm buckets
 * **Clay Batch** — Select next 50 rows, Clear Clay batch markers
 
@@ -111,7 +125,14 @@ After refresh, the custom menu appears as **Lead Tools** with three submenus:
 From **Lead Tools**, run these in order:
 
 1. **Prepare → Clean domains** — extracts and normalizes domains from the WEBSITE column into domain_clean
-2. **Classify → Classify firm buckets** — assigns solo_brand, local_firm, or national_firm to each row
+2. **Prepare → Normalize phone numbers** — standardizes all phone numbers to (XXX) XXX-XXXX format
+3. **Classify → Classify firm buckets** — assigns solo_brand, local_firm, or national_firm to each row
+
+---
+
+## Repeatable Pipeline (Steps 8–20)
+
+Start here each time you need to refill the prospect pipeline. Each cycle adds up to 50 enriched prospects to the master CSV.
 
 ### Step 8 — Select the next Clay batch
 
@@ -271,7 +292,7 @@ Running total tracking: the Clay workbook naming convention (`_050`, `_100`, `_1
 
 | When | Delete what | Why |
 |------|------------|-----|
-| After Step 11 (Clay import) | CSV in Downloads folder | Clay has its own copy in the workbook |
+| After Step 12 (Clay import) | CSV in Downloads folder | Clay has its own copy in the workbook |
 | After Step 17 (save to repo) | CSV in Downloads folder | Repo copy at `scale/prospects/new-prospects.csv` is the only one that matters |
 | Automatic (merge script) | `new-prospects.csv` data rows | Script archives to `scale/prospects/archive/` and truncates to headers only |
 

@@ -118,9 +118,16 @@ function dedupSlugs(records) {
 
 // --- Main ---
 
+function getNextSequenceNumber(today) {
+  const existing = fs.readdirSync(BATCHES_DIR)
+    .filter(f => f.match(new RegExp(`^scale-batch-${today}-\\d+\\.json$`)));
+  return existing.length + 1;
+}
+
 function main() {
   const today = new Date().toISOString().slice(0, 10);
   const timestamp = new Date().toISOString();
+  const seq = getNextSequenceNumber(today);
 
   // 1. Create lockfile
   fs.writeFileSync(LOCKFILE, '');
@@ -217,7 +224,7 @@ function main() {
     if (!fs.existsSync(BATCHES_DIR)) fs.mkdirSync(BATCHES_DIR, { recursive: true });
     if (!fs.existsSync(GMAIL_DIR)) fs.mkdirSync(GMAIL_DIR, { recursive: true });
 
-    const selectionPath = path.join(BATCHES_DIR, `batch-selection-${today}.json`);
+    const selectionPath = path.join(BATCHES_DIR, `batch-selection-${today}-${seq}.json`);
     const output = selectionRecords.map(({ _sourceRef, ...rest }) => rest);
     fs.writeFileSync(selectionPath, JSON.stringify(output, null, 2));
 
@@ -232,9 +239,9 @@ function main() {
     const daysRemaining = remaining > 0 ? Math.ceil(remaining / BATCH_SIZE) : 0;
     console.log(`
 === BATCH SELECTION COMPLETE ===
-Date: ${today}
+Date: ${today}  |  Batch #${seq}
 Records selected: ${selected.length}
-Selection file: scale/batches/batch-selection-${today}.json
+Selection file: scale/batches/batch-selection-${today}-${seq}.json
 Master CSV updated: ${selected.length} rows stamped with email_1_prepared_at
 Remaining eligible for Email 1: ${remaining}
 Days of pipeline remaining: ${daysRemaining} (at ${BATCH_SIZE}/day)
@@ -242,6 +249,14 @@ Days of pipeline remaining: ${daysRemaining} (at ${BATCH_SIZE}/day)
 NEXT STEP:
 Claude Code now generates personalized email copy and asset page data
 using the selection file and SKILL.md.
+
+Output files will be:
+  scale/batches/scale-batch-${today}-${seq}.json
+  scale/gmail/email1/${today}-${seq}-batch.csv
+
+Push to R2:
+  node scale/push-email1-queue.js scale/gmail/email1/${today}-${seq}-batch.csv
+  node scale/push-asset-pages.js scale/batches/scale-batch-${today}-${seq}.json
 `);
 
   } finally {

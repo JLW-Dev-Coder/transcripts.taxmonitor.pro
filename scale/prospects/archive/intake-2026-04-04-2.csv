@@ -1,0 +1,36 @@
+LAST_NAME,First_NAME,FULL_NAME,DBA,BUS_ADDR_CITY,BUS_ST_CODE,WEBSITE,BUS_PHNE_NBR,PROFESSION,domain_clean,email_found,email_status,firm_bucket,clay_workbook_ref
+ABBOTT,CHRISTOPHER,CHRISTOPHER ABBOTT,"Christopher K. Abbott, CPA, PA",FUQUAY VARINA,NC,ckabbottcpa.com,(919) 618-9862,CPA,ckabbottcpa.com,chris@ckabbottcpa.com,valid,solo_brand,wb_0tcya0aeJ66UADZ9qPn
+ABBOTT,DEBORAH,DEBORAH ABBOTT,KENWOOD & ASSOCIATES P C,SUGAR LAND,TX,KENWOODPC.COM,(281) 243-2300,CPA,kenwoodpc.com,djabbott@kenwoodpc.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABBOTT,JOE,JOE ABBOTT,Abbott Livings Smith & Higgins PC,BIRMINGHAM,AL,www.alshcpa.com,(205) 803-0300,CPA,alshcpa.com,jabbott@alshcpa.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABBOTT,JOSEPH,JOSEPH ABBOTT,Novogradac & Company LLP,SAN FRANCISCO,CA,novoco.com,(415) 356-7932,CPA,novoco.com,joe.abbott@novoco.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABBOTT,KATHLEEN,KATHLEEN ABBOTT,Brown and Abbott PC,CORAOPOLIS,PA,www.brownandabbott.com,(412) 264-2950,CPA,brownandabbott.com,kabbott@brownandabbott.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABBOTT,KEVIN,KEVIN ABBOTT,"ABBOTT COMPANY, LTD.",PHOENIX,AZ,acoabbott.com,(602) 224-9092,CPA,acoabbott.com,kevin@acoabbott.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABBOTT,MEGAN,MEGAN ABBOTT,Trajectory Tax,Denver,CO,www.trajectorytax.com,,EA,trajectorytax.com,megan@trajectorytax.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABBOTT,NICHOLE,NICHOLE ABBOTT,Abbott Accounting CPA,SPRING LAKE,MI,www.abbottaccounting.com,,CPA,abbottaccounting.com,abbott@abbottaccounting.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABBOTT,SHELLY,SHELLY ABBOTT,Abbott & Company,YUCCA VALLEY,CA,www.FrazerTax.com,(760) 365-1040,EA,frazertax.com,shelly@abbotttaxcompany.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABBOTT,STEVEN,STEVEN ABBOTT,Abbott CFO Solutions LLC,LUCAS,TX,www.abbottcfo.com,(469) 824-3700,CPA,abbottcfo.com,steven@abbottcfo.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABBOUD,Joe,Joe Abboud,Abboud Tax Law,Los Angeles,CA,AbboudTaxLaw.com,(310) 428-8982,ATTY,abboudtaxlaw.com,joe@abboudtaxlaw.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABDALIAN,SELIN,SELIN ABDALIAN,Robert Hall & Associates,GLENDALE,CA,roberthalltaxes.com,(818) 242-4888,EA,roberthalltaxes.com,selin@roberthalltaxes.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABDALLA,AMRO,AMRO ABDALLA,"Amro Abbas, CPA",Laguna Beach,CA,www.cpasavings.com,(323) 691-7530,CPA,cpasavings.com,amro@cpasavings.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABDALLA,Jonathan,Jonathan Abdalla,SEIBEL & KATZ CPA,CINCINNATI,OH,https://www.seibelkatzcpa.com,(513) 271-7835,CPA,seibelkatzcpa.com,jonathan@seibelkatzcpa.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABDALLAH,AMMER,AMMER ABDALLAH,"Ammer Abdallah CPA, LLC",Kingwood,TX,abdallahcpa.com,(281) 617-6021,CPA,abdallahcpa.com,ammerabdallah@asacpa.us,valid,solo_brand,wb_0tcya0aeJ66UADZ9qPn
+ABDALLAH,JOSEPH,JOSEPH ABDALLAH,PSG CPAs,ROSEVILLE,CA,www.psgcpas.com,(916) 791-3120,CPA,psgcpas.com,joseph@psgcpas.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABDALLAH,Moses,Moses Abdallah,MCA Tax Pro,FREDERICKSBRG,VA,mcataxpro.com,(540) 300-7620,EA,mcataxpro.com,moses@mcataxpro.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABDI,Abdullahi,Abdullahi Abdi,Abdi CPA & Advisory Services,Minneapolis,MN,www.abdicpa.com,(612) 987-4769,CPA,abdicpa.com,abdullahi.abdi@abdicpa.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABDOLI-YAZDI,Roxanna,Roxanna Abdoli-yazdi,Latham & Watkins LLP,New York,NY,www.lw.com,(212) 906-1200,ATTY,lw.com,roxanna.abdoli@lw.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABDOU,JOSEPH,JOSEPH ABDOU,Prudence CPA Inc,LAGUNA HILLS,CA,www.prudencecpa.com,(949) 325-7797,CPA,prudencecpa.com,jabdou@prudencecpa.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABDUL KARIM,Umair,Umair Abdul karim,Umair AK CPA LLC,RICHMOND,TX,www.uakcpa.com,,CPA,uakcpa.com,ukarim@uakcpa.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABDUL-MAJEED,TARIQ,TARIQ ABDUL-MAJEED,WENDROFF & ASSOCIATES LLC,ARLINGTON,VA,www.WENDROFFCPA.COM,(703) 553-1099,CPA,wendroffcpa.com,tmajeed@wendroffcpa.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABDULJABER,AFNAN,AFNAN ABDULJABER,Taxwise CPA,ANN ARBOR,MI,www.thetaxwisecpa.com,(734) 972-5512,CPA,thetaxwisecpa.com,afnan@thetaxwisecpa.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABDULLAH,MIKAL,MIKAL ABDULLAH,MAB Consulting Services LLC,PHILADELPHIA,PA,www.mabconsultingservices.com,(215) 549-3328,EA,mabconsultingservices.com,mikal@mabconsultingservices.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABEDIAN,EMIL,EMIL ABEDIAN,"Abedian & Totlian, An Accountancy Corporation",GLENDALE,CA,www.aandtcpas.com,(818) 243-3455,CPA,aandtcpas.com,emil@capatacpa.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABEDIN,ZANE,ZANE ABEDIN,IWB & Co Certified Public Accountancy,MILL VALLEY,CA,iwbco.com,,CPA,iwbco.com,cpa@iwbco.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABEL,ROBERT,ROBERT ABEL,Brown Plus,CAMP HILL,PA,www.bssf.com,(717) 761-7171,CPA,bssf.com,robertabel@bssf.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABEL,TODD,TODD ABEL,Sikich LLC,STRONGSVILLE,OH,www.sikich.com,(440) 638-7412,CPA,sikich.com,todd.abel@sikich.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABELES,RONALD,RONALD ABELES,Abeles and Hoffman P.C.,SAINT LOUIS,MO,www.ahcpa.com,(314) 991-4770,CPA,ahcpa.com,rona@ahcpa.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABELL,CHRISTOPHER,CHRISTOPHER ABELL,ABELL ADVISOR LLC,WEST CHESTER,PA,abelladvisors.com,(954) 263-2171,CPA,abelladvisors.com,christopher.abell@abelladvisors.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABELL,KATHY,KATHY ABELL,"McCallum & Kudravetz, P.C.",CHARLOTTESVLE,VA,www.mkpc.com,(434) 293-8191,ATTY,mkpc.com,kabell@mkpc.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABELL,Stephanie,Stephanie Abell,White And Company PSC,Lebanon,KY,www.whitecpas.com,(270) 692-2102,CPA,whitecpas.com,stephanie.abell@whitecpas.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABELL,WILLIAM,WILLIAM ABELL,FLYNN ABELL NIXON LLC,BETHESDA,MD,www.flynncpas.com,(301) 951-1019,CPA,flynncpas.com,bill@flynncpas.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABELLA,Jesica,Jesica Abella,Abella Tax Services Inc.,Mountlake Terrace,WA,abellatax.com,(425) 743-9250,EA,abellatax.com,jabella@abellatax.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn
+ABENDROTH,E AARON,E AARON ABENDROTH,Haynie & Company,SALT LAKE CTY,UT,www.hayniecpas.com,(801) 972-4800,CPA,hayniecpas.com,aarona@hayniecpas.com,valid,local_firm,wb_0tcya0aeJ66UADZ9qPn

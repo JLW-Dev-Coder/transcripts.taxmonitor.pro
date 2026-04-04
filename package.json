@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.18.0",
+    "csv-parse": "^6.2.1",
     "next": "^15.2.4",
     "react": "^19",
     "react-dom": "^19"

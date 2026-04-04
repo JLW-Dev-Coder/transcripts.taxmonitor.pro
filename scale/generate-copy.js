@@ -1,19 +1,33 @@
 #!/usr/bin/env node
 /**
  * generate-copy.js
- * Reads batch-selection-{date}.json and produces:
- *   - scale/batches/scale-batch-{date}.json
- *   - scale/gmail/email1/{date}-batch.csv
+ * Reads batch-selection-{date}-{N}.json and produces:
+ *   - scale/batches/scale-batch-{date}-{N}.json
+ *   - scale/gmail/email1/{date}-{N}-batch.csv
+ *
+ * Usage: node scale/generate-copy.js 2026-04-04-1
+ *        (argument is {date}-{N}, e.g. "2026-04-04-1")
  */
 
 const fs = require('fs');
 const path = require('path');
 const { expandAbbreviations } = require('./lib/expand-abbreviations');
 
-const date = process.argv[2] || new Date().toISOString().slice(0, 10);
-const selectionPath = path.join(__dirname, 'batches', `batch-selection-${date}.json`);
-const batchOutPath = path.join(__dirname, 'batches', `scale-batch-${date}.json`);
-const csvOutPath = path.join(__dirname, 'gmail', 'email1', `${date}-batch.csv`);
+const dateSeq = process.argv[2] || (() => {
+  const today = new Date().toISOString().slice(0, 10);
+  // Auto-detect latest selection file for today
+  const batches = fs.readdirSync(path.join(__dirname, 'batches'))
+    .filter(f => f.match(new RegExp(`^batch-selection-${today}-\\d+\\.json$`)))
+    .sort();
+  if (batches.length > 0) {
+    const match = batches[batches.length - 1].match(/batch-selection-(.+)\.json$/);
+    return match[1];
+  }
+  return `${today}-1`;
+})();
+const selectionPath = path.join(__dirname, 'batches', `batch-selection-${dateSeq}.json`);
+const batchOutPath = path.join(__dirname, 'batches', `scale-batch-${dateSeq}.json`);
+const csvOutPath = path.join(__dirname, 'gmail', 'email1', `${dateSeq}-batch.csv`);
 
 const records = JSON.parse(fs.readFileSync(selectionPath, 'utf8'));
 
@@ -47,12 +61,16 @@ function titleCase(s) {
 }
 
 // Acronyms that should stay uppercase after title-casing
-const ACRONYMS = ['DBA', 'LLC', 'LLP', 'CPA', 'EA', 'PC', 'PLLC', 'LTD', 'INC'];
+const ACRONYMS = ['DBA', 'LLC', 'LLP', 'CPA', 'EA', 'PC', 'PLLC', 'LTD', 'INC', 'MMA', 'STS', 'TMI', 'EAG'];
 
 function preserveAcronyms(text) {
   return text.replace(/\b\w+\b/g, word => {
     const upper = word.toUpperCase();
     if (ACRONYMS.includes(upper)) return upper;
+    // Title-case any remaining all-caps words (3+ chars) that aren't acronyms
+    if (word.length >= 3 && word === word.toUpperCase()) {
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    }
     return word;
   });
 }
@@ -85,14 +103,14 @@ function firmDisplay(firm) {
 function credentialLabel(cred) {
   if (cred === 'EA') return 'Enrolled Agents';
   if (cred === 'CPA') return 'CPAs';
-  if (cred === 'JD') return 'attorneys';
+  if (cred === 'JD' || cred === 'ATTY') return 'attorneys';
   return 'tax professionals';
 }
 
 function credentialPlural(cred) {
   if (cred === 'EA') return 'EAs';
   if (cred === 'CPA') return 'CPAs';
-  if (cred === 'JD') return 'JDs';
+  if (cred === 'JD' || cred === 'ATTY') return 'attorneys';
   return 'tax professionals';
 }
 
@@ -107,7 +125,7 @@ function workflowGaps(cred) {
     "No automated detection of priority transaction codes",
     "Billable hours lost to repetitive transcript interpretation"
   ];
-  if (cred === 'JD') return [
+  if (cred === 'JD' || cred === 'ATTY') return [
     "Manual transcript review slowing case preparation",
     "No automated flagging for priority codes like 971, 846, or 570",
     "Time-sensitive transcript changes going undetected"
@@ -122,7 +140,7 @@ function workflowGaps(cred) {
 function timeSavings(cred) {
   if (cred === 'EA') return { weekly: '6.7 hours', annual: '348 hours', revenue: '$34,800\u2013$104,400/yr' };
   if (cred === 'CPA') return { weekly: '5.0 hours', annual: '260 hours', revenue: '$39,000\u2013$104,000/yr' };
-  if (cred === 'JD') return { weekly: '3.3 hours', annual: '174 hours', revenue: '$34,800\u2013$87,000/yr' };
+  if (cred === 'JD' || cred === 'ATTY') return { weekly: '3.3 hours', annual: '174 hours', revenue: '$34,800\u2013$87,000/yr' };
   return { weekly: '5.0 hours', annual: '260 hours', revenue: '$39,000\u2013$104,000/yr' };
 }
 

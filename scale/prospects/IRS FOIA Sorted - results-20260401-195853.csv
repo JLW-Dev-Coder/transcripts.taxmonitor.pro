@@ -1,27 +1,27 @@
 LAST_NAME,First_NAME,DBA,BUS_ADDR_CITY,BUS_ST_CODE,WEBSITE,BUS_PHNE_NBR,PROFESSION,domain_clean,email_found,email_status,firm_bucket,send_today,email_1_sent_at,email_2_scheduled_for,email_2_sent_at,email_1_prepared_at
 AARSETH,CONRAD,CMA Tax Services,WILTON,CA,www.cmataxes.com,(916) 885-5015,EA,cmataxes.com,conrad@cmataxes.com,valid,solo_brand,yes,,,,2026-04-04T02:18:08.478Z
 ABBOTT,SHELLY,Abbott & Company,YUCCA VALLEY,CA,www.FrazerTax.com,(760) 365-1040,EA,frazertax.com,shelly@abbotttaxcompany.com,valid,solo_brand,yes,,,,2026-04-04T02:18:08.478Z
-ABDALIAN,SELIN,Robert Hall & Associates,GLENDALE,CA,roberthalltaxes.com,8182424888,EA,roberthalltaxes.com,selin@roberthalltaxes.com,valid,local_firm,yes,,,,
+ABDALIAN,SELIN,Robert Hall & Associates,GLENDALE,CA,roberthalltaxes.com,8182424888,EA,roberthalltaxes.com,selin@roberthalltaxes.com,valid,local_firm,yes,,,,2026-04-04T03:18:10.882Z
 ABIGANA,FRANK,Frank Raymond Incorporated,LIVERMORE,CA,www.frankraymondinc.com,925-960-1040,EA,frankraymondinc.com,frank@frankraymondinc.com,valid,local_firm,yes,,,,2026-04-04T02:18:08.478Z
 ABIRAFEH,HASSIB,KISS Tax Service,N HOLLYWOOD,CA,KISSTaxService.com,(818) 318-0928,EA,kisstaxservice.com,undefined,valid,solo_brand,yes,,,,
 ABRAMSON,OLGA,"ABRAMSON & ASSOCIATES, LLC",Granada Hills,CA,oabramson.com,(818) 230-6550,EA,oabramson.com,olga@oabramson.com,valid,local_firm,yes,,,,2026-04-04T02:18:08.478Z
-ABUSNEINEH,HUSAM,STS Financial LLC,LOMITA,CA,www.stsfinancial.com,3105349829,EA,stsfinancial.com,husam@stsfinancial.com,valid,solo_brand,yes,,,,
+ABUSNEINEH,HUSAM,STS Financial LLC,LOMITA,CA,www.stsfinancial.com,3105349829,EA,stsfinancial.com,husam@stsfinancial.com,valid,solo_brand,yes,,,,2026-04-04T03:18:10.882Z
 ACKER,JOSEPH,Centenal Tax Group,SACRAMENTO,CA,http://www.centenaltax.com,510-359-2625,EA,centenaltax.com,joseph.acker@centenaltax.com,valid,local_firm,yes,,,,2026-04-04T02:18:08.478Z
 ADAME JR,JOSE,Jose C Adame Jr,ESCONDIDO,CA,www.coasttax.com,7607391040,EA,coasttax.com,jose@coasttax.com,valid,solo_brand,yes,,,,2026-04-04T02:18:08.478Z
 ADAMS,PAMELA,A STREET TAX & FINANCIAL,RAMONA,CA,ASTREETTAX.COM,7607879696,EA,astreettax.com,pam@astreettax.com,valid,solo_brand,yes,,,,2026-04-04T02:18:08.478Z
-ADAMS HILL,CLAUDIA,"TMI TAX SERVICES, INC.",CUPERTINO,CA,www.taxmam.com,(408) 446-4451,EA,taxmam.com,claudia@taxmam.com,valid,local_firm,yes,,,,
-ADAMS-HORN,ELAINE,"Reality Check Enterprises, Inc",VISTA,CA,realitycheckenterprises.com,760-505-8877,EA,realitycheckenterprises.com,elaine@realitycheckenterprises.com,valid,local_firm,yes,,,,
+ADAMS HILL,CLAUDIA,"TMI TAX SERVICES, INC.",CUPERTINO,CA,www.taxmam.com,(408) 446-4451,EA,taxmam.com,claudia@taxmam.com,valid,local_firm,yes,,,,2026-04-04T03:18:10.882Z
+ADAMS-HORN,ELAINE,"Reality Check Enterprises, Inc",VISTA,CA,realitycheckenterprises.com,760-505-8877,EA,realitycheckenterprises.com,elaine@realitycheckenterprises.com,valid,local_firm,yes,,,,2026-04-04T03:18:10.882Z
 AFSHAR,MASHALLAH,PARS FINANCIAL CORP,SAN DIEGO,CA,PARSFINANCIAL.COM,(858) 549-3030,EA,parsfinancial.com,mafshar@parsfinancial.com,valid,local_firm,yes,,,,2026-04-04T02:18:08.478Z
 AGBINCOLA,ANNA,Agbincola Tax and Business Services,UPLAND,CA,www.annaagbincola.com,9099120140,EA,annaagbincola.com,anna@annaagbincola.com,valid,local_firm,yes,,,,2026-04-04T02:18:08.478Z
 AGHAKIAN,ARTHUR,VIP Tax Coach,BURBANK,CA,viptaxcoach.com,8186243263,EA,viptaxcoach.com,undefined,valid,solo_brand,yes,,,,
 AGOSTINI,CYNTHIA,Langwasser & Company CPAs,UPLAND,CA,www.langwasser.com,9099319080,EA,langwasser.com,cindy@langwasser.com,valid,local_firm,yes,,,,2026-04-04T02:18:08.478Z
 AHAMED,HASSAN,HMA Tax and Financial Services,CHULA VISTA,CA,HMATax.com,6194478002,EA,hmatax.com,undefined,valid,solo_brand,yes,,,,
 AKHAVAN,RAMIN,"Foumberg, Juneja, Rocher & Co., P.C.",ENCINO,CA,www.Foumbergco.com,(818) 774-2900,EA,foumbergco.com,rakhavan@foumbergco.com,valid,solo_brand,yes,,,,2026-04-04T02:18:08.478Z
-ALAMEDA,RACHEL,"Sallmann, Yang and Alameda",PLEASANTON,CA,www.syacpa.com,925-426-7744,EA,syacpa.com,rachel@syacpa.com,valid,solo_brand,yes,,,,
+ALAMEDA,RACHEL,"Sallmann, Yang and Alameda",PLEASANTON,CA,www.syacpa.com,925-426-7744,EA,syacpa.com,rachel@syacpa.com,valid,solo_brand,yes,,,,2026-04-04T03:18:10.882Z
 ALBA,JOHN,JOHN A ALBA dba H&R BLOCK,NORWALK,CA,hrblock.com,5628683518,EA,hrblock.com,,,national_firm,no,,,,
 ALBERTS,HOWARD,Alexander Hanson Inc.,WOODLAND HLS,CA,https://alexanderhansoninc.com,(818) 855-1619,EA,alexanderhansoninc.com,john.alba@hrblock.com,valid,local_firm,yes,,,,2026-04-04T02:18:08.478Z
 ALDERMAN,STEVEN,CalTax Accountants & Advisors,SANTA ROSA,CA,www.cal.tax,858-401-0027,EA,cal.tax,howard.alberts@alexanderhansoninc.com,valid,solo_brand,yes,,,,2026-04-04T02:18:08.478Z
-ALEMAN,CARLOS,ALEMAN & ASSOCIATES / TAX SOLUTIONS,SAN FRANCISCO,CA,www.taxsolutionshelp.com,(415) 239-4070,EA,taxsolutionshelp.com,steven.alderman@cal.tax,valid,local_firm,yes,,,,
+ALEMAN,CARLOS,ALEMAN & ASSOCIATES / TAX SOLUTIONS,SAN FRANCISCO,CA,www.taxsolutionshelp.com,(415) 239-4070,EA,taxsolutionshelp.com,steven.alderman@cal.tax,valid,local_firm,yes,,,,2026-04-04T03:18:10.882Z
 ALEMAN,IRIS,HCVT,LONG BEACH,CA,www.hcvt.com,,EA,hcvt.com,carlos@taxsolutionshelp.com,valid,solo_brand,yes,,,,2026-04-04T02:18:08.478Z
 ALEXANDER,CHRISTOPHER,"Alexander Hanson, Inc.",WOODLAND HLS,CA,AlexanderHansonInc.com,(818) 855-1619,EA,alexanderhansoninc.com,iris.aleman@hcvt.com,valid,local_firm,yes,,,,2026-04-04T02:18:08.478Z
 ALEXANDER,KARIN,PHC Accountancy,PLEASANT HILL,CA,www.phctax.com,(408) 888-1086,EA,phctax.com,chris.alexander@alexanderhansoninc.com,valid,solo_brand,yes,,,,2026-04-04T02:18:08.478Z
@@ -29,13 +29,13 @@ ALFANO,WILLIAM,"B&B Financial Group, Inc",LOS ANGELES,CA,https://bandbfinancialg
 ALFONSO VALLE,MARIA,ALFONSO TAX SERVICE,WALNUT CREEK,CA,https://www.alfonsotaxservice.com,(925) 300-5186,EA,alfonsotaxservice.com,balfano@bandbfinancialgroup.com,valid,solo_brand,yes,,,,2026-04-04T02:18:08.478Z
 ALI,ELRSAHEED,Golden Mangement Group Inc,CYPRESS,CA,www.arincometaxonline.com,714-243-7773,EA,arincometaxonline.com,undefined,valid,local_firm,yes,,,,
 ALI,SUZAN,"Suzan Z. Ali, MST, EA",ROCKLIN,CA,www.alisuzan.com,2095940119,EA,alisuzan.com,undefined,valid,solo_brand,yes,,,,
-ALLEN,BRYCE,"Rooled, Inc.",DANVILLE,CA,www.rooled.com,(408) 373-2333,EA,rooled.com,suzan@alisuzan.com,valid,local_firm,yes,,,,
-ALLEN,GRANT,"The Kaizen Group, LLP",RICHMOND,CA,www.thekaizengroup.com,5104174877,EA,thekaizengroup.com,ballen@rooled.com,valid,local_firm,yes,,,,
-ALLEN,KERRI,Root Financial Partners,Encinitas,CA,www.rootfinancial.com,(760) 452-0720,EA,rootfinancial.com,gallen@thekaizengroup.com,valid,local_firm,yes,,,,
+ALLEN,BRYCE,"Rooled, Inc.",DANVILLE,CA,www.rooled.com,(408) 373-2333,EA,rooled.com,suzan@alisuzan.com,valid,local_firm,yes,,,,2026-04-04T03:18:10.882Z
+ALLEN,GRANT,"The Kaizen Group, LLP",RICHMOND,CA,www.thekaizengroup.com,5104174877,EA,thekaizengroup.com,ballen@rooled.com,valid,local_firm,yes,,,,2026-04-04T03:47:21.366Z
+ALLEN,KERRI,Root Financial Partners,Encinitas,CA,www.rootfinancial.com,(760) 452-0720,EA,rootfinancial.com,gallen@thekaizengroup.com,valid,local_firm,yes,,,,2026-04-04T03:18:10.882Z
 ALLEN,MARK,"Axios Wealth Mgmt, DBA Allen Tax Plannin",FOLSOM,CA,www.allentaxes.com,(916) 932-0660,EA,allentaxes.com,kerri.allen@rootfinancialpartners.com,valid,solo_brand,yes,,,,2026-04-04T02:18:08.478Z
 ALLEN,TERRY,A&W Income Tax Service,YUCAIPA,CA,www.awtax.com,(909) 801-4874,EA,awtax.com,mark@allentaxes.com,valid,local_firm,yes,,,,2026-04-04T02:18:08.478Z
-ALMADA,OSCAR,"Tax & Financial, Inc.",CHULA VISTA,CA,www.taxnfinancial.biz,619-422-1044,EA,taxnfinancial.biz,tallen@awtax.com,valid,local_firm,yes,,,,
-ALTABEF,STEVEN,"Steven B Altabef, Inc",ENCINO,CA,www.sbataxman.com,310-452-3755,EA,sbataxman.com,oscar@taxnfinancial.biz,valid,local_firm,yes,,,,
+ALMADA,OSCAR,"Tax & Financial, Inc.",CHULA VISTA,CA,www.taxnfinancial.biz,619-422-1044,EA,taxnfinancial.biz,tallen@awtax.com,valid,local_firm,yes,,,,2026-04-04T03:18:10.882Z
+ALTABEF,STEVEN,"Steven B Altabef, Inc",ENCINO,CA,www.sbataxman.com,310-452-3755,EA,sbataxman.com,oscar@taxnfinancial.biz,valid,local_firm,yes,,,,2026-04-04T03:18:10.882Z
 ALTMAN,ELENA,James R Scoffin CPA,SAN DIEGO,CA,https://www.jrscpa.net,,EA,jrscpa.net,steve@sbataxman.com,valid,local_firm,yes,,,,2026-04-04T02:18:08.478Z
 ALVARADO,DAVID,Desert Accounting Solution,INDIO,CA,desertaccountingsolution.com,(760) 333-7548,EA,desertaccountingsolution.com,undefined,valid,solo_brand,yes,,,,
 ALVARADO,MARISA,Family Wealth & Tax Advisory Services,Irvine,CA,www.familywealthtax.com,(949) 266-7785,EA,familywealthtax.com,david@desertaccountingsolution.com,valid,solo_brand,yes,,,,2026-04-04T02:18:08.478Z
@@ -43,11 +43,11 @@ ALVAREZ VASQUEZ,GABRIELA,"Mowat, Mackie & Anderson LLP",OAKLAND,CA,www.mowat.com
 AMANN,KYLE,"Kyle Amann, EA",SANTA MONICA,CA,kyleamann.tax,9122562244,EA,kyleamann.tax,undefined,valid,solo_brand,yes,,,,
 AMARAL,SUSAN,Amaral Tax Group,MORGAN HILL,CA,www.atgmh.com,408 782-7020,EA,atgmh.com,samaral@atgmh.com,valid,local_firm,yes,,,,2026-04-04T02:18:08.478Z
 AMATA,MARLENE,Amata Accounting Inc.,BAKERSFIELD,CA,www.amataaccountingfirm.com,(310) 991-3801,EA,amataaccountingfirm.com,marlene@amataaccountingfirm.com,valid,local_firm,yes,,,,2026-04-04T02:18:08.478Z
-AMER,FAWAZ,"TBK Tax & Financial Services, Inc.",WOODLAND HLS,CA,www.tbktaxes.com,(818) 389-3316,EA,tbktaxes.com,amer@tbktaxes.com,valid,local_firm,yes,,,,
-AMES,GINGER,Whisper Financial,Cobb,CA,whisperfinancial.sh,5102163886,EA,whisperfinancial.sh,ginger@whisperfinancial.sh,valid,solo_brand,yes,,,,
+AMER,FAWAZ,"TBK Tax & Financial Services, Inc.",WOODLAND HLS,CA,www.tbktaxes.com,(818) 389-3316,EA,tbktaxes.com,amer@tbktaxes.com,valid,local_firm,yes,,,,2026-04-04T03:47:21.366Z
+AMES,GINGER,Whisper Financial,Cobb,CA,whisperfinancial.sh,5102163886,EA,whisperfinancial.sh,ginger@whisperfinancial.sh,valid,solo_brand,yes,,,,2026-04-04T03:47:21.366Z
 AMIN,BHAUMIK,"Tri-Check Income Tax Service, Inc",RCH CUCAMONGA,CA,www.ranchotax.com,(909) 981-4967,EA,ranchotax.com,bhaumik@ranchotax.com,valid,local_firm,yes,,,,2026-04-04T02:18:08.478Z
 AMORNVUT,CHARN,Protax Connect Inc,RCH CUCAMONGA,CA,protaxconnect.com,(800) 789-8969,EA,protaxconnect.com,charn@protaxconnect.com,valid,local_firm,yes,,,,2026-04-04T02:18:08.478Z
-ANASTAS,WILLIAM,"WILLIAM F. ANASTAS, EA, INC.",LOS ALAMITOS,CA,www.taxmanea.net,562-493-0324,EA,taxmanea.net,bill@taxmanea.net,valid,local_firm,yes,,,,
+ANASTAS,WILLIAM,"WILLIAM F. ANASTAS, EA, INC.",LOS ALAMITOS,CA,www.taxmanea.net,562-493-0324,EA,taxmanea.net,bill@taxmanea.net,valid,local_firm,yes,,,,2026-04-04T03:18:10.882Z
 ANAYA RENTERIA,JOSE,Optima Tax Relief LLC,Santa Ana,CA,optimataxrelief.com,(800) 536-0734,EA,optimataxrelief.com,josea@optimataxrelief.com,valid,solo_brand,yes,,,,2026-04-04T02:18:08.478Z
 ANDERSON,KIARA,ADAM ROSENBERG & COMPANY,ENCINITAS,CA,www.arrcpa.com,7607535528,EA,arrcpa.com,kiara@arrcpa.com,valid,solo_brand,yes,,,,2026-04-04T02:18:08.478Z
 ANDERSON,LARRY,LJ Anderson Tax Service,SAN FRANCISCO,CA,andersontax.com,4153870500,EA,andersontax.com,larry@andersontax.com,valid,solo_brand,yes,,,,2026-04-04T02:18:08.478Z
@@ -55,10 +55,10 @@ ANDERSON,LINDA,Anderson Tax & Bookkeeping Inc,CATHEDRAL CTY,CA,andersontaxinc.co
 ANDERSON,LORII,"Berger & Company, CPAs",TURLOCK,CA,bergerco.com,209-632-9938,EA,bergerco.com,lorii@bergerco.com,valid,local_firm,yes,,,,2026-04-04T02:18:08.478Z
 ANDERSON,ROBERT,Liberty Tax Service,CATHEDRAL CTY,CA,Libertytax.com,760-202-0240,EA,libertytax.com,anderson@libertytax.com,valid,solo_brand,yes,,,,2026-04-04T02:18:08.478Z
 ANDERSON,VANESSA,"Anderson, Lucas, Somerville & Borges, LL",FORTUNA,CA,www.alsb.com,7077254442,EA,alsb.com,vanessa@alsb.com,valid,solo_brand,yes,,,,2026-04-04T02:18:08.478Z
-ANDESHMAND,NABIL,Prestige Accounting Solutions,DUBLIN,CA,www.sfbaytax.com,9258759577,EA,sfbaytax.com,nabil@sfbaytax.com,valid,solo_brand,yes,,,,
+ANDESHMAND,NABIL,Prestige Accounting Solutions,DUBLIN,CA,www.sfbaytax.com,9258759577,EA,sfbaytax.com,nabil@sfbaytax.com,valid,solo_brand,yes,,,,2026-04-04T03:18:10.882Z
 ANDRIKOPOULOS,ANDREW,Andrikopoulos Chiochios Accountants LLP,PALO ALTO,CA,ajatax.com,6503229445,EA,ajatax.com,undefined,valid,local_firm,yes,,,,
 ANIEZE,QUEEN,QA ACCOUNTING SOLUTIONS,Winnetka,CA,qaaccounting.com,818-344-1100,EA,qaaccounting.com,queen@qaaccounting.com,valid,solo_brand,yes,,,,2026-04-04T02:18:08.478Z
-ANNE,ANAND,Tax Vista,FREMONT,CA,www.taxvista.com,(408) 480-0399,EA,taxvista.com,anand@taxvista.com,valid,solo_brand,yes,,,,
+ANNE,ANAND,Tax Vista,FREMONT,CA,www.taxvista.com,(408) 480-0399,EA,taxvista.com,anand@taxvista.com,valid,solo_brand,yes,,,,2026-04-04T03:18:10.882Z
 ANSPACH,GARY,"Anspach Financial Group, Inc.",SAN RAFAEL,CA,www.anspachfinacialgroup.com,415 457-5780,EA,anspachfinacialgroup.com,undefined,valid,local_firm,yes,,,,
 ANTONIO,ALEXANDRIA,AKA Taxes,WOODLAND HLS,CA,akataxes.com,(747) 283-4667,EA,akataxes.com,undefined,valid,solo_brand,yes,,,,
 ANTONIOUS,BOULES,"Antonious & Associates Tax Consultants, Inc.",EL SEGUNDO,CA,ANTONIOUSTAX.COM,3107402310,EA,antonioustax.com,undefined,valid,local_firm,yes,,,,
@@ -66,25 +66,25 @@ ARAGON,OPHELIA,"Aragon, Santillan & Associates, Inc",LONG BEACH,CA,asatax.com,56
 ARAUZ,HUMBERTO,Integrus One Ins Agency Inc. DBA Integri,RIVERSIDE,CA,www.integritytaxsolution.com,9512275694,EA,integritytaxsolution.com,humberto@integritytaxsolution.com,valid,local_firm,yes,,,,2026-04-04T02:18:08.478Z
 ARCADIA,KIMBERLI,"Arcadia Bookkeeping and Tax, Inc.",SHASTA LAKE,CA,arcadiabookkeeping.com,(530) 355-1298,EA,arcadiabookkeeping.com,undefined,valid,local_firm,yes,,,,
 ARDAGNA,NED,Ardagnas Tax & Bookkeeping,SAN DIEGO,CA,www.ardagnastax.com,6194589500,EA,ardagnastax.com,undefined,valid,solo_brand,yes,,,,
-ARELLANO,TERESA,SANTA ANA PROFESSIONAL SERVICES,SANTA ANA,CA,santaanaps.com,7142450050,EA,santaanaps.com,teresa@santaanaps.com,valid,solo_brand,yes,,,,
+ARELLANO,TERESA,SANTA ANA PROFESSIONAL SERVICES,SANTA ANA,CA,santaanaps.com,7142450050,EA,santaanaps.com,teresa@santaanaps.com,valid,solo_brand,yes,,,,2026-04-04T03:18:10.882Z
 ARETZ,DANIJELA,"Fine Form Accounting, Inc.",HUNTINGTN BCH,CA,www.fineformaccounting.com,7149682700,EA,fineformaccounting.com,danijela@fineformaccounting.com,valid,local_firm,yes,,,,2026-04-04T02:18:08.478Z
 ARMENTA,JOSE,Create Your Path,San Diego,CA,https://createyourpathfp.com,6194947722,EA,createyourpathfp.com,jarmenta@yourfederalemployeebenefits.com,valid,solo_brand,yes,,,,2026-04-04T02:18:08.478Z
-ARSULICH,STEVEN,Steve's Tax Consulting,La Mesa,CA,www.taxpreparationsandiego.net,6193019653,EA,taxpreparationsandiego.net,steve@taxpreparationsandiego.net,valid,solo_brand,yes,,,,
+ARSULICH,STEVEN,Steve's Tax Consulting,La Mesa,CA,www.taxpreparationsandiego.net,6193019653,EA,taxpreparationsandiego.net,steve@taxpreparationsandiego.net,valid,solo_brand,yes,,,,2026-04-04T03:18:10.882Z
 ARTEAGA,LAURIE,ELIAS INCOME TAX,FULLERTON,CA,WWW.ELIASINCOMETAX.COM,714-773-4000,EA,eliasincometax.com,laurie@arteagacorp.com,valid,local_firm,yes,,,,2026-04-04T02:18:08.478Z
 ARTIKOV,BEN,"Ben Artikov, Inc",STUDIO CITY,CA,www.benartikov.com,323-656-1255,EA,benartikov.com,ben@benartikov.com,valid,local_firm,yes,,,,2026-04-04T02:18:08.478Z
-ATIAS,MICHAEL,Trader Tax Advisors LLC,Costa Mesa,CA,www.tradertaxadvisors.com,(949) 892-9960,EA,tradertaxadvisors.com,michael@tradertaxadvisors.com,valid,solo_brand,yes,,,,
-ATOUT,NED,Tax PROS,CONCORD,CA,www.taxpros.net,(925) 689-1040,EA,taxpros.net,ned@taxpros.net,valid,solo_brand,yes,,,,
+ATIAS,MICHAEL,Trader Tax Advisors LLC,Costa Mesa,CA,www.tradertaxadvisors.com,(949) 892-9960,EA,tradertaxadvisors.com,michael@tradertaxadvisors.com,valid,solo_brand,yes,,,,2026-04-04T03:47:21.366Z
+ATOUT,NED,Tax PROS,CONCORD,CA,www.taxpros.net,(925) 689-1040,EA,taxpros.net,ned@taxpros.net,valid,solo_brand,yes,,,,2026-04-04T03:18:10.882Z
 AU,RAYMOND,Duty Services LLC,BEAUMONT,CA,www.chinoservices.com,(951) 999-1492,EA,chinoservices.com,undefined,valid,solo_brand,yes,,,,
 AUJLA,GURVINDER,Koelher CPA,SAN JOSE,CA,http://www.KoehlerCPA.com,5107897412,EA,koehlercpa.com,gurvinder@koehlercpa.com,valid,local_firm,yes,,,,2026-04-04T02:18:08.478Z
 AUSEJO,CARLOS,CARLOS A AUSEJO E A,SAN FRANCISCO,CA,ausejotaxes.com,415-239-6984,EA,ausejotaxes.com,carlos@ausejotaxes.com,valid,solo_brand,yes,,,,2026-04-04T02:18:08.478Z
-AUSTRIA-LOZOYA,MARQUIS,"ACCOUNTING & LEGAL NETWORK, INC.",SANTA ANA,CA,THEACCOUNTINGANDLEGALNETWORK.COM,949-825-6031,EA,theaccountingandlegalnetwork.com,marquis@accountingandlegalnetwork.com,valid,local_firm,yes,,,,
+AUSTRIA-LOZOYA,MARQUIS,"ACCOUNTING & LEGAL NETWORK, INC.",SANTA ANA,CA,THEACCOUNTINGANDLEGALNETWORK.COM,949-825-6031,EA,theaccountingandlegalnetwork.com,marquis@accountingandlegalnetwork.com,valid,local_firm,yes,,,,2026-04-04T03:47:21.366Z
 AVAGYAN,GARUSH,"AVAGYAN, INC. DBA: G & A ACCOUNTING SERV",BURBANK,CA,www.AvagyanTax.com,(818) 731-2107,EA,avagyantax.com,undefined,valid,local_firm,yes,,,,
-AVALOS,LOUIS,EFFECTIVE PLANNING,IRVINE,CA,www.taxplanningbyla.com,9498572302,EA,taxplanningbyla.com,louis@taxplanningbyla.com,valid,solo_brand,yes,,,,
+AVALOS,LOUIS,EFFECTIVE PLANNING,IRVINE,CA,www.taxplanningbyla.com,9498572302,EA,taxplanningbyla.com,louis@taxplanningbyla.com,valid,solo_brand,yes,,,,2026-04-04T03:18:10.882Z
 AVAZZADE,SULEYMAN,Avazgroup LLC,VACAVILLE,CA,avazgroup.com,7252494906,EA,avazgroup.com,undefined,valid,local_firm,yes,,,,
 AVEDISSIAN,ROBERT,"IT&B Services, Inc.",WOODLAND HLS,CA,www.itbtax.com,818-345-1999,EA,itbtax.com,robert@itbtax.com,valid,local_firm,yes,,,,2026-04-04T02:18:08.478Z
-AXELROD,STEVEN,Steven J Axelrod E.A.,SAN FRANCISCO,CA,www.stevenjaxelrod.com,415-864-1828,EA,stevenjaxelrod.com,steven@stevenjaxelrod.com,valid,solo_brand,yes,,,,
-AYALA,SIMON,"SIMON AYALA TAX CONSULTANT,INC",OXNARD,CA,SIMONAYALATAXCONSULTANT.COM,8053513759,EA,simonayalataxconsultant.com,simon@simonayalataxconsultant.com,valid,local_firm,yes,,,,
-AZIZI,REZA,EXCEL ACCOUNTING SERVICES,ENCINO,CA,TAXPROEA.COM,8189951020,EA,taxproea.com,reza@taxproea.com,valid,solo_brand,yes,,,,
+AXELROD,STEVEN,Steven J Axelrod E.A.,SAN FRANCISCO,CA,www.stevenjaxelrod.com,415-864-1828,EA,stevenjaxelrod.com,steven@stevenjaxelrod.com,valid,solo_brand,yes,,,,2026-04-04T03:18:10.882Z
+AYALA,SIMON,"SIMON AYALA TAX CONSULTANT,INC",OXNARD,CA,SIMONAYALATAXCONSULTANT.COM,8053513759,EA,simonayalataxconsultant.com,simon@simonayalataxconsultant.com,valid,local_firm,yes,,,,2026-04-04T03:18:10.882Z
+AZIZI,REZA,EXCEL ACCOUNTING SERVICES,ENCINO,CA,TAXPROEA.COM,8189951020,EA,taxproea.com,reza@taxproea.com,valid,solo_brand,yes,,,,2026-04-04T03:18:10.882Z
 Abbey,Nii-laaye,Nijan Group,INGLEWOOD,CA,www.nijangroup.com,5622770821,EA,nijangroup.com,niilaayeabbey@nijangroup.com,valid,local_firm,yes,,,,2026-04-04T02:18:08.478Z
 Abe,Miho,"Rivet Tax Services, LLC",SAN DIEGO,CA,www.rivetadvisos.com,(858) 252-2791,EA,rivetadvisos.com,undefined,valid,solo_brand,yes,,,,
 Abed,Gevik,ProBusiness Accounting & Tax Services,GLENDALE,CA,ProBusinessaccounting.com,8184461040,EA,probusinessaccounting.com,undefined,valid,solo_brand,yes,,,,
@@ -95,9 +95,9 @@ Adamian,Sergo,Bregante + Co,PLEASANTON,CA,www.bcocpa.com,925-416-0550,EA,bcocpa.
 Adams,Kelly,Kenneth and Co,SAN FRANCISCO,CA,https://kennethco.net,(925) 878-8778,EA,kennethco.net,kelly@kenneth.cpa,valid,solo_brand,yes,,,,2026-04-04T02:18:08.478Z
 Albarran,Priscilla,Magnus Blue LLP,San Marcos,CA,magnusblue.com,(760) 599-9900,EA,magnusblue.com,priscilla@magnusblue.com,valid,local_firm,yes,,,,2026-04-04T02:18:08.478Z
 Alcala,Celia,Lieb Cody & Company,TORRANCE,CA,liebcody.com,(310) 378-1248,EA,liebcody.com,celia@liebcody.com,valid,solo_brand,yes,,,,2026-04-04T02:18:08.478Z
-Alefi,Susan,"Tax Wise Pros, LLC",San Diego,CA,Taxwisepros.com,(925) 786-1490,EA,taxwisepros.com,susan@taxwisepros.com,valid,solo_brand,yes,,,,
+Alefi,Susan,"Tax Wise Pros, LLC",San Diego,CA,Taxwisepros.com,(925) 786-1490,EA,taxwisepros.com,susan@taxwisepros.com,valid,solo_brand,yes,,,,2026-04-04T03:18:10.882Z
 Alejo,Geoffrey,GML,Cerritos,CA,www.gmltax.com,3107951256,EA,gmltax.com,geoffrey@gmltax.com,valid,solo_brand,yes,,,,2026-04-04T02:18:08.478Z
-Aleksanyan,Ruben,X DIGIT,BURBANK,CA,www.xdigit.us,(424) 434-9414,EA,xdigit.us,ruben@xdigit.us,valid,solo_brand,yes,,,,
+Aleksanyan,Ruben,X DIGIT,BURBANK,CA,www.xdigit.us,(424) 434-9414,EA,xdigit.us,ruben@xdigit.us,valid,solo_brand,yes,,,,2026-04-04T03:47:21.366Z
 Alexander,Adrienne,H&R Block,El Cajon,CA,Hrblock.com,619-294-5889,EA,hrblock.com,,,national_firm,no,,,,
 Alfano,Benjamin,Benny Alfano Consulting,SAN DIEGO,CA,www.bennyalfano.com,813-244-3718,EA,bennyalfano.com,,,solo_brand,no,,,,
 Aliane,Lisa,grant thornton,san francisco,CA,https://www.grantthornton.com,(415) 986-3900,EA,grantthornton.com,,,national_firm,no,,,,
@@ -149,3 +149,68 @@ BAIRD,QUIN,QED Tax Service,ROSEVILLE,CA,www.qedtax.com,916-784-7686,EA,qedtax.co
 BAIZ,TRACIE,California Tax Boutique,SACRAMENTO,CA,www.DoesMyTaxes.com,408-568-9008,EA,doesmytaxes.com,,,solo_brand,no,,,,
 BAJAJ,GAURAV,"Life On Thrive, Inc",Irvine,CA,www.lifeonthrive.com,(562) 714-7660,EA,lifeonthrive.com,,,local_firm,no,,,,
 BALDWIN,TIMOTHY,Integrity Financial Services,CORONA,CA,www.integritytaxpro.com,951-897-3977,EA,integritytaxpro.com,,,solo_brand,no,,,,
+A BORRILLO,FRANCEEN,"Abbott, Stringham & Lynch",CAMPBELL,CA,www.aslcpa.com,(408) 377-8700,CPA,aslcpa.com,fborrillo@aslcpa.com,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+AALEN,Mohamed,MMA CPA INC,DECATUR,GA,MMACPAPRO.COM,(404) 567-6688,CPA,mmacpapro.com,mohamed@mmacpapro.com,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+AAMOT,BRETT,Conway Deuth & Schmiesing PLLP,WILLMAR,MN,www.cdscpa.com,3202353311,CPA,cdscpa.com,baamot@cdscpa.com,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+AARONSON,Dale,Greenspan and Aaronson,Vernon,CA,gacpa.com,3235858044,CPA,gacpa.com,dale@gacpa.com,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+AARONSON,MAXINE,"Maxine Aaronson, Attorney at Law",DALLAS,TX,www.federaltaxplanning.com,(214) 220-2050,ATTY,federaltaxplanning.com,maxine@federaltaxplanning.com,valid,solo_brand,,,,,2026-04-04T03:18:10.882Z
+AAS,MICHAEL,"Kanada, Aas & Company, PC",BEAVERTON,OR,kanadacpa.com,503-644-1191,CPA,kanadacpa.com,mike@kanadacpa.com,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+AASEBY,TERRY,"Terry V Aaseby, CPA, PLLC",Matthews,NC,www.aasebycpa.com,704-457-8557,CPA,aasebycpa.com,terry@aasebycpa.com,valid,solo_brand,,,,,2026-04-04T03:18:10.882Z
+AASMUNDSTAD,Robyn,Robyn Aasmundstad LLC,Clarkdale,AZ,www.guidedgrowthbusiness.com,7208375223,EA,guidedgrowthbusiness.com,robyn@guidedgrowthbusiness.com,valid,solo_brand,,,,,2026-04-04T03:18:10.882Z
+ABACI,George,Leo Berwick,New York,NY,www.leoberwick.com,(201) 887-2763,CPA,leoberwick.com,george.abaci@leoberwick.com,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+ABAD,ANDRES,Novogradac & Company LLP,Plantation,FL,www.novoco.com,(754) 285-3803,CPA,novoco.com,andres.abad@novoco.com,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+ABADER,Elaria,"Darnall, Sikes & Frederick",Lafayette,LA,https://www.dsfcpas.com,(337) 232-3312,CPA,dsfcpas.com,elariaa@dsfcpas.com,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+ABADER,MARIO,"EAG Gulf Coast, LLC",Lafayette,LA,https://www.eisneramper.com,(337) 234-8431,CPA,eisneramper.com,mario.abader@eisneramper.com,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+ABADIER,Adham,Catalyst CPA Corporation,Moreno Valley,CA,catalyst-cpa.com,(747) 240-1282,CPA,catalyst-cpa.com,adham@catalyst-cpa.com,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+ABALLAY,MARIELA,Unify CPAs,FORT COLLINS,CO,www.unifycpa.com,970-484-9655,CPA,unifycpa.com,maballay@unifycpa.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABALLI,ARTURO,"Aballi Milne Kalil, P.A.",KEY BISCAYNE,FL,www.aballi.com,305-372-5920,ATTY,aballi.com,aaballi@aballi.com,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+ABARE,WILLIAM,"ABARE, KRESGE & ASSOCIATES CPAS, LLC",ST AUGUSTINE,FL,www.abarekresgecpa.com,(904) 460-0747,CPA,abarekresgecpa.com,wabare@abarekresgecpa.com,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+ABARNO,GINA,Frankel Loughran Starr & Vallone,GARDEN CITY,NY,flsv.com,(516) 874-8805,EA,flsv.com,gina.abarno@flsv.com,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+ABASOLO,EPHRAIM,Wipfli LLP,LINCOLNSHIRE,IL,www.wipfli.com,847-509-7338,CPA,wipfli.com,eabasolo@wipfli.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABATI,CATHERINE,Frazier & Deeter LLC,Tampa,FL,www.frazierdeeter.com,813-559-6400,CPA,frazierdeeter.com,cathy.abati@frazierdeeter.com,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+ABBAS,SAAD,Snap Advisory Inc,San Jose,CA,www.SnapAdvisory.com,(760) 666-4336,CPA,snapadvisory.com,sabbas@snapadvisory.com,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+ABBAS,Syed jalal,Fintax Consultants LLC,Union City,NJ,www.fintaxconsul.com,(303) 921-3679,CPA,fintaxconsul.com,jalal@fintaxconsul.com,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+ABBASI,UMAIR,BlueSky Accounting LLC,LAKE CHARLES,LA,www.blueskyaccounting.us,(337) 210-3996,CPA,blueskyaccounting.us,uabbasi@blueskyaccounting.us,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+ABBATE,Anthony,ABBATE DEMARINIS LLP,WANTAGH,NY,ADLLP.US,516-745-6600,CPA,adllp.us,aabbate@adllp.us,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+ABBATE,SEAN,AbbateDemarinis LLP,WANTAGH,NY,www.adllp.us,5162614042,CPA,adllp.us,sabbate@adllp.us,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+ABBATTISTI,GREGORY,Lutz selig & zeronda CPAs LLP,LATHAM,NY,www.lutzseligzeronda.com,518-783-7200,CPA,lutzseligzeronda.com,gja@lcszcpa.com,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+ABBESS,PHILLIP,"Abbess Consulting, LLC",SEATTLE,WA,www.abbessconsulting.com,206-465-8283,CPA,abbessconsulting.com,phil@abbessconsulting.com,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+ABBO,Matthew,DA Advisory Group PLLC,TROY,MI,https://dacpas.com,,CPA,dacpas.com,matthew.abbo@dacpas.com,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+ABBONDANDOLO,ROCCO,Abbondandolo CPA PC,JERICHO,NY,www.abbondandolocpa.com,516-348-8312,CPA,abbondandolocpa.com,rocco@abbondandolocpa.com,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+ABBONDANDOLO,Vito,ABBONDANDOLO & COMPANY CPAs LLP,GLEN COVE,NY,www.glencovecpas.com,5166749229,CPA,glencovecpas.com,vito@glencovecpas.com,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+ABBONDONDELO,KEVIN,"Chizner & Company CPAs, LLC",GREAT NECK,NY,www.chizco.com,(212) 967-3950,CPA,chizco.com,kevin@chizco.com,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+ABBOTT,Beata,H A Beasley and Company PLLC,Murfreesboro,TN,https://habeasley.net,(615) 895-5675,EA,habeasley.net,babbott@habeasley.com,valid,local_firm,,,,,2026-04-04T03:18:10.882Z
+ABBOTT,CAROLINE,"Thomas, Judy, & Tucker, PA",RALEIGH,NC,tjtpa.com,9195717055,CPA,tjtpa.com,caroline.abbott@tjtpa.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABBOTT,CHRISTOPHER,"Christopher K. Abbott, CPA, PA",FUQUAY VARINA,NC,ckabbottcpa.com,(919) 618-9862,CPA,ckabbottcpa.com,chris@ckabbottcpa.com,valid,solo_brand,,,,,2026-04-04T03:47:21.366Z
+ABBOTT,DEBORAH,KENWOOD & ASSOCIATES P C,SUGAR LAND,TX,KENWOODPC.COM,(281) 243-2300,CPA,kenwoodpc.com,djabbott@kenwoodpc.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABBOTT,JOE,Abbott Livings Smith & Higgins PC,BIRMINGHAM,AL,www.alshcpa.com,(205) 803-0300,CPA,alshcpa.com,jabbott@alshcpa.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABBOTT,JOSEPH,Novogradac & Company LLP,SAN FRANCISCO,CA,novoco.com,(415) 356-7932,CPA,novoco.com,joe.abbott@novoco.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABBOTT,KATHLEEN,Brown and Abbott PC,CORAOPOLIS,PA,www.brownandabbott.com,(412) 264-2950,CPA,brownandabbott.com,kabbott@brownandabbott.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABBOTT,KEVIN,"ABBOTT COMPANY, LTD.",PHOENIX,AZ,acoabbott.com,(602) 224-9092,CPA,acoabbott.com,kevin@acoabbott.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABBOTT,MEGAN,Trajectory Tax,Denver,CO,www.trajectorytax.com,,EA,trajectorytax.com,megan@trajectorytax.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABBOTT,NICHOLE,Abbott Accounting CPA,SPRING LAKE,MI,www.abbottaccounting.com,,CPA,abbottaccounting.com,abbott@abbottaccounting.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABBOTT,STEVEN,Abbott CFO Solutions LLC,LUCAS,TX,www.abbottcfo.com,(469) 824-3700,CPA,abbottcfo.com,steven@abbottcfo.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABBOUD,Joe,Abboud Tax Law,Los Angeles,CA,AbboudTaxLaw.com,(310) 428-8982,ATTY,abboudtaxlaw.com,joe@abboudtaxlaw.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABDALLA,AMRO,"Amro Abbas, CPA",Laguna Beach,CA,www.cpasavings.com,(323) 691-7530,CPA,cpasavings.com,amro@cpasavings.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABDALLA,Jonathan,SEIBEL & KATZ CPA,CINCINNATI,OH,https://www.seibelkatzcpa.com,(513) 271-7835,CPA,seibelkatzcpa.com,jonathan@seibelkatzcpa.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABDALLAH,AMMER,"Ammer Abdallah CPA, LLC",Kingwood,TX,abdallahcpa.com,(281) 617-6021,CPA,abdallahcpa.com,ammerabdallah@asacpa.us,valid,solo_brand,,,,,2026-04-04T03:47:21.366Z
+ABDALLAH,JOSEPH,PSG CPAs,ROSEVILLE,CA,www.psgcpas.com,(916) 791-3120,CPA,psgcpas.com,joseph@psgcpas.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABDALLAH,Moses,MCA Tax Pro,FREDERICKSBRG,VA,mcataxpro.com,(540) 300-7620,EA,mcataxpro.com,moses@mcataxpro.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABDI,Abdullahi,Abdi CPA & Advisory Services,Minneapolis,MN,www.abdicpa.com,(612) 987-4769,CPA,abdicpa.com,abdullahi.abdi@abdicpa.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABDOLI-YAZDI,Roxanna,Latham & Watkins LLP,New York,NY,www.lw.com,(212) 906-1200,ATTY,lw.com,roxanna.abdoli@lw.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABDOU,JOSEPH,Prudence CPA Inc,LAGUNA HILLS,CA,www.prudencecpa.com,(949) 325-7797,CPA,prudencecpa.com,jabdou@prudencecpa.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABDUL KARIM,Umair,Umair AK CPA LLC,RICHMOND,TX,www.uakcpa.com,,CPA,uakcpa.com,ukarim@uakcpa.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABDUL-MAJEED,TARIQ,WENDROFF & ASSOCIATES LLC,ARLINGTON,VA,www.WENDROFFCPA.COM,(703) 553-1099,CPA,wendroffcpa.com,tmajeed@wendroffcpa.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABDULJABER,AFNAN,Taxwise CPA,ANN ARBOR,MI,www.thetaxwisecpa.com,(734) 972-5512,CPA,thetaxwisecpa.com,afnan@thetaxwisecpa.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABDULLAH,MIKAL,MAB Consulting Services LLC,PHILADELPHIA,PA,www.mabconsultingservices.com,(215) 549-3328,EA,mabconsultingservices.com,mikal@mabconsultingservices.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABEDIAN,EMIL,"Abedian & Totlian, An Accountancy Corporation",GLENDALE,CA,www.aandtcpas.com,(818) 243-3455,CPA,aandtcpas.com,emil@capatacpa.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABEDIN,ZANE,IWB & Co Certified Public Accountancy,MILL VALLEY,CA,iwbco.com,,CPA,iwbco.com,cpa@iwbco.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABEL,ROBERT,Brown Plus,CAMP HILL,PA,www.bssf.com,(717) 761-7171,CPA,bssf.com,robertabel@bssf.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABEL,TODD,Sikich LLC,STRONGSVILLE,OH,www.sikich.com,(440) 638-7412,CPA,sikich.com,todd.abel@sikich.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABELES,RONALD,Abeles and Hoffman P.C.,SAINT LOUIS,MO,www.ahcpa.com,(314) 991-4770,CPA,ahcpa.com,rona@ahcpa.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABELL,CHRISTOPHER,ABELL ADVISOR LLC,WEST CHESTER,PA,abelladvisors.com,(954) 263-2171,CPA,abelladvisors.com,christopher.abell@abelladvisors.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABELL,KATHY,"McCallum & Kudravetz, P.C.",CHARLOTTESVLE,VA,www.mkpc.com,(434) 293-8191,ATTY,mkpc.com,kabell@mkpc.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABELL,Stephanie,White And Company PSC,Lebanon,KY,www.whitecpas.com,(270) 692-2102,CPA,whitecpas.com,stephanie.abell@whitecpas.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABELL,WILLIAM,FLYNN ABELL NIXON LLC,BETHESDA,MD,www.flynncpas.com,(301) 951-1019,CPA,flynncpas.com,bill@flynncpas.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABELLA,Jesica,Abella Tax Services Inc.,Mountlake Terrace,WA,abellatax.com,(425) 743-9250,EA,abellatax.com,jabella@abellatax.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
+ABENDROTH,E AARON,Haynie & Company,SALT LAKE CTY,UT,www.hayniecpas.com,(801) 972-4800,CPA,hayniecpas.com,aarona@hayniecpas.com,valid,local_firm,,,,,2026-04-04T03:47:21.366Z
