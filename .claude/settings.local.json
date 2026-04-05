@@ -1,45 +1,50 @@
 {
   "permissions": {
     "allow": [
-<<<<<<< HEAD
-      "Read(/tmp/**)"
-    ]
-  },
-=======
       "Bash(npm install:*)",
-      "Read(//tmp/**)"
+      "Bash(npm run:*)",
+      "Bash(node:*)",
+      "Bash(npx:*)",
+      "Bash(mkdir:*)",
+      "Bash(copy:*)",
+      "Bash(move:*)",
+      "Bash(dir:*)",
+      "Bash(tree:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(cat:*)",
+      "Bash(type:*)",
+      "Bash(echo:*)",
+      "Bash(ls:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)",
+      "Read(**)"
     ]
   },
-  "model": "claude-sonnet-4-20250514",
->>>>>>> bf326c332e5e6078709488ba529af46480ddc565
   "autoApprove": [
     "Write",
     "Edit",
     "Create"
   ],
   "autoApprovePatterns": [
-<<<<<<< HEAD
+    ".claude/**",
+    "**/*.md",
+    "**/*.json",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.css",
     "**/*.html",
     "**/*.js",
-    "**/*.css",
-    ".claude/**"
-=======
-    "content/resources/**/*.json",
-    "components/**/*.tsx",
-    "lib/**/*.ts",
-    "app/**/*.tsx",
-    "app/**/*.ts"
->>>>>>> bf326c332e5e6078709488ba529af46480ddc565
+    "**/*.mjs"
   ],
   "deny": [
     "Bash(rm -rf *)",
+    "Bash(del /s *)",
     "Bash(curl *)",
-<<<<<<< HEAD
     "Bash(wget *)",
-    "Write(workers/**)"
-=======
-    "Bash(wget *)"
->>>>>>> bf326c332e5e6078709488ba529af46480ddc565
+    "Bash(wrangler deploy *)",
+    "Bash(wrangler publish *)"
   ],
-  "maxTurns": 20
+  "maxTurns": 30
 }

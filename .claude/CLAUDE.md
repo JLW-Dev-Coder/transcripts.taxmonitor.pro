@@ -349,3 +349,14 @@ R2 key: `vlp-scale/asset-pages/{slug}.json`
 |------|------|
 | VLP Worker | `C:\Users\britn\OneDrive\virtuallaunch.pro` |
 | TMP | `C:\Users\britn\OneDrive\taxmonitor.pro-site` |
+
+---
+
+## Post-Task Requirements
+
+After completing any task:
+1. Stage all changes: git add -A
+2. Commit with a descriptive message: git commit -m "[Phase/Area] description of changes"
+3. Report the commit hash in the task report
+
+Never leave uncommitted changes. Every task ends with a clean working tree.
