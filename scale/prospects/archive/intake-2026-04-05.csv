@@ -1,0 +1,43 @@
+LAST_NAME,First_NAME,FULL_NAME,DBA,BUS_ADDR_CITY,BUS_ST_CODE,WEBSITE,BUS_PHNE_NBR,PROFESSION,domain_clean,email_found,email_status,firm_bucket,clay_workbook_ref
+ACCURSO,DEBRA,DEBRA ACCURSO,"Accurso & Associates, PC",TROY,MI,aacpafirm.com,(248) 547-5400,CPA,aacpafirm.com,debra@aacpafirm.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACCURSO,JOSEPH,JOSEPH ACCURSO,"Joseph Accurso, Taxes",GLADSTONE,MO,www.jaccursotaxes.com,(816) 452-7187,EA,jaccursotaxes.com,jaccurso@jaccursotaxes.com,valid,solo_brand,wb_0td1dcfhzNTz63h6boC
+ACELLO,JOHN,JOHN ACELLO,"John Acello, CPA",East Nassau,NY,www.johnacellocpa.com,(646) 483-7036,CPA,johnacellocpa.com,john@johnacellocpa.com,valid,solo_brand,wb_0td1dcfhzNTz63h6boC
+ACETI,JENNIFER,JENNIFER ACETI,Chiampou Travis Besaw & Kershner,Amherst,NY,www.ctbk.com,(716) 630-2400,CPA,ctbk.com,jaceti@ctbk.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACETO,BENJAMIN,BENJAMIN ACETO,"Barrows Greenfield & Co, Inc",N PROVIDENCE,RI,Barrowscpa.com,(401) 383-7800,CPA,barrowscpa.com,ben@barrowscpa.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACEVEDO,JONATHAN,JONATHAN ACEVEDO,"Jon Acevedo, CPA, LLC",NASHVILLE,TN,jonacevedocpa.com,(629) 213-8737,CPA,jonacevedocpa.com,jon@jacevedocpa.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACEVEDO,KELLY,KELLY ACEVEDO,Nixon Peabody LLP,ROCHESTER,NY,www.nixonpeabody.com,(585) 263-1000,EA,nixonpeabody.com,kacevedo@nixonpeabody.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACEVEDO,RAFAEL,RAFAEL ACEVEDO,"RTA Financial Group, Inc.",HOBOKEN,NJ,www.rtaadvisors.com,(201) 869-7777,CPA,rtaadvisors.com,rafael@rtaadvisors.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACEVES,FERNIE,FERNIE ACEVES,FERNIE R. ACEVES CPA,EL PASO,TX,www.acevescpa.net,(915) 532-8833,CPA,acevescpa.net,fernie@acevescpa.net,valid,solo_brand,wb_0td1dcfhzNTz63h6boC
+ACHARYA,ASHISH,ASHISH ACHARYA,Investor Friendly CPA,Sarasota,FL,investorfriendlycpa.com,(678) 488-4297,CPA,investorfriendlycpa.com,ashish@investorfriendlycpa.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACHARYA,JIGNESH,JIGNESH ACHARYA,FOOTHILLS CPAS LLC,GREENVILLE,SC,www.FOOTHILLSCPAS.COM,(864) 297-8794,CPA,foothillscpas.com,jignesh@foothillscpas.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACHARYA,KULDEEPAK,KULDEEPAK ACHARYA,Anchin Block & Anchin LLP,NEW YORK,NY,www.anchin.com,(212) 840-3456,CPA,anchin.com,kuldeepak.acharya@anchin.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACHARYA,PALLAV,PALLAV ACHARYA,CPA Global Tax & Accounting PLLC,SCOTTSDALE,AZ,www.cpaglobaltax.com,(480) 889-8949,CPA,cpaglobaltax.com,pallava@cpaglobaltax.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACHEAMPONG,Barbara,Barbara Acheampong,Rhema Financial Services,CHELMSFORD,MA,www.rhemataxadvisors.com,(508) 762-6550,EA,rhemataxadvisors.com,a.barb@rhemataxadvisors.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACHESON,CLIFF,CLIFF ACHESON,"Sciarabba Walker & Co., LLP",ITHACA,NY,swcllp.com,(607) 272-5550,CPA,swcllp.com,cacheson@swcllp.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACHESON,DANIEL,DANIEL ACHESON,"Munn Tax Services, Ltd",MAUMEE,OH,www.munnwealth.com,(419) 794-0536,EA,munnwealth.com,danacheson@munnwealth.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACHESON,DEBRA,DEBRA ACHESON,Jefferson Wells,DENVER,CO,www.jeffersonwells.com,(303) 256-3150,CPA,jeffersonwells.com,debra.acheson@jeffersonwells.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACHTER,KATHERINE,KATHERINE ACHTER,"PKF O'Connor Davies Advisory, LLC",WOBURN,MA,PKFOD.com,(781) 937-5300,CPA,pkfod.com,kachter@pkfod.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACKEL,RICKEY,RICKEY ACKEL,"ANDERSEN TAX, LLC",SAN FRANCISCO,CA,andersen.com,(415) 764-2786,CPA,andersen.com,ar@andersen.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACKER,JOHN,JOHN ACKER,Convenient Tax Service LLC,NOVI,MI,www.convenienttax.com,(248) 871-7829,EA,convenienttax.com,john@convenienttax.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACKER,JOSEPH,JOSEPH ACKER,Centenal Tax Group,SACRAMENTO,CA,http://www.centenaltax.com,(510) 359-2625,EA,centenaltax.com,joseph.acker@centenaltax.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACKER,JULIE,JULIE ACKER,Acker Behl Accounting LLC,WAUKESHA,WI,ackerbehlaccounting.com,(262) 896-0888,CPA,ackerbehlaccounting.com,julie@ackerbehlcpa.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACKER,KENNETH,KENNETH ACKER,Xcalibur Consulting LLC,TAYLORSVILLE,UT,www.xcaliburconsulting.com,(801) 819-9559,CPA,xcaliburconsulting.com,kacker@xcaliburconsulting.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACKERLY,MARY,MARY ACKERLY,Murtha Cullina LLP,BANTAM,CT,www.murthalaw.com,(860) 567-0828,ATTY,murthalaw.com,mackerly@murthalaw.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACKERLY,MAUREEN,MAUREEN ACKERLY,Armstrong Bristow Farley & Schwarzschild,RICHMOND,VA,www.armstrongbristow.com,(804) 282-6170,ATTY,armstrongbristow.com,mackerly@armstrongbristow.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACKERLY,SHANNON,SHANNON ACKERLY,"Humes & Wagner, LLP",LOCUST VALLEY,NY,humeswagner.com,(516) 676-4600,ATTY,humeswagner.com,sackerly@humeswagner.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACKERMAN,Alyssa,Alyssa Ackerman,"Ackerman CPAs, LLC",LOUISVILLE,KY,ack.cpa,(502) 883-4070,CPA,ack.cpa,alyssa@ack.cpa,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACKERMAN,BERNARD,BERNARD ACKERMAN,"Bernard N. Ackerman, CPA, P.A.",ROCK HILL,SC,bnacpa.com,(803) 366-8371,CPA,bnacpa.com,bernie@bnacpa.com,valid,solo_brand,wb_0td1dcfhzNTz63h6boC
+ACKERMAN,CINDY,CINDY ACKERMAN,"MOSS & BARNETT, A PROFESSIONAL ASSOCIATI",MINNEAPOLIS,MN,www.lawmoss.com,(612) 877-5330,ATTY,lawmoss.com,cindy.ackerman@lawmoss.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACKERMAN,FREDERICK,FREDERICK ACKERMAN,"Anchin, Block & Anchin LLP",New York,NY,https://www.anchin.com,(212) 840-3456,CPA,anchin.com,fred.ackerman@anchin.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACKERMAN,JASON,JASON ACKERMAN,"Wagner, Ferber, Fine & Ackerman, PLLC",FLORAL PARK,NY,www.wffacpa.com,(516) 328-3800,CPA,wffacpa.com,jackerman@wffacpa.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACKERMAN,JONATHAN,JONATHAN ACKERMAN,"Law Office of Jonathan Ackerman, LLC",OWINGS MILLS,MD,www.ackermanlaw.net,(410) 363-1187,ATTY,ackermanlaw.net,jonathan@ackermanlaw.net,valid,solo_brand,wb_0td1dcfhzNTz63h6boC
+ACKERMAN,JUSTIN,JUSTIN ACKERMAN,Accounting Intelligence PBG,TEQUESTA,FL,www.acctiq.com,(561) 624-0522,EA,acctiq.com,justin@acctiq.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACKERMAN,Jason,Jason Ackerman,"Bernard N. Ackerman, CPA, P.A.",ROCK HILL,SC,bnacpa.com,(803) 366-8371,CPA,bnacpa.com,jason@bnacpa.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACKERMAN,John,John Ackerman,"Ackerman CPAs, LLC",LOUISVILLE,KY,ackcpas.com,(502) 883-4070,CPA,ackcpas.com,john@ackcpas.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACKERMAN,LEE,LEE ACKERMAN,"Brock and Company, CPAs, P.C.",FORT COLLINS,CO,brockcpas.com,(970) 223-7855,CPA,brockcpas.com,lackerman@brockcpas.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACKERMAN,SCOTT,SCOTT ACKERMAN,"WAGNER FERBER FINE & ACKERMAN, PLLC",FLORAL PARK,NY,wffacpa.com,(516) 328-3800,CPA,wffacpa.com,sackerman@wffacpa.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACKLES,JAIME,JAIME ACKLES,"TDT CPAs and Advisors, P.C.",MT PLEASANT,IA,www.tdtpc.com,,CPA,tdtpc.com,jaimea@tdtpc.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACKLEY,David,David Ackley,Frank Rimerman + Co LLP,Palo Alto,CA,https://www.frankrimerman.com,(650) 845-8100,CPA,frankrimerman.com,dackley@frankrimerman.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACKLEY,SUSAN,SUSAN ACKLEY,"Brown, Edwards & Company, L.L.P.",LYNCHBURG,VA,www.becpas.com,(434) 948-9000,CPA,becpas.com,sackley@becpas.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACKMANN,MATTHEW,MATTHEW ACKMANN,Reinhart Boerner Van Dueren s.c.,MILWAUKEE,WI,Reinhartlaw.com,(262) 951-4552,ATTY,reinhartlaw.com,mackmann@reinhartlaw.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
+ACOJIDO,DEBORAH,DEBORAH ACOJIDO,Fukuya Hasegawa Partners LLC,Honolulu,HI,fhpcpas.com,(808) 356-4806,CPA,fhpcpas.com,dacojido@fhpcpas.com,valid,local_firm,wb_0td1dcfhzNTz63h6boC
