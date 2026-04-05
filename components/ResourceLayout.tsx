@@ -2,6 +2,7 @@ import type { Resource } from '@/lib/types'
 import Link from 'next/link'
 import Sidebar from './Sidebar'
 import CTA from './CTA'
+import TaxpayerCTA from './TaxpayerCTA'
 import styles from './ResourceLayout.module.css'
 
 export default function ResourceLayout({
@@ -38,6 +39,7 @@ export default function ResourceLayout({
         )}
         <CTA type={resource.cta} variant="inline" />
         <div className={styles.content}>{children}</div>
+        <TaxpayerCTA />
         <CTA type={resource.cta} variant="post-content" />
       </main>
       <Sidebar resource={resource} />
