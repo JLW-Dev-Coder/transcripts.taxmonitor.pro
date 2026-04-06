@@ -90,14 +90,21 @@ function getCodeData(code: string) {
   }
 }
 
+function stripHeroHeader(html: string): string {
+  // Remove the embedded <header>…</header> block — ResourceLayout already
+  // renders breadcrumb, badge, title, description and CTAs.
+  return html.replace(/<!--\s*Hero\s*-->[\s\S]*?<\/header>\s*/i, '')
+}
+
 export default function IRSCodeTemplate({ data }: { data: Resource }) {
   const code = extractCodeNumber(data.slug)
   const codeData = getCodeData(code)
+  const cleanContent = data.content ? stripHeroHeader(data.content) : ''
 
   return (
     <ResourceLayout resource={data}>
-      {data.content && (
-        <div dangerouslySetInnerHTML={{ __html: data.content }} />
+      {cleanContent && (
+        <div dangerouslySetInnerHTML={{ __html: cleanContent }} />
       )}
 
       <h2>What Code {code} Means in Plain English</h2>

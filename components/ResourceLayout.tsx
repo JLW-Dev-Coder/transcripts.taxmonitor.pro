@@ -32,12 +32,30 @@ export default function ResourceLayout({
           )}
           <span className={styles.bcCurrent}>{resource.title}</span>
         </nav>
+        {resource.category === 'transaction-code' && (
+          <span className={styles.heroBadge}>
+            <span className={styles.heroBadgeBold}>IRS Transcript Codes</span>
+            <span className={styles.heroBadgeSep}>&middot;</span>
+            Built for 750,000+ U.S. Tax Professionals
+          </span>
+        )}
         <span className={styles.category}>{categoryLabel}</span>
         <h1 className={styles.title}>{resource.title}</h1>
         {resource.description && (
           <p className={styles.description}>{resource.description}</p>
         )}
-        <CTA type={resource.cta} variant="inline" />
+        {resource.category === 'transaction-code' ? (
+          <div className={styles.ctaRow}>
+            <button type="button" data-open-sample className={styles.ctaPrimary}>
+              Try the parser (requires credits)
+            </button>
+            <a href="/demo" className={styles.ctaSecondary}>
+              View sample report
+            </a>
+          </div>
+        ) : (
+          <CTA type={resource.cta} variant="inline" />
+        )}
         <div className={styles.content}>{children}</div>
         <TaxpayerCTA />
         <CTA type={resource.cta} variant="post-content" />
