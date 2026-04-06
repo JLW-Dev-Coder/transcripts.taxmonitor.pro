@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 
-const API = 'https://api.virtuallaunch.pro'
+const API = 'https://api.taxmonitor.pro'
 
 const CODE_DESC_CACHE: Record<string, string> = {}
 
@@ -578,10 +578,8 @@ function ReportInner() {
 
     async function load() {
       try {
-        const sessionId = sessionStorage.getItem('ttmp_session_id')
         const res = await fetch(`${API}/v1/transcripts/report/data?r=${reportId}`, {
           credentials: 'include',
-          headers: sessionId ? { 'Authorization': `Bearer ${sessionId}` } : {},
         })
         if (!res.ok) {
           const data = await res.json().catch(() => ({}))

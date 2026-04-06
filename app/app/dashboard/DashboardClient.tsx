@@ -6,7 +6,7 @@ import Link from 'next/link'
 import styles from './dashboard.module.css'
 import { getTokenBalance, getTokenPricing, purchaseTokens, type TokenPackage } from '@/lib/api'
 
-const WORKER_BASE = 'https://api.virtuallaunch.pro'
+const WORKER_BASE = 'https://api.taxmonitor.pro'
 const PDFJS_VERSION = '3.11.174'
 
 interface Session {
@@ -379,25 +379,14 @@ export default function DashboardClient() {
     const saved = localStorage.getItem('tm_brand_logo')
     if (saved) setLogoDataUrl(saved)
 
-    // Fetch session using Bearer token from sessionStorage
+    // Fetch session using cookie-based auth (.taxmonitor.pro cookie)
     ;(async () => {
-      const sessionId = sessionStorage.getItem('ttmp_session_id')
-      const email = sessionStorage.getItem('ttmp_email')
-
-      if (!sessionId) {
-        window.location.href = '/login/'
-        return
-      }
-
       try {
         const res = await fetch(`${WORKER_BASE}/v1/auth/session`, {
-          headers: { 'Authorization': `Bearer ${sessionId}` },
           credentials: 'include',
         })
 
         if (!res.ok) {
-          sessionStorage.removeItem('ttmp_session_id')
-          sessionStorage.removeItem('ttmp_email')
           window.location.href = '/login/'
           return
         }
@@ -406,7 +395,7 @@ export default function DashboardClient() {
         const sessionData = data.session || data
 
         const accountId = sessionData.account_id || ''
-        const userEmail  = sessionData.email || email || ''
+        const userEmail  = sessionData.email || ''
         const bal        = sessionData.transcript_tokens ?? sessionData.balance ?? 0
 
         setSession({
@@ -416,8 +405,6 @@ export default function DashboardClient() {
         })
         setBalance(bal)
       } catch {
-        sessionStorage.removeItem('ttmp_session_id')
-        sessionStorage.removeItem('ttmp_email')
         window.location.href = '/login/'
       } finally {
         setLoading(false)
@@ -432,15 +419,9 @@ export default function DashboardClient() {
   const handleRefreshBalance = async () => {
     if (!session?.tokenId) return
     try {
-      const sessionId = sessionStorage.getItem('ttmp_session_id')
       const tokenRes = await fetch(
         `${WORKER_BASE}/v1/tokens/balance/${session.tokenId}`,
-        {
-          headers: {
-            ...(sessionId ? { 'Authorization': `Bearer ${sessionId}` } : {}),
-          },
-          credentials: 'include',
-        }
+        { credentials: 'include' }
       )
       if (tokenRes.ok) {
         const tokenData = await tokenRes.json()
@@ -481,16 +462,10 @@ export default function DashboardClient() {
   }
 
   const handleSignOut = async () => {
-    const sessionId = sessionStorage.getItem('ttmp_session_id')
     await fetch(`${WORKER_BASE}/v1/auth/logout`, {
       method: 'POST',
-      headers: {
-        ...(sessionId ? { 'Authorization': `Bearer ${sessionId}` } : {}),
-      },
       credentials: 'include',
     })
-    sessionStorage.removeItem('ttmp_session_id')
-    sessionStorage.removeItem('ttmp_email')
     window.location.href = '/login/'
   }
 
@@ -1016,15 +991,11 @@ export default function DashboardClient() {
     if (!session || !jsonText) return
     setPreviewStatus('Saving report...')
 
-    const sessionId = sessionStorage.getItem('ttmp_session_id')
     const eventId = crypto.randomUUID()
 
     const res = await fetch(`${WORKER_BASE}/v1/transcripts/preview`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(sessionId ? { 'Authorization': `Bearer ${sessionId}` } : {}),
-      },
+      headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: JSON.stringify({
         event_id: eventId,
@@ -1052,13 +1023,9 @@ export default function DashboardClient() {
   const handleEmailReport = async () => {
     if (!session || !reportEventId || !reportUrl || !emailInput) return
     setEmailStatus('Sending...')
-    const sessionId = sessionStorage.getItem('ttmp_session_id')
     const res = await fetch(`${WORKER_BASE}/forms/transcript/report-email`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(sessionId ? { 'Authorization': `Bearer ${sessionId}` } : {}),
-      },
+      headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: JSON.stringify({ email: emailInput, eventId: reportEventId, reportUrl, tokenId: session.tokenId }),
     })
