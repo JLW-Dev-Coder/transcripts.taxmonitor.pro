@@ -16,27 +16,19 @@ export default function SupportClient() {
 
   useEffect(() => {
     ;(async () => {
-      const sessionId = sessionStorage.getItem('ttmp_session_id')
-      const email     = sessionStorage.getItem('ttmp_email')
-      if (!sessionId) { window.location.href = '/login/'; return }
       try {
-        const res  = await fetch(`${API}/v1/auth/session`, {
-          headers: { 'Authorization': `Bearer ${sessionId}` }, credentials: 'include',
-        })
+        const res  = await fetch(`${API}/v1/auth/session`, { credentials: 'include' })
         if (!res.ok) { window.location.href = '/login/'; return }
         const data = await res.json()
         const s    = data.session || data
-        setSession({ email: s.email || email || '', tokenId: s.account_id || '', balance: s.transcript_tokens ?? 0 })
+        setSession({ email: s.email || '', tokenId: s.account_id || '', balance: s.transcript_tokens ?? 0 })
       } catch { window.location.href = '/login/' }
       finally  { setLoading(false) }
     })()
   }, [])
 
   const handleSignOut = async () => {
-    const sessionId = sessionStorage.getItem('ttmp_session_id')
-    await fetch(`${API}/v1/auth/logout`, { method: 'POST', credentials: 'include', headers: sessionId ? { 'Authorization': `Bearer ${sessionId}` } : {} })
-    sessionStorage.removeItem('ttmp_session_id')
-    sessionStorage.removeItem('ttmp_email')
+    await fetch(`${API}/v1/auth/logout`, { method: 'POST', credentials: 'include' })
     window.location.href = '/login/'
   }
 
@@ -96,10 +88,9 @@ export default function SupportClient() {
                 e.preventDefault()
                 const form = e.currentTarget
                 const msg  = (form.elements.namedItem('message') as HTMLTextAreaElement).value
-                const sessionId = sessionStorage.getItem('ttmp_session_id')
                 await fetch(`${API}/v1/contact`, {
                   method: 'POST', credentials: 'include',
-                  headers: { 'Content-Type': 'application/json', ...(sessionId ? { 'Authorization': `Bearer ${sessionId}` } : {}) },
+                  headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({ message: msg, email: session?.email, source: 'ttmp-dashboard' }),
                 })
                 alert('Message sent. We will respond within 1 business day.')
