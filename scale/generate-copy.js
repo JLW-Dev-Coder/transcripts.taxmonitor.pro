@@ -173,7 +173,7 @@ function buildRecord(r) {
     revenue_opportunity: `${ts.revenue} in recovered billable time`,
     tool_preview_codes: ["971", "846", "570"],
     cta_pricing_url: "https://transcript.taxmonitor.pro/pricing",
-    cta_booking_url: `https://cal.com/vlp/ttmp-discovery?slug=${slug}`,
+    cta_booking_url: `https://cal.com/tax-monitor-pro/ttmp-discovery?slug=${slug}`,
     cta_learn_more_url: "https://transcript.taxmonitor.pro"
   };
 
@@ -194,7 +194,7 @@ And here's a quick practice analysis I put together for ${firmRef}:
 https://transcript.taxmonitor.pro/asset/${slug}
 
 If any of this lands, I'd be glad to show you a live analysis on a real transcript \u2014 15 minutes on Google Meet.
-https://cal.com/vlp/ttmp-discovery?slug=${slug}
+https://cal.com/tax-monitor-pro/ttmp-discovery?slug=${slug}
 
 \u2014
 Jamie L Williams, EA
@@ -214,7 +214,7 @@ https://transcript.taxmonitor.pro/asset/${slug}
 That's ${ts.annual} a year, or ${ts.revenue} in recovered revenue. Transcript Tax Monitor Pro turns each transcript into a plain-English report in seconds, for $19 per 10 analyses.
 
 If you'd like to see it in action on a real transcript, here's a 15-minute slot:
-https://cal.com/vlp/ttmp-discovery?slug=${slug}
+https://cal.com/tax-monitor-pro/ttmp-discovery?slug=${slug}
 
 Or check out pricing here:
 https://transcript.taxmonitor.pro/pricing

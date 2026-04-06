@@ -192,7 +192,7 @@ JSON with one object per prospect:
         "revenue_opportunity": "$27,300–$72,800/yr in recovered billable time",
         "tool_preview_codes": ["971", "846", "570"],
         "cta_pricing_url": "https://transcript.taxmonitor.pro/pricing",
-        "cta_booking_url": "https://cal.com/vlp/ttmp-discovery",
+        "cta_booking_url": "https://cal.com/tax-monitor-pro/ttmp-discovery",
         "cta_learn_more_url": "https://transcript.taxmonitor.pro"
       },
       "email_1": {

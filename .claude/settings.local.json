@@ -19,7 +19,11 @@
       "Bash(head:*)",
       "Bash(tail:*)",
       "Bash(wc:*)",
-      "Read(**)"
+      "Read(**)",
+      "Bash(git -C \"c:/Users/eimaj/transcript.taxmonitor.pro\" status)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\eimaj\\transcript.taxmonitor.pro\\.claude"
     ]
   },
   "autoApprove": [

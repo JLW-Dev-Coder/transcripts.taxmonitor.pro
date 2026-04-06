@@ -177,7 +177,7 @@ Dedup: append `-2`, `-3` on collision.
   "revenue_opportunity": "$34,800–$104,400/yr in recovered billable time",
   "tool_preview_codes": ["971", "846", "570"],
   "cta_pricing_url": "https://transcript.taxmonitor.pro/pricing",
-  "cta_booking_url": "https://cal.com/vlp/ttmp-discovery?slug={slug}",
+  "cta_booking_url": "https://cal.com/tax-monitor-pro/ttmp-discovery?slug={slug}",
   "cta_learn_more_url": "https://transcript.taxmonitor.pro"
 }
 ```
@@ -193,7 +193,7 @@ https://transcript.taxmonitor.pro/tools/code-lookup
 And here's a quick practice analysis I put together for {firm or city practice}:
 https://transcript.taxmonitor.pro/asset/{slug}
 If any of this lands, I'd be glad to show you a live analysis on a real transcript — 15 minutes on Google Meet.
-https://cal.com/vlp/ttmp-discovery?slug={slug}
+https://cal.com/tax-monitor-pro/ttmp-discovery?slug={slug}
 —
 Jamie L Williams
 Transcript Tax Monitor Pro

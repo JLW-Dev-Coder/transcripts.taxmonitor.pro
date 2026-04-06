@@ -97,7 +97,7 @@ node scale/push-prospect-index.js scale/batches/scale-batch-{YYYY-MM-DD}-{N}.jso
 |----------|-----|---------|
 | Hunter.io | hunter.io/campaigns | Email sending campaigns |
 | Stripe | dashboard.stripe.com | Payment processing |
-| Cal.com | cal.com/vlp | Discovery call scheduling |
+| Cal.com | cal.com/tax-monitor-pro | Discovery call scheduling |
 | Cloudflare | dash.cloudflare.com | Workers, R2, KV |
 | Gmail | mail.google.com | Outreach sending account |
 
