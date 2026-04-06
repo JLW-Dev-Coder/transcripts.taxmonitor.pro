@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import styles from '../dashboard/dashboard.module.css'
 
-const API = 'https://api.virtuallaunch.pro'
+const API = 'https://api.taxmonitor.pro'
 
 interface Session { email: string; tokenId: string; balance: number }
 

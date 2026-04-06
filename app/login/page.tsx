@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import styles from './page.module.css'
 
-const API = 'https://api.virtuallaunch.pro'
+const API = 'https://api.taxmonitor.pro'
 
 export default function LoginPage() {
   const [email, setEmail]       = useState('')
@@ -44,7 +44,7 @@ export default function LoginPage() {
 
   function handleGoogleSignIn() {
     const returnTo = encodeURIComponent('https://transcript.taxmonitor.pro/app/dashboard/')
-    window.location.href = `https://api.virtuallaunch.pro/v1/auth/google/start?return_to=${returnTo}`
+    window.location.href = `https://api.taxmonitor.pro/v1/auth/google/start?return_to=${returnTo}`
   }
 
   return (

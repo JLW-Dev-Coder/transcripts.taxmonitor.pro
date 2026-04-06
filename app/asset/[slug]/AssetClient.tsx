@@ -17,7 +17,7 @@ export default function AssetPageClient({ slug }: Props) {
   const [error, setError] = useState(false)
 
   useEffect(() => {
-    fetch(`https://api.virtuallaunch.pro/v1/scale/asset/${encodeURIComponent(slug)}`)
+    fetch(`https://api.taxmonitor.pro/v1/scale/asset/${encodeURIComponent(slug)}`)
       .then(res => {
         if (!res.ok) throw new Error('not found')
         return res.json()

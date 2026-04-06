@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import styles from '../dashboard/dashboard.module.css'
 
-const API = 'https://api.virtuallaunch.pro'
+const API = 'https://api.taxmonitor.pro'
 
 interface Session { email: string; tokenId: string; balance: number }
 
@@ -16,27 +16,19 @@ export default function CalendarClient() {
 
   useEffect(() => {
     ;(async () => {
-      const sessionId = sessionStorage.getItem('ttmp_session_id')
-      const email     = sessionStorage.getItem('ttmp_email')
-      if (!sessionId) { window.location.href = '/login/'; return }
       try {
-        const res  = await fetch(`${API}/v1/auth/session`, {
-          headers: { 'Authorization': `Bearer ${sessionId}` }, credentials: 'include',
-        })
+        const res  = await fetch(`${API}/v1/auth/session`, { credentials: 'include' })
         if (!res.ok) { window.location.href = '/login/'; return }
         const data = await res.json()
         const s    = data.session || data
-        setSession({ email: s.email || email || '', tokenId: s.account_id || '', balance: s.transcript_tokens ?? 0 })
+        setSession({ email: s.email || '', tokenId: s.account_id || '', balance: s.transcript_tokens ?? 0 })
       } catch { window.location.href = '/login/' }
       finally  { setLoading(false) }
     })()
   }, [])
 
   const handleSignOut = async () => {
-    const sessionId = sessionStorage.getItem('ttmp_session_id')
-    await fetch(`${API}/v1/auth/logout`, { method: 'POST', credentials: 'include', headers: sessionId ? { 'Authorization': `Bearer ${sessionId}` } : {} })
-    sessionStorage.removeItem('ttmp_session_id')
-    sessionStorage.removeItem('ttmp_email')
+    await fetch(`${API}/v1/auth/logout`, { method: 'POST', credentials: 'include' })
     window.location.href = '/login/'
   }
 

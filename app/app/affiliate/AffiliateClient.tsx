@@ -13,7 +13,7 @@ import {
   type AffiliateEvent,
 } from '@/lib/api'
 
-const API_BASE = 'https://api.virtuallaunch.pro'
+const API_BASE = 'https://api.taxmonitor.pro'
 
 interface Session {
   email: string

@@ -4,44 +4,16 @@ import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 
-const API = 'https://api.virtuallaunch.pro'
+const API = 'https://api.taxmonitor.pro'
 
 function CallbackInner() {
   const searchParams = useSearchParams()
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const token = searchParams.get('token')
-
-    if (!token) {
-      setError('Missing authentication token. Please try signing in again.')
-      return
-    }
-
-    async function exchange() {
-      try {
-        const res = await fetch(
-          `${API}/v1/auth/handoff/exchange?token=${encodeURIComponent(token!)}`,
-          { credentials: 'include' }
-        )
-
-        if (!res.ok) {
-          const data = await res.json().catch(() => ({}))
-          throw new Error(data?.error || `Auth failed (${res.status})`)
-        }
-
-        const data = await res.json()
-
-        sessionStorage.setItem('ttmp_session_id', data.sessionId)
-        sessionStorage.setItem('ttmp_email', data.email)
-
-        window.location.href = '/app/dashboard/'
-      } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : 'Authentication failed. Please try again.')
-      }
-    }
-
-    exchange()
+    // With api.taxmonitor.pro, the Worker sets a .taxmonitor.pro cookie directly.
+    // The callback redirect already has the cookie set — just go to dashboard.
+    window.location.href = '/app/dashboard/'
   }, [searchParams])
 
   if (error) {

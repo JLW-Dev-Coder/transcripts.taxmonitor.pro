@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 
 const R2_KEY = 'vlp-scale/prospects/master.csv';
-const API_BASE = 'https://api.virtuallaunch.pro';
+const API_BASE = 'https://api.taxmonitor.pro';
 const PROSPECTS_DIR = path.join(__dirname, 'prospects');
 
 function loadToken() {
