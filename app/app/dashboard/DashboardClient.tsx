@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import Link from 'next/link'
 
 import styles from './dashboard.module.css'
-import { getTokenBalance, getTokenPricing, purchaseTokens, type TokenPackage } from '@/lib/api'
+import { api, getTokenBalance, getTokenPricing, purchaseTokens, type TokenPackage } from '@/lib/api'
 
 const WORKER_BASE = 'https://api.taxmonitor.pro'
 const PDFJS_VERSION = '3.11.174'
@@ -380,36 +380,22 @@ export default function DashboardClient() {
     if (saved) setLogoDataUrl(saved)
 
     // Fetch session using cookie-based auth (.taxmonitor.pro cookie)
-    ;(async () => {
-      try {
-        const res = await fetch(`${WORKER_BASE}/v1/auth/session`, {
-          credentials: 'include',
-        })
-
-        if (!res.ok) {
+    api.getSession()
+      .then((res) => {
+        if (res.ok && res.session) {
+          const bal = res.session.transcript_tokens ?? 0
+          setSession({
+            email:   res.session.email,
+            tokenId: res.session.account_id,
+            balance: bal,
+          })
+          setBalance(bal)
+        } else {
           window.location.href = '/login/'
-          return
         }
-
-        const data = await res.json()
-        const sessionData = data.session || data
-
-        const accountId = sessionData.account_id || ''
-        const userEmail  = sessionData.email || ''
-        const bal        = sessionData.transcript_tokens ?? sessionData.balance ?? 0
-
-        setSession({
-          email:   userEmail,
-          tokenId: accountId,
-          balance: bal,
-        })
-        setBalance(bal)
-      } catch {
-        window.location.href = '/login/'
-      } finally {
-        setLoading(false)
-      }
-    })()
+      })
+      .catch(() => { window.location.href = '/login/' })
+      .finally(() => setLoading(false))
   }, [])
 
   useEffect(() => {
@@ -462,10 +448,7 @@ export default function DashboardClient() {
   }
 
   const handleSignOut = async () => {
-    await fetch(`${WORKER_BASE}/v1/auth/logout`, {
-      method: 'POST',
-      credentials: 'include',
-    })
+    await api.logout()
     window.location.href = '/login/'
   }
 

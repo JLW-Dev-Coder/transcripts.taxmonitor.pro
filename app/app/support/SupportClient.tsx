@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { api } from '@/lib/api'
 import styles from '../dashboard/dashboard.module.css'
 
 const API = 'https://api.taxmonitor.pro'
@@ -15,20 +16,20 @@ export default function SupportClient() {
   useEffect(() => { setPathname(window.location.pathname) }, [])
 
   useEffect(() => {
-    ;(async () => {
-      try {
-        const res  = await fetch(`${API}/v1/auth/session`, { credentials: 'include' })
-        if (!res.ok) { window.location.href = '/login/'; return }
-        const data = await res.json()
-        const s    = data.session || data
-        setSession({ email: s.email || '', tokenId: s.account_id || '', balance: s.transcript_tokens ?? 0 })
-      } catch { window.location.href = '/login/' }
-      finally  { setLoading(false) }
-    })()
+    api.getSession()
+      .then((res) => {
+        if (res.ok && res.session) {
+          setSession({ email: res.session.email, tokenId: res.session.account_id, balance: res.session.transcript_tokens ?? 0 })
+        } else {
+          window.location.href = '/login/'
+        }
+      })
+      .catch(() => { window.location.href = '/login/' })
+      .finally(() => setLoading(false))
   }, [])
 
   const handleSignOut = async () => {
-    await fetch(`${API}/v1/auth/logout`, { method: 'POST', credentials: 'include' })
+    await api.logout()
     window.location.href = '/login/'
   }
 

@@ -1,16 +1,29 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { api } from '@/lib/api'
 import styles from './page.module.css'
 
-const API = 'https://api.taxmonitor.pro'
+function LoginContent() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirect = searchParams.get('redirect') || '/app/dashboard/'
 
-export default function LoginPage() {
   const [email, setEmail]       = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [error, setError]       = useState<string | null>(null)
   const [loading, setLoading]   = useState(false)
+
+  useEffect(() => {
+    api
+      .getSession()
+      .then((res) => {
+        if (res.ok && res.session) router.replace(redirect)
+      })
+      .catch(() => {})
+  }, [router, redirect])
 
   async function handleMagicLink(e: React.FormEvent) {
     e.preventDefault()
@@ -19,21 +32,8 @@ export default function LoginPage() {
     setError(null)
 
     try {
-      const res = await fetch(`${API}/v1/auth/magic-link/request`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          redirectUri: 'https://transcript.taxmonitor.pro/app/dashboard/',
-        }),
-      })
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
-        throw new Error(data?.message || `Request failed (${res.status})`)
-      }
-
+      const fullRedirect = `https://transcript.taxmonitor.pro${redirect}`
+      await api.requestMagicLink(email.trim(), fullRedirect)
       setSubmitted(true)
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
@@ -43,7 +43,7 @@ export default function LoginPage() {
   }
 
   function handleGoogleSignIn() {
-    const returnTo = encodeURIComponent('https://transcript.taxmonitor.pro/app/dashboard/')
+    const returnTo = encodeURIComponent(`https://transcript.taxmonitor.pro${redirect}`)
     window.location.href = `https://api.taxmonitor.pro/v1/auth/google/start?return_to=${returnTo}`
   }
 
@@ -137,5 +137,13 @@ export default function LoginPage() {
 
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginContent />
+    </Suspense>
   )
 }

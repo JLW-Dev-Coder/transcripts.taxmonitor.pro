@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import styles from './affiliate.module.css'
 import {
+  api,
   getAffiliate,
   getAffiliateEvents,
   startAffiliateOnboarding,
@@ -12,8 +13,6 @@ import {
   type AffiliateData,
   type AffiliateEvent,
 } from '@/lib/api'
-
-const API_BASE = 'https://api.taxmonitor.pro'
 
 interface Session {
   email: string
@@ -39,12 +38,10 @@ export default function AffiliateClient() {
   useEffect(() => {
     ;(async () => {
       try {
-        const res = await fetch(`${API_BASE}/v1/auth/session`, { credentials: 'include' })
-        const data = await res.json()
-        if (res.ok && (data.ok || data.user)) {
-          const user = data.user ?? data
-          const account_id = user.account_id ?? user.tokenId ?? user.id ?? ''
-          setSession({ email: user.email, account_id })
+        const res = await api.getSession()
+        if (res.ok && res.session) {
+          const account_id = res.session.account_id
+          setSession({ email: res.session.email, account_id })
 
           setEventsLoading(true)
           const [affiliateData, eventsData] = await Promise.all([
@@ -104,8 +101,8 @@ export default function AffiliateClient() {
   }
 
   const handleSignOut = async () => {
-    await fetch(`${API_BASE}/v1/auth/logout`, { method: 'POST', credentials: 'include' })
-    router.replace('/login')
+    await api.logout()
+    router.replace('/login/')
   }
 
   const payoutDisabledBalance = !affiliate || affiliate.balance_pending < 1000
