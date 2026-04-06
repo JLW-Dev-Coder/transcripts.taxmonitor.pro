@@ -37,12 +37,12 @@ Free code lookup tool or asset page
 ↓
 Booking or pricing page
 ↓
-VLP Worker (api.virtuallaunch.pro) handles auth/billing
+VLP Worker (api.taxmonitor.pro) handles auth/billing
 
 **Frontend:** Next.js 14 (App Router), static generation only
 **Content:** `/content/resources/*.json` → rendered via template router
 **Outreach:** `scale/` directory → batch generation → VLP Worker cron sends
-**Backend:** All backend logic owned by `api.virtuallaunch.pro` — never modified in this repo
+**Backend:** All backend logic owned by `api.taxmonitor.pro` — never modified in this repo
 
 ---
 
@@ -193,7 +193,7 @@ node scale/push-email2-queue.js scale/batches/scale-batch-{YYYY-MM-DD}.json
 |--------|-----------|--------------|
 | VLP Worker | `C:\Users\britn\OneDrive\virtuallaunch.pro` | Owns all backend routes, auth, billing, cron |
 | TMP | `C:\Users\britn\OneDrive\taxmonitor.pro-site` | Sibling platform |
-| api.virtuallaunch.pro | Production Worker URL | Backend for all VLP platforms |
+| api.taxmonitor.pro | Production Worker URL | Backend for all VLP platforms |
 
 ---
 

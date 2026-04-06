@@ -9,7 +9,7 @@ Last updated: 2026-04-03
 **Product:** Transcript Tax Monitor Pro (TTMP)
 **Domain:** transcript.taxmonitor.pro
 **Stack:** Next.js · Tailwind CSS · Cloudflare Workers
-**Backend:** api.virtuallaunch.pro (VLP Worker) — no backend changes in this repo
+**Backend:** api.taxmonitor.pro (VLP Worker) — no backend changes in this repo
 
 ---
 
@@ -70,7 +70,7 @@ transcript.taxmonitor.pro/
 - Adapter: `@opennextjs/cloudflare` (OpenNext — Cloudflare's recommended adapter)
 - Incremental cache: KV-backed (`NEXT_INC_CACHE_KV` binding in `wrangler.toml`)
 - Worker name: `transcript-taxmonitor-pro`
-- No R2 or D1 bindings — all data fetched client-side from `api.virtuallaunch.pro`
+- No R2 or D1 bindings — all data fetched client-side from `api.taxmonitor.pro`
 - `@cloudflare/next-on-pages` is deprecated by Cloudflare — do not switch back to it
 
 ---
