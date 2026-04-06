@@ -205,7 +205,21 @@
 }
 
 /* Images */
-.content img, .content svg {
+.content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+}
+
+/* Inline icon SVGs (e.g. checkmarks, warnings in lists) */
+.content li svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+/* Block-level / standalone SVGs */
+.content > svg {
   max-width: 100%;
   height: auto;
   border-radius: var(--radius-md);
