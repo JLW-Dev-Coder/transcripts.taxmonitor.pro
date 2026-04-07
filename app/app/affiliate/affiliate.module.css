@@ -2,10 +2,10 @@
   display: flex;
   min-height: 100vh;
   background:
-    radial-gradient(circle at 14% 16%, rgba(139,92,246,0.16), transparent 22%),
-    radial-gradient(circle at 82% 10%, rgba(99,102,241,0.16), transparent 20%),
-    radial-gradient(circle at 50% 120%, rgba(76,29,149,0.18), transparent 34%),
-    linear-gradient(180deg, #020617 0%, #081121 34%, #0f172a 68%, #172554 100%);
+    radial-gradient(circle at 14% 16%, rgba(20,184,166,0.16), transparent 22%),
+    radial-gradient(circle at 82% 10%, rgba(45,212,191,0.16), transparent 20%),
+    radial-gradient(circle at 50% 120%, rgba(13,148,136,0.18), transparent 34%),
+    linear-gradient(180deg, #020617 0%, #081121 34%, #0f172a 68%, #042f2e 100%);
   color: #e2e8f0;
   font-family: var(--font-sans, system-ui, sans-serif);
 }
@@ -16,7 +16,7 @@
   background: linear-gradient(180deg,
     rgba(2,6,23,0.98) 0%,
     rgba(15,23,42,0.98) 46%,
-    rgba(49,46,129,0.94) 100%);
+    rgba(15,118,110,0.94) 100%);
   border-right: 1px solid rgba(255,255,255,0.08);
   display: flex;
   flex-direction: column;
@@ -44,7 +44,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
   font-weight: 800;
   font-size: 0.875rem;
   flex-shrink: 0;
@@ -69,7 +69,7 @@
 }
 
 .navLink:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.9); }
-.navLinkActive { background: rgba(139,92,246,0.18); color: #c4b5fd; }
+.navLinkActive { background: rgba(20,184,166,0.18); color: #5eead4; }
 
 .sidebarFooter {
   padding: 16px 12px 0;
@@ -100,8 +100,8 @@
 .topbar {
   backdrop-filter: blur(20px);
   background:
-    radial-gradient(circle at top left, rgba(139,92,246,0.14), transparent 32%),
-    radial-gradient(circle at top right, rgba(99,102,241,0.10), transparent 28%),
+    radial-gradient(circle at top left, rgba(20,184,166,0.14), transparent 32%),
+    radial-gradient(circle at top right, rgba(45,212,191,0.10), transparent 28%),
     linear-gradient(180deg, rgba(2,6,23,0.94) 0%, rgba(15,23,42,0.90) 100%);
   border-bottom: 1px solid rgba(255,255,255,0.08);
   position: sticky;
@@ -187,7 +187,7 @@
   font-size: 1.75rem;
   font-weight: 800;
   letter-spacing: -0.03em;
-  color: #c4b5fd;
+  color: #5eead4;
   margin: 0 0 4px;
 }
 
@@ -315,7 +315,7 @@
 
 /* ── Buttons ─────────────────────────────────────────── */
 .btnPrimary {
-  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
   border: 0;
   border-radius: 10px;
   color: #fff;

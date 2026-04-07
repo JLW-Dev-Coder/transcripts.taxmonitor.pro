@@ -18,7 +18,10 @@ export default function Sidebar({ resource }: { resource: Resource }) {
             {resource.related.map(slug => (
               <li key={slug}>
                 <Link href={`/resources/${slug}/`} className={styles.link}>
-                  {slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+                  {slug
+                    .replace(/-/g, ' ')
+                    .replace(/\b\w/g, c => c.toUpperCase())
+                    .replace(/\bIrs\b/g, 'IRS')}
                 </Link>
               </li>
             ))}

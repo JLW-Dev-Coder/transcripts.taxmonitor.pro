@@ -4,14 +4,34 @@ import Link from 'next/link'
 import { api } from '@/lib/api'
 import styles from '../dashboard/dashboard.module.css'
 
-const API = 'https://api.taxmonitor.pro'
-
 interface Session { email: string; tokenId: string; balance: number }
 
 export default function SupportClient() {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading]  = useState(true)
   const [pathname, setPathname] = useState('')
+  const [subject, setSubject] = useState('')
+  const [message, setMessage] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState('')
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!subject.trim() || !message.trim()) return
+    setSubmitting(true)
+    setError('')
+    try {
+      await api.createTicket({ subject: subject.trim(), message: message.trim() })
+      setSubmitted(true)
+      setSubject('')
+      setMessage('')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
   useEffect(() => { setPathname(window.location.pathname) }, [])
 
@@ -84,23 +104,37 @@ export default function SupportClient() {
             </div>
 
             <div style={{ background: '#0a0f1e', border: '1px solid #1a2235', borderRadius: 10, padding: '1.5rem' }}>
-              <p style={{ fontSize: 14, fontWeight: 600, color: '#f9fafb', marginBottom: '1rem' }}>Send a Message</p>
-              <form onSubmit={async (e) => {
-                e.preventDefault()
-                const form = e.currentTarget
-                const msg  = (form.elements.namedItem('message') as HTMLTextAreaElement).value
-                await fetch(`${API}/v1/contact`, {
-                  method: 'POST', credentials: 'include',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ message: msg, email: session?.email, source: 'ttmp-dashboard' }),
-                })
-                alert('Message sent. We will respond within 1 business day.')
-                form.reset()
-              }}>
-                <textarea name="message" placeholder="Describe your issue..." required
-                  style={{ width: '100%', background: '#111827', border: '1px solid #1a2235', borderRadius: 8, padding: '10px 12px', fontSize: 13, color: '#f9fafb', fontFamily: 'inherit', minHeight: 100, resize: 'vertical', outline: 'none', boxSizing: 'border-box' as const, marginBottom: 10 }} />
-                <button type="submit" className={styles.btnPrimary} style={{ fontSize: 13 }}>Send Message</button>
-              </form>
+              <p style={{ fontSize: 14, fontWeight: 600, color: '#f9fafb', marginBottom: '1rem' }}>Submit a Support Ticket</p>
+              {submitted ? (
+                <div style={{ background: 'rgba(20,184,166,0.1)', border: '1px solid rgba(20,184,166,0.3)', borderRadius: 8, padding: '12px 14px', fontSize: 13, color: '#5eead4' }}>
+                  Your ticket has been submitted. We&apos;ll respond within 1 business day.{' '}
+                  <button type="button" onClick={() => setSubmitted(false)} style={{ background: 'transparent', border: 0, color: '#5eead4', textDecoration: 'underline', cursor: 'pointer', fontSize: 13, padding: 0, marginLeft: 4 }}>Send another</button>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit}>
+                  {error && (
+                    <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 8, padding: '10px 12px', fontSize: 13, color: '#fca5a5', marginBottom: 10 }}>{error}</div>
+                  )}
+                  <input
+                    type="text"
+                    placeholder="Subject"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    required
+                    style={{ width: '100%', background: '#111827', border: '1px solid #1a2235', borderRadius: 8, padding: '10px 12px', fontSize: 13, color: '#f9fafb', fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box', marginBottom: 10 }}
+                  />
+                  <textarea
+                    placeholder="Describe your issue..."
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    required
+                    style={{ width: '100%', background: '#111827', border: '1px solid #1a2235', borderRadius: 8, padding: '10px 12px', fontSize: 13, color: '#f9fafb', fontFamily: 'inherit', minHeight: 100, resize: 'vertical', outline: 'none', boxSizing: 'border-box', marginBottom: 10 }}
+                  />
+                  <button type="submit" disabled={submitting} className={styles.btnPrimary} style={{ fontSize: 13 }}>
+                    {submitting ? 'Submitting...' : 'Submit ticket'}
+                  </button>
+                </form>
+              )}
             </div>
           </div>
         </main>

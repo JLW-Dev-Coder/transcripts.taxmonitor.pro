@@ -140,6 +140,13 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ price_id }),
     }),
+
+  // Support
+  createTicket: (data: { subject: string; message: string; priority?: string }) =>
+    apiFetch('/v1/support/tickets', {
+      method: 'POST',
+      body: JSON.stringify({ ...data, platform: 'ttmp' }),
+    }),
 }
 
 // Named exports for backward compatibility
