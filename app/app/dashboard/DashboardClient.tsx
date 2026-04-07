@@ -358,6 +358,7 @@ export default function DashboardClient() {
   const [modalError, setModalError] = useState('')
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [pathname, setPathname] = useState('')
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   const pdfjsRef = useRef<any>(null)
   const pdfFileRef = useRef<File | null>(null)
@@ -1091,8 +1092,9 @@ export default function DashboardClient() {
   return (
     <div className={styles.appShell}>
 
+      {mobileNavOpen && <div className={styles.sidebarOverlay} onClick={() => setMobileNavOpen(false)} />}
       {/* Sidebar */}
-      <aside className={`${styles.sidebar} ${sidebarCollapsed ? styles.sidebarCollapsed : ''}`}>
+      <aside className={`${styles.sidebar} ${sidebarCollapsed ? styles.sidebarCollapsed : ''} ${mobileNavOpen ? styles.sidebarMobileOpen : ''}`}>
 
         {/* Brand */}
         <div className={styles.sidebarBrand}>
@@ -1184,6 +1186,7 @@ export default function DashboardClient() {
           title="Dashboard"
           email={session?.email}
           onSignOut={handleSignOut}
+          onMenuClick={() => setMobileNavOpen(true)}
           rightExtra={
             <>
               <div className={`${styles.tokenPill} ${balance > 0 ? styles.tokenPillGreen : styles.tokenPillAmber}`}>

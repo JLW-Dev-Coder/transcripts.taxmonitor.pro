@@ -19,6 +19,7 @@ export default function ReportsClient() {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading]  = useState(true)
   const [pathname, setPathname] = useState('')
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [reports, setReports] = useState<SavedReport[]>([])
   const [reportsLoading, setReportsLoading] = useState(true)
   const [reportsError, setReportsError] = useState<string | null>(null)
@@ -69,7 +70,8 @@ export default function ReportsClient() {
 
   return (
     <div className={styles.appShell}>
-      <aside className={styles.sidebar}>
+      {mobileNavOpen && <div className={styles.sidebarOverlay} onClick={() => setMobileNavOpen(false)} />}
+      <aside className={`${styles.sidebar} ${mobileNavOpen ? styles.sidebarMobileOpen : ''}`}>
         <div className={styles.sidebarBrand}>
           <span className={styles.brandMark}>TT</span>
           <div><div className={styles.brandName}>Transcript Tax Monitor</div><div className={styles.brandSub}>Dashboard</div></div>
@@ -88,6 +90,7 @@ export default function ReportsClient() {
       <div className={styles.mainShell}>
         <AppTopbar
           title="Reports"
+          onMenuClick={() => setMobileNavOpen(true)}
           email={session?.email}
           onSignOut={handleSignOut}
           rightExtra={

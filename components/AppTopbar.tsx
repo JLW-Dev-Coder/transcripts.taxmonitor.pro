@@ -9,9 +9,10 @@ interface AppTopbarProps {
   email?: string | null
   onSignOut?: () => void | Promise<void>
   rightExtra?: ReactNode
+  onMenuClick?: () => void
 }
 
-export default function AppTopbar({ title, email, onSignOut, rightExtra }: AppTopbarProps) {
+export default function AppTopbar({ title, email, onSignOut, rightExtra, onMenuClick }: AppTopbarProps) {
   const [open, setOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
@@ -30,6 +31,20 @@ export default function AppTopbar({ title, email, onSignOut, rightExtra }: AppTo
   return (
     <header className={styles.topbar}>
       <div className={styles.left}>
+        {onMenuClick && (
+          <button
+            type="button"
+            onClick={onMenuClick}
+            className={styles.menuBtn}
+            aria-label="Open navigation menu"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+        )}
         <span className={styles.brandMark}>TT</span>
         <span className={styles.brandText}>TTMP</span>
         <span className={styles.sep}>/</span>

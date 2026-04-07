@@ -946,9 +946,44 @@
   margin-bottom: 16px;
 }
 
+.sidebarOverlay { display: none; }
+.mobileMenuBtn { display: none; }
+
 @media (max-width: 768px) {
-  .appShell { flex-direction: column; }
-  .sidebar { width: 100% !important; height: auto; position: relative; }
+  .appShell { flex-direction: row; }
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100vh;
+    width: 260px !important;
+    transform: translateX(-100%);
+    transition: transform 220ms ease;
+    z-index: 100;
+  }
+  .sidebarMobileOpen { transform: translateX(0) !important; }
+  .sidebarOverlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 99;
+  }
+  .mobileMenuBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: transparent;
+    border: 1px solid #1e2a3a;
+    color: #94a3b8;
+    cursor: pointer;
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
   .parserOutputGrid { grid-template-columns: 1fr; }
   .panelGrid { grid-template-columns: 1fr; }
   .packageGrid { grid-template-columns: 1fr; }

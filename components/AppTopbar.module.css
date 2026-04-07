@@ -21,6 +21,30 @@
   min-width: 0;
 }
 
+.menuBtn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid #1e2a3a;
+  color: #94a3b8;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.menuBtn:hover {
+  border-color: rgba(20, 184, 166, 0.4);
+  color: #14b8a6;
+}
+
+@media (max-width: 768px) {
+  .menuBtn { display: inline-flex; }
+}
+
 .brandMark {
   display: inline-flex;
   align-items: center;

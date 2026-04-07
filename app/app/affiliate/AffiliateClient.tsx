@@ -35,6 +35,7 @@ export default function AffiliateClient() {
   const [payoutError, setPayoutError] = useState('')
   const [onboardLoading, setOnboardLoading] = useState(false)
   const [showTooltip, setShowTooltip] = useState(false)
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   useEffect(() => {
     ;(async () => {
@@ -122,8 +123,9 @@ export default function AffiliateClient() {
 
   return (
     <div className={styles.appShell}>
+      {mobileNavOpen && <div className={styles.sidebarOverlay} onClick={() => setMobileNavOpen(false)} />}
       {/* Sidebar */}
-      <aside className={styles.sidebar}>
+      <aside className={`${styles.sidebar} ${mobileNavOpen ? styles.sidebarMobileOpen : ''}`}>
         <div className={styles.sidebarBrand}>
           <span className={styles.brandMark}>TM</span>
           <div>
@@ -156,6 +158,7 @@ export default function AffiliateClient() {
           title="Affiliate"
           email={session?.email}
           onSignOut={handleSignOut}
+          onMenuClick={() => setMobileNavOpen(true)}
         />
 
         <main className={styles.content}>

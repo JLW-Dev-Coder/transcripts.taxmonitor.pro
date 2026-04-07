@@ -11,6 +11,7 @@ export default function ReceiptsClient() {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading]  = useState(true)
   const [pathname, setPathname] = useState('')
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   useEffect(() => { setPathname(window.location.pathname) }, [])
 
@@ -36,7 +37,8 @@ export default function ReceiptsClient() {
 
   return (
     <div className={styles.appShell}>
-      <aside className={styles.sidebar}>
+      {mobileNavOpen && <div className={styles.sidebarOverlay} onClick={() => setMobileNavOpen(false)} />}
+      <aside className={`${styles.sidebar} ${mobileNavOpen ? styles.sidebarMobileOpen : ''}`}>
         <div className={styles.sidebarBrand}>
           <span className={styles.brandMark}>TT</span>
           <div><div className={styles.brandName}>Transcript Tax Monitor</div><div className={styles.brandSub}>Dashboard</div></div>
@@ -57,6 +59,7 @@ export default function ReceiptsClient() {
           title="Receipts"
           email={session?.email}
           onSignOut={handleSignOut}
+          onMenuClick={() => setMobileNavOpen(true)}
           rightExtra={
             <span className={`${styles.tokenBadge} ${session && session.balance > 0 ? styles.tokenBadgeGreen : styles.tokenBadgeAmber}`}>
               {session?.balance ?? 0} tokens
