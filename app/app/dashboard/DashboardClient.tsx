@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import Link from 'next/link'
 
+import AppTopbar from '@/components/AppTopbar'
 import styles from './dashboard.module.css'
 import { api, getTokenBalance, getTokenPricing, purchaseTokens, type TokenPackage } from '@/lib/api'
 
@@ -1179,25 +1180,25 @@ export default function DashboardClient() {
       <div className={styles.mainShell}>
 
         {/* Topbar */}
-        <header className={styles.topbar}>
-          <div className={styles.topbarLeft}>
-            <span className={styles.breadcrumbHome}>TTMP</span>
-            <span className={styles.breadcrumbSep}>/</span>
-            <span className={styles.breadcrumbPage}>Dashboard</span>
-          </div>
-          <div className={styles.topbarRight}>
-            <div className={`${styles.tokenPill} ${balance > 0 ? styles.tokenPillGreen : styles.tokenPillAmber}`}>
-              <span className={styles.tokenDot} />
-              {balance} token{balance !== 1 ? 's' : ''}
-            </div>
-            <button type="button" onClick={handleRefreshBalance} className={styles.btnSmall}>
-              Refresh
-            </button>
-            <button type="button" onClick={handleOpenPurchaseModal} className={styles.btnPrimary}>
-              Buy Tokens
-            </button>
-          </div>
-        </header>
+        <AppTopbar
+          title="Dashboard"
+          email={session?.email}
+          onSignOut={handleSignOut}
+          rightExtra={
+            <>
+              <div className={`${styles.tokenPill} ${balance > 0 ? styles.tokenPillGreen : styles.tokenPillAmber}`}>
+                <span className={styles.tokenDot} />
+                {balance} token{balance !== 1 ? 's' : ''}
+              </div>
+              <button type="button" onClick={handleRefreshBalance} className={styles.btnSmall}>
+                Refresh
+              </button>
+              <button type="button" onClick={handleOpenPurchaseModal} className={styles.btnPrimary}>
+                Buy Tokens
+              </button>
+            </>
+          }
+        />
 
         {/* Content */}
         <main className={styles.workspaceContent}>

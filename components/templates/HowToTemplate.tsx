@@ -12,7 +12,7 @@ export default function HowToTemplate({ data }: { data: Resource }) {
         color: '#f9fafb',
         margin: '2rem 0 0.75rem',
         paddingTop: '2rem',
-        borderTop: '1px solid #f59e0b',
+        borderTop: '1px solid #14b8a6',
       }}>
         Automate This Process
       </h2>
@@ -28,8 +28,8 @@ export default function HowToTemplate({ data }: { data: Resource }) {
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: '1rem',
-        background: 'rgba(245,158,11,0.07)',
-        border: '1px solid rgba(245,158,11,0.25)',
+        background: 'rgba(20,184,166,0.07)',
+        border: '1px solid rgba(20,184,166,0.25)',
         borderRadius: 10,
         padding: '0.875rem 1.125rem',
         marginTop: '0.5rem',
@@ -39,7 +39,7 @@ export default function HowToTemplate({ data }: { data: Resource }) {
           Skip the manual steps — parse in seconds
         </span>
         <a href="/login" style={{
-          background: '#f59e0b',
+          background: '#14b8a6',
           color: '#000',
           fontSize: '0.8125rem',
           fontWeight: 700,

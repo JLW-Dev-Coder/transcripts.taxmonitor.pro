@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { api } from '@/lib/api'
+import AppTopbar from '@/components/AppTopbar'
 import styles from '../dashboard/dashboard.module.css'
 
 interface Session { email: string; tokenId: string; balance: number }
@@ -74,17 +75,16 @@ export default function SupportClient() {
         </div>
       </aside>
       <div className={styles.mainShell}>
-        <header className={styles.topbar}>
-          <div className={styles.topbarLeft}>
-            <span className={styles.topbarTitle}>Support</span>
-            {session && <span className={styles.topbarEmail}>{session.email}</span>}
-          </div>
-          <div className={styles.topbarRight}>
+        <AppTopbar
+          title="Support"
+          email={session?.email}
+          onSignOut={handleSignOut}
+          rightExtra={
             <span className={`${styles.tokenBadge} ${session && session.balance > 0 ? styles.tokenBadgeGreen : styles.tokenBadgeAmber}`}>
               {session?.balance ?? 0} tokens
             </span>
-          </div>
-        </header>
+          }
+        />
         <main className={styles.workspaceContent}>
           <div className={styles.parserCard} style={{ padding: '2rem' }}>
             <p className={styles.outputCardTitle} style={{ marginBottom: '0.5rem' }}>Support</p>

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import AppTopbar from '@/components/AppTopbar'
 import styles from './affiliate.module.css'
 import {
   api,
@@ -151,12 +152,11 @@ export default function AffiliateClient() {
 
       {/* Main shell */}
       <div className={styles.mainShell}>
-        <header className={styles.topbar}>
-          <div className={styles.topbarLeft}>
-            <span className={styles.topbarTitle}>Affiliate</span>
-            {session && <span className={styles.topbarEmail}>{session.email}</span>}
-          </div>
-        </header>
+        <AppTopbar
+          title="Affiliate"
+          email={session?.email}
+          onSignOut={handleSignOut}
+        />
 
         <main className={styles.content}>
           {affiliateError && (
