@@ -341,6 +341,7 @@ export default function DashboardClient() {
   const [pdfReady, setPdfReady] = useState(false)
   const [reportEventId, setReportEventId] = useState('')
   const [reportUrl, setReportUrl] = useState('')
+  const [reportId, setReportId] = useState('')
   const [previewSaved, setPreviewSaved] = useState(false)
   const [previewStatus, setPreviewStatus] = useState('Runs in your browser. Your PDF is not uploaded or stored.')
   const [emailInput, setEmailInput] = useState('')
@@ -991,32 +992,34 @@ export default function DashboardClient() {
     if (res.ok && data.ok) {
       setReportEventId(data.event_id)
       setReportUrl(data.report_url)
+      setReportId(data.report_id)
       setPreviewSaved(true)
       setBalance(data.balance_after ?? 0)
       setSession(prev => prev ? { ...prev, balance: data.balance_after ?? 0 } : prev)
-      setPreviewStatus(`Report saved. 1 token used. ${data.balance_after} tokens remaining.`)
-      setTimeout(() => {
-        window.location.href = `/app/report/?report_id=${data.report_id}`
-      }, 1500)
+      setPreviewStatus(`Report saved. 1 token used. ${data.balance_after} tokens remaining. You can now email it to your client or open the report below.`)
     } else {
       setPreviewStatus(data.message || data.error || 'Failed to save report.')
     }
   }
 
   const handleEmailReport = async () => {
-    if (!session || !reportEventId || !reportUrl || !emailInput) return
+    if (!session || !reportId || !reportEventId || !emailInput) return
     setEmailStatus('Sending...')
-    const res = await fetch(`${WORKER_BASE}/forms/transcript/report-email`, {
+    const res = await fetch(`${WORKER_BASE}/v1/transcripts/report-email`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({ email: emailInput, eventId: reportEventId, reportUrl, tokenId: session.tokenId }),
+      body: JSON.stringify({
+        report_id: reportId,
+        email: emailInput,
+        event_id: reportEventId,
+      }),
     })
-    const data = await res.json()
-    if (res.ok) {
+    const data = await res.json().catch(() => ({}))
+    if (res.ok && data.ok) {
       setEmailStatus('Report link sent to ' + emailInput)
     } else {
-      setEmailStatus(data.error || 'Failed to send.')
+      setEmailStatus(data.message || data.error || 'Failed to send.')
     }
   }
 
