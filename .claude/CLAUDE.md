@@ -360,3 +360,12 @@ After completing any task:
 3. Report the commit hash in the task report
 
 Never leave uncommitted changes. Every task ends with a clean working tree.
+
+---
+
+## Post-Task Rules (mandatory after every task)
+
+1. **Commit:** After completing any task, commit all changed files with a descriptive message. Never leave work uncommitted.
+2. **Push:** After committing, run `git push origin main`.
+3. **Deploy:** TTMP uses OpenNext Worker — run `wrangler deploy` after push. Push alone does NOT deploy.
+4. **Report:** After commit+push+deploy, report the commit hash, deploy version ID, and any errors.
