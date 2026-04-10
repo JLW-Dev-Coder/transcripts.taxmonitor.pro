@@ -38,7 +38,7 @@ async function main() {
   const masterPath = path.join(PROSPECTS_DIR, csvFiles[0]);
   const csvData = fs.readFileSync(masterPath, 'utf8');
 
-  const res = await fetch(`${API_BASE}/v1/r2/${encodeURIComponent(R2_KEY)}`, {
+  const res = await fetch(`${API_BASE}/v1/r2/${R2_KEY.split('/').map(encodeURIComponent).join('/')}`, {
     method: 'PUT',
     headers: {
       'Authorization': `Bearer ${token}`,

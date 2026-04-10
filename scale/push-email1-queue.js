@@ -22,7 +22,7 @@ function loadToken() {
 }
 
 async function r2Get(token) {
-  const res = await fetch(`${API_BASE}/v1/r2/${encodeURIComponent(R2_KEY)}`, {
+  const res = await fetch(`${API_BASE}/v1/r2/${R2_KEY.split('/').map(encodeURIComponent).join('/')}`, {
     method: 'GET',
     headers: { 'Authorization': `Bearer ${token}` },
   });
@@ -32,7 +32,7 @@ async function r2Get(token) {
 }
 
 async function r2Put(token, data) {
-  const res = await fetch(`${API_BASE}/v1/r2/${encodeURIComponent(R2_KEY)}`, {
+  const res = await fetch(`${API_BASE}/v1/r2/${R2_KEY.split('/').map(encodeURIComponent).join('/')}`, {
     method: 'PUT',
     headers: {
       'Authorization': `Bearer ${token}`,

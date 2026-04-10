@@ -20,7 +20,7 @@ function loadToken() {
 }
 
 async function r2Put(token, key, data) {
-  const res = await fetch(`${API_BASE}/v1/r2/${encodeURIComponent(key)}`, {
+  const res = await fetch(`${API_BASE}/v1/r2/${key.split('/').map(encodeURIComponent).join('/')}`, {
     method: 'PUT',
     headers: {
       'Authorization': `Bearer ${token}`,
