@@ -127,11 +127,11 @@ Schema key must be `asset_page` — never `audit_page`.
 ### 6.4 Apply personalization by firm_bucket
 
 **solo_brand:**
-- Subject: `{First} — {PROFESSION}s running {DBA} spend {hrs}+ hours/week on this`
+- Subject: `{First} - {PROFESSION}s running {DBA} spend {hrs}+ hours/week on this`
 - Headline: `{First}, here's what 20 minutes per transcript is costing {DBA}`
 
 **local_firm:**
-- Subject: `{First} — {PROFESSION}s in {City} are spending {hrs}+ hours/week on this`
+- Subject: `{First} - {PROFESSION}s in {City} are spending {hrs}+ hours/week on this`
 - Headline: `{First}, here's what 20 minutes per transcript is costing your {City} practice`
 
 **national_firm:** use local_firm pattern with city substitution.
@@ -169,7 +169,7 @@ Never use a placeholder. Always resolve signature to Jamie L Williams, EA.
 
 ### 6.6 Generate Email 2 body (plain text)
 
-Subject: `Quick asset generated for your firm, {First} — {N} hours/yr on the table`
+Subject: `Quick practice analysis for your firm, {First} - {N} hours/yr on the table`
 
 Structure (in order):
 1. Greeting: "Hi {First},"
@@ -311,7 +311,7 @@ New prospect CSV needed by: {date when source exhausted}
     "revenue_opportunity": "$34,800–$104,400/yr in recovered billable time"
   },
   "email_1": {
-    "subject": "John — EAs running Doe Tax Services spend 6.7+ hours/week on this"
+    "subject": "John - EAs running Doe Tax Services spend 6.7+ hours/week on this"
   }
 }
 ```

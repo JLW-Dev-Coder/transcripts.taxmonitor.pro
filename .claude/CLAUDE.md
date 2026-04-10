@@ -159,11 +159,11 @@ Dedup: append `-2`, `-3` on collision.
 ### Personalization by firm_bucket
 
 **solo_brand**
-- Subject: `{First} — {PROFESSION}s running {DBA} spend {hrs}+ hours/week on this`
+- Subject: `{First} - {PROFESSION}s running {DBA} spend {hrs}+ hours/week on this`
 - Headline: `{First}, here's what 20 minutes per transcript is costing {DBA}`
 
 **local_firm**
-- Subject: `{First} — {PROFESSION}s in {City} are spending {hrs}+ hours/week on this`
+- Subject: `{First} - {PROFESSION}s in {City} are spending {hrs}+ hours/week on this`
 - Headline: `{First}, here's what 20 minutes per transcript is costing your {City} practice`
 
 ### asset_page object schema
@@ -201,7 +201,7 @@ transcript.taxmonitor.pro
 
 ### Email 2 body structure
 
-- Subject: `Quick asset generated for your firm, {First} — {N} hours/yr on the table`
+- Subject: `Quick practice analysis for your firm, {First} - {N} hours/yr on the table`
 - Must reference prior email
 - Must reference "quick practice analysis generated for your firm"
 - Lead with asset page URL

@@ -158,10 +158,10 @@ function buildRecord(r) {
   let headline, subject;
   if (bucket === 'solo_brand') {
     headline = `${first}, here's what 20 minutes per transcript is costing ${firm}`;
-    subject = `${first} \u2014 ${credentialPlural(cred)} running ${firm} spend ${hrsWeekNum}+ hours/week on this`;
+    subject = `${first} - ${credentialPlural(cred)} running ${firm} spend ${hrsWeekNum}+ hours/week on this`;
   } else {
     headline = `${first}, here's what 20 minutes per transcript is costing your ${city} practice`;
-    subject = `${first} \u2014 ${credentialPlural(cred)} in ${city} are spending ${hrsWeekNum}+ hours/week on this`;
+    subject = `${first} - ${credentialPlural(cred)} in ${city} are spending ${hrsWeekNum}+ hours/week on this`;
   }
 
   const asset_page = {
@@ -203,7 +203,7 @@ transcript.taxmonitor.pro`;
 
   // Email 2 body
   const annualHrs = ts.annual.replace(' hours', '');
-  const email2Subject = `Quick asset generated for your firm, ${first} \u2014 ${annualHrs} hours/yr on the table`;
+  const email2Subject = `Quick practice analysis for your firm, ${first} - ${annualHrs} hours/yr on the table`;
   const email2Body = `Hi ${first},
 
 I sent you a note a few days ago about a tool I built for ${credentialPlural(cred)} who spend too long on IRS transcripts. I'm an EA myself, so I built it from the same frustration.

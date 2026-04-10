@@ -108,10 +108,10 @@ for (let i = 0; i < prospects.length; i++) {
   // Subject & headline per firm_bucket
   let email1Subject, headline;
   if (isSolo) {
-    email1Subject = `${first} — ${credShort} running ${firm} spend ${hrs}+ hours/week on this`;
+    email1Subject = `${first} - ${credShort} running ${firm} spend ${hrs}+ hours/week on this`;
     headline = `${first}, here's what 20 minutes per transcript is costing ${firm}`;
   } else {
-    email1Subject = `${first} — ${credShort} in ${city} are spending ${hrs}+ hours/week on this`;
+    email1Subject = `${first} - ${credShort} in ${city} are spending ${hrs}+ hours/week on this`;
     headline = `${first}, here's what 20 minutes per transcript is costing your ${city} practice`;
   }
 
@@ -145,7 +145,7 @@ Founder, Transcript Tax Monitor Pro
 transcript.taxmonitor.pro`;
 
   // Email 2
-  const email2Subject = `Quick asset generated for your firm, ${first} — ${annualDisplay}/yr on the table`;
+  const email2Subject = `Quick practice analysis for your firm, ${first} - ${annualDisplay}/yr on the table`;
 
   const email2Body = `Hi ${first},
 
