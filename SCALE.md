@@ -55,13 +55,24 @@ Send first outreach emails today. Convert first TTMP token sale this week. Use t
 
 | Step | Owner | Action | Output |
 |---|---|---|---|
-| 1. Source | You | Scrub public emails from NAEA, state boards, LinkedIn | CSV/JSON file |
-| 2. Generate | Claude | Process uploaded file — produce asset page data + email copy per prospect | JSON file |
+| 1. Source | You | Scrub public firm data (name + domain, emails optional) from NAEA, state boards, LinkedIn | CSV/JSON file |
+| 1a. Enrich | `scale/find-emails.js` | MX precheck + pattern-guess + Reoon Quick verification to fill empty `email_found` from `{First_NAME, LAST_NAME, domain_clean}` | Master CSV rows with discovered emails + `email_find_attempted` stamp |
+| 1b. Validate | `scale/validate-emails.js` | Reoon bulk verification of existing emails with empty `email_status` | Master CSV with canonical `email_status` values |
+| 2. Generate | Claude + `scale/generate-batch.js` | Select eligible records via the Reoon Quick gate, produce asset page data + email copy per prospect | JSON batch + Gmail import CSV |
 | 3. Store | You / Worker | Push JSON to R2 (or repo file Worker reads) | Asset pages live at `/asset/{slug}` |
 | 4. Send | VLP Worker cron | Deliver Email 1 via Gmail with CTA linking to asset page | Tracked sends |
 | 5. Track | Worker | Log asset page views, CTA clicks | D1 analytics |
 | 6. Follow up | VLP Worker cron | Automated Email 2 after delay | Tracked sends |
 | 7. Close | You | Take booked calls on Google Meet, demo TTMP, close sale | Stripe payment |
+
+### Enrichment economics (Step 1a — find-emails.js)
+
+- MX precheck is free (DNS lookup, no credits).
+- Pattern guessing tries up to 5 candidates per row (`first@`, `first.last@`, `firstlast@`, `flast@`, `first.l@`).
+- Reoon Quick API uses 1 daily credit per call, rate-limited to 1 req/sec. Free tier: 500 daily credits.
+- Typical budget: ~100 prospects/run × ~3 calls average/row (short-circuits on first valid) ≈ 300 credits/day. Worst case at 5 calls/row = 500 credits.
+- Credit safety cap: script stops at 450 cumulative calls and prints "Resume tomorrow."
+- Rows that yield no valid email get an `email_find_attempted` timestamp so they are never re-scanned.
 
 ---
 

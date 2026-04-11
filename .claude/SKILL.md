@@ -62,9 +62,29 @@ If any condition fails: halt immediately, do not produce partial output, report 
 
 ---
 
-## Pre-step — Run the orchestrator
+## Pre-step 0 — Discover missing emails (optional, run when backlog has empty `email_found`)
 
-Before generating any copy, run:
+Before bulk validation or batch generation, top up the pipeline by running:
+```
+REOON_API_KEY=xxx node scale/find-emails.js [--limit N] [--dry-run]
+```
+
+`find-emails.js` walks the master CSV in `domain_clean` order and processes rows where `email_found` is empty, `domain_clean` is non-empty, and `email_find_attempted` has never been stamped. For each row:
+
+1. DNS MX precheck (free). No MX → sets `email_status = no_mx`, stamps `email_find_attempted`, skips.
+2. Generates up to 5 candidate addresses from `First_NAME` + `LAST_NAME` + `domain_clean`:
+   - `first@domain` → `first.last@domain` → `firstlast@domain` → `flast@domain` → `first.l@domain`
+3. Verifies candidates via Reoon Quick API (1 req/sec) — stops on the first `valid` and writes it to `email_found`.
+4. Stops trying further patterns for a row on the first `disposable` response (marks `email_status = disposable`).
+5. Stamps `email_find_attempted` regardless of outcome so rows are never re-scanned.
+
+Default limit: 100 rows per run. Credit safety cap: 450 Reoon calls (below the 500 daily free-tier limit). `--dry-run` runs MX + pattern generation only with zero Reoon calls or CSV writes.
+
+This step is optional for any given day — skip it when the pipeline already has plenty of rows with non-empty `email_found`. Run it when the unvalidated backlog needs new raw material.
+
+## Pre-step 1 — Run the orchestrator
+
+After the finder (if needed) and `validate-emails.js` (if needed), run:
 ```
 node scale/generate-batch.js [--limit N] [--dry-run] [--skip-validation]
 ```
@@ -103,7 +123,7 @@ Rate limit: 1 Reoon call per second. The Reoon raw → canonical mapping is docu
 
 | Var | Purpose |
 |-----|---------|
-| `REOON_API_KEY` | Reoon verification key. Required for `validate-emails.js`. Optional for `generate-batch.js` — if unset, validation is skipped with a warning. |
+| `REOON_API_KEY` | Reoon verification key. Required for `validate-emails.js` and `find-emails.js` (except `find-emails.js --dry-run`). Optional for `generate-batch.js` — if unset, validation is skipped with a warning. |
 
 ---
 

@@ -48,7 +48,9 @@ transcript.taxmonitor.pro/
 │   ├── batches/                   ← generated JSON batches (committed output)
 │   ├── gmail/
 │   │   └── email1/                ← Gmail import CSVs (committed output)
-│   └── generate-batch.js
+│   ├── find-emails.js             ← MX precheck + pattern guess + Reoon Quick finder
+│   ├── validate-emails.js         ← Reoon bulk verification for existing emails
+│   └── generate-batch.js          ← selection + copy generation orchestrator
 ├── app/
 │   └── asset/[slug]/              ← asset page route
 └── public/
@@ -108,14 +110,15 @@ transcript.taxmonitor.pro/
 | email_1_sent_at | ISO timestamp — set by VLP Worker after send |
 | email_2_scheduled_for | ISO date — when Email 2 should send |
 | email_2_sent_at | ISO timestamp — set by VLP Worker after send |
+| email_find_attempted | ISO timestamp — set by `scale/find-emails.js` the first time a row is scanned, regardless of outcome. Prevents re-scanning on subsequent runs. |
 
-**Note:** The `email_status` column is NOT an original column in the strict sense, but the scale pipeline writes canonical values (`valid` / `invalid` / `disposable` / `risky` / empty) back into it via `scale/validate-emails.js` (bulk) and `scale/generate-batch.js` (per-record Quick). See §6b for the canonical values and §6c for the Reoon → canonical mapping.
+**Note:** The `email_status` column is NOT an original column in the strict sense, but the scale pipeline writes canonical values (`valid` / `invalid` / `disposable` / `risky` / `no_mx` / empty) back into it via `scale/validate-emails.js` (bulk), `scale/generate-batch.js` (per-record Quick), and `scale/find-emails.js` (MX + pattern discovery). See §6b for the canonical values and §6c for the Reoon → canonical mapping.
 
 ### Required environment variables
 
 | Var | Used by | Purpose |
 |-----|---------|---------|
-| `REOON_API_KEY` | `scale/validate-emails.js`, `scale/generate-batch.js` | Reoon email verification API key. `validate-emails.js` exits with an error if unset; `generate-batch.js` warns and proceeds without validation. |
+| `REOON_API_KEY` | `scale/validate-emails.js`, `scale/generate-batch.js`, `scale/find-emails.js` | Reoon email verification API key. `validate-emails.js` and `find-emails.js` exit with an error if unset (except `find-emails.js --dry-run`); `generate-batch.js` warns and proceeds without validation. |
 
 ### Two-file intake workflow
 
@@ -166,7 +169,7 @@ At the start of a run, if any records will need validation, call Reoon's balance
 
 ### 6b. Canonical `email_status` values
 
-The `email_status` column uses exactly these four canonical values (plus empty = not yet validated):
+The `email_status` column uses exactly these five canonical values (plus empty = not yet validated):
 
 | Value | Meaning | Batch gate behavior |
 |-------|---------|---------------------|
@@ -174,6 +177,7 @@ The `email_status` column uses exactly these four canonical values (plus empty =
 | `invalid` | Undeliverable / spamtrap / disabled mailbox | Skip |
 | `disposable` | Disposable / throwaway domain | Skip |
 | `risky` | Catch-all, role account, inbox full, unknown — may bounce | Include with warning |
+| `no_mx` | Domain has no MX records — mail cannot be delivered. Written by `scale/find-emails.js` during the MX precheck stage. Rows with this status never have an `email_found` value, so they are already filtered out by `generate-batch.js` on the empty-email check. |
 
 ### 6c. Reoon raw → canonical mapping
 
@@ -354,7 +358,8 @@ R2 key: `vlp-scale/asset-pages/{slug}.json`
 
 ### Steps
 
-0. (Weekly or when the unvalidated backlog grows) Run `REOON_API_KEY=xxx node scale/validate-emails.js` — bulk-validates up to 500 emails via Reoon and writes results to `email_status`
+0a. (When rows have empty `email_found` but a valid `domain_clean`) Run `REOON_API_KEY=xxx node scale/find-emails.js` — MX precheck + pattern-guess up to 100 prospects per run, writes discovered emails to `email_found` and stamps `email_find_attempted`. Rows with no MX records are marked `email_status = no_mx` and permanently skipped.
+0b. (Weekly or when the unvalidated backlog grows) Run `REOON_API_KEY=xxx node scale/validate-emails.js` — bulk-validates up to 500 emails via Reoon and writes results to `email_status`
 1. Run `node scale/generate-batch.js` — selects next 50 eligible records, applies the Reoon Quick gate, generates slugs, writes selection file, stamps tracking
 2. Claude Code reads `scale/batches/batch-selection-{YYYY-MM-DD}-{N}.json` and generates personalized copy per SKILL.md
 3. Claude Code writes final outputs:
@@ -383,6 +388,27 @@ node scale/generate-batch.js                              # default: 50, stamps 
 node scale/generate-batch.js --limit 2 --dry-run          # preview 2, no writes
 node scale/generate-batch.js --limit 25 --skip-validation # 25 records, no Reoon
 ```
+
+### find-emails.js (MX + pattern-guess email discovery)
+
+```
+REOON_API_KEY=xxx node scale/find-emails.js [source.csv] [--limit N] [--dry-run]
+```
+
+- Selects rows where `email_found` is empty, `domain_clean` is non-empty, `email_find_attempted` is empty, and `email_1_prepared_at` is empty
+- Sorts by `domain_clean` ascending (same order as `generate-batch.js`)
+- Default limit: 100 rows per run. Override with `--limit N`
+- Per row:
+  1. DNS MX precheck (free) — if no MX records, sets `email_status = no_mx`, stamps `email_find_attempted`, and skips
+  2. Generates up to 5 candidate patterns from `First_NAME` + `LAST_NAME` + `domain_clean`:
+     - `first@domain` → `first.last@domain` → `firstlast@domain` → `flast@domain` → `first.l@domain`
+  3. Verifies candidates via Reoon Quick API (1 req/sec) — stops at the first `valid` response and writes to `email_found` + `email_status = valid`
+  4. If Reoon returns `disposable` on any candidate, sets `email_status = disposable` and stops trying patterns for that row
+  5. If all patterns fail, stamps `email_find_attempted` only (row is not re-scanned)
+- Credit safety cap: stops when cumulative Reoon calls reach 450 (safety margin below the 500 daily free-tier limit). Prints "Resume tomorrow."
+- `--dry-run`: MX precheck + pattern generation only. No Reoon calls, no CSV writes
+- Writes `email_find_attempted` for every scanned row so subsequent runs never retry the same row
+- Requires `REOON_API_KEY` unless `--dry-run` is set
 
 ### validate-emails.js (bulk pre-validation)
 
