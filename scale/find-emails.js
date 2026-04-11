@@ -32,7 +32,7 @@ const DEFAULT_LIMIT = 100;
 const CREDIT_SAFETY_CAP = 450;       // stop when cumulative Reoon calls reach this
 const REOON_RATE_LIMIT_MS = 1000;    // 1 req/sec for Reoon Quick
 
-const REOON_QUICK_ENDPOINT = 'https://emailverifier.reoon.com/api/v1/verify';
+const REOON_VERIFY_ENDPOINT = 'https://emailverifier.reoon.com/api/v1/verify';
 const REOON_BALANCE_ENDPOINT = 'https://emailverifier.reoon.com/api/v1/check-account-balance/';
 
 // Canonical status mapping (mirrors validate-emails.js and generate-batch.js).
@@ -136,12 +136,16 @@ function httpGetJson(endpoint, params) {
       });
     });
     req.on('error', reject);
-    req.setTimeout(15000, () => { req.destroy(new Error('Reoon request timeout')); });
+    req.setTimeout(30000, () => {
+      const err = new Error('Reoon request timeout');
+      err.isTimeout = true;
+      req.destroy(err);
+    });
   });
 }
 
-function reoonQuickVerify(email, apiKey) {
-  return httpGetJson(REOON_QUICK_ENDPOINT, { email, key: apiKey, mode: 'quick' });
+function reoonPowerVerify(email, apiKey) {
+  return httpGetJson(REOON_VERIFY_ENDPOINT, { email, key: apiKey, mode: 'power' });
 }
 
 function reoonBalance(apiKey) {
@@ -327,8 +331,8 @@ async function main() {
   if (!dryRun) {
     try {
       const bal = await reoonBalance(reoonKey);
-      const daily = Number(bal && (bal.daily_credits_available ?? bal.daily_credits ?? bal.daily ?? NaN));
-      const instant = Number(bal && (bal.instant_credits_available ?? bal.instant_credits ?? bal.instant ?? NaN));
+      const daily = Number(bal && (bal.remaining_daily_credits ?? bal.daily_credits_available ?? bal.daily_credits ?? bal.daily ?? NaN));
+      const instant = Number(bal && (bal.remaining_instant_credits ?? bal.instant_credits_available ?? bal.instant_credits ?? bal.instant ?? NaN));
       const dailyStr = Number.isFinite(daily) ? daily : 'unknown';
       const instantStr = Number.isFinite(instant) ? instant : 'unknown';
       console.log(`[reoon] Balance — daily: ${dailyStr}, instant: ${instantStr}`);
@@ -363,6 +367,8 @@ async function main() {
     disposable: 0,
     reoonCalls: 0,
     reoonErrors: 0,
+    reoonTimeouts: 0,
+    timeoutRetryDeferred: 0,
     stopped: false,
   };
   const foundByDomain = {};
@@ -408,9 +414,19 @@ async function main() {
       continue;
     }
 
-    // 5c. Verify each candidate via Reoon Quick
+    // 5c. Verify each candidate via Reoon Power.
+    //
+    // Priority ladder (Power mode response includes `status` + `is_deliverable`):
+    //   safe + is_deliverable === true   -> FOUND (valid), stop
+    //   catch_all                        -> remember as risky fallback, keep trying
+    //   safe + is_deliverable === false  -> skip, try next pattern
+    //   unknown                          -> skip, try next pattern
+    //   invalid / disabled               -> skip, try next pattern
+    //   disposable / spamtrap            -> stop (domain-level signal)
     let matched = null;
     let hitDisposable = false;
+    let riskyFallback = null; // first catch_all candidate, used if no `safe` hit
+    let gotRealResponse = false; // true if at least one candidate received a real Reoon response
     for (const candidate of candidatesList) {
       if (summary.reoonCalls >= CREDIT_SAFETY_CAP) {
         console.warn(`[reoon] Credit safety cap (${CREDIT_SAFETY_CAP}) reached — stopping. Resume tomorrow.`);
@@ -422,31 +438,40 @@ async function main() {
       if (lastCallAt > 0 && elapsed < REOON_RATE_LIMIT_MS) {
         await sleep(REOON_RATE_LIMIT_MS - elapsed);
       }
-      let mapped = null;
+      let res = null;
       try {
-        const res = await reoonQuickVerify(candidate, reoonKey);
+        res = await reoonPowerVerify(candidate, reoonKey);
         lastCallAt = Date.now();
         summary.reoonCalls++;
-        mapped = mapReoonStatus(res);
+        gotRealResponse = true;
       } catch (err) {
         lastCallAt = Date.now();
         summary.reoonErrors++;
+        if (err && err.isTimeout) summary.reoonTimeouts++;
         console.warn(`  [reoon-err] ${candidate} -> ${err.message}`);
         continue;
       }
 
-      if (mapped === 'valid') {
+      const rawStatus = ((res && (res.status || res.state)) || 'unknown').toString().toLowerCase();
+      const isDeliverable = res && (res.is_deliverable ?? res.deliverable ?? null);
+
+      if (rawStatus === 'safe' && isDeliverable === true) {
+        console.log(`  [power] ${candidate} -> status=${rawStatus} is_deliverable=${isDeliverable} -> FOUND (valid)`);
         matched = { email: candidate };
-        console.log(`  [found] ${tag} -> ${candidate}`);
         break;
       }
-      if (mapped === 'disposable') {
+      if (rawStatus === 'disposable' || rawStatus === 'spamtrap') {
+        console.log(`  [power] ${candidate} -> status=${rawStatus} -> stop (domain-level signal)`);
         hitDisposable = true;
-        console.log(`  [disposable] ${tag} -> ${candidate} (domain disposable, stopping)`);
         break;
       }
-      // invalid / risky — try next pattern
-      console.log(`  [miss:${mapped}] ${candidate}`);
+      if (rawStatus === 'catch_all') {
+        console.log(`  [power] ${candidate} -> status=${rawStatus} is_deliverable=${isDeliverable} -> risky (fallback, keep trying)`);
+        if (!riskyFallback) riskyFallback = candidate;
+        continue;
+      }
+      // safe+!deliverable, unknown, invalid, disabled, role_account, inbox_full -> skip
+      console.log(`  [power] ${candidate} -> status=${rawStatus} is_deliverable=${isDeliverable} -> skip`);
     }
 
     if (matched) {
@@ -459,6 +484,18 @@ async function main() {
       r.email_status = 'disposable';
       r.email_find_attempted = now;
       summary.disposable++;
+    } else if (riskyFallback) {
+      r.email_found = riskyFallback;
+      r.email_status = 'risky';
+      r.email_find_attempted = now;
+      summary.found++;
+      foundByDomain[domain] = (foundByDomain[domain] || 0) + 1;
+      console.log(`  [risky-fallback] ${tag} -> ${riskyFallback} (catch_all, no safe hit)`);
+    } else if (!gotRealResponse) {
+      // All candidates timed out / errored without a real Reoon response.
+      // Do NOT stamp email_find_attempted — leave the row eligible for retry.
+      summary.timeoutRetryDeferred++;
+      console.log(`  [retry-next-run] ${tag} — all ${candidatesList.length} patterns timed out, leaving row eligible`);
     } else {
       r.email_find_attempted = now;
       summary.notFound++;
@@ -472,7 +509,7 @@ async function main() {
   if (!dryRun) {
     try {
       const bal = await reoonBalance(reoonKey);
-      const d = Number(bal && (bal.daily_credits_available ?? bal.daily_credits ?? bal.daily ?? NaN));
+      const d = Number(bal && (bal.remaining_daily_credits ?? bal.daily_credits_available ?? bal.daily_credits ?? bal.daily ?? NaN));
       remainingDaily = Number.isFinite(d) ? d : null;
     } catch {}
   }
@@ -491,8 +528,10 @@ MX pre-filtered (no mail):    ${summary.mxMissing}
 Emails found:                 ${summary.found}
 Not found (all patterns):     ${summary.notFound}
 Disposable domains hit:       ${summary.disposable}
-Reoon Quick calls used:       ${summary.reoonCalls}
+Reoon Power calls used:       ${summary.reoonCalls}
 Reoon errors:                 ${summary.reoonErrors}
+Reoon timeouts:               ${summary.reoonTimeouts}
+Deferred for retry (timeout): ${summary.timeoutRetryDeferred}
 Credit cap reached:           ${summary.stopped ? 'YES — resume tomorrow' : 'no'}
 Remaining daily credits:      ${remainingDaily != null ? remainingDaily : 'unknown'}
 Top domains (found):          ${topDomains}

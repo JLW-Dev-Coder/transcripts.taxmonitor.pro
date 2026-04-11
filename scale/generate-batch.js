@@ -328,8 +328,8 @@ async function main() {
     if (validationEnabled && emptyStatusCount > 0) {
       try {
         const bal = await reoonBalance(reoonKey);
-        const daily = Number(bal && (bal.daily_credits_available ?? bal.daily_credits ?? bal.daily ?? NaN));
-        const instant = Number(bal && (bal.instant_credits_available ?? bal.instant_credits ?? bal.instant ?? NaN));
+        const daily = Number(bal && (bal.remaining_daily_credits ?? bal.daily_credits_available ?? bal.daily_credits ?? bal.daily ?? NaN));
+        const instant = Number(bal && (bal.remaining_instant_credits ?? bal.instant_credits_available ?? bal.instant_credits ?? bal.instant ?? NaN));
         const dailyStr = Number.isFinite(daily) ? daily : 'unknown';
         const instantStr = Number.isFinite(instant) ? instant : 'unknown';
         console.log(`[reoon] Balance — daily: ${dailyStr}, instant: ${instantStr} (need up to ${emptyStatusCount})`);
