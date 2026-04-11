@@ -66,10 +66,44 @@ If any condition fails: halt immediately, do not produce partial output, report 
 
 Before generating any copy, run:
 ```
-node scale/generate-batch.js
+node scale/generate-batch.js [--limit N] [--dry-run] [--skip-validation]
 ```
 
-This produces `scale/batches/batch-selection-{YYYY-MM-DD}.json` containing the selected records with slugs, credentials, and time savings data already populated. Use this file as the input for copy generation. Do not re-read the master CSV directly for copy generation.
+This produces `scale/batches/batch-selection-{YYYY-MM-DD}-{N}.json` containing the selected records with slugs, credentials, and time savings data already populated. Use this file as the input for copy generation. Do not re-read the master CSV directly for copy generation.
+
+### Orchestrator flags
+
+- `--limit N` — override the default batch size (50)
+- `--dry-run` — generate the selection file but do NOT stamp `email_1_prepared_at` and do NOT persist Reoon updates. Prints `[DRY RUN] Source CSV was NOT updated.`
+- `--skip-validation` — bypass the Reoon Quick gate entirely (use when credits are exhausted)
+
+### Upstream: bulk pre-validation
+
+`scale/validate-emails.js` batches up to 500 unverified emails through Reoon's bulk API and writes the results to `email_status`. Run weekly (or whenever the unvalidated backlog grows) to keep the Quick gate cheap:
+```
+REOON_API_KEY=xxx node scale/validate-emails.js
+```
+
+### Reoon Quick gate (per-record)
+
+`generate-batch.js` applies a per-record Reoon gate before including a record in the batch:
+
+| Current `email_status` | Action |
+|------------------------|--------|
+| `valid` | Proceed |
+| `invalid` / `disposable` | Skip |
+| `risky` | Proceed with warning |
+| empty (and `REOON_API_KEY` set) | Call Reoon Quick API, map, persist, re-apply table |
+| empty (and `REOON_API_KEY` unset) | Warn once, proceed unvalidated |
+| empty (and `--skip-validation`) | Warn per record, proceed unvalidated |
+
+Rate limit: 1 Reoon call per second. The Reoon raw → canonical mapping is documented in CLAUDE.md §6c.
+
+### Environment
+
+| Var | Purpose |
+|-----|---------|
+| `REOON_API_KEY` | Reoon verification key. Required for `validate-emails.js`. Optional for `generate-batch.js` — if unset, validation is skipped with a warning. |
 
 ---
 
@@ -79,12 +113,12 @@ Source: the master CSV in `scale/prospects/` (the file starting with `IRS`).
 Never read from `new-prospects.csv` — that is the human intake file.
 
 1. `email_found` is not empty, not `"undefined"`, not NaN
-2. `email_status` is not `"invalid"`
+2. `email_status` is not `"invalid"` and not `"disposable"`
 3. `email_1_prepared_at` is empty
 4. Sort ascending by `domain_clean` (nulls last)
-5. Select first 50 records
+5. Walk in sort order through the Reoon Quick gate (see Pre-step) until the limit is filled (default 50)
 
-If fewer than 50 eligible: process all remaining and log exact count.
+If fewer than the limit are eligible: process all remaining and log exact count.
 If zero eligible: halt and report pipeline exhaustion.
 
 ---

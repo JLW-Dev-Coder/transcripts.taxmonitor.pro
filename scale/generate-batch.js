@@ -2,12 +2,38 @@
 
 const fs = require('fs');
 const path = require('path');
+const https = require('https');
 
 const PROSPECTS_DIR = path.join(__dirname, 'prospects');
 const BATCHES_DIR = path.join(__dirname, 'batches');
 const GMAIL_DIR = path.join(__dirname, 'gmail', 'email1');
 const LOCKFILE = path.join(PROSPECTS_DIR, '.batch-in-progress');
-const BATCH_SIZE = 50;
+const DEFAULT_BATCH_SIZE = 50;
+
+const REOON_QUICK_ENDPOINT = 'https://emailverifier.reoon.com/api/v1/verify';
+const REOON_BALANCE_ENDPOINT = 'https://emailverifier.reoon.com/api/v1/check-account-balance/';
+const REOON_RATE_LIMIT_MS = 1000;
+const REOON_SKIP_STATUSES = new Set(['invalid', 'disposable']);
+
+// Map raw Reoon response status to the canonical email_status values stored in the CSV.
+// Canonical values: valid | invalid | disposable | risky
+const REOON_STATUS_MAP = {
+  safe: 'valid',
+  valid: 'valid',
+  invalid: 'invalid',
+  disabled: 'invalid',
+  spamtrap: 'invalid',
+  disposable: 'disposable',
+  inbox_full: 'risky',
+  catch_all: 'risky',
+  role_account: 'risky',
+  unknown: 'risky',
+};
+
+function mapReoonStatus(res) {
+  const raw = ((res && (res.status || res.state)) || 'unknown').toString().toLowerCase();
+  return REOON_STATUS_MAP[raw] || 'risky';
+}
 
 const CREDENTIAL_MAP = {
   EA:  { weekly: '6.7', annual: '348', revenue: '$34,800–$104,400/yr' },
@@ -103,6 +129,11 @@ function generateSlug(first, last, city, state) {
   return parts.join('-');
 }
 
+function titleCase(str) {
+  if (!str) return '';
+  return String(str).toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+}
+
 function dedupSlugs(records) {
   const seen = {};
   for (const rec of records) {
@@ -116,6 +147,84 @@ function dedupSlugs(records) {
   }
 }
 
+// --- CLI arg parsing ---
+
+function parseArgs(argv) {
+  const out = {
+    limit: DEFAULT_BATCH_SIZE,
+    dryRun: false,
+    skipValidation: false,
+    sourceArg: null,
+  };
+  const args = argv.slice(2);
+  for (let i = 0; i < args.length; i++) {
+    const a = args[i];
+    if (a === '--dry-run') {
+      out.dryRun = true;
+    } else if (a === '--skip-validation') {
+      out.skipValidation = true;
+    } else if (a === '--limit') {
+      const v = args[++i];
+      const n = parseInt(v, 10);
+      if (!Number.isFinite(n) || n <= 0) {
+        console.error(`ERROR: --limit expects a positive integer (got "${v}")`);
+        process.exit(2);
+      }
+      out.limit = n;
+    } else if (a.startsWith('--limit=')) {
+      const n = parseInt(a.slice('--limit='.length), 10);
+      if (!Number.isFinite(n) || n <= 0) {
+        console.error(`ERROR: --limit expects a positive integer (got "${a}")`);
+        process.exit(2);
+      }
+      out.limit = n;
+    } else if (a === '--help' || a === '-h') {
+      console.log('Usage: node scale/generate-batch.js [source.csv] [--limit N] [--dry-run] [--skip-validation]');
+      process.exit(0);
+    } else if (a.startsWith('--')) {
+      console.error(`ERROR: unknown flag "${a}"`);
+      process.exit(2);
+    } else if (!out.sourceArg) {
+      out.sourceArg = a;
+    } else {
+      console.error(`ERROR: unexpected positional arg "${a}"`);
+      process.exit(2);
+    }
+  }
+  return out;
+}
+
+// --- Reoon email validation ---
+
+function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+function httpGetJson(endpoint, params) {
+  return new Promise((resolve, reject) => {
+    const url = new URL(endpoint);
+    for (const [k, v] of Object.entries(params || {})) url.searchParams.set(k, v);
+    const req = https.get(url.toString(), (res) => {
+      let body = '';
+      res.on('data', (c) => { body += c; });
+      res.on('end', () => {
+        try { resolve(JSON.parse(body)); }
+        catch (e) { reject(new Error(`Reoon parse error: ${e.message} | body: ${body.slice(0, 200)}`)); }
+      });
+    });
+    req.on('error', reject);
+    req.setTimeout(15000, () => { req.destroy(new Error('Reoon request timeout')); });
+  });
+}
+
+function reoonQuickVerify(email, apiKey) {
+  return httpGetJson(REOON_QUICK_ENDPOINT, { email, key: apiKey, mode: 'quick' });
+}
+
+function reoonBalance(apiKey) {
+  return httpGetJson(REOON_BALANCE_ENDPOINT, { key: apiKey });
+}
+
 // --- Main ---
 
 function getNextSequenceNumber(today) {
@@ -124,26 +233,47 @@ function getNextSequenceNumber(today) {
   return existing.length + 1;
 }
 
-function main() {
+async function main() {
+  const { limit, dryRun, skipValidation, sourceArg } = parseArgs(process.argv);
+  const reoonKey = (process.env.REOON_API_KEY || '').trim();
+  const validationEnabled = !skipValidation && !!reoonKey;
   const today = new Date().toISOString().slice(0, 10);
   const timestamp = new Date().toISOString();
   const seq = getNextSequenceNumber(today);
+
+  if (skipValidation) {
+    console.log('[--skip-validation] Reoon email validation is disabled for this run.');
+  } else if (!reoonKey) {
+    console.warn('[WARN] REOON_API_KEY not set — skipping email validation. Set it to enable pre-send verification.');
+  }
+  if (dryRun) {
+    console.log('[DRY RUN] Source CSV will NOT be updated.');
+  }
 
   // 1. Create lockfile
   fs.writeFileSync(LOCKFILE, '');
 
   try {
-    // 2. Find master CSV
-    const csvFiles = fs.readdirSync(PROSPECTS_DIR).filter(f => f.startsWith('IRS') && f.endsWith('.csv'));
-    if (csvFiles.length === 0) {
-      console.error('ERROR: No IRS*.csv file found in scale/prospects/');
-      process.exit(1);
+    // 2. Resolve master CSV path (positional arg overrides auto-detect)
+    let masterPath;
+    if (sourceArg) {
+      masterPath = path.isAbsolute(sourceArg) ? sourceArg : path.resolve(process.cwd(), sourceArg);
+      if (!fs.existsSync(masterPath)) {
+        console.error(`ERROR: source CSV not found: ${masterPath}`);
+        process.exit(1);
+      }
+    } else {
+      const csvFiles = fs.readdirSync(PROSPECTS_DIR).filter(f => f.startsWith('IRS') && f.endsWith('.csv'));
+      if (csvFiles.length === 0) {
+        console.error('ERROR: No IRS*.csv file found in scale/prospects/');
+        process.exit(1);
+      }
+      if (csvFiles.length > 1) {
+        console.error('ERROR: Multiple IRS*.csv files found in scale/prospects/:', csvFiles);
+        process.exit(1);
+      }
+      masterPath = path.join(PROSPECTS_DIR, csvFiles[0]);
     }
-    if (csvFiles.length > 1) {
-      console.error('ERROR: Multiple IRS*.csv files found in scale/prospects/:', csvFiles);
-      process.exit(1);
-    }
-    const masterPath = path.join(PROSPECTS_DIR, csvFiles[0]);
 
     // 3. Read and parse
     const raw = fs.readFileSync(masterPath, 'utf-8');
@@ -154,28 +284,30 @@ function main() {
     }
 
     let headers = parsed[0];
-    // Add email_1_prepared_at column if missing
     if (!headers.includes('email_1_prepared_at')) {
       headers.push('email_1_prepared_at');
     }
 
-    const records = parsed.slice(1).map(row => {
-      const rec = {};
-      headers.forEach((h, i) => { rec[h] = row[i] || ''; });
-      return rec;
-    });
+    const records = parsed.slice(1)
+      .filter(row => row.length > 1)
+      .map(row => {
+        const rec = {};
+        headers.forEach((h, i) => { rec[h] = row[i] || ''; });
+        return rec;
+      });
 
-    // 4. Selection logic
-    const eligible = records.filter(r => {
+    // 4. Candidate filter (format + not stamped + not already known-bad).
+    // Empty email_status is still a candidate; Reoon will verify in the walk below.
+    const candidates = records.filter(r => {
       const email = (r.email_found || '').trim();
       if (!email || email === 'undefined' || email.toLowerCase() === 'nan' || email === 'null') return false;
-      if ((r.email_status || '').trim().toLowerCase() === 'invalid') return false;
       if ((r.email_1_prepared_at || '').trim() !== '') return false;
+      const st = (r.email_status || '').trim().toLowerCase();
+      if (REOON_SKIP_STATUSES.has(st)) return false;
       return true;
     });
 
-    // Sort ascending by domain_clean (empty last)
-    eligible.sort((a, b) => {
+    candidates.sort((a, b) => {
       const da = (a.domain_clean || '').trim();
       const db = (b.domain_clean || '').trim();
       if (!da && !db) return 0;
@@ -184,26 +316,121 @@ function main() {
       return da.localeCompare(db);
     });
 
-    if (eligible.length === 0) {
+    if (candidates.length === 0) {
       console.error('PIPELINE EXHAUSTION: Zero eligible records remain. No batch generated.');
       process.exit(1);
     }
 
-    const selected = eligible.slice(0, BATCH_SIZE);
-    const remaining = eligible.length - selected.length;
+    // Count candidates with empty email_status to size the Reoon budget check.
+    const emptyStatusCount = candidates.filter(r => !(r.email_status || '').trim()).length;
 
-    if (selected.length < BATCH_SIZE) {
-      console.log(`WARNING: Only ${selected.length} eligible records (fewer than ${BATCH_SIZE})`);
+    // 4.5 Balance check (only if we'll actually call Reoon)
+    if (validationEnabled && emptyStatusCount > 0) {
+      try {
+        const bal = await reoonBalance(reoonKey);
+        const daily = Number(bal && (bal.daily_credits_available ?? bal.daily_credits ?? bal.daily ?? NaN));
+        const instant = Number(bal && (bal.instant_credits_available ?? bal.instant_credits ?? bal.instant ?? NaN));
+        const dailyStr = Number.isFinite(daily) ? daily : 'unknown';
+        const instantStr = Number.isFinite(instant) ? instant : 'unknown';
+        console.log(`[reoon] Balance — daily: ${dailyStr}, instant: ${instantStr} (need up to ${emptyStatusCount})`);
+        if (Number.isFinite(daily) && daily < emptyStatusCount) {
+          console.warn(`[reoon] WARNING: daily credits (${daily}) < emails to validate (${emptyStatusCount}). Some records will skip validation.`);
+        }
+      } catch (err) {
+        console.warn(`[reoon] Balance check failed: ${err.message} — proceeding anyway`);
+      }
     }
 
-    // 5. Generate slugs
+    // 5. Validation + selection walk.
+    // Iterates candidates in domain-sort order. Empty email_status triggers a Reoon
+    // Quick API call (rate limited to 1 req/sec). Result is mapped to the canonical
+    // set (valid | invalid | disposable | risky) and persisted to the source CSV
+    // (unless --dry-run). Invalid/disposable are skipped; risky proceeds with a warning.
+    const selected = [];
+    let reoonCalls = 0;
+    let skippedInvalid = 0;
+    let skippedDisposable = 0;
+    let reoonErrors = 0;
+    let riskyCount = 0;
+
+    for (const r of candidates) {
+      if (selected.length >= limit) break;
+
+      const currentStatus = (r.email_status || '').trim().toLowerCase();
+
+      if (currentStatus === 'valid') {
+        selected.push(r);
+        continue;
+      }
+      if (currentStatus === 'risky') {
+        console.warn(`  [risky] ${r.email_found} — pre-marked risky, proceeding with warning`);
+        riskyCount++;
+        selected.push(r);
+        continue;
+      }
+      if (REOON_SKIP_STATUSES.has(currentStatus)) {
+        // Defense in depth — pre-filter already dropped these.
+        if (currentStatus === 'disposable') skippedDisposable++; else skippedInvalid++;
+        continue;
+      }
+
+      // Empty status path
+      if (skipValidation) {
+        console.warn(`  [skip-validation] ${r.email_found} — unvalidated, proceeding`);
+        selected.push(r);
+        continue;
+      }
+      if (!reoonKey) {
+        // Warning already printed at start of main()
+        selected.push(r);
+        continue;
+      }
+
+      try {
+        if (reoonCalls > 0) await sleep(REOON_RATE_LIMIT_MS);
+        const res = await reoonQuickVerify(r.email_found.trim(), reoonKey);
+        reoonCalls++;
+        const mapped = mapReoonStatus(res);
+        r.email_status = mapped;
+        if (!dryRun) {
+          fs.writeFileSync(masterPath, rowsToCSV(headers, records));
+        }
+        if (REOON_SKIP_STATUSES.has(mapped)) {
+          if (mapped === 'disposable') skippedDisposable++; else skippedInvalid++;
+          console.log(`  [reoon] ${r.email_found} -> ${mapped} (skipped)`);
+          continue;
+        }
+        if (mapped === 'risky') {
+          console.warn(`  [reoon] ${r.email_found} -> risky (proceeding with warning)`);
+          riskyCount++;
+        } else {
+          console.log(`  [reoon] ${r.email_found} -> ${mapped}`);
+        }
+        selected.push(r);
+      } catch (err) {
+        reoonErrors++;
+        console.warn(`  [reoon] ${r.email_found} -> ERROR ${err.message} — including as unverified`);
+        selected.push(r);
+      }
+    }
+
+    if (selected.length === 0) {
+      console.error('PIPELINE EXHAUSTION: Zero eligible records after validation. No batch generated.');
+      process.exit(1);
+    }
+
+    if (selected.length < limit) {
+      console.log(`WARNING: Only ${selected.length} eligible records (fewer than ${limit})`);
+    }
+
+    // 6. Generate slugs
     const selectionRecords = selected.map(r => {
       const cred = (r.PROFESSION || '').trim().toUpperCase();
       const savings = CREDENTIAL_MAP[cred] || DEFAULT_CREDENTIAL;
       return {
         slug: generateSlug(r.First_NAME, r.LAST_NAME, r.BUS_ADDR_CITY, r.BUS_ST_CODE),
         email: r.email_found.trim(),
-        first_name: (r.First_NAME || '').trim(),
+        first_name: titleCase((r.First_NAME || '').trim()),
         last_name: (r.LAST_NAME || '').trim(),
         credential: cred || 'Unknown',
         city: (r.BUS_ADDR_CITY || '').trim(),
@@ -214,13 +441,13 @@ function main() {
         time_savings_weekly: `${savings.weekly} hours`,
         time_savings_annual: `${savings.annual} hours`,
         revenue_opportunity: savings.revenue,
-        _sourceRef: r, // internal: pointer back to master record for stamping
+        _sourceRef: r,
       };
     });
 
     dedupSlugs(selectionRecords);
 
-    // 6. Write selection file
+    // 7. Write selection file
     if (!fs.existsSync(BATCHES_DIR)) fs.mkdirSync(BATCHES_DIR, { recursive: true });
     if (!fs.existsSync(GMAIL_DIR)) fs.mkdirSync(GMAIL_DIR, { recursive: true });
 
@@ -228,23 +455,39 @@ function main() {
     const output = selectionRecords.map(({ _sourceRef, ...rest }) => rest);
     fs.writeFileSync(selectionPath, JSON.stringify(output, null, 2));
 
-    // 7. Stamp tracking in master CSV
-    for (const rec of selectionRecords) {
-      rec._sourceRef.email_1_prepared_at = timestamp;
+    // 8. Stamp tracking in master CSV (skipped under --dry-run)
+    if (!dryRun) {
+      for (const rec of selectionRecords) {
+        rec._sourceRef.email_1_prepared_at = timestamp;
+      }
+      fs.writeFileSync(masterPath, rowsToCSV(headers, records));
     }
-    const updatedCSV = rowsToCSV(headers, records);
-    fs.writeFileSync(masterPath, updatedCSV);
 
-    // 9. Print summary
-    const daysRemaining = remaining > 0 ? Math.ceil(remaining / BATCH_SIZE) : 0;
+    // 9. Summary
+    const remaining = candidates.length - selected.length - skippedInvalid - skippedDisposable;
+    const daysRemaining = remaining > 0 ? Math.ceil(remaining / limit) : 0;
+    let validationLine;
+    if (skipValidation) {
+      validationLine = 'SKIPPED (--skip-validation)';
+    } else if (!reoonKey) {
+      validationLine = 'SKIPPED (REOON_API_KEY not set)';
+    } else {
+      validationLine = `Reoon Quick enabled (${reoonCalls} verified, ${skippedInvalid} invalid, ${skippedDisposable} disposable, ${riskyCount} risky, ${reoonErrors} errors)`;
+    }
+    const stampLine = dryRun
+      ? '[DRY RUN] Source CSV was NOT updated.'
+      : `Master CSV updated: ${selected.length} rows stamped with email_1_prepared_at`;
+
     console.log(`
 === BATCH SELECTION COMPLETE ===
 Date: ${today}  |  Batch #${seq}
 Records selected: ${selected.length}
+Limit: ${limit}
+Validation: ${validationLine}
 Selection file: scale/batches/batch-selection-${today}-${seq}.json
-Master CSV updated: ${selected.length} rows stamped with email_1_prepared_at
-Remaining eligible for Email 1: ${remaining}
-Days of pipeline remaining: ${daysRemaining} (at ${BATCH_SIZE}/day)
+${stampLine}
+Remaining candidates: ${remaining}
+Days of pipeline remaining: ${daysRemaining} (at ${limit}/run)
 
 NEXT STEP:
 Claude Code now generates personalized email copy and asset page data
@@ -265,4 +508,8 @@ Push to R2:
   }
 }
 
-main();
+main().catch(err => {
+  console.error('FATAL:', err);
+  try { fs.unlinkSync(LOCKFILE); } catch (_) {}
+  process.exit(1);
+});

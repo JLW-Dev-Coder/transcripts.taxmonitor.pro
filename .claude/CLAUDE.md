@@ -109,6 +109,14 @@ transcript.taxmonitor.pro/
 | email_2_scheduled_for | ISO date — when Email 2 should send |
 | email_2_sent_at | ISO timestamp — set by VLP Worker after send |
 
+**Note:** The `email_status` column is NOT an original column in the strict sense, but the scale pipeline writes canonical values (`valid` / `invalid` / `disposable` / `risky` / empty) back into it via `scale/validate-emails.js` (bulk) and `scale/generate-batch.js` (per-record Quick). See §6b for the canonical values and §6c for the Reoon → canonical mapping.
+
+### Required environment variables
+
+| Var | Used by | Purpose |
+|-----|---------|---------|
+| `REOON_API_KEY` | `scale/validate-emails.js`, `scale/generate-batch.js` | Reoon email verification API key. `validate-emails.js` exits with an error if unset; `generate-batch.js` warns and proceeds without validation. |
+
 ### Two-file intake workflow
 
 Humans never edit the master CSV directly. New prospects are added through:
@@ -131,13 +139,51 @@ File paths:
 ## 6. Selection Logic (mandatory, in exact order)
 
 1. `email_found` is not empty, not `"undefined"`, not NaN
-2. `email_status` is not `"invalid"`
+2. `email_status` is not `"invalid"` and not `"disposable"`
 3. `email_1_prepared_at` is empty
 4. Sort ascending by `domain_clean` (nulls last)
-5. Select first 50 records
+5. Walk in sort order; for each candidate apply the Reoon Quick gate (see §6a) until the limit (default 50) is filled
 
-If fewer than 50 eligible: process all remaining and log the count.
+If fewer than the limit are eligible: process all remaining and log the count.
 If zero eligible: halt and report pipeline exhaustion.
+
+### 6a. Reoon Quick validation gate (generate-batch.js)
+
+Per-record gate applied during the selection walk:
+
+| Current `email_status` | Action |
+|------------------------|--------|
+| `valid` | Proceed — already validated |
+| `invalid` / `disposable` | Skip (pre-filtered) |
+| `risky` | Proceed with console warning |
+| empty + `REOON_API_KEY` set + `--skip-validation` NOT set | Call Reoon Quick API (`mode=quick`), map status, write back to CSV, apply this table recursively |
+| empty + `REOON_API_KEY` unset | Warn once at start; proceed unvalidated |
+| empty + `--skip-validation` | Warn per record; proceed unvalidated |
+
+Rate limit for Reoon Quick calls: 1 request per second.
+
+At the start of a run, if any records will need validation, call Reoon's balance endpoint and log `daily` / `instant` credit counts. Warn if `daily < emptyStatusCount`.
+
+### 6b. Canonical `email_status` values
+
+The `email_status` column uses exactly these four canonical values (plus empty = not yet validated):
+
+| Value | Meaning | Batch gate behavior |
+|-------|---------|---------------------|
+| `valid` | Deliverable | Include |
+| `invalid` | Undeliverable / spamtrap / disabled mailbox | Skip |
+| `disposable` | Disposable / throwaway domain | Skip |
+| `risky` | Catch-all, role account, inbox full, unknown — may bounce | Include with warning |
+
+### 6c. Reoon raw → canonical mapping
+
+| Reoon raw status | Canonical |
+|------------------|-----------|
+| `safe`, `valid` | `valid` |
+| `invalid`, `disabled`, `spamtrap` | `invalid` |
+| `disposable` | `disposable` |
+| `inbox_full`, `catch_all`, `role_account`, `unknown` | `risky` |
+| anything else | `risky` (defensive default) |
 
 ---
 
@@ -308,7 +354,8 @@ R2 key: `vlp-scale/asset-pages/{slug}.json`
 
 ### Steps
 
-1. Run `node scale/generate-batch.js` — selects next 50 eligible records, generates slugs, writes selection file, stamps tracking
+0. (Weekly or when the unvalidated backlog grows) Run `REOON_API_KEY=xxx node scale/validate-emails.js` — bulk-validates up to 500 emails via Reoon and writes results to `email_status`
+1. Run `node scale/generate-batch.js` — selects next 50 eligible records, applies the Reoon Quick gate, generates slugs, writes selection file, stamps tracking
 2. Claude Code reads `scale/batches/batch-selection-{YYYY-MM-DD}-{N}.json` and generates personalized copy per SKILL.md
 3. Claude Code writes final outputs:
    - `scale/batches/scale-batch-{YYYY-MM-DD}-{N}.json` — full batch with asset pages and email copy
@@ -318,6 +365,39 @@ R2 key: `vlp-scale/asset-pages/{slug}.json`
 6. Push batch history manifest to R2
 7. Push updated master CSV to R2
 8. Push prospect email-to-slug index to R2
+
+### generate-batch.js flags
+
+```
+node scale/generate-batch.js [source.csv] [--limit N] [--dry-run] [--skip-validation]
+```
+
+- `source.csv` (positional, optional) — override master CSV auto-detect
+- `--limit N` — process N records instead of the default 50
+- `--dry-run` — write selection file but do NOT stamp `email_1_prepared_at` and do NOT persist Reoon updates to the source CSV
+- `--skip-validation` — skip the Reoon Quick gate entirely (e.g., credits exhausted)
+
+Examples:
+```
+node scale/generate-batch.js                              # default: 50, stamps CSV
+node scale/generate-batch.js --limit 2 --dry-run          # preview 2, no writes
+node scale/generate-batch.js --limit 25 --skip-validation # 25 records, no Reoon
+```
+
+### validate-emails.js (bulk pre-validation)
+
+```
+REOON_API_KEY=xxx node scale/validate-emails.js [source.csv]
+```
+
+- Reads the CSV, filters to records with non-empty `email_found` and empty `email_status`
+- Collects up to 500 addresses (Reoon daily free-tier cap)
+- POSTs to `create-bulk-verification-task` with `{ name, emails, key }`
+- Polls `get-result-bulk-verification-task` every 10s until `status === "completed"` (20 min max)
+- Maps raw statuses to canonical (see §6c), writes results to `email_status`
+- Prints summary: valid / invalid / risky / disposable / failed
+- Requires `REOON_API_KEY` env var — exits with error if unset
+- Performs a balance check at start; warns if `daily < emails to submit`
 
 ---
 
