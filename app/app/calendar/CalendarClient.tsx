@@ -1,92 +1,54 @@
 'use client'
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { api } from '@/lib/api'
-import AppTopbar from '@/components/AppTopbar'
-import styles from '../dashboard/dashboard.module.css'
 
-interface Session { email: string; tokenId: string; balance: number }
+import { Calendar, Clock, ExternalLink } from 'lucide-react'
+import { useAppSession } from '../SessionContext'
+
+const BOOKINGS = [
+  {
+    label: 'Support Call',
+    description: 'Quick troubleshooting or account help',
+    duration: '10 min',
+    url: 'https://cal.com/tax-monitor-pro/support',
+  },
+  {
+    label: 'Service Intro',
+    description: 'Learn how TTMP saves your practice time',
+    duration: '15 min',
+    url: 'https://cal.com/tax-monitor-pro/ttmp-discovery',
+  },
+]
 
 export default function CalendarClient() {
-  const [session, setSession] = useState<Session | null>(null)
-  const [loading, setLoading]  = useState(true)
-  const [pathname, setPathname] = useState('')
-  const [mobileNavOpen, setMobileNavOpen] = useState(false)
-
-  useEffect(() => { setPathname(window.location.pathname) }, [])
-
-  useEffect(() => {
-    api.getSession()
-      .then((res) => {
-        if (res.ok && res.session) {
-          setSession({ email: res.session.email, tokenId: res.session.account_id, balance: res.session.transcript_tokens ?? 0 })
-        } else {
-          window.location.href = '/login/'
-        }
-      })
-      .catch(() => { window.location.href = '/login/' })
-      .finally(() => setLoading(false))
-  }, [])
-
-  const handleSignOut = async () => {
-    await api.logout()
-    window.location.href = '/login/'
-  }
-
-  if (loading) return <div className={styles.loadingState}>Loading...</div>
+  const session = useAppSession()
 
   return (
-    <div className={styles.appShell}>
-      {mobileNavOpen && <div className={styles.sidebarOverlay} onClick={() => setMobileNavOpen(false)} />}
-      <aside className={`${styles.sidebar} ${mobileNavOpen ? styles.sidebarMobileOpen : ''}`}>
-        <div className={styles.sidebarBrand}>
-          <span className={styles.brandMark}>TT</span>
-          <div><div className={styles.brandName}>Transcript Tax Monitor</div><div className={styles.brandSub}>Dashboard</div></div>
-        </div>
-        <nav className={styles.sidebarNav}>
-          {[['Dashboard','/app/dashboard/'],['Account','/app/account/'],['Reports','/app/reports/'],['Receipts','/app/receipts/'],['Support','/app/support/'],['Token Usage','/app/token-usage/'],['Calendar','/app/calendar/'],['Affiliate','/app/affiliate/']].map(([label, href]) => (
-            <Link key={href} href={href} className={`${styles.navLink} ${pathname === href ? styles.navLinkActive : ''}`}>
-              <span className={styles.navDot} />{label}
-            </Link>
-          ))}
-        </nav>
-        <div className={styles.sidebarFooter}>
-          <button type="button" onClick={handleSignOut} className={styles.signOutBtn}>Sign Out</button>
-        </div>
-      </aside>
-      <div className={styles.mainShell}>
-        <AppTopbar
-          title="Calendar"
-          email={session?.email}
-          onSignOut={handleSignOut}
-          onMenuClick={() => setMobileNavOpen(true)}
-          rightExtra={
-            <span className={`${styles.tokenBadge} ${session && session.balance > 0 ? styles.tokenBadgeGreen : styles.tokenBadgeAmber}`}>
-              {session?.balance ?? 0} tokens
-            </span>
-          }
-        />
-        <main className={styles.workspaceContent}>
-          <div className={styles.parserCard} style={{ padding: '2rem' }}>
-            <p className={styles.outputCardTitle} style={{ marginBottom: '0.5rem' }}>Calendar</p>
-            <p className={styles.parserNote} style={{ marginBottom: '1.5rem' }}>Book a call with our team or view your scheduled appointments.</p>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-              {[
-                { label: 'Support Call', desc: 'Get help with a transcript or report', href: 'https://cal.com/tax-monitor-pro/tax-monitor-transcript-support', duration: '10 min' },
-                { label: 'Service Intro', desc: 'Learn how TTMP works for your practice', href: 'https://cal.com/tax-monitor-pro/tax-monitor-service-intro', duration: '15 min' },
-              ].map(item => (
-                <div key={item.label} style={{ background: '#0a0f1e', border: '1px solid #1a2235', borderRadius: 10, padding: '1.5rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-                    <p style={{ fontSize: 14, fontWeight: 600, color: '#f9fafb' }}>{item.label}</p>
-                    <span style={{ fontSize: 11, color: '#14b8a6', background: 'rgba(20,184,166,0.1)', border: '1px solid rgba(20,184,166,0.2)', borderRadius: 100, padding: '2px 8px' }}>{item.duration}</span>
-                  </div>
-                  <p className={styles.parserNote} style={{ marginBottom: '1.25rem' }}>{item.desc}</p>
-                  <a href={item.href} target="_blank" rel="noopener noreferrer" className={styles.btnPrimary} style={{ fontSize: 12, padding: '6px 14px', textDecoration: 'none', display: 'inline-flex' }}>Book →</a>
-                </div>
-              ))}
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-semibold text-white">Calendar</h1>
+        <p className="mt-1 text-sm text-white/50">Book a call with our team</p>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        {BOOKINGS.map(b => (
+          <div key={b.label} className="rounded-xl border border-[--member-border] bg-[--member-card] p-5 transition hover:bg-[--member-card-hover]">
+            <div className="mb-3 flex items-start justify-between">
+              <Calendar className="h-5 w-5 text-teal-400" />
+              <span className="inline-flex items-center gap-1 rounded-full bg-teal-500/10 px-2 py-0.5 text-[11px] font-semibold text-teal-400">
+                <Clock className="h-3 w-3" /> {b.duration}
+              </span>
             </div>
+            <h3 className="text-base font-semibold text-white/90">{b.label}</h3>
+            <p className="mt-1 text-sm text-white/40">{b.description}</p>
+            <a
+              href={b.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-teal-500 px-4 py-2 text-sm font-bold text-black transition hover:opacity-90"
+            >
+              Book <ExternalLink className="h-3.5 w-3.5" />
+            </a>
           </div>
-        </main>
+        ))}
       </div>
     </div>
   )

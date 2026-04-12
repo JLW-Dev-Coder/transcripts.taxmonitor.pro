@@ -14,15 +14,20 @@
   "dependencies": {
     "@opennextjs/cloudflare": "^1.18.0",
     "csv-parse": "^6.2.1",
+    "lucide-react": "^1.8.0",
     "next": "^15.2.4",
     "react": "^19",
     "react-dom": "^19"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "autoprefixer": "^10.4.27",
     "esbuild": "^0.28.0",
+    "postcss": "^8.5.9",
+    "tailwindcss": "^4.2.2",
     "typescript": "^5"
   }
 }

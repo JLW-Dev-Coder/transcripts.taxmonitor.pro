@@ -52,9 +52,31 @@ transcript.taxmonitor.pro/
 │   ├── validate-emails.js         ← Reoon bulk verification for existing emails
 │   └── generate-batch.js          ← selection + copy generation orchestrator
 ├── app/
-│   └── asset/[slug]/              ← asset page route
+│   ├── asset/[slug]/              ← asset page route
+│   └── app/                       ← authenticated dashboard (Tailwind)
+│       ├── layout.tsx             ← shared shell (sidebar + topbar + content)
+│       ├── AppShell.tsx           ← auth + layout wrapper (client component)
+│       ├── SessionContext.tsx     ← React context for session data
+│       ├── dashboard/             ← transcript parser + KPIs
+│       ├── account/               ← account details + billing
+│       ├── reports/               ← saved report list
+│       ├── report/                ← individual report viewer
+│       ├── receipts/              ← purchase receipts
+│       ├── token-usage/           ← token balance + usage history
+│       ├── calendar/              ← booking cards (cal.com)
+│       ├── affiliate/             ← referral program + commission history
+│       └── support/               ← ticket form + quick links
+├── components/
+│   ├── member/                    ← Tailwind dashboard components
+│   │   ├── MemberSidebar.tsx      ← collapsible sidebar (240px/68px)
+│   │   ├── MemberTopbar.tsx       ← topbar with search, bell, avatar
+│   │   ├── KPICard.tsx            ← value + label + icon card
+│   │   ├── HeroCard.tsx           ← gradient banner card
+│   │   ├── ContentCard.tsx        ← generic card with optional title
+│   │   └── DataTable.tsx          ← styled table with hover states
+│   └── ...                        ← marketing components (CSS Modules)
 └── public/
-└── tools/code-lookup/
+    └── tools/code-lookup/
 
 `scale/prospects/` = source of truth input. Never regenerate or reshape it.
 `scale/batches/` = generated output. Never treat as source.
@@ -74,6 +96,52 @@ transcript.taxmonitor.pro/
 - Worker name: `transcript-taxmonitor-pro`
 - No R2 or D1 bindings — all data fetched client-side from `api.taxmonitor.pro`
 - `@cloudflare/next-on-pages` is deprecated by Cloudflare — do not switch back to it
+
+---
+
+## 4a. Dashboard Design System
+
+**Hybrid styling:** Tailwind CSS v4 for authenticated app pages (`app/app/`), CSS Modules for marketing pages. Tailwind does NOT touch marketing routes.
+
+**Tailwind setup:**
+- `@tailwindcss/postcss` in `postcss.config.js`
+- `@import "tailwindcss"` + `@source` directives in `globals.css`
+- `@theme` block defines brand colors
+
+**CSS variables (member app):**
+```css
+--member-bg: #0a0f1e;
+--member-card: rgba(255,255,255,0.04);
+--member-card-hover: rgba(255,255,255,0.06);
+--member-border: rgba(255,255,255,0.08);
+--member-accent: rgba(20,184,166,0.1);
+--member-accent-strong: rgba(20,184,166,0.2);
+--member-hero-bg: #042f2e;
+--member-hero-bg-end: #021a19;
+```
+
+**Sidebar navigation (MemberSidebar):**
+```
+WORKSPACE:  Dashboard, Calendar, Transcripts, Reports, Receipts, Tokens
+EARNINGS:   Affiliate
+SETTINGS:   Account (→ Payments), Support
+FOOTER:     Back to site, Sign out, Collapse toggle
+```
+- Collapsible: 240px expanded / 68px collapsed
+- Icons: lucide-react
+- Active: `border-l-2 border-teal-500 bg-teal-500/10 text-teal-400`
+
+**Shared layout:** `app/app/layout.tsx` → `AppShell.tsx` provides:
+- Auth check (redirects to `/login/` if unauthenticated)
+- Session context via `useAppSession()` hook
+- Sidebar + Topbar + scrollable content area
+- Token balance pill in topbar
+
+**Shared card components:** `components/member/`
+- `KPICard` — value + label + icon, teal accent
+- `HeroCard` — gradient banner
+- `ContentCard` — generic card with optional header
+- `DataTable` — styled table
 
 ---
 

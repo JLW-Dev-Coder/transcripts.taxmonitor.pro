@@ -1,10 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import AppTopbar from '@/components/AppTopbar'
-import styles from './affiliate.module.css'
+import { Link2, Wallet, CreditCard, CheckCircle, Copy } from 'lucide-react'
+import { useAppSession } from '../SessionContext'
 import {
   api,
   getAffiliate,
@@ -14,17 +12,12 @@ import {
   type AffiliateData,
   type AffiliateEvent,
 } from '@/lib/api'
-
-interface Session {
-  email: string
-  account_id: string
-}
+import KPICard from '@/components/member/KPICard'
+import ContentCard from '@/components/member/ContentCard'
+import DataTable from '@/components/member/DataTable'
 
 export default function AffiliateClient() {
-  const router = useRouter()
-
-  const [session, setSession] = useState<Session | null>(null)
-  const [loading, setLoading] = useState(true)
+  const session = useAppSession()
   const [affiliate, setAffiliate] = useState<AffiliateData | null>(null)
   const [events, setEvents] = useState<AffiliateEvent[]>([])
   const [eventsLoading, setEventsLoading] = useState(true)
@@ -35,39 +28,24 @@ export default function AffiliateClient() {
   const [payoutError, setPayoutError] = useState('')
   const [onboardLoading, setOnboardLoading] = useState(false)
   const [showTooltip, setShowTooltip] = useState(false)
-  const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   useEffect(() => {
     ;(async () => {
       try {
-        const res = await api.getSession()
-        if (res.ok && res.session) {
-          const account_id = res.session.account_id
-          setSession({ email: res.session.email, account_id })
-
-          setEventsLoading(true)
-          const [affiliateData, eventsData] = await Promise.all([
-            getAffiliate(account_id).catch(() => null),
-            getAffiliateEvents(account_id).catch(() => []),
-          ])
-
-          if (!affiliateData) {
-            setAffiliateError('Could not load affiliate data.')
-          } else {
-            setAffiliate(affiliateData)
-          }
-          setEvents(Array.isArray(eventsData) ? eventsData : [])
-          setEventsLoading(false)
-        } else {
-          router.replace('/login')
-        }
+        const [affiliateData, eventsData] = await Promise.all([
+          getAffiliate(session.accountId).catch(() => null),
+          getAffiliateEvents(session.accountId).catch(() => []),
+        ])
+        if (!affiliateData) setAffiliateError('Could not load affiliate data.')
+        else setAffiliate(affiliateData)
+        setEvents(Array.isArray(eventsData) ? eventsData : [])
       } catch {
-        router.replace('/login')
+        setAffiliateError('Failed to load affiliate data.')
       } finally {
-        setLoading(false)
+        setEventsLoading(false)
       }
     })()
-  }, [router])
+  }, [session.accountId])
 
   const handleCopy = () => {
     if (!affiliate) return
@@ -78,18 +56,13 @@ export default function AffiliateClient() {
 
   const handlePayout = async () => {
     if (!affiliate) return
-    setPayoutLoading(true)
-    setPayoutError('')
-    setPayoutResult(null)
+    setPayoutLoading(true); setPayoutError(''); setPayoutResult(null)
     try {
       const result = await requestPayout(affiliate.balance_pending)
       setPayoutResult(result)
       setAffiliate(prev => prev ? { ...prev, balance_pending: 0 } : prev)
-    } catch {
-      setPayoutError('Payout request failed. Please try again.')
-    } finally {
-      setPayoutLoading(false)
-    }
+    } catch { setPayoutError('Payout request failed. Please try again.') }
+    finally { setPayoutLoading(false) }
   }
 
   const handleOnboard = async () => {
@@ -97,218 +70,117 @@ export default function AffiliateClient() {
     try {
       const data = await startAffiliateOnboarding()
       window.location.href = data.onboard_url
-    } catch {
-      setOnboardLoading(false)
-    }
-  }
-
-  const handleSignOut = async () => {
-    await api.logout()
-    router.replace('/login/')
+    } catch { setOnboardLoading(false) }
   }
 
   const payoutDisabledBalance = !affiliate || affiliate.balance_pending < 1000
   const payoutDisabledConnect = !affiliate || affiliate.connect_status !== 'active'
   const payoutDisabled = payoutDisabledBalance || payoutDisabledConnect
-  const payoutTooltip = payoutDisabledConnect
-    ? 'Connect your bank account to withdraw'
-    : 'Minimum payout is $10'
+  const payoutTooltip = payoutDisabledConnect ? 'Connect your bank account to withdraw' : 'Minimum payout is $10'
 
-  const fmtUSD = (cents: number) =>
-    '$' + (cents / 100).toFixed(2)
-
-  if (loading) {
-    return <div className={styles.loadingState}>Loading...</div>
-  }
+  const fmtUSD = (cents: number) => '$' + (cents / 100).toFixed(2)
 
   return (
-    <div className={styles.appShell}>
-      {mobileNavOpen && <div className={styles.sidebarOverlay} onClick={() => setMobileNavOpen(false)} />}
-      {/* Sidebar */}
-      <aside className={`${styles.sidebar} ${mobileNavOpen ? styles.sidebarMobileOpen : ''}`}>
-        <div className={styles.sidebarBrand}>
-          <span className={styles.brandMark}>TM</span>
-          <div>
-            <div className={styles.brandName}>Transcript.Tax Monitor Pro</div>
-            <div className={styles.brandSub}>Dashboard</div>
-          </div>
-        </div>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-semibold text-white">Affiliate</h1>
+        <p className="mt-1 text-sm text-white/50">Earn 20% commission on every referral purchase</p>
+      </div>
 
-        <nav className={styles.sidebarNav}>
-          <Link href="/app/dashboard" className={styles.navLink}>Dashboard</Link>
-          <Link href="/app/account" className={styles.navLink}>Account</Link>
-          <Link href="/app/reports" className={styles.navLink}>Reports</Link>
-          <Link href="/app/receipts" className={styles.navLink}>Receipts</Link>
-          <Link href="/app/support" className={styles.navLink}>Support</Link>
-          <Link href="/app/token-usage" className={styles.navLink}>Token Usage</Link>
-          <Link href="/app/calendar" className={styles.navLink}>Calendar</Link>
-          <Link href="/app/affiliate" className={`${styles.navLink} ${styles.navLinkActive}`}>Affiliate</Link>
-        </nav>
+      {affiliateError && <p className="text-sm text-red-300">{affiliateError}</p>}
 
-        <div className={styles.sidebarFooter}>
-          <button type="button" onClick={handleSignOut} className={styles.signOutBtn}>
-            Sign Out
+      {/* Referral link */}
+      <ContentCard title="Your Referral Link" headerExtra={<Link2 className="h-4 w-4 text-white/20" />}>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            readOnly
+            value={affiliate?.referral_url ?? `https://virtuallaunch.pro/ref/${affiliate?.referral_code ?? '...'}`}
+            className="flex-1 rounded-lg border border-[--member-border] bg-[#07090f] px-3.5 py-2.5 text-sm text-white/80 outline-none"
+          />
+          <button type="button" onClick={handleCopy} className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.08] px-3.5 py-2.5 text-[13px] font-semibold text-slate-400 transition hover:border-white/20 hover:text-white">
+            <Copy className="h-3.5 w-3.5" /> {copyLabel}
           </button>
         </div>
-      </aside>
+        <p className="mt-2 text-xs text-white/40">Share this link. Earn 20% commission on every purchase your referrals make, for life.</p>
+      </ContentCard>
 
-      {/* Main shell */}
-      <div className={styles.mainShell}>
-        <AppTopbar
-          title="Affiliate"
-          email={session?.email}
-          onSignOut={handleSignOut}
-          onMenuClick={() => setMobileNavOpen(true)}
-        />
-
-        <main className={styles.content}>
-          {affiliateError && (
-            <p style={{ color: '#fca5a5', fontSize: '0.875rem' }}>{affiliateError}</p>
-          )}
-
-          {/* Section 1 — Referral Link */}
-          <div className={styles.card}>
-            <h2 className={styles.cardHeading}>Your Referral Link</h2>
-            <div className={styles.referralRow}>
-              <input
-                className={styles.referralInput}
-                type="text"
-                readOnly
-                value={affiliate?.referral_url ?? `https://virtuallaunch.pro/ref/${affiliate?.referral_code ?? '...'}`}
-              />
-              <button type="button" className={styles.btnSecondary} onClick={handleCopy}>
-                {copyLabel}
-              </button>
-            </div>
-            <p className={styles.referralSubtext}>
-              Share this link. Earn 20% commission on every purchase your referrals make, for life.
-            </p>
-          </div>
-
-          {/* Section 2 — Earnings Summary */}
-          <div className={styles.card}>
-            <h2 className={styles.cardHeading}>Earnings</h2>
-            <div className={styles.statsRow}>
-              <div className={styles.statCard}>
-                <div className={styles.statAmount}>
-                  {affiliate ? fmtUSD(affiliate.balance_pending) : '—'}
-                </div>
-                <p className={styles.statLabel}>Available to withdraw</p>
-              </div>
-              <div className={styles.statCard}>
-                <div className={styles.statAmount}>
-                  {affiliate ? fmtUSD(affiliate.balance_paid) : '—'}
-                </div>
-                <p className={styles.statLabel}>Total earned and paid</p>
-              </div>
-            </div>
-
-            <div
-              className={styles.payoutWrapper}
-              onMouseEnter={() => payoutDisabled && setShowTooltip(true)}
-              onMouseLeave={() => setShowTooltip(false)}
-            >
-              {showTooltip && payoutDisabled && (
-                <div className={styles.tooltip}>{payoutTooltip}</div>
-              )}
-              <button
-                type="button"
-                className={styles.btnPrimary}
-                disabled={payoutDisabled || payoutLoading}
-                onClick={handlePayout}
-              >
-                {payoutLoading ? 'Requesting...' : 'Request Payout'}
-              </button>
-            </div>
-
-            {payoutResult && (
-              <p className={styles.payoutSuccess}>
-                Payout requested — ID: {payoutResult.payout_id} · {fmtUSD(payoutResult.amount)} · {payoutResult.status}
-              </p>
-            )}
-            {payoutError && (
-              <p style={{ marginTop: 10, color: '#fca5a5', fontSize: '0.8125rem' }}>{payoutError}</p>
-            )}
-          </div>
-
-          {/* Section 3 — Stripe Connect */}
-          <div className={styles.card}>
-            <h2 className={styles.cardHeading}>Bank Account</h2>
-            {affiliate?.connect_status === 'active' ? (
-              <div className={styles.connectBadge}>
-                ✓ Bank account connected
-              </div>
-            ) : (
-              <>
-                <p className={styles.connectBody}>
-                  Connect via Stripe to receive commission payouts directly to your bank.
-                </p>
-                <button
-                  type="button"
-                  className={styles.btnPrimary}
-                  disabled={onboardLoading}
-                  onClick={handleOnboard}
-                >
-                  {onboardLoading ? 'Redirecting...' : 'Connect Bank Account'}
-                </button>
-              </>
-            )}
-          </div>
-
-          {/* Section 4 — Commission History */}
-          <div className={styles.card}>
-            <h2 className={styles.cardHeading}>Commission History</h2>
-            {eventsLoading ? (
-              <div>
-                {[1, 2, 3].map(i => (
-                  <div key={i} className={styles.skeletonRow}>
-                    <div className={styles.skeletonCell} style={{ width: '15%' }} />
-                    <div className={styles.skeletonCell} style={{ width: '20%' }} />
-                    <div className={styles.skeletonCell} style={{ width: '18%' }} />
-                    <div className={styles.skeletonCell} style={{ width: '18%' }} />
-                    <div className={styles.skeletonCell} style={{ width: '12%' }} />
-                  </div>
-                ))}
-              </div>
-            ) : events.length === 0 ? (
-              <p className={styles.emptyState}>
-                No commissions yet. Share your referral link to start earning.
-              </p>
-            ) : (
-              <div className={styles.tableWrap}>
-                <table className={styles.table}>
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>Platform</th>
-                      <th>Sale Amount</th>
-                      <th>Your Commission</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {events.map((ev, i) => (
-                      <tr key={i}>
-                        <td>{new Date(ev.created_at).toLocaleDateString()}</td>
-                        <td>{ev.platform}</td>
-                        <td>{fmtUSD(ev.gross_amount)}</td>
-                        <td>{fmtUSD(ev.commission_amount)}</td>
-                        <td>
-                          {ev.status === 'paid' ? (
-                            <span className={styles.badgePaid}>Paid</span>
-                          ) : (
-                            <span className={styles.badgePending}>Pending</span>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        </main>
+      {/* Earnings KPIs */}
+      <div className="grid gap-4 sm:grid-cols-2">
+        <KPICard label="Available to Withdraw" value={affiliate ? fmtUSD(affiliate.balance_pending) : '—'} icon={Wallet} />
+        <KPICard label="Total Earned & Paid" value={affiliate ? fmtUSD(affiliate.balance_paid) : '—'} icon={CreditCard} />
       </div>
+
+      {/* Payout */}
+      <ContentCard title="Payout">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="relative"
+            onMouseEnter={() => payoutDisabled && setShowTooltip(true)}
+            onMouseLeave={() => setShowTooltip(false)}
+          >
+            {showTooltip && payoutDisabled && (
+              <div className="absolute -top-8 left-0 rounded bg-slate-800 px-2 py-1 text-[11px] text-white/80 whitespace-nowrap">
+                {payoutTooltip}
+              </div>
+            )}
+            <button type="button" disabled={payoutDisabled || payoutLoading} onClick={handlePayout}
+              className="rounded-lg bg-teal-500 px-4 py-2 text-sm font-bold text-black transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-35">
+              {payoutLoading ? 'Requesting...' : 'Request Payout'}
+            </button>
+          </div>
+          {payoutResult && <p className="text-xs text-teal-400">Payout requested — ID: {payoutResult.payout_id} &middot; {fmtUSD(payoutResult.amount)} &middot; {payoutResult.status}</p>}
+          {payoutError && <p className="text-xs text-red-300">{payoutError}</p>}
+        </div>
+      </ContentCard>
+
+      {/* Bank account */}
+      <ContentCard title="Bank Account">
+        {affiliate?.connect_status === 'active' ? (
+          <div className="flex items-center gap-2 text-sm text-teal-400">
+            <CheckCircle className="h-4 w-4" /> Bank account connected
+          </div>
+        ) : (
+          <div>
+            <p className="mb-3 text-sm text-white/50">Connect via Stripe to receive commission payouts directly to your bank.</p>
+            <button type="button" disabled={onboardLoading} onClick={handleOnboard}
+              className="rounded-lg bg-teal-500 px-4 py-2 text-sm font-bold text-black transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-35">
+              {onboardLoading ? 'Redirecting...' : 'Connect Bank Account'}
+            </button>
+          </div>
+        )}
+      </ContentCard>
+
+      {/* Commission history */}
+      {eventsLoading ? (
+        <div className="flex items-center justify-center py-8">
+          <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-white/[0.08] border-t-teal-500" />
+        </div>
+      ) : events.length === 0 ? (
+        <ContentCard title="Commission History">
+          <p className="text-sm text-white/40">No commissions yet. Share your referral link to start earning.</p>
+        </ContentCard>
+      ) : (
+        <DataTable
+          columns={[
+            { key: 'date', label: 'Date' },
+            { key: 'platform', label: 'Platform' },
+            { key: 'sale', label: 'Sale Amount' },
+            { key: 'commission', label: 'Your Commission' },
+            { key: 'status', label: 'Status' },
+          ]}
+          rows={events.map(ev => ({
+            date: new Date(ev.created_at).toLocaleDateString(),
+            platform: ev.platform,
+            sale: fmtUSD(ev.gross_amount),
+            commission: fmtUSD(ev.commission_amount),
+            status: ev.status === 'paid' ? (
+              <span className="inline-flex items-center gap-1 rounded-full bg-teal-500/10 px-2 py-0.5 text-xs font-semibold text-teal-400">Paid</span>
+            ) : (
+              <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-xs font-semibold text-amber-400">Pending</span>
+            ),
+          }))}
+        />
+      )}
     </div>
   )
 }

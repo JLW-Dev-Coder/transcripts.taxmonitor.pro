@@ -1,147 +1,109 @@
 'use client'
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { api } from '@/lib/api'
-import AppTopbar from '@/components/AppTopbar'
-import styles from '../dashboard/dashboard.module.css'
 
-interface Session { email: string; tokenId: string; balance: number }
+import { useState } from 'react'
+import { HelpCircle, Calendar, Book, Send, CheckCircle } from 'lucide-react'
+import { useAppSession } from '../SessionContext'
+import { api } from '@/lib/api'
+import ContentCard from '@/components/member/ContentCard'
 
 export default function SupportClient() {
-  const [session, setSession] = useState<Session | null>(null)
-  const [loading, setLoading]  = useState(true)
-  const [pathname, setPathname] = useState('')
-  const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const session = useAppSession()
   const [subject, setSubject] = useState('')
   const [message, setMessage] = useState('')
-  const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
+  const handleSubmit = async () => {
     if (!subject.trim() || !message.trim()) return
     setSubmitting(true)
     setError('')
     try {
-      await api.createTicket({ subject: subject.trim(), message: message.trim() })
+      await api.createTicket({ subject, message })
       setSubmitted(true)
-      setSubject('')
-      setMessage('')
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+    } catch {
+      setError('Failed to submit ticket. Please try again.')
     } finally {
       setSubmitting(false)
     }
   }
 
-  useEffect(() => { setPathname(window.location.pathname) }, [])
-
-  useEffect(() => {
-    api.getSession()
-      .then((res) => {
-        if (res.ok && res.session) {
-          setSession({ email: res.session.email, tokenId: res.session.account_id, balance: res.session.transcript_tokens ?? 0 })
-        } else {
-          window.location.href = '/login/'
-        }
-      })
-      .catch(() => { window.location.href = '/login/' })
-      .finally(() => setLoading(false))
-  }, [])
-
-  const handleSignOut = async () => {
-    await api.logout()
-    window.location.href = '/login/'
-  }
-
-  if (loading) return <div className={styles.loadingState}>Loading...</div>
-
   return (
-    <div className={styles.appShell}>
-      {mobileNavOpen && <div className={styles.sidebarOverlay} onClick={() => setMobileNavOpen(false)} />}
-      <aside className={`${styles.sidebar} ${mobileNavOpen ? styles.sidebarMobileOpen : ''}`}>
-        <div className={styles.sidebarBrand}>
-          <span className={styles.brandMark}>TT</span>
-          <div><div className={styles.brandName}>Transcript Tax Monitor</div><div className={styles.brandSub}>Dashboard</div></div>
-        </div>
-        <nav className={styles.sidebarNav}>
-          {[['Dashboard','/app/dashboard/'],['Account','/app/account/'],['Reports','/app/reports/'],['Receipts','/app/receipts/'],['Support','/app/support/'],['Token Usage','/app/token-usage/'],['Calendar','/app/calendar/'],['Affiliate','/app/affiliate/']].map(([label, href]) => (
-            <Link key={href} href={href} className={`${styles.navLink} ${pathname === href ? styles.navLinkActive : ''}`}>
-              <span className={styles.navDot} />{label}
-            </Link>
-          ))}
-        </nav>
-        <div className={styles.sidebarFooter}>
-          <button type="button" onClick={handleSignOut} className={styles.signOutBtn}>Sign Out</button>
-        </div>
-      </aside>
-      <div className={styles.mainShell}>
-        <AppTopbar
-          title="Support"
-          email={session?.email}
-          onSignOut={handleSignOut}
-          onMenuClick={() => setMobileNavOpen(true)}
-          rightExtra={
-            <span className={`${styles.tokenBadge} ${session && session.balance > 0 ? styles.tokenBadgeGreen : styles.tokenBadgeAmber}`}>
-              {session?.balance ?? 0} tokens
-            </span>
-          }
-        />
-        <main className={styles.workspaceContent}>
-          <div className={styles.parserCard} style={{ padding: '2rem' }}>
-            <p className={styles.outputCardTitle} style={{ marginBottom: '0.5rem' }}>Support</p>
-            <p className={styles.parserNote} style={{ marginBottom: '1.5rem' }}>Need help? Book a call or send us a message.</p>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: '1.5rem' }}>
-              {[
-                { label: 'Book a Support Call', desc: '15-minute session with our team', href: 'https://cal.com/tax-monitor-pro/tax-monitor-transcript-support', cta: 'Book Call' },
-                { label: 'Documentation', desc: 'Guides and how-to articles', href: 'https://transcript.taxmonitor.pro/resources/', cta: 'Browse Docs' },
-              ].map(item => (
-                <div key={item.label} style={{ background: '#0a0f1e', border: '1px solid #1a2235', borderRadius: 10, padding: '1.25rem' }}>
-                  <p style={{ fontSize: 14, fontWeight: 600, color: '#f9fafb', marginBottom: 4 }}>{item.label}</p>
-                  <p className={styles.parserNote} style={{ marginBottom: '1rem' }}>{item.desc}</p>
-                  <a href={item.href} target="_blank" rel="noopener noreferrer" className={styles.btnPrimary} style={{ fontSize: 12, padding: '6px 14px', textDecoration: 'none', display: 'inline-flex' }}>{item.cta} →</a>
-                </div>
-              ))}
-            </div>
-
-            <div style={{ background: '#0a0f1e', border: '1px solid #1a2235', borderRadius: 10, padding: '1.5rem' }}>
-              <p style={{ fontSize: 14, fontWeight: 600, color: '#f9fafb', marginBottom: '1rem' }}>Submit a Support Ticket</p>
-              {submitted ? (
-                <div style={{ background: 'rgba(20,184,166,0.1)', border: '1px solid rgba(20,184,166,0.3)', borderRadius: 8, padding: '12px 14px', fontSize: 13, color: '#5eead4' }}>
-                  Your ticket has been submitted. We&apos;ll respond within 1 business day.{' '}
-                  <button type="button" onClick={() => setSubmitted(false)} style={{ background: 'transparent', border: 0, color: '#5eead4', textDecoration: 'underline', cursor: 'pointer', fontSize: 13, padding: 0, marginLeft: 4 }}>Send another</button>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit}>
-                  {error && (
-                    <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 8, padding: '10px 12px', fontSize: 13, color: '#fca5a5', marginBottom: 10 }}>{error}</div>
-                  )}
-                  <input
-                    type="text"
-                    placeholder="Subject"
-                    value={subject}
-                    onChange={(e) => setSubject(e.target.value)}
-                    required
-                    style={{ width: '100%', background: '#111827', border: '1px solid #1a2235', borderRadius: 8, padding: '10px 12px', fontSize: 13, color: '#f9fafb', fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box', marginBottom: 10 }}
-                  />
-                  <textarea
-                    placeholder="Describe your issue..."
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    required
-                    style={{ width: '100%', background: '#111827', border: '1px solid #1a2235', borderRadius: 8, padding: '10px 12px', fontSize: 13, color: '#f9fafb', fontFamily: 'inherit', minHeight: 100, resize: 'vertical', outline: 'none', boxSizing: 'border-box', marginBottom: 10 }}
-                  />
-                  <button type="submit" disabled={submitting} className={styles.btnPrimary} style={{ fontSize: 13 }}>
-                    {submitting ? 'Submitting...' : 'Submit ticket'}
-                  </button>
-                </form>
-              )}
-            </div>
-          </div>
-        </main>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-semibold text-white">Support</h1>
+        <p className="mt-1 text-sm text-white/50">Get help with your account or the platform</p>
       </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="rounded-xl border border-[--member-border] bg-[--member-card] p-5 transition hover:bg-[--member-card-hover]">
+          <Calendar className="mb-3 h-5 w-5 text-teal-400" />
+          <h3 className="text-base font-semibold text-white/90">Book a Call</h3>
+          <p className="mt-1 text-sm text-white/40">10-minute support call with our team</p>
+          <a
+            href="https://cal.com/tax-monitor-pro/support"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-block rounded-lg border border-teal-500/30 px-3.5 py-1.5 text-[13px] font-semibold text-teal-400 transition hover:bg-teal-500/10"
+          >
+            Schedule
+          </a>
+        </div>
+        <div className="rounded-xl border border-[--member-border] bg-[--member-card] p-5 transition hover:bg-[--member-card-hover]">
+          <Book className="mb-3 h-5 w-5 text-teal-400" />
+          <h3 className="text-base font-semibold text-white/90">Documentation</h3>
+          <p className="mt-1 text-sm text-white/40">Guides and resources for TTMP</p>
+          <a
+            href="https://transcript.taxmonitor.pro/tools/code-lookup"
+            className="mt-3 inline-block rounded-lg border border-teal-500/30 px-3.5 py-1.5 text-[13px] font-semibold text-teal-400 transition hover:bg-teal-500/10"
+          >
+            Browse
+          </a>
+        </div>
+      </div>
+
+      <ContentCard title="Submit a Ticket" headerExtra={<HelpCircle className="h-4 w-4 text-white/20" />}>
+        {submitted ? (
+          <div className="py-6 text-center">
+            <CheckCircle className="mx-auto mb-3 h-10 w-10 text-teal-400" />
+            <p className="text-sm font-semibold text-white/80">Ticket submitted</p>
+            <p className="mt-1 text-xs text-white/40">We&apos;ll get back to you at {session.email}</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div>
+              <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.06em] text-slate-600">Subject</label>
+              <input
+                type="text"
+                value={subject}
+                onChange={e => setSubject(e.target.value)}
+                placeholder="Brief description of your issue"
+                className="w-full rounded-lg border border-[--member-border] bg-[#07090f] px-3.5 py-2.5 text-sm text-white/90 outline-none transition placeholder:text-slate-600 focus:border-teal-500"
+              />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.06em] text-slate-600">Message</label>
+              <textarea
+                value={message}
+                onChange={e => setMessage(e.target.value)}
+                placeholder="Describe your issue in detail..."
+                rows={5}
+                className="w-full resize-none rounded-lg border border-[--member-border] bg-[#07090f] px-3.5 py-2.5 text-sm text-white/90 outline-none transition placeholder:text-slate-600 focus:border-teal-500"
+              />
+            </div>
+            {error && <p className="text-[13px] text-red-300">{error}</p>}
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={submitting || !subject.trim() || !message.trim()}
+              className="inline-flex items-center gap-2 rounded-lg bg-teal-500 px-4 py-2 text-sm font-bold text-black transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-35"
+            >
+              <Send className="h-3.5 w-3.5" />
+              {submitting ? 'Submitting...' : 'Submit Ticket'}
+            </button>
+          </div>
+        )}
+      </ContentCard>
     </div>
   )
 }

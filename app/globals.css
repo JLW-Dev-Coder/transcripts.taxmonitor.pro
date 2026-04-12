@@ -1,3 +1,15 @@
+@import "tailwindcss";
+
+@source "../app/app";
+@source "../components/member";
+
+@theme {
+  --color-brand-teal: #14b8a6;
+  --color-brand-teal-dark: #0d9488;
+  --color-brand-teal-darker: #0f766e;
+  --font-sans: var(--font-raleway), Inter, system-ui, -apple-system, sans-serif;
+}
+
 :root {
 --accent:        #14b8a6;
   --accent-light:  #f0fdfa;
@@ -31,6 +43,16 @@
 
   /* Shadows */
   --shadow-xl: 0 24px 48px rgba(0,0,0,0.6);
+
+  /* Member app design tokens */
+  --member-bg: #0a0f1e;
+  --member-card: rgba(255,255,255,0.04);
+  --member-card-hover: rgba(255,255,255,0.06);
+  --member-border: rgba(255,255,255,0.08);
+  --member-accent: rgba(20,184,166,0.1);
+  --member-accent-strong: rgba(20,184,166,0.2);
+  --member-hero-bg: #042f2e;
+  --member-hero-bg-end: #021a19;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -84,4 +106,39 @@ p { margin-bottom: 1rem; }
 
 .page-loader.loaded {
   display: none;
+}
+
+/* ── Member app scrollbar ──────────────────────── */
+.member-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(20,184,166,0.3) transparent;
+}
+
+.member-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.member-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.member-scroll::-webkit-scrollbar-thumb {
+  background: rgba(20,184,166,0.3);
+  border-radius: 4px;
+}
+
+.member-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(20,184,166,0.5);
+}
+
+/* ── Print styles for member app ───────────────── */
+@media print {
+  .member-shell-sidebar,
+  .member-shell-topbar {
+    display: none !important;
+  }
+  .member-shell-main {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
 }
