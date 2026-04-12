@@ -364,7 +364,7 @@ Cal.ns["transcript-tax-monitor-pro-intro"]("ui", {"cssVarsPerTheme":{"light":{"c
         <section className={`${styles.glass} ${styles.gapsSection} ${styles.animated} ${styles.d3}`}>
           <div className={styles.sectionLabel}>What this replaces (in seconds, not hours)</div>
           <div className={styles.gapList}>
-            {d.workflow_gaps.map((gap: string, i: number) => (
+            {(d.workflow_gaps || []).map((gap: string, i: number) => (
               <div key={i} className={styles.gapRow}>
                 <div className={styles.gapIcon}>{GAP_ICONS[i] || GAP_ICONS[0]}</div>
                 <div className={styles.gapText}>{gap}</div>
@@ -376,7 +376,7 @@ Cal.ns["transcript-tax-monitor-pro-intro"]("ui", {"cssVarsPerTheme":{"light":{"c
         <section className={`${styles.glass} ${styles.codesSection} ${styles.animated} ${styles.d4}`}>
           <div className={styles.sectionLabel}>Codes this tool handles instantly</div>
           <div className={styles.codesGrid}>
-            {d.tool_preview_codes.map((code: string) => (
+            {(d.tool_preview_codes || []).map((code: string) => (
               <div key={code} className={styles.codeCard}>
                 <div className={styles.codeNum}>{code}</div>
                 <div className={styles.codeLabel}>{CODE_LABELS[code] || ''}</div>
