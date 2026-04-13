@@ -1,5 +1,5 @@
 # CLAUDE.md — transcript.taxmonitor.pro
-Last updated: 2026-04-03
+Last updated: 2026-04-12
 
 ---
 
@@ -523,6 +523,55 @@ REOON_API_KEY=xxx node scale/validate-emails.js [source.csv]
 |------|------|
 | VLP Worker | `C:\Users\britn\OneDrive\virtuallaunch.pro` |
 | TMP | `C:\Users\britn\OneDrive\taxmonitor.pro-site` |
+
+---
+
+## 16. API Endpoints (consumed by this frontend)
+
+> **`api.taxmonitor.pro` is a custom domain on the `virtuallaunch-pro-api` Cloudflare Worker** — the same Worker that serves `api.virtuallaunch.pro`. All endpoints documented here (transcripts, tokens, calendar, auth, etc.) are handled by this single Worker. There is no separate TTMP API Worker.
+
+Base URL: `https://api.taxmonitor.pro`
+API client: `lib/api.ts` — exports `API_BASE`, `apiFetch()`, and named helpers.
+
+### Transcript endpoints
+
+| Method | Path | Purpose | Used in |
+|--------|------|---------|---------|
+| POST | `/v1/transcripts/preview` | Save parsed report (deducts 1 token) | `DashboardClient.tsx`, `ParserSection.tsx` |
+| POST | `/v1/transcripts/report-email` | Email a report link to a recipient | `DashboardClient.tsx` |
+| GET | `/v1/transcripts/reports` | List user's saved reports | `ReportsClient.tsx` |
+| GET | `/v1/transcripts/report/data?r={reportId}` | Get single report by ID | `ReportClient.tsx` |
+
+### Token endpoints
+
+| Method | Path | Purpose | Used in |
+|--------|------|---------|---------|
+| GET | `/v1/tokens/pricing` | Fetch available token packages | `lib/api.ts` |
+| POST | `/v1/tokens/purchase` | Create Stripe Checkout session | `lib/api.ts` |
+| GET | `/v1/tokens/balance/{account_id}` | Check current token balance | `DashboardClient.tsx`, `lib/api.ts` |
+
+### Auth endpoints
+
+| Method | Path | Purpose | Used in |
+|--------|------|---------|---------|
+| POST | `/v1/auth/magic-link/request` | Request magic-link login email | `lib/api.ts` |
+| GET | `/v1/auth/session` | Get current session | `lib/api.ts` |
+| POST | `/v1/auth/logout` | End session | `lib/api.ts` |
+| GET | `/v1/auth/handoff/exchange` | Exchange handoff token for session | `lib/api.ts` |
+| GET | `/v1/auth/google/start` | Redirect to Google OAuth | `login/page.tsx` |
+
+### Other endpoints
+
+| Method | Path | Purpose | Used in |
+|--------|------|---------|---------|
+| GET | `/v1/calendar/events` | Fetch calendar events | `FullCalendar.tsx` |
+| GET | `/v1/google/oauth/start` | Google Calendar OAuth redirect | `FullCalendar.tsx` |
+| GET | `/v1/affiliates/{account_id}` | Get affiliate data | `lib/api.ts` |
+| GET | `/v1/affiliates/{account_id}/events` | Get affiliate events | `lib/api.ts` |
+| POST | `/v1/affiliates/connect/onboard` | Start affiliate onboarding | `lib/api.ts` |
+| POST | `/v1/affiliates/payout/request` | Request affiliate payout | `lib/api.ts` |
+| POST | `/v1/support/tickets` | Submit support ticket | `lib/api.ts` |
+| GET | `/v1/scale/asset/{slug}` | Fetch asset page JSON | `AssetClient.tsx` |
 
 ---
 
