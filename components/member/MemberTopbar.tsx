@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import Link from 'next/link'
-import { Search, Bell, HelpCircle, Settings, UserCircle, LogOut, Menu } from 'lucide-react'
+import { Search, Bell, HelpCircle, Settings, UserCircle, LogOut, Menu, User } from 'lucide-react'
 
 interface MemberTopbarProps {
   title: string
@@ -107,6 +107,14 @@ export default function MemberTopbar({ title, email, onSignOut, onMenuClick, rig
               >
                 <Settings className="h-3.5 w-3.5" />
                 Account
+              </Link>
+              <Link
+                href="/app/profile/"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] text-slate-300 transition hover:bg-teal-500/[0.08] hover:text-teal-400"
+              >
+                <User className="h-3.5 w-3.5" />
+                Profile
               </Link>
               <Link
                 href="/app/support/"

@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { Search, Magnet, ShieldCheck } from 'lucide-react'
 import ContentCard from '@/components/member/ContentCard'
+import TranscriptParser from '@/components/member/TranscriptParser'
 
 const tools = [
   {
@@ -30,30 +31,37 @@ export default function ToolsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-xl font-bold text-white">Tools</h1>
-        <p className="mt-1 text-sm text-slate-400">Free resources for tax professionals</p>
+        <p className="mt-1 text-sm text-slate-400">Parse transcripts and access free tax professional resources</p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {tools.map(tool => {
-          const Icon = tool.icon
-          return (
-            <ContentCard key={tool.title}>
-              <div className="flex flex-col gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-500/10">
-                  <Icon className="h-5 w-5 text-teal-400" />
+      {/* Transcript Parser — primary tool */}
+      <TranscriptParser />
+
+      {/* Additional tools */}
+      <div>
+        <h2 className="mb-3 text-sm font-semibold text-white/60 uppercase tracking-widest">More Resources</h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {tools.map(tool => {
+            const Icon = tool.icon
+            return (
+              <ContentCard key={tool.title}>
+                <div className="flex flex-col gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-500/10">
+                    <Icon className="h-5 w-5 text-teal-400" />
+                  </div>
+                  <h3 className="text-sm font-semibold text-white/90">{tool.title}</h3>
+                  <p className="text-[13px] leading-relaxed text-slate-400">{tool.description}</p>
+                  <Link
+                    href={tool.href}
+                    className="mt-1 text-[13px] font-medium text-teal-400 hover:text-teal-300"
+                  >
+                    Open tool &rarr;
+                  </Link>
                 </div>
-                <h3 className="text-sm font-semibold text-white/90">{tool.title}</h3>
-                <p className="text-[13px] leading-relaxed text-slate-400">{tool.description}</p>
-                <Link
-                  href={tool.href}
-                  className="mt-1 text-[13px] font-medium text-teal-400 hover:text-teal-300"
-                >
-                  Open tool &rarr;
-                </Link>
-              </div>
-            </ContentCard>
-          )
-        })}
+              </ContentCard>
+            )
+          })}
+        </div>
       </div>
     </div>
   )

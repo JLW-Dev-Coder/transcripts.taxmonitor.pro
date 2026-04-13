@@ -57,12 +57,13 @@ transcript.taxmonitor.pro/
 │       ├── layout.tsx             ← shared shell (sidebar + topbar + content)
 │       ├── AppShell.tsx           ← auth + layout wrapper (client component)
 │       ├── SessionContext.tsx     ← React context for session data
-│       ├── dashboard/             ← transcript parser + KPIs
+│       ├── dashboard/             ← hero card, KPI grid, quick actions, recent reports
 │       ├── account/               ← account details + billing
 │       ├── reports/               ← saved report list
 │       ├── report/                ← individual report viewer
 │       ├── receipts/              ← purchase receipts
 │       ├── token-usage/           ← token balance + usage history
+│       ├── tools/                  ← transcript parser + resource links
 │       ├── calendar/              ← booking cards (cal.com)
 │       ├── affiliate/             ← referral program + commission history
 │       └── support/               ← ticket form + quick links
@@ -73,6 +74,7 @@ transcript.taxmonitor.pro/
 │   │   ├── KPICard.tsx            ← value + label + icon card
 │   │   ├── HeroCard.tsx           ← gradient banner card
 │   │   ├── ContentCard.tsx        ← generic card with optional title
+│   │   ├── TranscriptParser.tsx    ← transcript PDF parser (upload, parse, save, email)
 │   │   └── DataTable.tsx          ← styled table with hover states
 │   └── ...                        ← marketing components (CSS Modules)
 └── public/
