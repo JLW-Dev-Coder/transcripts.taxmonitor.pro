@@ -8,7 +8,7 @@
     "start": "next start",
     "cf:build": "npx @opennextjs/cloudflare build",
     "pages:build": "npm run cf:build",
-    "deploy": "npm run cf:build && npx wrangler deploy",
+    "deploy": "npm run cf:build && npx wrangler deploy && npx wrangler kv bulk delete --namespace-id dda38413b0be42e6b7bcb3ff8308439e --force",
     "preview": "npm run cf:build && npx wrangler dev"
   },
   "dependencies": {
