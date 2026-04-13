@@ -20,7 +20,6 @@ import {
   PanelLeftOpen,
   ChevronDown,
   ChevronRight,
-  Receipt,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
@@ -43,9 +42,9 @@ const NAV_SECTIONS: NavSection[] = [
       { href: '/app/dashboard/', label: 'Dashboard', icon: LayoutDashboard },
       { href: '/app/calendar/', label: 'Calendar', icon: Calendar },
       { href: '/app/dashboard/', label: 'Transcripts', icon: ScrollText },
-      { href: '/app/reports/', label: 'Reports', icon: FileText },
-      { href: '/app/receipts/', label: 'Receipts', icon: Receipt },
+      { href: '/app/tools/', label: 'Tools', icon: Wrench },
       { href: '/app/token-usage/', label: 'Tokens', icon: Coins },
+      { href: '/app/reports/', label: 'Reports', icon: FileText },
     ],
   },
   {
@@ -63,7 +62,9 @@ const NAV_SECTIONS: NavSection[] = [
         icon: Settings,
         children: [{ href: '/app/account/#payments', label: 'Payments' }],
       },
+      { href: '/app/profile/', label: 'Profile', icon: UserCircle },
       { href: '/app/support/', label: 'Support', icon: HelpCircle },
+      { href: '/app/token-usage/', label: 'Usage', icon: Activity },
     ],
   },
 ]
