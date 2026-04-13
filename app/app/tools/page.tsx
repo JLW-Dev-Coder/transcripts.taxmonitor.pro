@@ -31,7 +31,7 @@ export default function ToolsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-xl font-bold text-white">Tools</h1>
-        <p className="mt-1 text-sm text-slate-400">Parse transcripts and access free tax professional resources</p>
+        <p className="mt-1 text-sm text-white/60">Parse transcripts and access free tax professional resources</p>
       </div>
 
       {/* Transcript Parser — primary tool */}
@@ -50,7 +50,7 @@ export default function ToolsPage() {
                     <Icon className="h-5 w-5 text-teal-400" />
                   </div>
                   <h3 className="text-sm font-semibold text-white/90">{tool.title}</h3>
-                  <p className="text-[13px] leading-relaxed text-slate-400">{tool.description}</p>
+                  <p className="text-[13px] leading-relaxed text-white/60">{tool.description}</p>
                   <Link
                     href={tool.href}
                     className="mt-1 text-[13px] font-medium text-teal-400 hover:text-teal-300"

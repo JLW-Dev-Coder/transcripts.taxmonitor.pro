@@ -53,7 +53,7 @@ export default function AccountClient() {
             <div className="flex gap-2">
               <Link
                 href="/app/token-usage/"
-                className="rounded-lg border border-white/[0.08] px-3.5 py-1.5 text-[13px] font-semibold text-slate-400 transition hover:border-white/20 hover:text-white"
+                className="rounded-lg border border-white/[0.08] px-3.5 py-1.5 text-[13px] font-semibold text-white/60 transition hover:border-white/20 hover:text-white"
               >
                 View Usage
               </Link>

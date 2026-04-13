@@ -453,11 +453,11 @@ export default function TranscriptParser() {
     <>
       {/* Token bar */}
       <div className="mb-4 flex items-center gap-2 rounded-xl border border-[--member-border] bg-[--member-card] px-5 py-3">
-        <span className="text-[13px] text-slate-400">
+        <span className="text-[13px] text-white/60">
           <span className="font-semibold text-teal-400">{balance}</span> token{balance !== 1 ? 's' : ''} available
         </span>
         <div className="ml-auto flex gap-2">
-          <button type="button" onClick={handleRefreshBalance} className="rounded-lg border border-white/[0.08] px-3 py-1.5 text-[13px] font-semibold text-slate-400 transition hover:border-white/20 hover:text-white">
+          <button type="button" onClick={handleRefreshBalance} className="rounded-lg border border-white/[0.08] px-3 py-1.5 text-[13px] font-semibold text-white/60 transition hover:border-white/20 hover:text-white">
             Refresh
           </button>
           <button type="button" onClick={handleOpenPurchaseModal} className="rounded-lg bg-teal-500 px-3 py-1.5 text-[13px] font-bold text-black transition hover:opacity-90">
@@ -474,27 +474,27 @@ export default function TranscriptParser() {
             <span className="flex h-7 w-7 items-center justify-center rounded-full bg-teal-500/15 text-xs font-bold text-teal-400">&#10003;</span>
             <div>
               <div className="text-[13px] font-semibold text-white/80">Balance</div>
-              <div className="text-[11px] text-slate-600">{balance} tokens</div>
+              <div className="text-[11px] text-white/30">{balance} tokens</div>
             </div>
           </div>
           <div className="mx-1 h-px w-6 bg-white/[0.08]" />
           <div className="flex flex-1 items-center gap-2.5">
-            <span className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${pdfReady ? 'bg-teal-500/15 text-teal-400' : 'bg-white/[0.06] text-slate-500'}`}>
+            <span className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${pdfReady ? 'bg-teal-500/15 text-teal-400' : 'bg-white/[0.06] text-white/40'}`}>
               {pdfReady ? '\u2713' : '2'}
             </span>
             <div>
               <div className="text-[13px] font-semibold text-white/80">Upload PDF</div>
-              <div className="text-[11px] text-slate-600">{pdfFileName || 'Choose transcript'}</div>
+              <div className="text-[11px] text-white/30">{pdfFileName || 'Choose transcript'}</div>
             </div>
           </div>
           <div className="mx-1 h-px w-6 bg-white/[0.08]" />
           <div className="flex flex-1 items-center gap-2.5">
-            <span className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${previewSaved ? 'bg-teal-500/15 text-teal-400' : rawText ? 'bg-teal-500/15 text-teal-400' : 'bg-white/[0.06] text-slate-500'}`}>
+            <span className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${previewSaved ? 'bg-teal-500/15 text-teal-400' : rawText ? 'bg-teal-500/15 text-teal-400' : 'bg-white/[0.06] text-white/40'}`}>
               {previewSaved ? '\u2713' : '3'}
             </span>
             <div>
-              <div className={`text-[13px] font-semibold ${rawText ? 'text-white/80' : 'text-slate-500'}`}>Output</div>
-              <div className="text-[11px] text-slate-600">Report &amp; email</div>
+              <div className={`text-[13px] font-semibold ${rawText ? 'text-white/80' : 'text-white/40'}`}>Output</div>
+              <div className="text-[11px] text-white/30">Report &amp; email</div>
             </div>
           </div>
         </div>
@@ -512,7 +512,7 @@ export default function TranscriptParser() {
               <Upload className="h-5 w-5 text-teal-400" />
             </div>
             <div className="text-base font-bold text-white/90">Drop IRS transcript PDF here</div>
-            <div className="mt-1 text-[13px] text-slate-500">Account &middot; Return &middot; Wage &amp; Income &middot; Record of Account</div>
+            <div className="mt-1 text-[13px] text-white/40">Account &middot; Return &middot; Wage &amp; Income &middot; Record of Account</div>
             {pdfFileName && <span className="mt-2 inline-block text-[13px] font-semibold text-teal-400">{pdfFileName}</span>}
           </div>
           {parseError && <p className="mt-2 text-[13px] text-red-300">{parseError}</p>}
@@ -520,9 +520,9 @@ export default function TranscriptParser() {
 
           {/* Logo upload */}
           <div className="mt-4 border-t border-[--member-border] pt-4">
-            <span className="mb-2 block text-[11px] font-bold uppercase tracking-[0.06em] text-slate-600">Firm Logo (optional)</span>
+            <span className="mb-2 block text-[11px] font-bold uppercase tracking-[0.06em] text-white/30">Firm Logo (optional)</span>
             <div className="flex flex-wrap items-center gap-2">
-              <label className="cursor-pointer rounded-lg border border-white/[0.08] bg-[#07090f] px-3.5 py-1.5 text-[13px] font-semibold text-slate-400 transition hover:border-white/20 hover:text-slate-300">
+              <label className="cursor-pointer rounded-lg border border-white/[0.08] bg-[#07090f] px-3.5 py-1.5 text-[13px] font-semibold text-white/60 transition hover:border-white/20 hover:text-white">
                 Choose File
                 <input ref={logoInputRef} type="file" accept="image/*" className="hidden" onChange={handleLogoChange} />
               </label>
@@ -531,7 +531,7 @@ export default function TranscriptParser() {
                   Remove Logo
                 </button>
               )}
-              <span className="text-xs text-slate-500">{logoFileName || 'No file chosen \u2014 logo appears on saved reports'}</span>
+              <span className="text-xs text-white/40">{logoFileName || 'No file chosen \u2014 logo appears on saved reports'}</span>
             </div>
             {logoDataUrl && (
               <div className="mt-2.5 flex items-center gap-3 rounded-lg border border-[--member-border] bg-[#07090f] p-2.5">
@@ -539,7 +539,7 @@ export default function TranscriptParser() {
                 <img src={logoDataUrl} alt="Firm logo" className="h-12 w-12 rounded-md bg-[#0b0e1a] object-contain p-1" />
                 <div>
                   <div className="text-[13px] font-semibold text-white/80">Saved logo</div>
-                  <p className="text-xs text-slate-500">Stays on this device until removed.</p>
+                  <p className="text-xs text-white/40">Stays on this device until removed.</p>
                 </div>
               </div>
             )}
@@ -552,10 +552,10 @@ export default function TranscriptParser() {
         <p className="mb-3.5 text-[15px] font-bold text-white/90">Output</p>
 
         <div className="mb-3.5 flex flex-wrap gap-2.5">
-          <button type="button" disabled={!pdfReady} onClick={handleExtractRaw} className="flex-1 min-w-[160px] rounded-lg border border-white/[0.08] bg-[#07090f] px-3.5 py-2.5 text-sm font-semibold text-slate-400 transition hover:border-white/20 hover:text-slate-300 disabled:opacity-35 disabled:cursor-not-allowed">
+          <button type="button" disabled={!pdfReady} onClick={handleExtractRaw} className="flex-1 min-w-[160px] rounded-lg border border-white/[0.08] bg-[#07090f] px-3.5 py-2.5 text-sm font-semibold text-white/60 transition hover:border-white/20 hover:text-white disabled:opacity-35 disabled:cursor-not-allowed">
             Extract raw text
           </button>
-          <button type="button" disabled={!rawText} onClick={handleParseStructured} className="flex-1 min-w-[160px] rounded-lg border border-white/[0.08] bg-[#07090f] px-3.5 py-2.5 text-sm font-semibold text-slate-400 transition hover:border-white/20 hover:text-slate-300 disabled:opacity-35 disabled:cursor-not-allowed">
+          <button type="button" disabled={!rawText} onClick={handleParseStructured} className="flex-1 min-w-[160px] rounded-lg border border-white/[0.08] bg-[#07090f] px-3.5 py-2.5 text-sm font-semibold text-white/60 transition hover:border-white/20 hover:text-white disabled:opacity-35 disabled:cursor-not-allowed">
             Parse structured JSON
           </button>
           <button type="button" disabled={!jsonText || previewSaved || balance === 0} onClick={handleSavePreview} className="flex-1 min-w-[160px] rounded-lg bg-teal-500 px-3.5 py-2.5 text-sm font-bold text-black transition hover:opacity-90 disabled:opacity-35 disabled:cursor-not-allowed">
@@ -565,26 +565,26 @@ export default function TranscriptParser() {
 
         {balance === 0 && <p className="mb-3.5 text-[13px] text-amber-400">No tokens \u2014 purchase tokens to save reports.</p>}
 
-        <div className="mb-3.5 rounded-lg border border-[--member-border] bg-[#07090f] px-4 py-3 text-[13px] text-slate-400">
+        <div className="mb-3.5 rounded-lg border border-[--member-border] bg-[#07090f] px-4 py-3 text-[13px] text-white/60">
           {previewStatus}
         </div>
 
         <div className="mb-3.5 grid gap-2.5 md:grid-cols-2">
           <div className="rounded-lg border border-[--member-border] bg-[#07090f] p-3.5">
             <div className="mb-2.5 flex items-center justify-between border-b border-[--member-border] pb-2.5">
-              <span className="text-[11px] font-bold uppercase tracking-[0.05em] text-slate-600">Raw text</span>
+              <span className="text-[11px] font-bold uppercase tracking-[0.05em] text-white/30">Raw text</span>
               <button type="button" className="text-xs font-semibold text-teal-400" onClick={() => handleCopy(rawText, 'raw')}>{copyRawLabel}</button>
             </div>
-            <pre className="member-scroll min-h-[80px] max-h-[280px] overflow-y-auto whitespace-pre-wrap break-words font-mono text-xs leading-relaxed text-slate-500">
+            <pre className="member-scroll min-h-[80px] max-h-[280px] overflow-y-auto whitespace-pre-wrap break-words font-mono text-xs leading-relaxed text-white/40">
               {rawText || '\u2014 awaiting extraction \u2014'}
             </pre>
           </div>
           <div className="rounded-lg border border-[--member-border] bg-[#07090f] p-3.5">
             <div className="mb-2.5 flex items-center justify-between border-b border-[--member-border] pb-2.5">
-              <span className="text-[11px] font-bold uppercase tracking-[0.05em] text-slate-600">Structured JSON</span>
+              <span className="text-[11px] font-bold uppercase tracking-[0.05em] text-white/30">Structured JSON</span>
               <button type="button" className="text-xs font-semibold text-teal-400" onClick={() => handleCopy(jsonText, 'json')}>{copyJsonLabel}</button>
             </div>
-            <pre className="member-scroll min-h-[80px] max-h-[280px] overflow-y-auto whitespace-pre-wrap break-words font-mono text-xs leading-relaxed text-slate-500">
+            <pre className="member-scroll min-h-[80px] max-h-[280px] overflow-y-auto whitespace-pre-wrap break-words font-mono text-xs leading-relaxed text-white/40">
               {jsonText || '\u2014 awaiting parse \u2014'}
             </pre>
           </div>
@@ -592,18 +592,18 @@ export default function TranscriptParser() {
 
         {/* Email section */}
         <div className="border-t border-[--member-border] pt-3.5">
-          <span className="mb-2 block text-[11px] font-bold uppercase tracking-[0.06em] text-slate-600">Email report link to client</span>
+          <span className="mb-2 block text-[11px] font-bold uppercase tracking-[0.06em] text-white/30">Email report link to client</span>
           <div className="flex gap-2.5 items-end">
             <input
               type="email" placeholder="client@firm.com" autoComplete="email"
               value={emailInput} onChange={(e) => setEmailInput(e.target.value)}
-              className="flex-1 rounded-lg border border-[--member-border] bg-[#07090f] px-3.5 py-2.5 text-sm text-white/90 outline-none transition placeholder:text-slate-600 focus:border-teal-500"
+              className="flex-1 rounded-lg border border-[--member-border] bg-[#07090f] px-3.5 py-2.5 text-sm text-white/90 outline-none transition placeholder:text-white/30 focus:border-teal-500/40"
             />
             <button type="button" disabled={!previewSaved || !emailInput} onClick={handleEmailReport} className="rounded-lg bg-teal-500 px-5 py-2.5 text-sm font-bold text-black transition hover:opacity-90 disabled:opacity-35 disabled:cursor-not-allowed">
               Send link
             </button>
           </div>
-          {emailStatus !== 'Not ready.' && <p className="mt-2 text-xs text-slate-500">{emailStatus}</p>}
+          {emailStatus !== 'Not ready.' && <p className="mt-2 text-xs text-white/40">{emailStatus}</p>}
         </div>
       </div>
 
@@ -613,20 +613,20 @@ export default function TranscriptParser() {
           <div className="w-full max-w-[560px] rounded-2xl border border-[--member-border] bg-[#0b0e1a] p-8" onClick={(e) => e.stopPropagation()}>
             <div className="mb-6 flex items-center justify-between">
               <h2 className="text-lg font-bold text-white/90">Purchase Tokens</h2>
-              <button type="button" onClick={() => setPurchaseModalOpen(false)} className="text-slate-500 transition hover:text-white" aria-label="Close">
+              <button type="button" onClick={() => setPurchaseModalOpen(false)} className="text-white/40 transition hover:text-white" aria-label="Close">
                 <X className="h-5 w-5" />
               </button>
             </div>
-            {pricingPackages.length === 0 && !modalError && <p className="text-xs text-slate-500">Loading packages...</p>}
+            {pricingPackages.length === 0 && !modalError && <p className="text-xs text-white/40">Loading packages...</p>}
             {modalError && <p className="mb-3.5 text-[13px] text-red-300">{modalError}</p>}
             {pricingPackages.length > 0 && (
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                 {pricingPackages.map((pkg) => (
                   <div key={pkg.price_id} className={`relative rounded-xl border bg-[#07090f] p-6 text-center transition hover:border-white/20 ${pkg.badge === 'Popular' ? 'border-teal-500/35' : 'border-[--member-border]'}`}>
                     {pkg.badge && <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-full bg-teal-500 px-2.5 py-0.5 text-[10px] font-bold text-black">{pkg.badge}</div>}
-                    <div className="mb-2.5 text-[13px] font-semibold text-slate-400">{pkg.label}</div>
+                    <div className="mb-2.5 text-[13px] font-semibold text-white/60">{pkg.label}</div>
                     <div className="text-[32px] font-extrabold leading-none text-teal-400">{pkg.tokens}</div>
-                    <div className="mb-3 text-xs text-slate-500">tokens</div>
+                    <div className="mb-3 text-xs text-white/40">tokens</div>
                     <div className="mb-4 text-lg font-bold text-white/90">${pkg.price}</div>
                     <button type="button" disabled={purchaseLoading === pkg.price_id} onClick={() => handlePurchase(pkg.price_id)} className="w-full rounded-lg bg-teal-500 py-2 text-sm font-bold text-black transition hover:opacity-90 disabled:opacity-35 disabled:cursor-not-allowed">
                       {purchaseLoading === pkg.price_id ? 'Redirecting...' : 'Buy'}

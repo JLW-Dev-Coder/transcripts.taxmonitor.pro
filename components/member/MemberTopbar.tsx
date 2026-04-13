@@ -36,7 +36,7 @@ export default function MemberTopbar({ title, email, onSignOut, onMenuClick, rig
           <button
             type="button"
             onClick={onMenuClick}
-            className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-slate-700 text-slate-400 hover:border-teal-500/40 hover:text-teal-400 transition md:hidden"
+            className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-[--member-border] text-white/60 hover:border-teal-500/40 hover:text-teal-400 transition md:hidden"
             aria-label="Open navigation menu"
           >
             <Menu className="h-5 w-5" />
@@ -61,7 +61,7 @@ export default function MemberTopbar({ title, email, onSignOut, onMenuClick, rig
         {/* Notifications */}
         <button
           type="button"
-          className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-transparent text-slate-500 transition hover:bg-teal-500/[0.08] hover:border-teal-500/20 hover:text-teal-400"
+          className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-transparent text-white/40 transition hover:bg-teal-500/[0.08] hover:border-teal-500/20 hover:text-teal-400"
           aria-label="Notifications"
         >
           <Bell className="h-[18px] w-[18px]" />
@@ -70,7 +70,7 @@ export default function MemberTopbar({ title, email, onSignOut, onMenuClick, rig
         {/* Help */}
         <Link
           href="/app/support/"
-          className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-transparent text-slate-500 transition hover:bg-teal-500/[0.08] hover:border-teal-500/20 hover:text-teal-400"
+          className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-transparent text-white/40 transition hover:bg-teal-500/[0.08] hover:border-teal-500/20 hover:text-teal-400"
           aria-label="Help Center"
         >
           <HelpCircle className="h-[18px] w-[18px]" />
@@ -81,10 +81,10 @@ export default function MemberTopbar({ title, email, onSignOut, onMenuClick, rig
           <button
             type="button"
             onClick={() => setOpen(v => !v)}
-            className="inline-flex items-center gap-2 rounded-full border border-slate-700 py-1 pl-2.5 pr-1 transition hover:border-teal-500/40 hover:bg-teal-500/5"
+            className="inline-flex items-center gap-2 rounded-full border border-[--member-border] py-1 pl-2.5 pr-1 transition hover:border-teal-500/40 hover:bg-teal-500/5"
             aria-label="Account menu"
           >
-            <span className="hidden text-xs font-medium text-slate-400 sm:block max-w-[160px] truncate">
+            <span className="hidden text-xs font-medium text-white/60 sm:block max-w-[160px] truncate">
               {email}
             </span>
             <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-teal-500 to-teal-600 text-[11px] font-extrabold text-black">
@@ -93,9 +93,9 @@ export default function MemberTopbar({ title, email, onSignOut, onMenuClick, rig
           </button>
 
           {open && (
-            <div className="absolute right-0 top-[calc(100%+8px)] z-50 min-w-[220px] rounded-xl border border-white/[0.08] bg-[#0f1333] p-2 shadow-[0_24px_60px_rgba(0,0,0,0.55)]">
+            <div className="absolute right-0 top-[calc(100%+8px)] z-50 min-w-[220px] rounded-xl border border-[--member-border] bg-[--member-card] p-2 shadow-2xl">
               {email && (
-                <div className="px-3 pb-1.5 pt-2 text-[11px] uppercase tracking-[0.5px] text-slate-500">
+                <div className="px-3 pb-1.5 pt-2 text-[11px] uppercase tracking-[0.5px] text-white/40">
                   {email}
                 </div>
               )}
@@ -103,7 +103,7 @@ export default function MemberTopbar({ title, email, onSignOut, onMenuClick, rig
               <Link
                 href="/app/account/"
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] text-slate-300 transition hover:bg-teal-500/[0.08] hover:text-teal-400"
+                className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] text-white/70 transition hover:bg-teal-500/[0.08] hover:text-teal-400"
               >
                 <Settings className="h-3.5 w-3.5" />
                 Account
@@ -111,7 +111,7 @@ export default function MemberTopbar({ title, email, onSignOut, onMenuClick, rig
               <Link
                 href="/app/profile/"
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] text-slate-300 transition hover:bg-teal-500/[0.08] hover:text-teal-400"
+                className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] text-white/70 transition hover:bg-teal-500/[0.08] hover:text-teal-400"
               >
                 <User className="h-3.5 w-3.5" />
                 Profile
@@ -119,7 +119,7 @@ export default function MemberTopbar({ title, email, onSignOut, onMenuClick, rig
               <Link
                 href="/app/support/"
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] text-slate-300 transition hover:bg-teal-500/[0.08] hover:text-teal-400"
+                className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] text-white/70 transition hover:bg-teal-500/[0.08] hover:text-teal-400"
               >
                 <HelpCircle className="h-3.5 w-3.5" />
                 Support
@@ -130,7 +130,7 @@ export default function MemberTopbar({ title, email, onSignOut, onMenuClick, rig
                   <button
                     type="button"
                     onClick={() => { setOpen(false); onSignOut() }}
-                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] text-slate-300 transition hover:bg-red-900/20 hover:text-red-400"
+                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] text-white/70 transition hover:bg-red-900/20 hover:text-red-400"
                   >
                     <LogOut className="h-3.5 w-3.5" />
                     Sign Out

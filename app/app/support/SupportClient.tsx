@@ -72,23 +72,23 @@ export default function SupportClient() {
         ) : (
           <div className="space-y-4">
             <div>
-              <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.06em] text-slate-600">Subject</label>
+              <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.06em] text-white/30">Subject</label>
               <input
                 type="text"
                 value={subject}
                 onChange={e => setSubject(e.target.value)}
                 placeholder="Brief description of your issue"
-                className="w-full rounded-lg border border-[--member-border] bg-[#07090f] px-3.5 py-2.5 text-sm text-white/90 outline-none transition placeholder:text-slate-600 focus:border-teal-500"
+                className="w-full rounded-lg border border-[--member-border] bg-[#07090f] px-3.5 py-2.5 text-sm text-white/90 outline-none transition placeholder:text-white/30 focus:border-teal-500/40"
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.06em] text-slate-600">Message</label>
+              <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.06em] text-white/30">Message</label>
               <textarea
                 value={message}
                 onChange={e => setMessage(e.target.value)}
                 placeholder="Describe your issue in detail..."
                 rows={5}
-                className="w-full resize-none rounded-lg border border-[--member-border] bg-[#07090f] px-3.5 py-2.5 text-sm text-white/90 outline-none transition placeholder:text-slate-600 focus:border-teal-500"
+                className="w-full resize-none rounded-lg border border-[--member-border] bg-[#07090f] px-3.5 py-2.5 text-sm text-white/90 outline-none transition placeholder:text-white/30 focus:border-teal-500/40"
               />
             </div>
             {error && <p className="text-[13px] text-red-300">{error}</p>}

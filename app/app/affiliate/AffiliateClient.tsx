@@ -98,7 +98,7 @@ export default function AffiliateClient() {
             value={affiliate?.referral_url ?? `https://virtuallaunch.pro/ref/${affiliate?.referral_code ?? '...'}`}
             className="flex-1 rounded-lg border border-[--member-border] bg-[#07090f] px-3.5 py-2.5 text-sm text-white/80 outline-none"
           />
-          <button type="button" onClick={handleCopy} className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.08] px-3.5 py-2.5 text-[13px] font-semibold text-slate-400 transition hover:border-white/20 hover:text-white">
+          <button type="button" onClick={handleCopy} className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.08] px-3.5 py-2.5 text-[13px] font-semibold text-white/60 transition hover:border-white/20 hover:text-white">
             <Copy className="h-3.5 w-3.5" /> {copyLabel}
           </button>
         </div>
@@ -119,7 +119,7 @@ export default function AffiliateClient() {
             onMouseLeave={() => setShowTooltip(false)}
           >
             {showTooltip && payoutDisabled && (
-              <div className="absolute -top-8 left-0 rounded bg-slate-800 px-2 py-1 text-[11px] text-white/80 whitespace-nowrap">
+              <div className="absolute -top-8 left-0 rounded bg-[--member-card] px-2 py-1 text-[11px] text-white/80 whitespace-nowrap">
                 {payoutTooltip}
               </div>
             )}

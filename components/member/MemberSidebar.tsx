@@ -129,8 +129,8 @@ export default function MemberSidebar({ email, onSignOut }: MemberSidebarProps) 
           </div>
           {!collapsed && (
             <div className="min-w-0 flex-1 overflow-hidden">
-              <div className="truncate text-[13px] font-bold text-slate-200">Transcript Tax Monitor</div>
-              <div className="text-[11px] text-slate-600">Pro Dashboard</div>
+              <div className="truncate text-[13px] font-bold text-white/80">Transcript Tax Monitor</div>
+              <div className="text-[11px] text-white/30">Pro Dashboard</div>
             </div>
           )}
         </div>
@@ -164,7 +164,7 @@ export default function MemberSidebar({ email, onSignOut }: MemberSidebarProps) 
                           text-[14px] font-medium transition-all duration-150
                           ${active
                             ? 'border-l-2 border-teal-500 bg-teal-500/10 text-teal-400'
-                            : 'border-l-2 border-transparent text-slate-500 hover:bg-white/[0.03] hover:text-slate-400'
+                            : 'border-l-2 border-transparent text-white/40 hover:bg-white/[0.03] hover:text-white/70'
                           }
                         `}
                         onClick={() => mobileOpen && setMobileOpen(false)}
@@ -177,7 +177,7 @@ export default function MemberSidebar({ email, onSignOut }: MemberSidebarProps) 
                         <button
                           type="button"
                           onClick={() => toggleExpand(item.href)}
-                          className="mr-1 rounded p-1 text-slate-500 hover:text-slate-300"
+                          className="mr-1 rounded p-1 text-white/40 hover:text-white"
                         >
                           {isExpanded
                             ? <ChevronDown className="h-3.5 w-3.5" />
@@ -198,7 +198,7 @@ export default function MemberSidebar({ email, onSignOut }: MemberSidebarProps) 
                               block rounded-md px-2.5 py-1.5 text-[13px] transition-colors
                               ${isActive(child.href)
                                 ? 'text-teal-400'
-                                : 'text-slate-500 hover:text-slate-300'
+                                : 'text-white/40 hover:text-white'
                               }
                             `}
                           >
@@ -219,11 +219,11 @@ export default function MemberSidebar({ email, onSignOut }: MemberSidebarProps) 
           {/* User row */}
           {!collapsed && (
             <div className="mb-2 flex items-center gap-2.5 overflow-hidden rounded-lg px-2 py-2">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-700 bg-slate-800 text-[11px] font-bold text-slate-400">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[--member-border] bg-[--member-card] text-[11px] font-bold text-white/60">
                 {initial}
               </div>
               <div className="min-w-0 flex-1">
-                <div className="truncate text-[12px] font-semibold text-slate-400">{email}</div>
+                <div className="truncate text-[12px] font-semibold text-white/60">{email}</div>
               </div>
             </div>
           )}
@@ -231,7 +231,7 @@ export default function MemberSidebar({ email, onSignOut }: MemberSidebarProps) 
           {/* Back to site */}
           <Link
             href="/"
-            className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] text-slate-500 transition-colors hover:text-slate-300"
+            className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] text-white/40 transition-colors hover:text-white"
           >
             <ArrowLeft className="h-4 w-4 shrink-0" />
             {!collapsed && <span>Back to site</span>}
@@ -242,7 +242,7 @@ export default function MemberSidebar({ email, onSignOut }: MemberSidebarProps) 
             <button
               type="button"
               onClick={onSignOut}
-              className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] text-slate-500 transition-colors hover:text-red-400/80"
+              className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] text-white/40 transition-colors hover:text-red-400/80"
             >
               <LogOut className="h-4 w-4 shrink-0" />
               {!collapsed && <span>Sign Out</span>}
@@ -253,7 +253,7 @@ export default function MemberSidebar({ email, onSignOut }: MemberSidebarProps) 
           <button
             type="button"
             onClick={() => setCollapsed(c => !c)}
-            className="hidden w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] text-slate-600 transition-colors hover:text-slate-400 md:flex"
+            className="hidden w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] text-white/30 transition-colors hover:text-white/70 md:flex"
             title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {collapsed

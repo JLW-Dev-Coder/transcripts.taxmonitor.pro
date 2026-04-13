@@ -133,7 +133,7 @@ export default function DashboardClient() {
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-white/90">Parse a Transcript</h3>
-                  <p className="mt-1 text-[13px] leading-relaxed text-slate-400">Upload an IRS transcript PDF and generate a client report</p>
+                  <p className="mt-1 text-[13px] leading-relaxed text-white/60">Upload an IRS transcript PDF and generate a client report</p>
                 </div>
               </div>
             </ContentCard>
@@ -146,7 +146,7 @@ export default function DashboardClient() {
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-white/90">View Reports</h3>
-                  <p className="mt-1 text-[13px] leading-relaxed text-slate-400">Browse and resend saved reports</p>
+                  <p className="mt-1 text-[13px] leading-relaxed text-white/60">Browse and resend saved reports</p>
                 </div>
               </div>
             </ContentCard>
@@ -157,9 +157,9 @@ export default function DashboardClient() {
       {/* Recent Reports */}
       <ContentCard title="Recent Reports">
         {reportsLoading ? (
-          <p className="text-sm text-slate-500">Loading reports...</p>
+          <p className="text-sm text-white/40">Loading reports...</p>
         ) : recentReports.length === 0 ? (
-          <p className="text-sm text-slate-500">No reports yet. Parse your first transcript to get started.</p>
+          <p className="text-sm text-white/40">No reports yet. Parse your first transcript to get started.</p>
         ) : (
           <div className="divide-y divide-[--member-border]">
             {recentReports.map((report) => {
@@ -176,7 +176,7 @@ export default function DashboardClient() {
                 <div key={report.report_id} className="flex items-center justify-between py-3 first:pt-0 last:pb-0">
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-white/80">{label}</p>
-                    <p className="text-xs text-slate-500">{date}</p>
+                    <p className="text-xs text-white/40">{date}</p>
                   </div>
                   <Link
                     href={`/app/report/?report_id=${report.report_id}`}
