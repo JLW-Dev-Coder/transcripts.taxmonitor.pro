@@ -8,7 +8,7 @@
     "start": "next start",
     "cf:build": "npx @opennextjs/cloudflare build",
     "pages:build": "npm run cf:build",
-    "deploy": "npm run cf:build && npx wrangler deploy && node scripts/flush-kv.js",
+    "deploy": "npm run cf:build && node scripts/flush-kv.js && npx wrangler deploy",
     "preview": "npm run cf:build && npx wrangler dev"
   },
   "dependencies": {
