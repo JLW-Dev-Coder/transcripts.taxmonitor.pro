@@ -97,7 +97,7 @@ transcript.taxmonitor.pro/
 - Worker name: `transcript-taxmonitor-pro`
 - No R2 or D1 bindings — all data fetched client-side from `api.taxmonitor.pro`
 - `@cloudflare/next-on-pages` is deprecated by Cloudflare — do not switch back to it
-- **IMPORTANT:** Every deploy must flush the KV incremental cache (`NEXT_INC_CACHE_KV`, namespace ID `dda38413b0be42e6b7bcb3ff8308439e`). OpenNext caches pre-rendered HTML in KV with `s-maxage=31536000` (1 year). Redeploying the Worker does not invalidate this cache. The `npm run deploy` script includes the flush automatically. If deploying manually, run `node scripts/flush-kv.js` after every deploy.
+- **DO NOT flush KV on deploy.** OpenNext populates the KV incremental cache during `wrangler deploy` with the current build's pre-rendered pages. Flushing KV deletes those entries and causes stale/broken page serving until the cache is re-populated by on-demand requests. The `npm run deploy` script is `cf:build && wrangler deploy` — no flush step.
 
 ---
 

@@ -21,11 +21,6 @@ jobs:
       - name: Build (OpenNext)
         run: npm run cf:build
 
-      - name: Purge KV incremental cache
-        run: node scripts/flush-kv.js
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-
       - name: Deploy Worker
         run: npx wrangler deploy
         env:
