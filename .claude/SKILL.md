@@ -1,14 +1,23 @@
 # SKILL.md — vlp-scale-batch-generator
-Last updated: 2026-04-03
-Version: 1.1
+Last updated: 2026-04-13
+Version: 2.0
+
+---
+
+> **RETIRED (2026-04-13):** This skill is no longer active. Batch generation, email copy,
+> and asset page JSON creation have migrated to the VLP Worker campaign processor.
+> Clay.com CSVs are uploaded via the VLP dashboard and processed by Worker templates.
+> Claude is no longer in the email generation loop.
+>
+> The content below is retained for historical reference only.
 
 ---
 
 ## 1. Identity
 
 **Skill:** vlp-scale-batch-generator
-**Owner:** transcript.taxmonitor.pro
-**Purpose:** Convert a prospect CSV into a deterministic daily outreach package — JSON batch, Gmail import CSV, and tracking column updates.
+**Owner:** transcript.taxmonitor.pro (RETIRED — moved to VLP Worker)
+**Purpose:** ~~Convert a prospect CSV into a deterministic daily outreach package — JSON batch, Gmail import CSV, and tracking column updates.~~ Now handled by VLP Worker campaign processor.
 
 ---
 

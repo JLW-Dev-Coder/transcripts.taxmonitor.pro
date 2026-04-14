@@ -1,5 +1,5 @@
 # CLAUDE.md — transcript.taxmonitor.pro
-Last updated: 2026-04-12
+Last updated: 2026-04-13
 
 ---
 
@@ -17,11 +17,11 @@ Last updated: 2026-04-12
 
 | Does | Does NOT |
 |------|----------|
-| Generates daily Email 1/2 outreach batches | Send emails |
-| Produces Gmail import CSVs | Call Gmail API |
-| Produces per-prospect asset page JSON | Push to R2 |
-| Updates tracking columns in source CSV | Execute cron jobs |
-| Serves static SEO resource pages | Modify backend routes |
+| Serves asset page route (`/asset/[slug]`) | Generate email copy (Worker templates) |
+| Hosts free IRS code lookup tool | Generate batch JSON (Worker campaign processor) |
+| Serves marketing, pricing, and tool pages | Push to R2 (Worker handles all R2 writes) |
+| Provides authenticated member dashboard | Process prospect CSVs (Worker handles ingestion) |
+| Serves static SEO resource pages | Send emails (Worker sends via Gmail API) |
 
 ---
 
@@ -43,14 +43,14 @@ transcript.taxmonitor.pro/
 ├── .claude/
 │   └── CLAUDE.md                  ← authoritative system rules
 ├── SCALE.md                       ← reference only (CLAUDE.md wins on conflict)
-├── scale/
-│   ├── prospects/                 ← source CSVs (gitignored, authoritative input)
-│   ├── batches/                   ← generated JSON batches (committed output)
+├── scale/                         ← RETIRED — batch generation moved to VLP Worker campaign processor
+│   ├── prospects/                 ← legacy source CSVs (gitignored, no longer updated by this repo)
+│   ├── batches/                   ← legacy generated JSON batches (no longer produced by this repo)
 │   ├── gmail/
-│   │   └── email1/                ← Gmail import CSVs (committed output)
-│   ├── find-emails.js             ← MX precheck + pattern guess + Reoon Quick finder
-│   ├── validate-emails.js         ← Reoon bulk verification for existing emails
-│   └── generate-batch.js          ← selection + copy generation orchestrator
+│   │   └── email1/                ← legacy Gmail import CSVs (no longer produced by this repo)
+│   ├── find-emails.js             ← RETIRED — Clay pre-validates emails
+│   ├── validate-emails.js         ← RETIRED — Clay pre-validates emails
+│   └── generate-batch.js          ← RETIRED — replaced by VLP Worker campaign processor
 ├── app/
 │   ├── asset/[slug]/              ← asset page route
 │   └── app/                       ← authenticated dashboard (Tailwind)
@@ -80,8 +80,7 @@ transcript.taxmonitor.pro/
 └── public/
     └── tools/code-lookup/
 
-`scale/prospects/` = source of truth input. Never regenerate or reshape it.
-`scale/batches/` = generated output. Never treat as source.
+`scale/` = legacy pipeline directory. Batch generation, email copy, and R2 push have all moved to the VLP Worker campaign processor. Files here are retained for historical reference only — this repo no longer writes to them.
 
 ---
 
@@ -148,127 +147,65 @@ FOOTER:     Back to site, Sign out, Collapse toggle
 
 ---
 
-## 5. Source CSV
+## 5. Source CSV Schema
 
-**Canonical file:**
-`scale/prospects/IRS_FOIA_SORTED_-_results-20260401-195853.csv`
+Primary source: Clay.com prospect exports (pre-validated emails)
+Upload via: VLP dashboard at virtuallaunch.pro/scale/workflow (Upload tab)
 
-### Original columns (immutable — do not modify)
+### Canonical columns
 
 | Column | Notes |
 |--------|-------|
 | LAST_NAME | Uppercase |
 | First_NAME | Mixed case |
+| FULL_NAME | Clay-provided (not used in generation) |
 | DBA | Firm/practice name |
 | BUS_ADDR_CITY | City |
 | BUS_ST_CODE | 2-letter state |
 | WEBSITE | Raw website string |
-| BUS_PHNE_NBR | Not used in output |
-| PROFESSION | EA, CPA, JD |
-| domain_clean | Sanitized domain |
-| email_found | Delivery address |
-| email_status | valid / invalid |
-| firm_bucket | solo_brand / local_firm / national_firm |
-| send_today | Legacy — not used in selection logic |
+| BUS_PHNE_NBR | Phone (not used in output) |
+| PROFESSION | CPA, EA, ATTY (Worker maps ATTY to JD for personalization) |
+| domain_clean | Sanitized domain (www stripped, lowercase) |
+| email_found | Delivery address (Clay pre-validated) |
+| email_status | valid (Clay only exports validated emails) |
+| firm_bucket | solo_brand, local_firm, national_firm |
+| clay_workbook_ref | Clay workbook reference (not used in generation) |
 
-### Tracking columns (append only — never modify originals)
+Legacy columns no longer present: `send_today`, `email_find_attempted`
 
-| Column | Set when |
-|--------|----------|
-| email_1_prepared_at | ISO timestamp — Email 1 generated |
-| email_2_prepared_at | ISO timestamp — Email 2 generated |
-| email_3_prepared_at | ISO timestamp — Email 3 generated |
-| email_1_sent_at | ISO timestamp — set by VLP Worker after send |
-| email_2_scheduled_for | ISO date — when Email 2 should send |
-| email_2_sent_at | ISO timestamp — set by VLP Worker after send |
-| email_find_attempted | ISO timestamp — set by `scale/find-emails.js` the first time a row is scanned, regardless of outcome. Prevents re-scanning on subsequent runs. |
+### Intake workflow
 
-**Note:** The `email_status` column is NOT an original column in the strict sense, but the scale pipeline writes canonical values (`valid` / `invalid` / `disposable` / `risky` / `no_mx` / empty) back into it via `scale/validate-emails.js` (bulk), `scale/generate-batch.js` (per-record Quick), and `scale/find-emails.js` (MX + pattern discovery). See §6b for the canonical values and §6c for the Reoon → canonical mapping.
+1. Operator downloads Clay CSV export (pre-validated emails, enriched firm data)
+2. Operator uploads CSV via VLP dashboard Upload tab at `virtuallaunch.pro/scale/workflow`
+3. VLP Worker stores CSV in R2: `vlp-scale/prospects/pending/{date}.csv`
+4. Campaign Processor cron (12:00 UTC) parses CSV and generates all outputs
 
-### Required environment variables
-
-| Var | Used by | Purpose |
-|-----|---------|---------|
-| `REOON_API_KEY` | `scale/validate-emails.js`, `scale/generate-batch.js`, `scale/find-emails.js` | Reoon email verification API key. `validate-emails.js` and `find-emails.js` exit with an error if unset (except `find-emails.js --dry-run`); `generate-batch.js` warns and proceeds without validation. |
-
-### Two-file intake workflow
-
-Humans never edit the master CSV directly. New prospects are added through:
-
-1. Human exports enriched rows from Google Sheets into `scale/prospects/new-prospects.csv`
-2. Human runs `node scale\scripts\merge-intake.js` from the repo root (PowerShell)
-3. The merge script validates, deduplicates, and appends rows to the master CSV
-4. The merge script archives the intake file and truncates it to headers only
-
-The merge script checks for a lockfile (`scale/prospects/.batch-in-progress`) before writing. If the lockfile exists, the merge refuses to run. The batch generation script creates this lockfile at start and removes it on completion.
-
-File paths:
-- Intake: `scale/prospects/new-prospects.csv`
-- Master: `scale/prospects/IRS*.csv` (single file, auto-detected)
-- Archive: `scale/prospects/archive/intake-{YYYY-MM-DD}.csv`
-- Lockfile: `scale/prospects/.batch-in-progress`
+This repo no longer manages prospect CSVs, tracking columns, or environment variables for email validation. All CSV processing is handled by the VLP Worker.
 
 ---
 
-## 6. Selection Logic (mandatory, in exact order)
+## 6. Selection Logic
 
-1. `email_found` is not empty, not `"undefined"`, not NaN
-2. `email_status` is not `"invalid"` and not `"disposable"`
-3. `email_1_prepared_at` is empty
-4. Sort ascending by `domain_clean` (nulls last)
-5. Walk in sort order; for each candidate apply the Reoon Quick gate (see §6a) until the limit (default 50) is filled
+**Moved to VLP Worker.** The VLP Worker campaign processor now handles all selection, dedup, slug generation, and validation. Clay CSVs arrive pre-validated, so the Reoon Quick gate and bulk validation steps are no longer needed in this repo.
 
-If fewer than the limit are eligible: process all remaining and log the count.
-If zero eligible: halt and report pipeline exhaustion.
-
-### 6a. Reoon Quick validation gate (generate-batch.js)
-
-Per-record gate applied during the selection walk:
-
-| Current `email_status` | Action |
-|------------------------|--------|
-| `valid` | Proceed — already validated |
-| `invalid` / `disposable` | Skip (pre-filtered) |
-| `risky` | Proceed with console warning |
-| empty + `REOON_API_KEY` set + `--skip-validation` NOT set | Call Reoon Quick API (`mode=quick`), map status, write back to CSV, apply this table recursively |
-| empty + `REOON_API_KEY` unset | Warn once at start; proceed unvalidated |
-| empty + `--skip-validation` | Warn per record; proceed unvalidated |
-
-Rate limit for Reoon Quick calls: 1 request per second.
-
-At the start of a run, if any records will need validation, call Reoon's balance endpoint and log `daily` / `instant` credit counts. Warn if `daily < emptyStatusCount`.
-
-### 6b. Canonical `email_status` values
-
-The `email_status` column uses exactly these five canonical values (plus empty = not yet validated):
-
-| Value | Meaning | Batch gate behavior |
-|-------|---------|---------------------|
-| `valid` | Deliverable | Include |
-| `invalid` | Undeliverable / spamtrap / disabled mailbox | Skip |
-| `disposable` | Disposable / throwaway domain | Skip |
-| `risky` | Catch-all, role account, inbox full, unknown — may bounce | Include with warning |
-| `no_mx` | Domain has no MX records — mail cannot be delivered. Written by `scale/find-emails.js` during the MX precheck stage. Rows with this status never have an `email_found` value, so they are already filtered out by `generate-batch.js` on the empty-email check. |
-
-### 6c. Reoon raw → canonical mapping
-
-| Reoon raw status | Canonical |
-|------------------|-----------|
-| `safe`, `valid` | `valid` |
-| `invalid`, `disabled`, `spamtrap` | `invalid` |
-| `disposable` | `disposable` |
-| `inbox_full`, `catch_all`, `role_account`, `unknown` | `risky` |
-| anything else | `risky` (defensive default) |
+For reference, the Worker applies the same core logic:
+1. `email_found` is not empty
+2. `email_status` is `valid` (Clay pre-validates)
+3. Not already sent (tracked in D1)
+4. Sort ascending by `domain_clean`
+5. Process up to `SCALE_BATCH_SIZE` (default 50) per cron run
 
 ---
 
 ## 7. Per-Prospect Generation
 
+**Moved to VLP Worker.** The Worker campaign processor now generates slugs, asset page JSON, and email copy from templates. The reference data below is retained for context — the Worker uses these same values.
+
 ### Slug
 Format: `{first}-{last}-{city}-{state}` — lowercase, hyphen-separated, strip titles (Dr./Mr./Jr.)
 Dedup: append `-2`, `-3` on collision.
 
-### Time savings by credential
+### Time savings by credential (used by Worker templates)
 
 | Credential | Hrs/week | Hrs/year | Revenue opportunity |
 |------------|----------|----------|---------------------|
@@ -277,17 +214,7 @@ Dedup: append `-2`, `-3` on collision.
 | JD | 3.3 | 174 | $34,800–$87,000/yr |
 | Unknown | 5.0 | 260 | $39,000–$104,000/yr |
 
-### Personalization by firm_bucket
-
-**solo_brand**
-- Subject: `{First} - {PROFESSION}s running {DBA} spend {hrs}+ hours/week on this`
-- Headline: `{First}, here's what 20 minutes per transcript is costing {DBA}`
-
-**local_firm**
-- Subject: `{First} - {PROFESSION}s in {City} are spending {hrs}+ hours/week on this`
-- Headline: `{First}, here's what 20 minutes per transcript is costing your {City} practice`
-
-### asset_page object schema
+### asset_page object schema (generated by Worker, rendered by this repo)
 ```json
 {
   "headline": "...",
@@ -305,106 +232,32 @@ Dedup: append `-2`, `-3` on collision.
 
 Schema key is `asset_page`. Never `audit_page`.
 
-### Email 1 body structure (plain text)
-{First},
-[Pain — 20 min/transcript, X hrs/week, Y hrs/year — 2 sentences]
-[Tool pitch — seconds, plain-English report, $19/10 analyses — 2 sentences]
-Here's a free IRS code lookup to try first, no account needed:
-https://transcript.taxmonitor.pro/tools/code-lookup
-And here's a quick practice analysis I put together for {firm or city practice}:
-https://transcript.taxmonitor.pro/asset/{slug}
-If any of this lands, I'd be glad to show you a live analysis on a real transcript — 15 minutes on Google Meet.
-https://cal.com/tax-monitor-pro/ttmp-discovery?slug={slug}
-—
-Jamie L Williams
-Transcript Tax Monitor Pro
-transcript.taxmonitor.pro
-
-### Email 2 body structure
-
-- Subject: `Quick practice analysis for your firm, {First} - {N} hours/yr on the table`
-- Must reference prior email
-- Must reference "quick practice analysis generated for your firm"
-- Lead with asset page URL
-- CTAs: pricing + booking
-
-### Email signature (mandatory — never a placeholder)
-—
-Jamie L Williams
-Transcript Tax Monitor Pro
-transcript.taxmonitor.pro
-
 ---
 
 ## 8. Output Files
 
-### JSON batch
-**Path:** `scale/batches/scale-batch-{YYYY-MM-DD}-{N}.json`
+**This repo no longer generates output files.** The VLP Worker campaign processor writes all batch JSON, email queues, and asset page JSON directly to R2. Legacy output paths are listed below for reference only.
 
-Multiple batches per day are supported. The sequence number `{N}` starts at 1 and increments for each batch run on the same date.
-
-Per-prospect schema:
-```json
-{
-  "slug": "...",
-  "email": "...",
-  "name": "...",
-  "credential": "EA",
-  "city": "...",
-  "state": "...",
-  "firm": "...",
-  "firm_bucket": "solo_brand",
-  "domain_clean": "...",
-  "asset_page": { ... },
-  "email_1": { "subject": "...", "body": "..." },
-  "email_2": { "subject": "...", "body": "..." }
-}
-```
-
-### Gmail import CSV
-**Path:** `scale/gmail/email1/{YYYY-MM-DD}-{N}-batch.csv`
-
-Columns (exactly, no extras): `email, first_name, subject, body`
-- RFC-4180 compliant
-- Body field quoted, may contain newlines
-- Signature must resolve to Jamie L Williams — never a placeholder
-
-### Source CSV update
-Write `email_1_prepared_at` ISO timestamp to source CSV immediately after each batch is generated.
+### Legacy paths (no longer written by this repo)
+- `scale/batches/scale-batch-{YYYY-MM-DD}-{N}.json` — batch JSON (now generated by Worker)
+- `scale/gmail/email1/{YYYY-MM-DD}-{N}-batch.csv` — Gmail import CSV (retired — Worker sends via Gmail API directly)
 
 ---
 
-## 9. R2 Push Commands (run after each batch)
-```bash
-# Push email1 queue
-node scale/push-email1-queue.js scale/gmail/email1/{YYYY-MM-DD}-{N}-batch.csv
+## 9. R2 Push Commands
 
-# Push asset pages
-node scale/push-asset-pages.js scale/batches/scale-batch-{YYYY-MM-DD}-{N}.json
+**Retired.** All R2 writes are now handled by the VLP Worker campaign processor. The manual `node scale/push-*.js` scripts are no longer used.
 
-# Push Email 2 queue (when Email 2 batch is generated)
-node scale/push-email2-queue.js scale/batches/scale-batch-{YYYY-MM-DD}-{N}.json
+### R2 Key Inventory (written by VLP Worker)
 
-# Push batch history manifest (append entry)
-node scale/push-batch-history.js scale/batches/scale-batch-{YYYY-MM-DD}-{N}.json
-
-# Push updated master CSV
-node scale/push-master-csv.js
-
-# Push prospect email-to-slug index (append entries)
-node scale/push-prospect-index.js scale/batches/scale-batch-{YYYY-MM-DD}-{N}.json
-```
-
-### R2 Key Inventory
-
-| R2 Key | Type | Script |
-|--------|------|--------|
-| `vlp-scale/send-queue/email1-pending.json` | Merge-append | `push-email1-queue.js` |
-| `vlp-scale/send-queue/email2-pending.json` | Merge-append | `push-email2-queue.js` |
-| `vlp-scale/asset-pages/{slug}.json` | One per prospect | `push-asset-pages.js` |
-| `vlp-scale/batch-history.json` | Append array | `push-batch-history.js` |
-| `vlp-scale/prospects/master.csv` | Overwrite | `push-master-csv.js` |
-| `vlp-scale/prospect-index.json` | Merge-append object | `push-prospect-index.js` |
+| R2 Key | Type | Owner |
+|--------|------|-------|
+| `vlp-scale/send-queue/email1-pending.json` | Merge-append | Worker campaign processor |
+| `vlp-scale/send-queue/email2-pending.json` | Merge-append | Worker campaign processor |
+| `vlp-scale/asset-pages/{slug}.json` | One per prospect | Worker campaign processor |
+| `vlp-scale/batch-history.json` | Append array | Worker campaign processor |
+| `vlp-scale/prospects/pending/{date}.csv` | Upload | VLP dashboard |
+| `vlp-scale/prospect-index.json` | Merge-append object | Worker campaign processor |
 
 ---
 
@@ -417,7 +270,9 @@ R2 key: `vlp-scale/asset-pages/{slug}.json`
 
 ## 11. Email 2 Rules
 
-- Timing: 2–3 days after Email 1
+**Generated and sent by VLP Worker.** Email 2 is auto-scheduled 3 days after Email 1 by the Worker campaign processor. Rules retained for reference:
+
+- Timing: 3 days after Email 1 (auto-promoted by Worker)
 - Must reference prior email
 - Must reference "quick practice analysis generated for your firm"
 - Lead with asset page URL
@@ -425,86 +280,51 @@ R2 key: `vlp-scale/asset-pages/{slug}.json`
 
 ---
 
-## 12. Daily Operational Loop
+## 12. Daily Batch Generation — What This Repo Does
 
-### Steps
+This repo does NOT generate batches. The VLP Worker handles all batch generation.
 
-0a. (When rows have empty `email_found` but a valid `domain_clean`) Run `REOON_API_KEY=xxx node scale/find-emails.js` — MX precheck + pattern-guess up to 100 prospects per run, writes discovered emails to `email_found` and stamps `email_find_attempted`. Rows with no MX records are marked `email_status = no_mx` and permanently skipped.
-0b. (Weekly or when the unvalidated backlog grows) Run `REOON_API_KEY=xxx node scale/validate-emails.js` — bulk-validates up to 500 emails via Reoon and writes results to `email_status`
-1. Run `node scale/generate-batch.js` — selects next 50 eligible records, applies the Reoon Quick gate, generates slugs, writes selection file, stamps tracking
-2. Claude Code reads `scale/batches/batch-selection-{YYYY-MM-DD}-{N}.json` and generates personalized copy per SKILL.md
-3. Claude Code writes final outputs:
-   - `scale/batches/scale-batch-{YYYY-MM-DD}-{N}.json` — full batch with asset pages and email copy
-   - `scale/gmail/email1/{YYYY-MM-DD}-{N}-batch.csv` — Gmail import CSV
-4. Push email1 queue to R2
-5. Push asset pages to R2
-6. Push batch history manifest to R2
-7. Push updated master CSV to R2
-8. Push prospect email-to-slug index to R2
+### Pipeline (VLP Worker owns all steps)
 
-### generate-batch.js flags
+1. Operator downloads Clay CSV and uploads via VLP dashboard
+2. VLP Worker stores CSV in R2: `vlp-scale/prospects/pending/{date}.csv`
+3. 12:00 UTC — Campaign Processor cron: parses CSV, generates email copy + asset pages from templates, writes to R2
+4. 14:00 UTC — Send cron: reads R2 queue, sends via Gmail API
+5. Email 2 auto-scheduled 3 days after Email 1
 
-```
-node scale/generate-batch.js [source.csv] [--limit N] [--dry-run] [--skip-validation]
-```
+### What this repo still owns
 
-- `source.csv` (positional, optional) — override master CSV auto-detect
-- `--limit N` — process N records instead of the default 50
-- `--dry-run` — write selection file but do NOT stamp `email_1_prepared_at` and do NOT persist Reoon updates to the source CSV
-- `--skip-validation` — skip the Reoon Quick gate entirely (e.g., credits exhausted)
+- Asset page route: `app/asset/[slug]/` — renders prospect-specific practice analysis from R2 JSON
+- Free code lookup tool: `public/tools/code-lookup/`
+- All frontend pages (pricing, marketing, tools, member dashboard)
 
-Examples:
-```
-node scale/generate-batch.js                              # default: 50, stamps CSV
-node scale/generate-batch.js --limit 2 --dry-run          # preview 2, no writes
-node scale/generate-batch.js --limit 25 --skip-validation # 25 records, no Reoon
-```
+### What moved to VLP Worker
 
-### find-emails.js (MX + pattern-guess email discovery)
+- Batch generation (was: Claude skill + `scale/generate-batch.js`)
+- Email copy (was: Claude-generated, now: Worker templates)
+- Asset page JSON creation (was: Claude-generated, now: Worker templates)
+- R2 push (was: manual node scripts, now: automated in campaign processor cron)
+- Selection logic, dedup, slug generation (all in Worker now)
 
-```
-REOON_API_KEY=xxx node scale/find-emails.js [source.csv] [--limit N] [--dry-run]
-```
+### Retired
 
-- Selects rows where `email_found` is empty, `domain_clean` is non-empty, `email_find_attempted` is empty, and `email_1_prepared_at` is empty
-- Sorts by `domain_clean` ascending (same order as `generate-batch.js`)
-- Default limit: 100 rows per run. Override with `--limit N`
-- Per row:
-  1. DNS MX precheck (free) — if no MX records, sets `email_status = no_mx`, stamps `email_find_attempted`, and skips
-  2. Generates up to 5 candidate patterns from `First_NAME` + `LAST_NAME` + `domain_clean`:
-     - `first@domain` → `first.last@domain` → `firstlast@domain` → `flast@domain` → `first.l@domain`
-  3. Verifies candidates via Reoon Quick API (1 req/sec) — stops at the first `valid` response and writes to `email_found` + `email_status = valid`
-  4. If Reoon returns `disposable` on any candidate, sets `email_status = disposable` and stops trying patterns for that row
-  5. If all patterns fail, stamps `email_find_attempted` only (row is not re-scanned)
-- Credit safety cap: stops when cumulative Reoon calls reach 450 (safety margin below the 500 daily free-tier limit). Prints "Resume tomorrow."
-- `--dry-run`: MX precheck + pattern generation only. No Reoon calls, no CSV writes
-- Writes `email_find_attempted` for every scanned row so subsequent runs never retry the same row
-- Requires `REOON_API_KEY` unless `--dry-run` is set
-
-### validate-emails.js (bulk pre-validation)
-
-```
-REOON_API_KEY=xxx node scale/validate-emails.js [source.csv]
-```
-
-- Reads the CSV, filters to records with non-empty `email_found` and empty `email_status`
-- Collects up to 500 addresses (Reoon daily free-tier cap)
-- POSTs to `create-bulk-verification-task` with `{ name, emails, key }`
-- Polls `get-result-bulk-verification-task` every 10s until `status === "completed"` (20 min max)
-- Maps raw statuses to canonical (see §6c), writes results to `email_status`
-- Prints summary: valid / invalid / risky / disposable / failed
-- Requires `REOON_API_KEY` env var — exits with error if unset
-- Performs a balance check at start; warns if `daily < emails to submit`
+- 06:00 UTC find-emails cron (Clay pre-validates emails)
+- 08:00 UTC validate-emails cron (Clay pre-validates emails)
+- `scale/generate-batch.js` (replaced by Worker campaign processor)
+- `scale/push-email1-queue.js` (replaced by Worker campaign processor)
+- `scale/push-asset-pages.js` (replaced by Worker campaign processor)
+- `scale/find-emails.js` (replaced by Clay email enrichment)
+- `scale/validate-emails.js` (replaced by Clay email validation)
 
 ---
 
 ## 13. Hard Constraints
 
 - No backend changes in this repo
-- No modifications to original CSV columns — append tracking columns only
-- Never output `email: "undefined"` or empty email values
+- This repo does not generate email copy — Worker templates handle all personalization
+- This repo does not process prospect CSVs — Worker campaign processor handles ingestion
 - Never invent endpoints, contracts, or schema fields not in this document
-- Minimum 50 Email 1 records per batch — flag and halt if source is exhausted
+- Batch size controlled by Worker env var `SCALE_BATCH_SIZE` (default 50)
 - This repo does not call Gmail API, R2, or VLP Worker directly
 - SCALE.md is reference only — CLAUDE.md wins on any conflict
 

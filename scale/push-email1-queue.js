@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+// RETIRED 2026-04-13: R2 push is now handled by the VLP Worker campaign processor.
+// This script is no longer part of the active pipeline. Kept for historical reference only.
+//
 // Push email1 Gmail CSV to R2 as a send queue for the VLP Worker cron.
 // Usage: node scale/push-email1-queue.js scale/gmail/email1/2026-04-01-batch.csv
 

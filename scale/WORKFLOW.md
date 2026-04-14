@@ -2,26 +2,17 @@
 
 Repo: transcript.taxmonitor.pro
 Owner: Jamie L Williams
-Last updated: 2026-04-05
+Last updated: 2026-04-13
 
 ---
 
 ## Status
 
-This repo's operational workflow shares the same prospect pipeline as VLP SCALE.
-The master workflow with BigQuery, Clay, and Hunter.io instructions is at:
+> **RETIRED (2026-04-13):** This repo's SCALE workflow has migrated to the VLP Worker
+> campaign processor. Batch generation, email copy, asset page creation, and R2 push
+> are all handled by the Worker. Clay.com CSVs are uploaded via the VLP dashboard.
 
-C:\Users\eimaj\virtuallaunch.pro\scale\WORKFLOW.md
-
-TTMP-specific differences from VLP:
-- Batch generator: node scale/generate-batch.js (not generate-vlp-batch.js)
-- Merge script: node scale/scripts/merge-intake.js (run before batch generation)
-- Email pitch: transcript time savings, not directory listings
-- Token packs: $19/$29/$129 (not membership tiers)
-- Tracking column: email_1_prepared_at (not vlp_email_1_prepared_at)
-
-When sourcing for TTMP, use a separate Clay batch from VLP prospects.
-The batch generator filters by email_1_prepared_at, not vlp_email_1_prepared_at.
+This repo still owns the asset page route (`/asset/[slug]`) and all frontend pages.
 
 ---
 
@@ -31,7 +22,7 @@ The batch generator filters by email_1_prepared_at, not vlp_email_1_prepared_at.
 |------|-------|
 | Platform | Transcript Tax Monitor Pro |
 | Domain | transcript.taxmonitor.pro |
-| Campaign type | Email (Hunter.io) |
+| Campaign type | Email (VLP Worker via Gmail API) |
+| Prospect source | Clay.com CSV exports (pre-validated) |
+| Upload | VLP dashboard at virtuallaunch.pro/scale/workflow (Upload tab) |
 | Deploy command | npm run deploy |
-| Batch generator | node scale/generate-batch.js scale/prospects/{source}.csv |
-| Merge script | node scale/scripts/merge-intake.js |

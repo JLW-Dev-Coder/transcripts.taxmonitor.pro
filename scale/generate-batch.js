@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 
+// RETIRED 2026-04-13: Batch generation has migrated to the VLP Worker campaign
+// processor. Clay CSVs are uploaded via the VLP dashboard and processed by Worker
+// templates. This script is no longer part of the active pipeline. Kept for
+// historical reference only.
+
 const fs = require('fs');
 const path = require('path');
 const https = require('https');

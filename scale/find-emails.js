@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+// RETIRED 2026-04-13: Clay.com now pre-validates emails. This script is no longer
+// part of the active pipeline. Kept for historical reference only.
+
 // scale/find-emails.js
 //
 // Discovers email addresses for prospects using:

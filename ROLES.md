@@ -1,5 +1,5 @@
 # ROLES.md — transcript.taxmonitor.pro
-Last updated: 2026-04-04
+Last updated: 2026-04-13
 
 ---
 
@@ -49,10 +49,13 @@ Before approving any change, evaluate impact on:
 
 ### Responsibilities
 - Executes prompts exactly as authored by Principal Engineer
-- Runs `node scale/generate-batch.js` and generates personalized copy
-- Writes batch JSON, Gmail CSV, and updates source CSV tracking columns
-- Reports results with completion report format per SKILL.md
-- Runs verification checks before reporting completion
+- Maintains frontend pages, asset page route, and marketing content
+- Runs builds, deploys, and verification checks
+- Reports results before reporting completion
+
+> **Note (2026-04-13):** Batch generation (generate-batch.js, email copy, CSV processing)
+> has migrated to the VLP Worker campaign processor. This role no longer runs batch
+> generation or R2 push scripts.
 
 ### What this role is NOT
 - Not a decision-maker — follows CLAUDE.md and SKILL.md exactly

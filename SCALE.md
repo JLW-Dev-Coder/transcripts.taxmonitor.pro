@@ -1,6 +1,6 @@
 # SCALE.md — VLP Client Acquisition System
 
-Last updated: 2026-04-01
+Last updated: 2026-04-13
 
 ---
 
@@ -12,7 +12,7 @@ Send first outreach emails today. Convert first TTMP token sale this week. Use t
 - **Magnets** — free IRS code lookup tool + personalized asset pages
 - **Outreach** — email first, social second, proof compounds over time
 - **Tech** — $100/mo (Claude Max $100)
-- **Workflow** — you source and scrub, Claude generates, Worker serves, VLP Worker cron sends via Gmail, you close
+- **Workflow** — Clay sources and validates, operator uploads, Worker generates + sends via Gmail, you close
 
 ---
 
@@ -45,9 +45,12 @@ Send first outreach emails today. Convert first TTMP token sale this week. Use t
 | Facebook | Free | $0 | Group engagement — pain point posts, DM conversations. |
 | Stripe | Free | $0 | Payment processing for TTMP token purchases. Already integrated. |
 
-**Not used:** Clay (free tier too limited — revisit when volume exceeds 500/mo), ChatGPT (consolidated into Claude), Zoom (Google Meet covers it).
+| Clay.com | Free tier | $0 | Primary prospect source — pre-validated emails, 1,000+ daily |
+| Reoon | $9/mo (cancel after 5/11/2026) | $9/mo | Optional second-pass validation — non-blocking |
 
-**Total: $100/mo**
+**Not used:** ChatGPT (consolidated into Claude), Zoom (Google Meet covers it).
+
+**Total: ~$109/mo**
 
 ---
 
@@ -55,48 +58,34 @@ Send first outreach emails today. Convert first TTMP token sale this week. Use t
 
 | Step | Owner | Action | Output |
 |---|---|---|---|
-| 1. Source | You | Scrub public firm data (name + domain, emails optional) from NAEA, state boards, LinkedIn | CSV/JSON file |
-| 1a. Enrich | `scale/find-emails.js` | MX precheck + pattern-guess + Reoon Quick verification to fill empty `email_found` from `{First_NAME, LAST_NAME, domain_clean}` | Master CSV rows with discovered emails + `email_find_attempted` stamp |
-| 1b. Validate | `scale/validate-emails.js` | Reoon bulk verification of existing emails with empty `email_status` | Master CSV with canonical `email_status` values |
-| 2. Generate | Claude + `scale/generate-batch.js` | Select eligible records via the Reoon Quick gate, produce asset page data + email copy per prospect | JSON batch + Gmail import CSV |
-| 3. Store | You / Worker | Push JSON to R2 (or repo file Worker reads) | Asset pages live at `/asset/{slug}` |
-| 4. Send | VLP Worker cron | Deliver Email 1 via Gmail with CTA linking to asset page | Tracked sends |
-| 5. Track | Worker | Log asset page views, CTA clicks | D1 analytics |
-| 6. Follow up | VLP Worker cron | Automated Email 2 after delay | Tracked sends |
-| 7. Close | You | Take booked calls on Google Meet, demo TTMP, close sale | Stripe payment |
-
-### Enrichment economics (Step 1a — find-emails.js)
-
-- MX precheck is free (DNS lookup, no credits).
-- Pattern guessing tries up to 5 candidates per row (`first@`, `first.last@`, `firstlast@`, `flast@`, `first.l@`).
-- Reoon Quick API uses 1 daily credit per call, rate-limited to 1 req/sec. Free tier: 500 daily credits.
-- Typical budget: ~100 prospects/run × ~3 calls average/row (short-circuits on first valid) ≈ 300 credits/day. Worst case at 5 calls/row = 500 credits.
-- Credit safety cap: script stops at 450 cumulative calls and prints "Resume tomorrow."
-- Rows that yield no valid email get an `email_find_attempted` timestamp so they are never re-scanned.
+| 1. Source | Operator | Download Clay CSV export | Pre-validated prospect CSV |
+| 2. Upload | Operator | Upload via VLP dashboard Upload tab | CSV stored in R2 |
+| 3. Process | VLP Worker (12:00 UTC) | Parse CSV, generate emails + asset pages from templates | R2 send queue + asset pages |
+| 4. Send | VLP Worker (14:00 UTC) | Deliver Email 1 via Gmail API | Tracked sends |
+| 5. Track | VLP Worker | Log asset page views, CTA clicks | D1 analytics |
+| 6. Follow up | VLP Worker (12:00 UTC + 3 days) | Auto-promote Email 2 to send queue | Tracked sends |
+| 7. Close | Operator | Take booked calls, demo TTMP, close | Stripe payment |
 
 ---
 
-## Today: First 20–30 Emails
+## Daily Workflow
 
-### What needs to exist before you hit send
+### Prerequisites (all in place)
 
 1. **Gmail sender configured** — VLP Worker has Gmail API credentials, domain verified
-2. **Email 1 queue pushed to R2** — personalized per prospect (Claude-generated)
-3. **Asset pages live** — Worker serves `/asset/{slug}` from R2, or use existing TTMP pages as CTA fallback
-4. **Free IRS code lookup tool** — public page on TTMP, linked from asset pages and email signatures
-5. **Cal.com booking link** — "TTMP Discovery Call" event created
+2. **Clay.com account** — free tier, exports pre-validated prospect CSVs
+3. **VLP dashboard upload** — `virtuallaunch.pro/scale/workflow` Upload tab
+4. **Asset pages live** — Worker serves `/asset/{slug}` from R2
+5. **Free IRS code lookup tool** — public page on TTMP
+6. **Cal.com booking link** — "TTMP Discovery Call" event created
 
-### If the asset page Worker route isn't ready yet
+### Daily sequence
 
-Send emails today anyway. Link the CTA to your existing TTMP marketing page or pricing page. A good email with a link to your live site converts better than a perfect email you send next week. Build the personalized asset pages this week and switch the links in Email 2.
-
-### Immediate sequence
-
-1. You provide 20–30 prospect CSV to Claude now
-2. Claude generates Email 1 copy per prospect (subject + body)
-3. You push email1 queue to R2 — VLP Worker cron sends
-4. Claude generates asset page JSON in parallel — you push to R2 when ready
-5. Email 2 goes out via VLP Worker cron 3–5 days later, linking to asset pages
+1. Operator downloads Clay CSV export (pre-validated emails)
+2. Operator uploads via VLP dashboard Upload tab
+3. 12:00 UTC — Worker campaign processor generates emails + asset pages
+4. 14:00 UTC — Worker sends Email 1 via Gmail API
+5. 3 days later — Worker auto-sends Email 2
 
 ---
 
@@ -160,66 +149,11 @@ Asset page shows: practice workflow gaps, estimated weekly/annual time savings, 
 
 ---
 
-## Claude Batch Spec
+## Batch Generation (VLP Worker)
 
-### Input
+**Claude is no longer in the email generation loop.** The VLP Worker campaign processor handles all batch generation from Clay CSV uploads using templates. The Worker applies the same personalization rules (credential-based time savings, firm_bucket subject lines, slug generation) that were previously documented in SKILL.md.
 
-CSV or JSON uploaded as a file:
-
-```json
-{
-  "prospects": [
-    {
-      "name": "Sarah Chen",
-      "credential": "CPA",
-      "city": "Austin",
-      "state": "TX",
-      "email": "schen@example.com",
-      "website": "chentaxservices.com"
-    }
-  ]
-}
-```
-
-### Output
-
-JSON with one object per prospect:
-
-```json
-{
-  "prospects": [
-    {
-      "slug": "sarah-chen-austin-tx",
-      "email": "schen@example.com",
-      "asset_page": {
-        "headline": "Sarah, here's what 20 minutes per transcript is costing your practice",
-        "workflow_gaps": [
-          "Manual IRS code translation — ~20 min/client",
-          "No automated flagging of urgent transaction codes",
-          "Client communication requires re-explaining IRS language"
-        ],
-        "time_savings_weekly": "3.5 hours",
-        "time_savings_annual": "182 hours",
-        "revenue_opportunity": "$27,300–$72,800/yr in recovered billable time",
-        "tool_preview_codes": ["971", "846", "570"],
-        "cta_pricing_url": "https://transcript.taxmonitor.pro/pricing",
-        "cta_booking_url": "https://cal.com/tax-monitor-pro/ttmp-discovery",
-        "cta_learn_more_url": "https://transcript.taxmonitor.pro"
-      },
-      "email_1": {
-        "subject": "Sarah — you're spending 3+ hours/week translating IRS codes",
-        "body": "Plain text email body with CTA link to /asset/sarah-chen-austin-tx"
-      },
-      "email_2": {
-        "subject": "Your practice analysis is ready — 182 hours/yr on the table",
-        "body": "Follow-up body referencing asset page with booking CTA"
-      }
-    }
-  ]
-}
-```
-
-### Processing Rules
+### Processing Rules (applied by Worker templates)
 
 - Slug: `{first}-{last}-{city}-{state}` lowercase, hyphens only
 - Time savings: CPA ~15 transcript reviews/week x 20 min = 5 hrs/week. EA ~20/week x 20 min = 6.7 hrs/week.

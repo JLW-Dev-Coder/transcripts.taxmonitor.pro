@@ -1,9 +1,9 @@
 # README.md — Transcript Tax Monitor Pro
-Last updated: 2026-04-03
+Last updated: 2026-04-13
 
 **Repo:** transcript.taxmonitor.pro
 **Domain:** transcript.taxmonitor.pro
-**Purpose:** SEO-driven static site and outreach batch generator for TTMP
+**Purpose:** SEO-driven static site and outreach frontend for TTMP
 
 ---
 
@@ -14,8 +14,8 @@ Two things in one repo:
 **1. Static SEO acquisition engine**
 Generates 400+ resource pages from JSON content files. Drives organic traffic and converts to TTMP product.
 
-**2. SCALE outreach batch generator**
-Produces daily Email 1/2 batches, Gmail import CSVs, and asset page JSON from prospect CSV. Prepares queues for VLP Worker delivery.
+**2. SCALE outreach frontend**
+Serves asset page route (`/asset/[slug]`) for prospect-specific practice analyses. Batch generation has migrated to the VLP Worker campaign processor — this repo no longer produces batches.
 
 ---
 
@@ -24,7 +24,7 @@ Produces daily Email 1/2 batches, Gmail import CSVs, and asset page JSON from pr
 - Not an email sender
 - Not a backend system
 - Not a database or CMS
-- Not responsible for API execution, cron jobs, or R2 writes beyond what `scale/push-*.js` handles
+- Not responsible for API execution, cron jobs, or R2 writes (all handled by VLP Worker)
 
 ---
 
@@ -41,7 +41,7 @@ VLP Worker (api.taxmonitor.pro) handles auth/billing
 
 **Frontend:** Next.js 14 (App Router), static generation only
 **Content:** `/content/resources/*.json` → rendered via template router
-**Outreach:** `scale/` directory → batch generation → VLP Worker cron sends
+**Outreach:** VLP Worker campaign processor generates batches from Clay CSVs → Worker sends via Gmail API
 **Backend:** All backend logic owned by `api.taxmonitor.pro` — never modified in this repo
 
 ---
@@ -60,14 +60,14 @@ VLP Worker (api.taxmonitor.pro) handles auth/billing
 │   └── templateRouter.ts               ← maps template string → component
 ├── content/
 │   └── resources/*.json                 ← content source of truth (400+ files)
-├── scale/
-│   ├── prospects/                       ← source CSVs (gitignored)
-│   ├── batches/                         ← generated JSON (committed)
-│   ├── gmail/email1/                    ← Gmail import CSVs (committed)
-│   ├── generate-batch.js
-│   ├── push-email1-queue.js
-│   ├── push-email2-queue.js
-│   └── push-asset-pages.js
+├── scale/                               ← RETIRED — batch generation moved to VLP Worker
+│   ├── prospects/                       ← legacy source CSVs (gitignored)
+│   ├── batches/                         ← legacy generated JSON
+│   ├── gmail/email1/                    ← legacy Gmail import CSVs
+│   ├── generate-batch.js               ← RETIRED
+│   ├── push-email1-queue.js            ← RETIRED
+│   ├── push-email2-queue.js            ← RETIRED
+│   └── push-asset-pages.js             ← RETIRED
 └── app/sitemap.xml/route.ts            ← auto-generated from content files
 
 ---
@@ -144,11 +144,9 @@ npm run dev          # development server
 npm run build        # static site generation
 npm run start        # run production build locally
 
-# SCALE batch operations (run after build)
-node scale/generate-batch.js
-node scale/push-email1-queue.js scale/gmail/email1/{YYYY-MM-DD}-batch.csv
-node scale/push-asset-pages.js scale/batches/scale-batch-{YYYY-MM-DD}.json
-node scale/push-email2-queue.js scale/batches/scale-batch-{YYYY-MM-DD}.json
+# SCALE batch operations — RETIRED
+# Batch generation has moved to VLP Worker campaign processor.
+# See CLAUDE.md §12 for the new pipeline.
 ```
 
 ---

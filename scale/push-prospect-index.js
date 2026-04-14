@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+// RETIRED 2026-04-13: R2 push is now handled by the VLP Worker campaign processor.
+// This script is no longer part of the active pipeline. Kept for historical reference only.
+//
 // Build/append an email-to-slug lookup index in R2 at vlp-scale/prospect-index.json.
 // Usage: node scale/push-prospect-index.js scale/batches/scale-batch-2026-04-04-1.json
 

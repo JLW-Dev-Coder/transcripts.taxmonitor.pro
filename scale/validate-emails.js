@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+// RETIRED 2026-04-13: Clay.com now pre-validates emails. This script is no longer
+// part of the active pipeline. Kept for historical reference only.
+
 // Standalone bulk email validator for the TTMP master prospect CSV.
 // Uses Reoon's Bulk verification API to validate up to 500 addresses per run
 // (Reoon daily free-tier credit limit), then writes results back to the
